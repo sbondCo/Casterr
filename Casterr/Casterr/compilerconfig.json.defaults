@@ -10,7 +10,7 @@
       "relativeUrls": true,
       "sourceMapRoot": "",
       "lineFeed": "",
-      "sourceMap": true
+      "sourceMap": false
     }
   },
   "minifiers": {

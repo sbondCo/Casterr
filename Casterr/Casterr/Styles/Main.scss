@@ -1,13 +1,5 @@
-﻿$primaryBackground: #2D2B37;
+﻿// Variables
+@import "_Variables";
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: sans-serif;
-    background-color: $primaryBackground;
-    user-select: none;
-}
+// Normalize
+@import "_Norm";
