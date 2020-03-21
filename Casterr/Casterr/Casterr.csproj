@@ -3,6 +3,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
     <PackageReference Include="ElectronNET.API" Version="7.30.2" />
   </ItemGroup>
   <ItemGroup>
@@ -12,6 +16,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Styles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
   </ItemGroup>
 </Project>

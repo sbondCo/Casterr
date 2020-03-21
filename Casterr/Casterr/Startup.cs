@@ -61,8 +61,8 @@ namespace Casterr
             {
                 Width = 1200,
                 Height = 650,
-                MinWidth = 500,
-                MinHeight = 400,
+                MinWidth = 800,
+                MinHeight = 500,
                 AutoHideMenuBar = true
             };
 

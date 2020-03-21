@@ -1,0 +1,36 @@
+﻿/// <reference path="_Vars.scss" />
+
+nav {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    background-color: $secondaryColor;
+
+    ul {
+        list-style: none;
+
+        li {
+            display: inline-block;
+            color: $textPrimary;
+            font-size: 24px;
+            padding: 10px 15px;
+            margin: 0 5px;
+
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: color 250ms ease;
+
+                svg {
+                    margin: 0 8px 0 0;
+                }
+
+                &:hover{
+                    color: $textPrimaryHover;
+                    fill: $textPrimaryHover;
+                }
+            }
+        }
+    }
+}

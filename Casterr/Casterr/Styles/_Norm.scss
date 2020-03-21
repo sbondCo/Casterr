@@ -1,4 +1,4 @@
-﻿/// <reference path="_Variables.scss" />
+﻿/// <reference path="_Vars.scss" />
 
 * {
     margin: 0;
@@ -7,7 +7,13 @@
 }
 
 body {
+    color: $textPrimary;
+    background-color: $primaryColor;
     font-family: sans-serif;
-    background-color: $primaryBackground;
     user-select: none;
+}
+
+a{
+    color: $textPrimary;
+    text-decoration: none;
 }
