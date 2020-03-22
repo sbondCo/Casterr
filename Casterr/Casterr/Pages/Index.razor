@@ -4,15 +4,8 @@
 
 @inject Recorder rc
 
-<h1>This is index</h1>
-
-@start
+<button @onclick="@(e => rc.Start())">Start Recording</button>
 
 @code {
-    string start;
 
-    protected override void OnInitialized()
-    {
-        start = rc.Start();
-    }
 }
