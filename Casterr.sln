@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr", "Casterr\Casterr.csproj", "{07325ECF-1448-48AD-AFEA-16A6D93CB68E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casterr.RecorderLib", "Casterr.RecorderLib\Casterr.RecorderLib.csproj", "{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.RecorderLib", "Casterr.RecorderLib\Casterr.RecorderLib.csproj", "{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
