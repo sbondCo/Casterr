@@ -21,12 +21,16 @@ nav {
                 align-items: center;
                 justify-content: center;
                 transition: color 250ms ease;
+            }
 
-                svg {
-                    margin: 0 8px 0 0;
-                }
+            svg {
+                fill: $textPrimary;
+                margin: 0 8px 0 0;
+                transition: fill 250ms ease;
+            }
 
-                &:hover{
+            &:hover {
+                a, svg {
                     color: $textPrimaryHover;
                     fill: $textPrimaryHover;
                 }

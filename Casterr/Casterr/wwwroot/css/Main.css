@@ -31,8 +31,10 @@ nav {
         align-items: center;
         justify-content: center;
         transition: color 250ms ease; }
-        nav ul li a svg {
-          margin: 0 8px 0 0; }
-        nav ul li a:hover {
-          color: rgba(225, 225, 225, 0.5);
-          fill: rgba(225, 225, 225, 0.5); }
+      nav ul li svg {
+        fill: #e1e1e1;
+        margin: 0 8px 0 0;
+        transition: fill 250ms ease; }
+      nav ul li:hover a, nav ul li:hover svg {
+        color: rgba(225, 225, 225, 0.5);
+        fill: rgba(225, 225, 225, 0.5); }
