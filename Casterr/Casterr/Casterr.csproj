@@ -20,4 +20,7 @@
   <ItemGroup>
     <None Include="compilerconfig.json" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Casterr.RecorderLib\Casterr.RecorderLib.csproj" />
+  </ItemGroup>
 </Project>

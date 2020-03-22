@@ -1,3 +1,18 @@
 ﻿@page "/"
 
+@using Casterr.RecorderLib;
+
+@inject Recorder rc
+
 <h1>This is index</h1>
+
+@start
+
+@code {
+    string start;
+
+    protected override void OnInitialized()
+    {
+        start = rc.Start();
+    }
+}
