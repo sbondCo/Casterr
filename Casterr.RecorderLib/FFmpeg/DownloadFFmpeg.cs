@@ -13,7 +13,6 @@ namespace Casterr.RecorderLib.FFmpeg
     {
         Uri DownloadUri;
         string ZipPath;
-        string TempPath = $"{Path.GetTempPath()}\\Casterr";
 
         public async Task Download(string finalPath, string exeName)
         {
@@ -37,26 +36,19 @@ namespace Casterr.RecorderLib.FFmpeg
         {
             ZipArchive zip;
 
-            try
+            await Task.Run(() =>
             {
-                await Task.Run(() =>
-                {
-                    // Read all zip contents and find ffmpeg.exe
-                    zip = ZipFile.OpenRead(ZipPath);
-                    var ffmpegExeFile = zip.Entries.First(M => M.Name == exeName);
+                // Read all zip contents and find ffmpeg.exe
+                zip = ZipFile.OpenRead(ZipPath);
+                var ffmpegExeFile = zip.Entries.First(M => M.Name == exeName);
 
-                    // Extract ffmpeg.exe to finalpath
-                    ffmpegExeFile.ExtractToFile(finalPath, true);
+                // Extract ffmpeg.exe to finalpath
+                ffmpegExeFile.ExtractToFile(finalPath, true);
 
-                    // Dispose and delete zip file
-                    zip.Dispose();
-                    File.Delete(ZipPath);
-                });
-            }
-            catch (Exception ex)
-            {
-
-            }
+                // Dispose and delete zip file
+                zip.Dispose();
+                File.Delete(ZipPath);
+            });
         }
     }
 }
