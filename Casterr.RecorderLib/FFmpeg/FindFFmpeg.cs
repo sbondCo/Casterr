@@ -23,7 +23,6 @@ namespace Casterr.RecorderLib.FFmpeg
                 await df.Download(ffmpegPath, FFmpegExeName);
             }
 
-            Console.WriteLine(ffmpegPath);
             return ffmpegPath;
         }
     }
