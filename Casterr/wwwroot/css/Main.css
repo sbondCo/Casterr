@@ -25,7 +25,8 @@ nav {
       color: #e1e1e1;
       font-size: 24px;
       padding: 10px 15px;
-      margin: 0 5px; }
+      margin: 0 5px;
+      cursor: pointer; }
       nav ul li a {
         display: flex;
         align-items: center;
