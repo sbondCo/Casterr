@@ -48,37 +48,31 @@ namespace Casterr.RecorderLib
 
         public void Stop()
         {
-            if(ffProcess != null)
+            try
             {
-                Console.WriteLine("Stopping FFmpeg");
+                if (ffProcess != null)
+                {
+                    Console.WriteLine("Stopping FFmpeg");
 
-                AttachConsole(ffProcess.Id);
-                SetConsoleCtrlHandler(IntPtr.Zero, true);
-                GenerateConsoleCtrlEvent(0, 0);
+                    AttachConsole(ffProcess.Id);
+                    SetConsoleCtrlHandler(IntPtr.Zero, true);
+                    GenerateConsoleCtrlEvent(0, 0);
 
-                Thread.Sleep(2000);
+                    Thread.Sleep(2000);
 
-                SetConsoleCtrlHandler(IntPtr.Zero, false);
-                FreeConsole();
+                    SetConsoleCtrlHandler(IntPtr.Zero, false);
+                    FreeConsole();
 
-                Console.WriteLine("Stopped FFmpeg");
-
-                //ffProcess.Kill();
-                //ffProcess.WaitForExit();
-                //ffProcess.Dispose();
-
-                //if (ffProcess.HasExited)
-                //{
-                //    Console.WriteLine("Stopped FFmpeg");
-                //}
-                //else
-                //{
-
-                //}
+                    Console.WriteLine("Stopped FFmpeg");
+                }
+                else
+                {
+                    throw new RecorderException("Can't stop recording, when not already recording");
+                }
             }
-            else
+            catch (Exception)
             {
-                throw new Exception("FFmpeg is not running, so it cannot be stopped");
+                throw new RecorderException("Can't stop recording, when not already recording");
             }
         }
     }
