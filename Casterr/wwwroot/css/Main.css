@@ -39,3 +39,41 @@ nav {
       nav ul li:hover a, nav ul li:hover svg {
         color: rgba(225, 225, 225, 0.5);
         fill: rgba(225, 225, 225, 0.5); }
+
+.recordingsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.thumbContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  max-width: 1600px; }
+  .thumbContainer .thumb {
+    flex-grow: 1;
+    width: 25%;
+    margin: 10px;
+    background-color: #333440;
+    border-radius: 4px;
+    overflow: hidden; }
+    .thumbContainer .thumb img {
+      width: 100%;
+      height: auto; }
+    .thumbContainer .thumb .info {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      line-height: 40px;
+      background-color: #32333F; }
+      .thumbContainer .thumb .info .title {
+        font-weight: bold; }
+    @media (max-width: 800px) {
+      .thumbContainer .thumb {
+        width: 50%; } }
+    @media (min-width: 800px) and (max-width: 1000px) {
+      .thumbContainer .thumb {
+        width: 33%; } }
+    @media (min-width: 1200px) {
+      .thumbContainer .thumb {
+        width: 25%; } }

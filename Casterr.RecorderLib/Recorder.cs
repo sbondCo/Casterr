@@ -33,16 +33,14 @@ namespace Casterr.RecorderLib
             {
                 ffProcess.StartInfo.FileName = ffmpegPath;
                 ffProcess.StartInfo.Arguments = args;
-                //ffProcess.StartInfo.CreateNoWindow = false;
-                //ffProcess.StartInfo.UseShellExecute = false;
-                //ffProcess.StartInfo.RedirectStandardOutput = true;
+                ffProcess.StartInfo.CreateNoWindow = false;
                 ffProcess.Start();
 
                 Console.WriteLine("Started FFmpeg");
             }
             else
             {
-                throw new Exception("Could not start ffmpeg");
+                throw new RecorderException("Could not start ffmpeg");
             }
         }
 

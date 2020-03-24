@@ -2,13 +2,19 @@
 
 @using Casterr.RecorderLib;
 
+@inject NavigationManager Navigation
 @inject Recorder rc
 
-<input name="args" @bind="@args"  style="width:500px;"/>
+<input name="args" @bind="@args" style="width:500px;" />
 <br />
 <button @onclick="@(e => rc.Start(@args))">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
 
 @code {
     string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop output.mkv";
+
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo("/recordings", true);
+    }
 }
