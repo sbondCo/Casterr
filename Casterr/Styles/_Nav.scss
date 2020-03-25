@@ -4,10 +4,26 @@ nav {
     display: flex;
     align-content: center;
     justify-content: center;
+    min-height: 48px;
     background-color: $secondaryColor;
 
     ul {
         list-style: none;
+
+        @media (min-width: 910px) {
+            animation: comeDown 250ms forwards;
+            position: fixed;
+        }
+
+        @keyframes comeDown {
+            from {
+                top: -100px;
+            }
+
+            to {
+                top: 0px;
+            }
+        }
 
         li {
             display: inline-block;
@@ -27,9 +43,10 @@ nav {
             svg {
                 fill: $textPrimary;
                 margin: 0 8px 0 0;
-                transition: fill, width 250ms ease;
+                transition: fill 250ms ease;
 
                 @media (max-width: 910px) {
+                    transition: width 250ms ease;
                     margin: 0;
                     width: 80px;
                 }

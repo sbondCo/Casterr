@@ -17,9 +17,20 @@ nav {
   display: flex;
   align-content: center;
   justify-content: center;
+  min-height: 48px;
   background-color: #272530; }
   nav ul {
     list-style: none; }
+    @media (min-width: 910px) {
+      nav ul {
+        animation: comeDown 250ms forwards;
+        position: fixed; } }
+
+@keyframes comeDown {
+  from {
+    top: -100px; }
+  to {
+    top: 0px; } }
     nav ul li {
       display: inline-block;
       color: #e1e1e1;
@@ -35,9 +46,10 @@ nav {
       nav ul li svg {
         fill: #e1e1e1;
         margin: 0 8px 0 0;
-        transition: fill, width 250ms ease; }
+        transition: fill 250ms ease; }
         @media (max-width: 910px) {
           nav ul li svg {
+            transition: width 250ms ease;
             margin: 0;
             width: 80px; } }
         @media (max-width: 600px) {
@@ -77,8 +89,8 @@ nav {
       line-height: 40px;
       background-color: #32333F; }
       .thumbContainer .thumb .info .title {
-        font-family: Corbel;
-        font-weight: bold; }
+        font-family: 'Segoe UI';
+        font-weight: 700; }
     @media (max-width: 800px) {
       .thumbContainer .thumb {
         width: 50%; } }
