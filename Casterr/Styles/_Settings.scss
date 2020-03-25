@@ -1,0 +1,36 @@
+﻿/// <reference path="_Vars.scss" />
+
+.settingsWrapper {
+    width: 100%;
+    padding-left: 200px;
+
+    .settingsNav {
+        position: fixed;
+        height: 100%;
+        width: 200px;
+        top: 48px;
+        left: 0;
+        background-color: $secondaryColor;
+
+        ul {
+            position: absolute;
+            list-style: none;
+            width: 100%;
+
+            li {
+                font-size: 24px;
+                transition: background-color 150ms ease;
+
+                .active, &:hover {
+                    background-color: $primaryColor;
+                }
+
+                a {
+                    display: flex;
+                    width: 100%;
+                    padding: 10px 15px;
+                }
+            }
+        }
+    }
+}

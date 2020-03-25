@@ -9,10 +9,10 @@ nav {
 
     ul {
         list-style: none;
+        position: fixed;
 
         @media (min-width: 910px) {
             animation: comeDown 250ms forwards;
-            position: fixed;
         }
 
         @keyframes comeDown {

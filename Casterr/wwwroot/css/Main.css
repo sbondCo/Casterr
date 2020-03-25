@@ -20,11 +20,11 @@ nav {
   min-height: 48px;
   background-color: #272530; }
   nav ul {
-    list-style: none; }
+    list-style: none;
+    position: fixed; }
     @media (min-width: 910px) {
       nav ul {
-        animation: comeDown 250ms forwards;
-        position: fixed; } }
+        animation: comeDown 250ms forwards; } }
 
 @keyframes comeDown {
   from {
@@ -100,3 +100,27 @@ nav {
     @media (min-width: 1200px) {
       .thumbContainer .thumb {
         width: 25%; } }
+
+.settingsWrapper {
+  width: 100%;
+  padding-left: 200px; }
+  .settingsWrapper .settingsNav {
+    position: fixed;
+    height: 100%;
+    width: 200px;
+    top: 48px;
+    left: 0;
+    background-color: #272530; }
+    .settingsWrapper .settingsNav ul {
+      position: absolute;
+      list-style: none;
+      width: 100%; }
+      .settingsWrapper .settingsNav ul li {
+        font-size: 24px;
+        transition: background-color 150ms ease; }
+        .settingsWrapper .settingsNav ul li .active, .settingsWrapper .settingsNav ul li:hover {
+          background-color: #2D2B37; }
+        .settingsWrapper .settingsNav ul li a {
+          display: flex;
+          width: 100%;
+          padding: 10px 15px; }
