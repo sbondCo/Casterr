@@ -35,7 +35,17 @@ nav {
       nav ul li svg {
         fill: #e1e1e1;
         margin: 0 8px 0 0;
-        transition: fill 250ms ease; }
+        transition: fill, width 250ms ease; }
+        @media (max-width: 910px) {
+          nav ul li svg {
+            margin: 0;
+            width: 80px; } }
+        @media (max-width: 600px) {
+          nav ul li svg {
+            width: 20px; } }
+      @media (max-width: 910px) {
+        nav ul li span {
+          display: none; } }
       nav ul li:hover a, nav ul li:hover svg {
         color: rgba(225, 225, 225, 0.5);
         fill: rgba(225, 225, 225, 0.5); }
@@ -67,6 +77,7 @@ nav {
       line-height: 40px;
       background-color: #32333F; }
       .thumbContainer .thumb .info .title {
+        font-family: Corbel;
         font-weight: bold; }
     @media (max-width: 800px) {
       .thumbContainer .thumb {
