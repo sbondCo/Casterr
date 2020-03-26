@@ -1,7 +1,15 @@
 ﻿@page "/settings/general"
 
+@using Casterr.Shared.UI
+
 <h3>General</h3>
 
-@code {
+<div class="settings">
+    <div class="setting">
+        <DropDown Items="@dropDownItems" Placeholder="Startup Page" />
+    </div>
+</div>
 
+@code {
+    string[] dropDownItems = { "Recordings", "Uploads", "Settings", "Profile" };
 }

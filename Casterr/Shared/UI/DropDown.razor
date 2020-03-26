@@ -1,0 +1,16 @@
+﻿<div class="dropDownContainer">
+    <label>@Placeholder</label>
+    <ul>
+        @foreach (var item in @Items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public string[] Items { get; set; }
+
+    public string Placeholder = Items.First();
+}

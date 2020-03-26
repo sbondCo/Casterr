@@ -1,0 +1,50 @@
+﻿/// <reference path="../_Vars.scss" />
+
+.dropDownContainer {
+    position: relative;
+    display: inline-block;
+    min-width: 160px;
+    padding: 8px;
+    background-color: $secondaryColor;
+    border-radius: 4px;
+
+    label {
+        transition: all 250ms ease;
+    }
+
+    ul {
+        display: none;
+        max-height: 160px;
+        margin-top: 5px;
+        z-index: 1;
+        overflow-y: auto;
+        margin-right: 5px;
+
+        li {
+            width: 100%;
+            padding: 8px;
+            list-style: none;
+            background-color: $secondaryColor;
+            border-radius: 4px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $tertiaryColor;
+            }
+        }
+
+        &::-webkit-scrollbar {
+            width: 5px;
+            background: $primaryColor;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $tertiaryColor;
+            -webkit-border-radius: 1ex;
+        }
+    }
+
+    &:hover ul {
+        display: block;
+    }
+}

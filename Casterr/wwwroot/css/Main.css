@@ -124,3 +124,37 @@ nav {
           display: flex;
           width: 100%;
           padding: 10px 15px; }
+
+.dropDownContainer {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+  padding: 8px;
+  background-color: #272530;
+  border-radius: 4px; }
+  .dropDownContainer label {
+    transition: all 250ms ease; }
+  .dropDownContainer ul {
+    display: none;
+    max-height: 160px;
+    margin-top: 5px;
+    z-index: 1;
+    overflow-y: auto;
+    margin-right: 5px; }
+    .dropDownContainer ul li {
+      width: 100%;
+      padding: 8px;
+      list-style: none;
+      background-color: #272530;
+      border-radius: 4px;
+      cursor: pointer; }
+      .dropDownContainer ul li:hover {
+        background-color: #333440; }
+    .dropDownContainer ul::-webkit-scrollbar {
+      width: 5px;
+      background: #2D2B37; }
+    .dropDownContainer ul::-webkit-scrollbar-thumb {
+      background: #333440;
+      -webkit-border-radius: 1ex; }
+  .dropDownContainer:hover ul {
+    display: block; }

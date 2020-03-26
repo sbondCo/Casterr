@@ -2,6 +2,11 @@
 
 <h3>Settings Page</h3>
 
-@code {
+@inject NavigationManager Navigation
 
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo("/settings/general", true);
+    }
 }
