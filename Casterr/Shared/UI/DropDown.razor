@@ -1,9 +1,9 @@
 ﻿<div class="dropDownContainer">
     <label>@Placeholder</label>
     <ul>
-        @foreach (var item in @Items)
+        @foreach (var item in @Items.Skip(1))
         {
-            <li>@item</li>
+            <li @onclick="@(e => SwitchItems(@item))">@item</li>
         }
     </ul>
 </div>
@@ -17,5 +17,14 @@
     protected override void OnInitialized()
     {
         Placeholder = Items.First();
+    }
+
+    public void SwitchItems(string itemClicked)
+    {
+        // Put placeholder in place of item clicked in Items array
+        Items = Items.Select(s => s.Replace(itemClicked, Placeholder)).ToArray();
+
+        // Update placeholder on dropdown with item clicked
+        Placeholder = itemClicked;
     }
 }
