@@ -65,7 +65,7 @@ namespace Casterr
                 Height = 650,
                 MinWidth = 800,
                 MinHeight = 500,
-                AutoHideMenuBar = true
+                Frame = false
             };
 
             // Open Electron window

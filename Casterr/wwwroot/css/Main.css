@@ -13,6 +13,30 @@ a {
   color: #e1e1e1;
   text-decoration: none; }
 
+.dragger {
+  width: 100%;
+  height: 18px;
+  overflow: hidden;
+  -webkit-app-region: drag;
+  background-color: #19181f; }
+  .dragger .minMaxClose {
+    display: flex;
+    flex-direction: row-reverse;
+    fill: #e1e1e1; }
+    .dragger .minMaxClose div {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-app-region: no-drag;
+      width: 30px;
+      height: 18px;
+      cursor: pointer; }
+      .dragger .minMaxClose div:hover {
+        background-color: rgba(79, 84, 92, 0.16); }
+    .dragger .minMaxClose .close:hover {
+      background-color: #c10000; }
+
 nav {
   display: flex;
   align-content: center;
@@ -20,11 +44,10 @@ nav {
   min-height: 48px;
   background-color: #272530; }
   nav ul {
-    list-style: none;
-    position: fixed; }
+    list-style: none; }
     @media (min-width: 910px) {
       nav ul {
-        animation: comeDown 250ms forwards; } }
+        /*animation: comeDown 250ms forwards;*/ } }
 
 @keyframes comeDown {
   from {
