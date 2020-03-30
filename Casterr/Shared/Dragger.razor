@@ -1,17 +1,67 @@
-﻿<div class="dragger">
+﻿@using ElectronNET.API
+
+<div class="dragger">
     <div class="minMaxClose">
-        <div class="close">
+        <div class="close" @onclick="@(e => Close())">
             <Icon i="close" wh="12" />
         </div>
-        <div class="max">
+        <div class="max" @onclick="@(e => Maximize())">
             <Icon i="max" wh="12" />
         </div>
-        <div class="min">
+        <div class="min" @onclick="@(e => Minimize())">
             <Icon i="min" wh="12" />
         </div>
     </div>
 </div>
 
 @code {
+    public List<BrowserWindow> GetAllWindows()
+    {
+        // Add all windows to list and return list
 
+        List<BrowserWindow> windows = new List<BrowserWindow>();
+
+        Electron.WindowManager.BrowserWindows.ToList().ForEach(browserWindow =>
+        {
+            windows.Add(browserWindow);
+        });
+
+        return windows;
+    }
+
+    public void Close()
+    {
+        foreach(var window in GetAllWindows())
+        {
+            window.Close();
+        }
+    }
+
+    public async Task Maximize()
+    {
+        foreach (var window in GetAllWindows())
+        {
+            // is window maximized?
+            var isMaximized = await window.IsMaximizedAsync();
+
+            if (isMaximized)
+            {
+                // Window is already maximized, so restore it
+                window.Restore();
+            }
+            else
+            {
+                // Window is not maximized, so maximize it
+                window.Maximize();
+            }
+        }
+    }
+
+    public void Minimize()
+    {
+        foreach (var window in GetAllWindows())
+        {
+            window.Minimize();
+        }
+    }
 }

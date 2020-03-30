@@ -69,7 +69,9 @@ namespace Casterr
             };
 
             // Open Electron window
-            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(options));
+            var browserWindow = Electron.WindowManager.CreateWindowAsync(options);
+
+            Task.Run(async () => await browserWindow);
         }
     }
 }
