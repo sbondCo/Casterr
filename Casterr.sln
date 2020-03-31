@@ -4,8 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr", "Casterr\Casterr.csproj", "{07325ECF-1448-48AD-AFEA-16A6D93CB68E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B145375-9AF0-484A-B231-9F63643283B1} = {7B145375-9AF0-484A-B231-9F63643283B1}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.RecorderLib", "Casterr.RecorderLib\Casterr.RecorderLib.csproj", "{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.SettingsLib", "Casterr.SettingsLib\Casterr.SettingsLib.csproj", "{7B145375-9AF0-484A-B231-9F63643283B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B145375-9AF0-484A-B231-9F63643283B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B145375-9AF0-484A-B231-9F63643283B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B145375-9AF0-484A-B231-9F63643283B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B145375-9AF0-484A-B231-9F63643283B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

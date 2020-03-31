@@ -22,5 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Casterr.RecorderLib\Casterr.RecorderLib.csproj" />
+    <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
   </ItemGroup>
 </Project>
