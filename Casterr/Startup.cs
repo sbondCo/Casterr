@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Casterr.RecorderLib;
+using Casterr.SettingsLib;
 
 namespace Casterr
 {
@@ -31,6 +32,7 @@ namespace Casterr
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddTransient<Recorder>();
+            services.AddTransient<SettingsManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

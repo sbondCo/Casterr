@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Casterr.SettingsLib
 {
-    class Paths
+    public class PathHelper
     {
-        private string FolderPath(string folder)
+        public string MainFolderPath()
         {
-            string mainFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Casterr");
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Casterr");
+        }
+
+        public string FolderPath(string folder)
+        {
+            string mainFolder = MainFolderPath();
             string folderWanted = Path.Combine(mainFolder, folder);
             
             // If folder does not exist, create it
@@ -19,8 +21,7 @@ namespace Casterr.SettingsLib
                 Directory.CreateDirectory(folderWanted);
             }
 
-            // Return main folder if asked for
-            if (folder == "main")
+            if(folder == "main")
             {
                 return mainFolder;
             }
@@ -28,9 +29,9 @@ namespace Casterr.SettingsLib
             return folderWanted;
         }
 
-        public string FilePath(string file)
+        public string FilePath(string folder, string file)
         {
-            string settingsFolder = FolderPath("settings");
+            string settingsFolder = FolderPath(folder);
             string settingsFile = Path.Combine(settingsFolder, file);
 
             // If settings file doesn't exist, create it

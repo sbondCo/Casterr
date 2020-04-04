@@ -1,24 +1,28 @@
 ﻿@page "/"
 
 @using Casterr.RecorderLib;
-@*@using Casterr.SettingsLib;*@
+@using Casterr.SettingsLib;
 
 @inject NavigationManager Navigation
 @inject Recorder rc
-@*@inject GeneralSettings gs*@ 
+@inject SettingsManager sm 
 
 <input name="args" @bind="@args" style="width:500px;" />
 <br />
 <button @onclick="@(e => rc.Start(@args))">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
-
-@*<button @onclick="@(e => gs.GetFile())">Stop Recording</button>*@
+<br />
+<input name="rule" @bind="@rule" style="width:500px;" />
+<br />
+<button @onclick="@(e => sm.GetAllGeneralSettings())">Test Settings</button>
 
 @code {
+    string rule = "";
+
     string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop output.mkv";
 
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo("/recordings", true);
+        //Navigation.NavigateTo("/recordings", true);
     }
 }
