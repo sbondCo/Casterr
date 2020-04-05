@@ -41,7 +41,7 @@ namespace Casterr.HelpersLib
                 // Get json from file
                 json = sr.ReadToEnd();
 
-                // Parse json, if any
+                // Parse json, if valid
                 if (IsValid(json))
                 {
                     parsedJson = JObject.Parse(json);

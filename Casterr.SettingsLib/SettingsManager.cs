@@ -1,7 +1,5 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using Casterr.HelpersLib;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Casterr.SettingsLib
@@ -17,9 +15,8 @@ namespace Casterr.SettingsLib
             return ph.FilePath("settings", file);
         }
 
-        public void GetAllGeneralSettings()
+        public void GetAllGeneralSettings(GeneralSettings gs)
         {
-            GeneralSettings gs = new GeneralSettings();
             JsonHelper jh = new JsonHelper();
             PropertyInfo[] gsProps = typeof(GeneralSettings).GetProperties();
 
@@ -45,8 +42,6 @@ namespace Casterr.SettingsLib
 
             // Add JSON back to file
             jh.SerializeJsonToFile(file, gs);
-
-            // TODO: return list 
         }
     }
 }

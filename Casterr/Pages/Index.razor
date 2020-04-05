@@ -5,24 +5,32 @@
 
 @inject NavigationManager Navigation
 @inject Recorder rc
-@inject SettingsManager sm 
+@inject SettingsManager sm
 
 <input name="args" @bind="@args" style="width:500px;" />
 <br />
 <button @onclick="@(e => rc.Start(@args))">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
 <br />
-<input name="rule" @bind="@rule" style="width:500px;" />
-<br />
-<button @onclick="@(e => sm.GetAllGeneralSettings())">Test Settings</button>
+@*<button @onclick="@(e => sm.GetAllGeneralSettings())">Test Settings</button>*@
+<button @onclick="@(e => UpdateSP())">Update SP</button>
+<input name="sp" @bind="@sp" style="width:500px;" />
 
 @code {
-    string rule = "";
+    string sp;
 
     string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop output.mkv";
 
     protected override void OnInitialized()
     {
         //Navigation.NavigateTo("/recordings", true);
+    }
+
+    private void UpdateSP()
+    {
+        GeneralSettings gs = new GeneralSettings();
+        sm.GetAllGeneralSettings(gs);
+
+        sp = gs.StartupPage;
     }
 }
