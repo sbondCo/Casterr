@@ -26,20 +26,7 @@ namespace Casterr.SettingsLib
             var file = GetFilePath("GeneralSettings.json");
 
             // Deserialize JSON in GeneralSettings.json file
-            using (StreamReader sr = File.OpenText(file))
-            {
-                // Get json from file
-                string json = sr.ReadToEnd();
-
-                // Parse json, if any
-                if (jh.IsValid(json))
-                {
-                    definedSettings = JObject.Parse(json);
-                }
-
-                sr.Dispose();
-                sr.Close();
-            }
+            definedSettings = jh.ParseJsonFromFile(file);
 
             foreach (var prop in gsProps)
             {
@@ -57,17 +44,7 @@ namespace Casterr.SettingsLib
             }
 
             // Add JSON back to file
-            using (StreamWriter sw = new StreamWriter(file))
-            {
-                // Serialize GeneralSettings
-                string json = JsonConvert.SerializeObject(gs, Formatting.Indented);
-
-                // Write GeneralSettings back to json file
-                sw.WriteLine(json);
-
-                sw.Dispose();
-                sw.Close();
-            }
+            jh.SerializeJsonToFile(file, gs);
 
             // TODO: return list 
         }
