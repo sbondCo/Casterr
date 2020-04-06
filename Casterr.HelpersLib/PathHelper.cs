@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Casterr.SettingsLib
 {
@@ -37,7 +38,7 @@ namespace Casterr.SettingsLib
             // If settings file doesn't exist, create it
             if (!File.Exists(settingsFile))
             {
-                File.Create(settingsFile);
+                File.Create(settingsFile).Close();
             }
 
             return settingsFile;

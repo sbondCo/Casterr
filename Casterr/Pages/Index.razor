@@ -29,7 +29,8 @@
     private void UpdateSP()
     {
         GeneralSettings gs = new GeneralSettings();
-        sm.GetAllGeneralSettings(gs);
+        RecordingSettings rs = new RecordingSettings();
+        sm.GetSettings(rs);
 
         sp = gs.StartupPage;
     }

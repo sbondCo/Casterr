@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Casterr.HelpersLib;
 using Newtonsoft.Json.Linq;
 
@@ -15,12 +16,25 @@ namespace Casterr.SettingsLib
             return ph.FilePath("settings", file);
         }
 
-        public void GetAllGeneralSettings(GeneralSettings gs)
+        public void GetSettings(object obj)
         {
             JsonHelper jh = new JsonHelper();
             PropertyInfo[] gsProps = typeof(GeneralSettings).GetProperties();
 
-            var file = GetFilePath("GeneralSettings.json");
+            string file;
+
+            if(obj.GetType().Name == "GeneralSettings")
+            {
+                file = GetFilePath("GeneralSettings.json");
+            }
+            else if (obj.GetType().Name == "RecordingSettings")
+            {
+                file = GetFilePath("RecordingSettings.json");
+            }
+            else
+            {
+                throw new Exception("That object is not supported.");
+            }
 
             // Deserialize JSON in GeneralSettings.json file
             definedSettings = jh.ParseJsonFromFile(file);
@@ -29,19 +43,19 @@ namespace Casterr.SettingsLib
             {
                 // check if prop.Name exists in definedSettings' index
                 // if it does, update its value in GeneralSettings
-                if(definedSettings != null)
+                if (definedSettings != null)
                 {
                     if (definedSettings[prop.Name] != null)
                     {
                         // Set prop to value defined in settings file
                         var newVal = definedSettings.GetValue(prop.Name).ToString();
-                        prop.SetValue(gs, newVal);
+                        prop.SetValue(obj, newVal);
                     }
                 }
             }
 
             // Add JSON back to file
-            jh.SerializeJsonToFile(file, gs);
+            jh.SerializeJsonToFile(file, obj);
         }
     }
 }
