@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Casterr.SettingsLib
 {
@@ -14,34 +13,29 @@ namespace Casterr.SettingsLib
         public string FolderPath(string folder)
         {
             string mainFolder = MainFolderPath();
-            string folderWanted = Path.Combine(mainFolder, folder);
+            folder = Path.Combine(mainFolder, folder);
             
             // If folder does not exist, create it
-            if (!Directory.Exists(folderWanted))
+            if (!Directory.Exists(folder))
             {
-                Directory.CreateDirectory(folderWanted);
+                Directory.CreateDirectory(folder);
             }
 
-            if(folder == "main")
-            {
-                return mainFolder;
-            }
-
-            return folderWanted;
+            return folder;
         }
 
         public string FilePath(string folder, string file)
         {
-            string settingsFolder = FolderPath(folder);
-            string settingsFile = Path.Combine(settingsFolder, file);
+            folder = FolderPath(folder);
+            file = Path.Combine(folder, file);
 
             // If settings file doesn't exist, create it
-            if (!File.Exists(settingsFile))
+            if (!File.Exists(file))
             {
-                File.Create(settingsFile).Close();
+                File.Create(file).Close();
             }
 
-            return settingsFile;
+            return file;
         }
     }
 }
