@@ -1,7 +1,7 @@
-﻿<div class="dropDownContainer">
+﻿<div class="dropDownContainer" @onclick="@(e => ToggleState())">
     <label>@Placeholder</label>
-    <ul>
-        @foreach (var item in @Items.Skip(1))
+    <ul class="@string.Join(" ", dropDownClasses)">
+        @foreach (var item in @Items)
         {
             <li @onclick="@(e => SwitchItems(@item))">@item</li>
         }
@@ -12,11 +12,33 @@
     [Parameter]
     public string[] Items { get; set; }
 
+    [Parameter]
+    public EventCallback<string> OnSelectedChanged { get; set; }
+
+    private List<string> dropDownClasses = new List<string>();
     public string Placeholder;
 
     protected override void OnInitialized()
     {
+        // Make placeholder first item in items array
         Placeholder = Items.First();
+
+        // Remove first item from items array since it the placeholder now
+        Items = Items.Skip(1).ToArray();
+
+        //SwitchItems(Placeholder);
+    }
+
+    private void ToggleState()
+    {
+        if (dropDownClasses.Contains("opened"))
+        {
+            dropDownClasses.Remove("opened");
+        }
+        else
+        {
+            dropDownClasses.Add("opened");
+        }
     }
 
     public void SwitchItems(string itemClicked)
@@ -26,5 +48,7 @@
 
         // Update placeholder on dropdown with item clicked
         Placeholder = itemClicked;
+
+        OnSelectedChanged.InvokeAsync(Placeholder);
     }
 }

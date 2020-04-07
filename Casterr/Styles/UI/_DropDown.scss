@@ -6,26 +6,35 @@
     min-width: 160px;
     padding: 8px;
     background-color: $secondaryColor;
-    border-radius: 4px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
 
     label {
         transition: all 250ms ease;
+        cursor: pointer;
+    }
+
+    ul.opened {
+        display: block;
     }
 
     ul {
         display: none;
+        position: absolute;
+        right: 0;
         max-height: 160px;
-        margin-top: 5px;
+        width: 100%;
+        margin: 8px 0 0 0;
         z-index: 1;
         overflow-y: auto;
-        margin-right: 5px;
+        border-radius: 0 0 4px 4px;
+        cursor: pointer;
 
         li {
             width: 100%;
             padding: 8px;
             list-style: none;
             background-color: $secondaryColor;
-            border-radius: 4px;
             cursor: pointer;
 
             &:hover {
@@ -42,9 +51,5 @@
             background: $tertiaryColor;
             -webkit-border-radius: 1ex;
         }
-    }
-
-    &:hover ul {
-        display: block;
     }
 }
