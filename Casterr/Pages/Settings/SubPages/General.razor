@@ -6,7 +6,7 @@
 
 <div class="settings">
     <div class="setting">
-        <DropDown Items="@dropDownItems" OnSelectedChanged=@UpdateSettings />
+        <DropDown Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
     </div>
 </div>
 

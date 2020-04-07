@@ -1,9 +1,9 @@
 ﻿<div class="dropDownContainer" @onclick="@(e => ToggleState())">
     <label>@Placeholder</label>
-    <ul class="@string.Join(" ", dropDownClasses)">
+    <ul class="@string.Join(" ", dropDownListClasses)">
         @foreach (var item in @Items)
         {
-            <li @onclick="@(e => SwitchItems(@item))">@item</li>
+            <li class="@(item == Placeholder ? "active" : "")" @onclick="@(e => SwitchItems(@item))">@item</li>
         }
     </ul>
 </div>
@@ -13,38 +13,29 @@
     public string[] Items { get; set; }
 
     [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
     public EventCallback<string> OnSelectedChanged { get; set; }
 
-    private List<string> dropDownClasses = new List<string>();
-    public string Placeholder;
-
-    protected override void OnInitialized()
-    {
-        // Make placeholder first item in items array
-        Placeholder = Items.First();
-
-        // Remove first item from items array since it the placeholder now
-        Items = Items.Skip(1).ToArray();
-
-        //SwitchItems(Placeholder);
-    }
+    private List<string> dropDownListClasses = new List<string>();
 
     private void ToggleState()
     {
-        if (dropDownClasses.Contains("opened"))
+        if (dropDownListClasses.Contains("opened"))
         {
-            dropDownClasses.Remove("opened");
+            dropDownListClasses.Remove("opened");
         }
         else
         {
-            dropDownClasses.Add("opened");
+            dropDownListClasses.Add("opened");
         }
     }
 
     public void SwitchItems(string itemClicked)
     {
         // Put placeholder in place of item clicked in Items array
-        Items = Items.Select(s => s.Replace(itemClicked, Placeholder)).ToArray();
+        //Items = Items.Select(s => s.Replace(itemClicked, Placeholder)).ToArray();
 
         // Update placeholder on dropdown with item clicked
         Placeholder = itemClicked;

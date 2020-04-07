@@ -14,10 +14,6 @@
         cursor: pointer;
     }
 
-    ul.opened {
-        display: block;
-    }
-
     ul {
         display: none;
         position: absolute;
@@ -37,9 +33,17 @@
             background-color: $secondaryColor;
             cursor: pointer;
 
+            &.active {
+                background-color: $qinaryColor !important;
+            }
+
             &:hover {
                 background-color: $tertiaryColor;
             }
+        }
+
+        &.opened {
+            display: block;
         }
 
         &::-webkit-scrollbar {
