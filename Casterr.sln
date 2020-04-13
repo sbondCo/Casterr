@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.RecorderLib", "Cast
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.SettingsLib", "Casterr.SettingsLib\Casterr.SettingsLib.csproj", "{7B145375-9AF0-484A-B231-9F63643283B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casterr.HelpersLib", "Casterr.HelpersLib\Casterr.HelpersLib.csproj", "{13FB70E2-7676-4AD0-8C97-658AE3622E68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.HelpersLib", "Casterr.HelpersLib\Casterr.HelpersLib.csproj", "{13FB70E2-7676-4AD0-8C97-658AE3622E68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,15 +6,18 @@
 
 <div class="settings">
     <div class="setting">
-        <DropDown Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
+        <DropDown Name="somethingDropDown" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
+    </div>
+    <div class="setting">
+        
     </div>
 </div>
 
 @code {
     string[] dropDownItems = { "Recordings", "Uploads", "Settings", "Profile" };
 
-    static void UpdateSettings(string newSelected)
+    static void UpdateSettings(string name, string newSelected)
     {
-        Console.WriteLine($"the dropdown was changed. {newSelected}");
+        Console.WriteLine($"the dropdown was changed. {name} {newSelected}");
     }
 }

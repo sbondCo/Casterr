@@ -10,13 +10,16 @@
 
 @code {
     [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
     public string[] Items { get; set; }
 
     [Parameter]
     public string Placeholder { get; set; }
 
     [Parameter]
-    public EventCallback<string> OnSelectedChanged { get; set; }
+    public Action<string, string> OnSelectedChanged { get; set; }
 
     private List<string> dropDownListClasses = new List<string>();
 
@@ -40,6 +43,6 @@
         // Update placeholder on dropdown with item clicked
         Placeholder = itemClicked;
 
-        OnSelectedChanged.InvokeAsync(Placeholder);
+        OnSelectedChanged(Name, Placeholder);
     }
 }
