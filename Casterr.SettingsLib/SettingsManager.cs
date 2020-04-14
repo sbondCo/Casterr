@@ -16,14 +16,11 @@ namespace Casterr.SettingsLib
             return ph.FilePath("settings", file);
         }
 
-        public void GetSettings(object obj)
+        public string GetObjectTypeFile(object obj)
         {
-            JsonHelper jh = new JsonHelper();
-            PropertyInfo[] gsProps = typeof(GeneralSettings).GetProperties();
-
             string file;
 
-            if(obj.GetType().Name == "GeneralSettings")
+            if (obj.GetType().Name == "GeneralSettings")
             {
                 file = GetFilePath("GeneralSettings.json");
             }
@@ -35,6 +32,16 @@ namespace Casterr.SettingsLib
             {
                 throw new Exception("That object is not supported.");
             }
+
+            return file;
+        }
+
+        public void GetSettings(object obj)
+        {
+            JsonHelper jh = new JsonHelper();
+            PropertyInfo[] gsProps = typeof(GeneralSettings).GetProperties();
+
+            string file = GetObjectTypeFile(obj);
 
             // Deserialize JSON in GeneralSettings.json file
             definedSettings = jh.ParseJsonFromFile(file);
@@ -55,6 +62,16 @@ namespace Casterr.SettingsLib
             }
 
             // Add JSON back to file
+            jh.SerializeJsonToFile(file, obj);
+        }
+
+        public void UpdateSettings(object obj)
+        {
+            JsonHelper jh = new JsonHelper();
+
+            string file = GetObjectTypeFile(obj);
+
+            // Serialize json to file
             jh.SerializeJsonToFile(file, obj);
         }
     }

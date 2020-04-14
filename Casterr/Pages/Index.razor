@@ -11,9 +11,9 @@
 <br />
 <button @onclick="@(e => rc.Start(@args))">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
-<br />
-@*<button @onclick="@(e => sm.GetAllGeneralSettings())">Test Settings</button>*@
+<br /><br />
 <button @onclick="@(e => UpdateSP())">Update SP</button>
+<button @onclick="@(e => UpdateSettings())">Update Settings</button>
 <input name="sp" @bind="@sp" style="width:500px;" />
 
 @code {
@@ -23,15 +23,32 @@
 
     protected override void OnInitialized()
     {
-        //Navigation.NavigateTo("/recordings", true);
+        //Navigation.NavigateTo("/settings", true);
     }
 
     private void UpdateSP()
     {
         GeneralSettings gs = new GeneralSettings();
         RecordingSettings rs = new RecordingSettings();
-        sm.GetSettings(rs);
 
-        sp = gs.StartupPage;
+        sm.GetSettings(gs);
+
+        Console.WriteLine(gs.StartupPage);
+
+        gs.StartupPage = sp;
+
+        Console.WriteLine(gs.StartupPage);
+    }
+
+    private void UpdateSettings()
+    {
+        GeneralSettings gs = new GeneralSettings();
+
+        Console.WriteLine(gs.StartupPage);
+
+        gs.StartupPage = sp;
+        sm.UpdateSettings(gs);
+
+        Console.WriteLine(gs.StartupPage);
     }
 }

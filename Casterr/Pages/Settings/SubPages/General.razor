@@ -1,6 +1,9 @@
 ﻿@page "/settings/general"
 
 @using Casterr.Shared.UI
+@using Casterr.SettingsLib;
+
+@inject SettingsManager sm
 
 <h3>General</h3>
 
@@ -9,15 +12,22 @@
         <DropDown Name="somethingDropDown" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
     </div>
     <div class="setting">
-        
+
     </div>
 </div>
 
 @code {
     string[] dropDownItems = { "Recordings", "Uploads", "Settings", "Profile" };
 
-    static void UpdateSettings(string name, string newSelected)
+    static void UpdateSettings(string name, string newValue)
     {
-        Console.WriteLine($"the dropdown was changed. {name} {newSelected}");
+        Console.WriteLine($"the dropdown was changed. {name} {newValue}");
+
+        SettingsManager sm = new SettingsManager();
+        GeneralSettings gs = new GeneralSettings();
+        //RecordingSettings rs = new RecordingSettings();
+        sm.GetSettings(gs);
+
+        gs.StartupPage = newValue;
     }
 }
