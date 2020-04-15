@@ -5,7 +5,7 @@
     padding-left: 200px;
 
     .settingsNav {
-        position: fixed;
+        position: absolute;
         height: 100%;
         width: 200px;
         top: 66px;
@@ -13,22 +13,41 @@
         background-color: $secondaryColor;
 
         ul {
+            display: flex;
+            flex-flow: column;
             position: absolute;
             list-style: none;
             width: 100%;
+            height: 100%;
+            overflow-y: auto;
 
             li {
                 font-size: 24px;
-                transition: background-color 150ms ease;
-
-                .active, &:hover {
-                    background-color: $primaryColor;
-                }
+                background-position: right;
+                transition: all 150ms linear;
 
                 a {
                     display: flex;
                     width: 100%;
                     padding: 10px 15px;
+                    cursor: pointer;
+                }
+
+                &.save {
+                    margin: auto 10px 75px 10px;
+                    background-color: $qinaryColor;
+
+                    a {
+                        display: flex;
+                        justify-content: center;
+                    }
+                }
+
+                .active, &.save:hover, &:hover {
+                    background-color: $primaryColor;
+                    background: linear-gradient(to right, $primaryColor 50%, #f000 50%);
+                    background-size: 200% 100%;
+                    background-position: left;
                 }
             }
         }
