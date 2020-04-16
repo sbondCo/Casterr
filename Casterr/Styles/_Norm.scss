@@ -32,13 +32,11 @@ a{
 }
 
 section#top {
-    position: fixed;
     width: 100%;
     z-index: 9999999;
 }
 
 section#main {
-    height: 100vh;
-    overflow-y: scroll;
-    padding: 66px 0 0 0;
+    height: calc(100vh - 66px);
+    overflow-y: auto;
 }
