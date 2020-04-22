@@ -1,7 +1,6 @@
 ﻿/// <reference path="_Vars.scss" />
 
 .settingsWrapper {
-    /*padding-left: 200px;*/
     .settingsNav {
         position: absolute;
         height: 100%;
@@ -59,6 +58,11 @@
         position: absolute;
         width: calc(100% - 200px);
         right: 0;
+        margin: 15px 0;
+
+        .pageTitle {
+            font-size: 30px;
+        }
 
         .settings {
             display: flex;
@@ -66,7 +70,7 @@
             justify-content: center;
             flex-flow: column;
             margin: 15px 15px;
-
+            width: 50%;
 
             .setting {
                 width: 100%;
@@ -77,6 +81,10 @@
                     font-weight: bold;
                     margin-bottom: 8px;
                 }
+            }
+
+            @media(max-width: 1000px) {
+                width: 80%;
             }
         }
     }
