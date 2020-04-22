@@ -1,19 +1,20 @@
 ﻿// Variables
-@import "_Vars";
+@import "Vars";
 
 // Normalize
-@import "_Norm";
+@import "Norm";
 
 // Dragbar
-@import "_Dragger";
+@import "Dragger";
 
 // Navbar
-@import "_Nav";
+@import "Nav";
 
 // Pages
-@import "_Recordings";
-@import "_Settings";
+@import "Recordings";
+@import "Settings";
 
 // UI Components
 @import "UI/DropDown";
 @import "UI/TextBox";
+@import "UI/TickBox";
