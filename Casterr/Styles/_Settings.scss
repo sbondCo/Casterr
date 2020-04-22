@@ -1,9 +1,7 @@
 ﻿/// <reference path="_Vars.scss" />
 
 .settingsWrapper {
-    width: 100%;
-    padding-left: 200px;
-
+    /*padding-left: 200px;*/
     .settingsNav {
         position: absolute;
         height: 100%;
@@ -35,7 +33,7 @@
 
                 &.save {
                     margin: auto 10px 10px 10px;
-                    background-color: $qinaryColor;
+                    background-color: $quaternaryColor;
 
                     a {
                         display: flex;
@@ -54,6 +52,26 @@
     }
 
     .settingsContent {
-        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: column;
+        position: absolute;
+        width: calc(100% - 200px);
+        right: 0;
+
+        .settings {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: column;
+            margin: 15px 15px;
+
+
+            .setting {
+                width: 100%;
+                margin: 15px 0;
+            }
+        }
     }
 }

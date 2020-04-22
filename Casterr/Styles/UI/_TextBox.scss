@@ -1,0 +1,18 @@
+﻿/// <reference path="../Main.scss" />
+
+.textBox {
+    min-width: 160px;
+    width: 100%;
+    padding: 8px;
+    color: $textPrimary;
+    background-color: $secondaryColor;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    transition: background 250ms ease;
+
+    &:hover {
+        background-color: $tertiaryColor;
+    }
+}

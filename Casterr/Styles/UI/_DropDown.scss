@@ -4,6 +4,7 @@
     position: relative;
     display: inline-block;
     min-width: 160px;
+    width: 100%;
     padding: 8px;
     background-color: $secondaryColor;
     border-radius: 4px 4px 0 0;
@@ -34,7 +35,7 @@
             cursor: pointer;
 
             &.active {
-                background-color: $qinaryColor !important;
+                background-color: $quaternaryColor !important;
             }
 
             &:hover {
