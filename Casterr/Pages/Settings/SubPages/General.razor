@@ -10,28 +10,28 @@
 <div class="settings">
     <div class="setting">
         <span class="title">Startup Page:</span>
-        <DropDown Name="somethingDropDown" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
-    </div>
-    <div class="setting">
-        <TextBox />
-    </div>
-    <div class="setting">
-        <TickBox />
+        <DropDown Name="startupPage" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettingsObject />
     </div>
 </div>
 
 @code {
     string[] dropDownItems = { "Recordings", "Uploads", "Settings", "Profile" };
 
-    static void UpdateSettings(string name, string newValue)
+    static void UpdateSettingsObject(string name, string newValue)
     {
         Console.WriteLine($"the dropdown was changed. {name} {newValue}");
 
         SettingsManager sm = new SettingsManager();
         GeneralSettings gs = new GeneralSettings();
-        //RecordingSettings rs = new RecordingSettings();
-        sm.GetSettings(gs);
 
-        gs.StartupPage = newValue;
+        switch (name)
+        {
+            case "startupPage":
+                gs.StartupPage = newValue;
+                Console.WriteLine($"StartupPage = {gs.StartupPage}");
+                break;
+        }
+
+        sm.UpdateSettings(gs);
     }
 }

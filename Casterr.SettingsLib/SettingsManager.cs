@@ -36,6 +36,10 @@ namespace Casterr.SettingsLib
             return file;
         }
 
+        /// <summary>
+        /// Get Settings from json file related to obj, set settings in obj to what they are in json file and then write everything back to json file.
+        /// </summary>
+        /// <param name="obj">object with settings defined</param>
         public void GetSettings(object obj)
         {
             JsonHelper jh = new JsonHelper();
@@ -65,6 +69,10 @@ namespace Casterr.SettingsLib
             jh.SerializeJsonToFile(file, obj);
         }
 
+        /// <summary>
+        /// Get variables from obj, serialize them and (re)write them to json file related to obj
+        /// </summary>
+        /// <param name="obj">object with settings defined</param>
         public void UpdateSettings(object obj)
         {
             JsonHelper jh = new JsonHelper();
