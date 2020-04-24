@@ -73,7 +73,7 @@ namespace Casterr.SettingsLib
         /// Get variables from obj, serialize them and (re)write them to json file related to obj
         /// </summary>
         /// <param name="obj">object with settings defined</param>
-        public void UpdateSettings(object obj)
+        public void UpdateSettingsFile(object obj)
         {
             JsonHelper jh = new JsonHelper();
 

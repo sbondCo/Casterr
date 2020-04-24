@@ -1,37 +1,34 @@
 ﻿@page "/settings/general"
 
 @using Casterr.Shared.UI
-@using Casterr.SettingsLib;
+@using Casterr.SettingsLib
 
 @inject SettingsManager sm
+@inject GeneralSettings gs
 
 <span class="pageTitle">General Settings</span>
 
 <div class="settings">
     <div class="setting">
         <span class="title">Startup Page:</span>
-        <DropDown Name="startupPage" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettingsObject />
+        <DropDown Name="startupPage" Items="@dropDownItems" Placeholder="@dropDownItems.First()" OnSelectedChanged=@UpdateSettings />
     </div>
 </div>
 
 @code {
     string[] dropDownItems = { "Recordings", "Uploads", "Settings", "Profile" };
 
-    static void UpdateSettingsObject(string name, string newValue)
+    public void UpdateSettings(string name, string newValue)
     {
-        Console.WriteLine($"the dropdown was changed. {name} {newValue}");
-
-        SettingsManager sm = new SettingsManager();
-        GeneralSettings gs = new GeneralSettings();
-
         switch (name)
         {
             case "startupPage":
                 gs.StartupPage = newValue;
-                Console.WriteLine($"StartupPage = {gs.StartupPage}");
                 break;
         }
 
-        sm.UpdateSettings(gs);
+        sm.UpdateSettingsFile(gs);
+
+        Console.WriteLine($"now: {gs.StartupPage}");
     }
 }

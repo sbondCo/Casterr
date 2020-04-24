@@ -30,16 +30,6 @@
                     cursor: pointer;
                 }
 
-                &.save {
-                    margin: auto 10px 10px 10px;
-                    background-color: $quaternaryColor;
-
-                    a {
-                        display: flex;
-                        justify-content: center;
-                    }
-                }
-
                 .active, &.save:hover, &:hover {
                     background-color: $primaryColor;
                     background: linear-gradient(to right, $primaryColor 50%, #f000 50%);

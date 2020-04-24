@@ -33,6 +33,9 @@ namespace Casterr
             services.AddServerSideBlazor();
             services.AddTransient<Recorder>();
             services.AddTransient<SettingsManager>();
+
+            services.AddSingleton<GeneralSettings>();
+            services.AddSingleton<RecordingSettings>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
