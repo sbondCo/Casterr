@@ -1,0 +1,35 @@
+﻿@page "/settings/recording"
+
+@using Casterr.Shared.UI
+@using Casterr.SettingsLib
+
+@inject SettingsManager sm
+@inject RecordingSettings rs
+
+<span class="pageTitle">Recording Settings</span>
+
+<div class="settings">
+    <div class="setting">
+        <span class="title">FPS:</span>
+        <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        sm.GetSettings(rs);
+    }
+
+    public void UpdateSettings(string name, string newValue)
+    {
+        switch (name)
+        {
+            case "fps":
+                rs.FPS = newValue;
+                break;
+        }
+
+        sm.UpdateSettingsFile(rs);
+    }
+}

@@ -1,5 +1,20 @@
-﻿<input class="textBox" type="text" value="" />
+﻿<input class="textBox" type=@Type @bind="Placeholder" @onfocusout="@(e => InputLoseFocus())"/>
 
 @code {
+    [Parameter]
+    public string Name { get; set; }
 
+    [Parameter]
+    public string Placeholder { get; set; }
+
+    [Parameter]
+    public string Type { get; set; } = "text";
+
+    [Parameter]
+    public Action<string, string> OnLoseFocus { get; set; }
+
+    private void InputLoseFocus()
+    {
+        OnLoseFocus(Name, Placeholder);
+    }
 }

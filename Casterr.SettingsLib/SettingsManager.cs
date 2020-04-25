@@ -37,20 +37,20 @@ namespace Casterr.SettingsLib
         }
 
         /// <summary>
-        /// Get Settings from json file related to obj, set settings in obj to what they are in json file and then write everything back to json file.
+        /// Get Settings from json file related to obj and set settings in obj to what they are in json file
         /// </summary>
         /// <param name="obj">object with settings defined</param>
         public void GetSettings(object obj)
         {
             JsonHelper jh = new JsonHelper();
-            PropertyInfo[] gsProps = typeof(GeneralSettings).GetProperties();
+            PropertyInfo[] objProps = obj.GetType().GetProperties();
 
             string file = GetObjectTypeFile(obj);
 
             // Deserialize JSON in GeneralSettings.json file
             definedSettings = jh.ParseJsonFromFile(file);
 
-            foreach (var prop in gsProps)
+            foreach (var prop in objProps)
             {
                 // check if prop.Name exists in definedSettings' index
                 // if it does, update its value in GeneralSettings
@@ -64,9 +64,6 @@ namespace Casterr.SettingsLib
                     }
                 }
             }
-
-            // Add JSON back to file
-            jh.SerializeJsonToFile(file, obj);
         }
 
         /// <summary>
