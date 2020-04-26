@@ -4,7 +4,7 @@
     {
         #region Video
         public string FPS { get; set; } = "60";
-        public string Resolution { get; set; } = "1920x1080";
+        public string Resolution { get; set; } = "In-Game";
         public string Format { get; set; } = "mp4";
         public string ZeroLatency { get; set; } = "true";
         public string UltraFast { get; set; } = "true";
