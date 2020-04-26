@@ -6,9 +6,9 @@
 @inject SettingsManager sm
 @inject RecordingSettings rs
 
-<span class="pageTitle">Recording Settings</span>
-
 <div class="settings">
+    <span class="pageTitle">Recording Settings</span>
+
     <div class="setting">
         <span class="title">FPS:</span>
         <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />

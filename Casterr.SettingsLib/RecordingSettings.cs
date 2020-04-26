@@ -11,7 +11,7 @@
         #endregion
 
         #region Audio
-        public string AudioDevice { get; set; } = "default";
+        public string AudioDevice { get; set; } = "Default";
         public string SeperateAudioTracks { get; set; } = "false";
         #endregion
     }

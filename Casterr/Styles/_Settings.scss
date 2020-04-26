@@ -43,12 +43,12 @@
     .settingsContent {
         display: flex;
         align-items: center;
-        justify-content: center;
         flex-flow: column;
         position: absolute;
-        width: calc(100% - 200px);
         right: 0;
-        margin: 15px 0;
+        width: calc(100% - 200px);
+        height: calc(100% - 66px);
+        overflow-y: auto;
 
         .pageTitle {
             font-size: 30px;
