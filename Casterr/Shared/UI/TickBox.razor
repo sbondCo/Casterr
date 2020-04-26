@@ -1,8 +1,45 @@
 ﻿<label class="checkBoxContainer">
-    <input type="checkbox">
+    <input type="checkbox" @bind="checkBoxChecked" @onclick="@(e => CheckBoxOnClick())" />
     <span class="checkmark"></span>
 </label>
 
 @code {
+    [Parameter]
+    public string Name { get; set; }
 
+    [Parameter]
+    public string Checked { get; set; }
+
+    [Parameter]
+    public Action<string, string> OnClick { get; set; }
+
+    private bool checkBoxChecked { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Get Checked and set checkBoxChecked
+        if (Checked.ToLower() == "true")
+        {
+            checkBoxChecked = true;
+        }
+        else
+        {
+            checkBoxChecked = false;
+        }
+    }
+
+    private void CheckBoxOnClick()
+    {
+        // Get checkBoxChecked value and change Checked value accordingly
+        if (checkBoxChecked)
+        {
+            Checked = "False";
+        }
+        else
+        {
+            Checked = "True";
+        }
+
+        OnClick(Name, Checked);
+    }
 }
