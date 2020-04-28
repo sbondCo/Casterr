@@ -28,6 +28,10 @@ namespace Casterr.SettingsLib
             {
                 file = GetFilePath("RecordingSettings.json");
             }
+            else if (obj.GetType().Name == "KeyBindingSettings")
+            {
+                file = GetFilePath("KeyBindingSettings.json");
+            }
             else
             {
                 throw new Exception("That object is not supported.");
@@ -64,6 +68,9 @@ namespace Casterr.SettingsLib
                     }
                 }
             }
+
+            // Serialize json back to file in case of missing rules
+            jh.SerializeJsonToFile(file, obj);
         }
 
         /// <summary>

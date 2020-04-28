@@ -2,6 +2,7 @@
 
 @using Casterr.RecorderLib;
 @using Casterr.SettingsLib;
+@using Casterr.HelpersLib.KeyBind;
 
 @inject NavigationManager Navigation
 @inject Recorder rc
@@ -15,6 +16,8 @@
 <button @onclick="@(e => UpdateSP())">Update SP</button>
 <button @onclick="@(e => UpdateSettings())">Update Settings</button>
 <input name="sp" @bind="@sp" style="width:500px;" />
+<br /><br />
+
 
 @code {
     string sp;
@@ -23,7 +26,9 @@
 
     protected override void OnInitialized()
     {
-        //Navigation.NavigateTo("/settings", true);
+        //Navigation.NavigateTo("/settings/keybinding", true);
+        KeyboardHook kh = new KeyboardHook();
+        kh.Initialize();
     }
 
     private void UpdateSP()

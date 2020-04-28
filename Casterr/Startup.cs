@@ -36,6 +36,7 @@ namespace Casterr
 
             services.AddSingleton<GeneralSettings>();
             services.AddSingleton<RecordingSettings>();
+            services.AddSingleton<KeyBindingSettings>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
