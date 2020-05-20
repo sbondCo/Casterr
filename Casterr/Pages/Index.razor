@@ -3,12 +3,13 @@
 @using Casterr.RecorderLib;
 @using Casterr.SettingsLib;
 @using Casterr.HelpersLib.KeyBind;
+@using System.Threading;
 
 @inject NavigationManager Navigation
 @inject Recorder rc
 @inject SettingsManager sm
 
-<input name="args" @bind="@args" style="width:500px;" />
+@*<input name="args" @bind="@args" style="width:500px;" />
 <br />
 <button @onclick="@(e => rc.Start(@args))">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
@@ -16,7 +17,7 @@
 <button @onclick="@(e => UpdateSP())">Update SP</button>
 <button @onclick="@(e => UpdateSettings())">Update Settings</button>
 <input name="sp" @bind="@sp" style="width:500px;" />
-<br /><br />
+<br /><br />*@
 
 
 @code {
@@ -28,8 +29,22 @@
     {
         //Navigation.NavigateTo("/settings/keybinding", true);
         KeyboardHook kh = new KeyboardHook();
-        kh.Initialize();
+
+        // Capture the events
+        //kh.KeyUp += new KeyboardHook.KeyboardHookCallback(KeyUp);
+
+        //Installing the Keyboard Hooks
+        kh.Install();
+
+        //Thread keyStateThread = new Thread(delegate ()
+        //{
+        //    kh.Start();
+        //});
+
+        //keyStateThread.Start();
     }
+
+
 
     private void UpdateSP()
     {
