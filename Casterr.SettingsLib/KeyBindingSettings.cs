@@ -2,6 +2,6 @@
 {
     public class KeyBindingSettings
     {
-        public string StartStopRecording { get; set; } = "162 115";
+        public string StartStopRecording { get; set; } = "CommandOrControl+X";
     }
 }

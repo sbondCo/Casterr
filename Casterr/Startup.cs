@@ -79,10 +79,9 @@ namespace Casterr
 
             Task.Run(async () => await browserWindow);
 
-            Electron.GlobalShortcut.Register("CommandOrControl+X", () =>
-            {
-                Console.WriteLine("CommandOrControl+X pressed");
-            });
+            // Setup all keybinds
+            KeyBinds.KeyBinds kb = new KeyBinds.KeyBinds();
+            kb.RegisterAll();
         }
     }
 }
