@@ -80,6 +80,7 @@ namespace Casterr
             Task.Run(async () => await browserWindow);
 
             // Setup all keybinds
+            // Keybinds are unregistered on exit in 'Dragger.razor' component
             KeyBinds.KeyBinds kb = new KeyBinds.KeyBinds();
             kb.RegisterAll();
         }
