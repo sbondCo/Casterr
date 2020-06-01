@@ -83,6 +83,13 @@ namespace Casterr
             // Keybinds are unregistered on exit in 'Dragger.razor' component
             KeyBinds.KeyBinds kb = new KeyBinds.KeyBinds();
             kb.RegisterAll();
+
+            // Run some tasks before fully closing program
+            Electron.App.WillQuit += (args) => Task.Run(() => 
+            {
+                // Unregister all keybinds created
+                Electron.GlobalShortcut.UnregisterAll();
+            });
         }
     }
 }

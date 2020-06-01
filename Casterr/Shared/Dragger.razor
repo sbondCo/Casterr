@@ -31,9 +31,6 @@
 
     public void Close()
     {
-        // Unregister all keybinds created
-        Electron.GlobalShortcut.UnregisterAll();
-
         // Close all windows
         foreach (var window in GetAllWindows())
         {
