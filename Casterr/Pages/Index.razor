@@ -2,7 +2,6 @@
 
 @using Casterr.RecorderLib;
 @using Casterr.SettingsLib;
-@using Casterr.HelpersLib.KeyBind;
 @using System.Threading;
 
 @inject NavigationManager Navigation
@@ -28,23 +27,7 @@
     protected override void OnInitialized()
     {
         //Navigation.NavigateTo("/settings/keybinding", true);
-        KeyboardHook kh = new KeyboardHook();
-
-        // Capture the events
-        //kh.KeyUp += new KeyboardHook.KeyboardHookCallback(KeyUp);
-
-        //Installing the Keyboard Hooks
-        kh.Install();
-
-        //Thread keyStateThread = new Thread(delegate ()
-        //{
-        //    kh.Start();
-        //});
-
-        //keyStateThread.Start();
     }
-
-
 
     private void UpdateSP()
     {

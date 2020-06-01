@@ -78,6 +78,11 @@ namespace Casterr
             var browserWindow = Electron.WindowManager.CreateWindowAsync(options);
 
             Task.Run(async () => await browserWindow);
+
+            Electron.GlobalShortcut.Register("CommandOrControl+X", () =>
+            {
+                Console.WriteLine("CommandOrControl+X pressed");
+            });
         }
     }
 }
