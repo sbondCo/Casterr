@@ -2,11 +2,12 @@
 
 @using Casterr.RecorderLib;
 @using Casterr.SettingsLib;
-@using System.Threading;
 
 @inject NavigationManager Navigation
 @inject Recorder rc
 @inject SettingsManager sm
+
+@inject StatusService statusService
 
 @*<input name="args" @bind="@args" style="width:500px;" />
 <br />
@@ -18,11 +19,12 @@
 <input name="sp" @bind="@sp" style="width:500px;" />
 <br /><br />*@
 
+<button @onclick="@(e => statusService.ChangeStatus(0))">Zero - Index</button>
 
 @code {
-    string sp;
+    //string sp;
 
-    string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop output.mkv";
+    //string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop output.mkv";
 
     protected override void OnInitialized()
     {

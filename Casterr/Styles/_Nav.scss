@@ -1,13 +1,14 @@
 ﻿/// <reference path="_Vars.scss" />
 
 nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 48px;
     background-color: $secondaryColor;
 
     ul {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
         list-style: none;
 
         @media (min-width: 910px) {
@@ -65,6 +66,42 @@ nav {
                 a, svg {
                     color: $textPrimaryHover;
                     fill: $textPrimaryHover;
+                }
+            }
+
+            &#status {
+                display: flex;
+                align-items: center;
+                position: absolute;
+                right: 10px;
+                cursor: default;
+
+                span {
+                    margin: 0 10px;
+                    font-size: 18px;
+                }
+
+                .circle {
+                    width: 20px;
+                    height: 20px;
+                    padding: 0 !important;
+                    border-radius: 50%;
+                    cursor: pointer;
+
+                    &.safety {
+                        background-color: $safetyColor;
+                        box-shadow: 0 0 8px $safetyColor;
+                    }
+
+                    &.idle {
+                        background-color: $textPrimary;
+                        box-shadow: 0 0 8px $textPrimary;
+                    }
+
+                    &.danger {
+                        background-color: $dangerColor;
+                        box-shadow: 0 0 8px $dangerColor;
+                    }
                 }
             }
         }

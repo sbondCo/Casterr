@@ -13,6 +13,7 @@ using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Casterr.RecorderLib;
 using Casterr.SettingsLib;
+using Casterr.Services;
 
 namespace Casterr
 {
@@ -31,9 +32,11 @@ namespace Casterr
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
             services.AddTransient<Recorder>();
             services.AddTransient<SettingsManager>();
 
+            services.AddSingleton<StatusService>();
             services.AddSingleton<GeneralSettings>();
             services.AddSingleton<RecordingSettings>();
             services.AddSingleton<KeyBindingSettings>();
