@@ -35,7 +35,7 @@
 
 <button @onclick="@(() => statusService.ChangeStatus(1))">One - Nav</button>
 
-@code {      
+@code {
     protected override void OnInitialized()
     {
         statusService.ShouldChangeState += UpdateState;
@@ -43,6 +43,9 @@
 
     private void UpdateState()
     {
-        StateHasChanged();
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
     }
 }
