@@ -14,6 +14,7 @@ using ElectronNET.API.Entities;
 using Casterr.RecorderLib;
 using Casterr.SettingsLib;
 using Casterr.Services;
+using Casterr.RecorderLib.FFmpeg;
 
 namespace Casterr
 {
@@ -34,6 +35,7 @@ namespace Casterr
             services.AddServerSideBlazor();
 
             services.AddTransient<Recorder>();
+            services.AddTransient<DeviceManager>();
             services.AddTransient<SettingsManager>();
 
             services.AddSingleton<StatusService>();
