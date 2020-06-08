@@ -11,9 +11,8 @@ namespace Casterr.RecorderLib.FFmpeg
         {
             ProcessManager process = new ProcessManager();
 
-            // Get devices from ffmpeg
+            // Get devices from ffmpeg, exits on its own
             await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", true, true);
-            process.StopProcess();
             string response = process.ProcessError;
 
             // Parse response
@@ -52,6 +51,16 @@ namespace Casterr.RecorderLib.FFmpeg
                     // If not mic, then must be video device
                     videoDevices.Add(line);
                 }
+            }
+
+            foreach (var mic in audioDevices)
+            {
+                Console.WriteLine(mic);
+            }
+
+            foreach (var mic in videoDevices)
+            {
+                Console.WriteLine(mic);
             }
         }
     }
