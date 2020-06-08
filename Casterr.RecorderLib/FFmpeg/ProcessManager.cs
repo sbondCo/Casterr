@@ -21,7 +21,6 @@ namespace Casterr.RecorderLib.FFmpeg
 
         private string ffmpegPath;
         private readonly Process ffProcess = new Process();
-        public string ProcessOutput, ProcessError;
 
         /// <summary>
         /// Start new FFmpeg process.
@@ -30,7 +29,7 @@ namespace Casterr.RecorderLib.FFmpeg
         /// <param name="redirectOutput">Should redirect standard output.</param>
         /// <param name="redirectError">Should redirect standard error.</param>
         /// <returns></returns>
-        public async Task StartProcess(string args, bool redirectOutput = false, bool redirectError = false)
+        public async Task<string> StartProcess(string args, bool redirectOutput = false, bool redirectError = false)
         {
             ffmpegPath = await ff.GetPath();
 
@@ -45,20 +44,28 @@ namespace Casterr.RecorderLib.FFmpeg
 
                 Console.WriteLine("Started FFmpeg");
 
-                // Set process[output/error] vars
+                // return redirectOutput if set to
                 if (redirectOutput)
                 {
                     var output = ffProcess.StandardOutput.ReadToEnd();
+
+                    if (!string.IsNullOrEmpty(output)) return output;
+                }
+
+                // return redirectError if set to
+                if (redirectError)
+                {
                     var error = ffProcess.StandardError.ReadToEnd();
 
-                    if (!string.IsNullOrEmpty(output)) ProcessOutput = output;
-                    if (!string.IsNullOrEmpty(error)) ProcessError = error;
+                    if (!string.IsNullOrEmpty(error)) return error;
                 }
             }
             else
             {
                 throw new RecorderException("Could not start ffmpeg");
             }
+
+            return "";
         }
 
         /// <summary>

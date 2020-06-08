@@ -18,8 +18,7 @@ namespace Casterr.RecorderLib.FFmpeg
             List<string> videoDevices = new List<string>();
 
             // Get devices from ffmpeg, exits on its own
-            await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", true, true);
-            string response = process.ProcessError;
+            var response = await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", false, true);
 
             // Get everything inside speech marks
             Regex rx = new Regex("\".+?\"", RegexOptions.Compiled | RegexOptions.CultureInvariant);
