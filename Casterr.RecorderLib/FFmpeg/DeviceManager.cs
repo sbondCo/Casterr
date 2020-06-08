@@ -7,17 +7,19 @@ namespace Casterr.RecorderLib.FFmpeg
 {
     public class DeviceManager
     {
+        public string DesktopVideoDevice = "screen-capture-recorder";
+        public string DesktopAudioDevice = "virtual-audio-capturer";
+
         public async Task GetDevices()
         {
             ProcessManager process = new ProcessManager();
 
+            List<string> audioDevices = new List<string>();
+            List<string> videoDevices = new List<string>();
+
             // Get devices from ffmpeg, exits on its own
             await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", true, true);
             string response = process.ProcessError;
-
-            // Parse response
-            List<string> audioDevices = new List<string>();
-            List<string> videoDevices = new List<string>();
 
             // Get everything inside speech marks
             Regex rx = new Regex("\".+?\"", RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -35,8 +37,15 @@ namespace Casterr.RecorderLib.FFmpeg
                     continue;
                 }
 
-                // Skip line if it is a device that we installed
-                if (line.ToLower().Contains("screen-capture-recorder") || line.ToLower().Contains("virtual-audio-capturer"))
+                // Desktop Screen Video Device
+                if (line.ToLower().Contains(DesktopVideoDevice))
+                {
+                    videoDevices.Add("Desktop Screen");
+                    continue;
+                }
+
+                // Skip if DesktopAudioDevice, because this is a toggle
+                if (line.ToLower().Contains(DesktopAudioDevice))
                 {
                     continue;
                 }
