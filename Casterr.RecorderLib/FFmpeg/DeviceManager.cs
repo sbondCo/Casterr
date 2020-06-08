@@ -52,16 +52,6 @@ namespace Casterr.RecorderLib.FFmpeg
                     videoDevices.Add(line);
                 }
             }
-
-            foreach (var mic in audioDevices)
-            {
-                Console.WriteLine(mic);
-            }
-
-            foreach (var mic in videoDevices)
-            {
-                Console.WriteLine(mic);
-            }
         }
     }
 }
