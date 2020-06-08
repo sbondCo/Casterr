@@ -19,16 +19,24 @@ namespace Casterr.RecorderLib.FFmpeg
 
             // Get devices from ffmpeg, exits on its own
             var response = await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", false, true);
+            bool isAudioDevice = false;
+            Regex rx = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-            // Get everything inside speech marks
-            Regex rx = new Regex("\".+?\"", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-            MatchCollection matches = rx.Matches(response);
-
-            foreach (Match match in matches)
+            // Loop over all lines in response
+            foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                // Remove all speech marks from line
-                var line = match.ToString().Replace("\"", "");
+                // Check if next devices to be looked at will be audio or video
+                if (line.ToLower().Contains("] directshow video devices"))
+                {
+                    isAudioDevice = false;
+                    continue;
+                }
+
+                if (line.ToLower().Contains("] directshow audio devices"))
+                {
+                    isAudioDevice = true;
+                    continue;
+                }
 
                 // Skip line if it is a device alternate name
                 if (line.ToLower().Contains("@device"))
@@ -36,28 +44,38 @@ namespace Casterr.RecorderLib.FFmpeg
                     continue;
                 }
 
-                // Desktop Screen Video Device
-                if (line.ToLower().Contains(DesktopVideoDevice))
-                {
-                    videoDevices.Add("Desktop Screen");
-                    continue;
-                }
+                // Check for matches to regex above
+                Match match = rx.Match(line);
 
-                // Skip if DesktopAudioDevice, because this is a toggle
-                if (line.ToLower().Contains(DesktopAudioDevice))
+                if (match.Success)
                 {
-                    continue;
-                }
+                    // Remove all speech marks from line
+                    var val = match.Groups[1].Value;
 
-                // Check if device is mic
-                if (line.ToLower().Contains("microphone"))
-                {
-                    audioDevices.Add(line);
-                }
-                else
-                {
-                    // If not mic, then must be video device
-                    videoDevices.Add(line);
+                    // If Desktop Screen Video Device, then add to
+                    // videoDevices under different name
+                    if (val.ToLower().Contains(DesktopVideoDevice))
+                    {
+                        videoDevices.Add("Desktop Screen");
+                        continue;
+                    }
+
+                    // Skip if DesktopAudioDevice, because this is
+                    // a toggle in settings, and won't be shown in a ListBox
+                    if (val.ToLower().Contains(DesktopAudioDevice))
+                    {
+                        continue;
+                    }
+
+                    // Add devices to correct List, if they aren't skipped above
+                    if (isAudioDevice)
+                    {
+                        audioDevices.Add(val);
+                    }
+                    else
+                    {
+                        videoDevices.Add(val);
+                    }
                 }
             }
         }

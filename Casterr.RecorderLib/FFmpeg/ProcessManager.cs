@@ -37,7 +37,7 @@ namespace Casterr.RecorderLib.FFmpeg
             {
                 ffProcess.StartInfo.FileName = ffmpegPath;
                 ffProcess.StartInfo.Arguments = args;
-                ffProcess.StartInfo.CreateNoWindow = false;
+                ffProcess.StartInfo.CreateNoWindow = true;
                 ffProcess.StartInfo.RedirectStandardOutput = redirectOutput;
                 ffProcess.StartInfo.RedirectStandardError = redirectError;
                 ffProcess.Start();
