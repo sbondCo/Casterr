@@ -3,6 +3,7 @@
     public class RecordingSettings
     {
         #region Video
+        public string VideoDevice { get; set; } = "Default";
         public string FPS { get; set; } = "60";
         public string Resolution { get; set; } = "In-Game";
         public string Format { get; set; } = "mp4";
