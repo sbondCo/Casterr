@@ -13,7 +13,7 @@
     public string Name { get; set; }
 
     [Parameter]
-    public string[] Items { get; set; }
+    public List<string> Items { get; set; }
 
     [Parameter]
     public string Placeholder { get; set; }
@@ -22,6 +22,12 @@
     public Action<string, string> OnSelectedChanged { get; set; }
 
     private List<string> dropDownListClasses = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        // Remove duplicate items from Items List
+        Items = Items.Distinct().ToList();
+    }
 
     private void ToggleState()
     {

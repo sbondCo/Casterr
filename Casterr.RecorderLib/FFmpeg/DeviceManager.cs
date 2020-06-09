@@ -10,7 +10,7 @@ namespace Casterr.RecorderLib.FFmpeg
         public string DesktopVideoDevice = "screen-capture-recorder";
         public string DesktopAudioDevice = "virtual-audio-capturer";
 
-        public async Task GetDevices()
+        public async Task<(List<string>, List<string>)> GetDevices()
         {
             ProcessManager process = new ProcessManager();
 
@@ -78,6 +78,8 @@ namespace Casterr.RecorderLib.FFmpeg
                     }
                 }
             }
+
+            return (audioDevices, videoDevices);
         }
     }
 }

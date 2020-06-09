@@ -16,7 +16,7 @@
 </div>
 
 @code {
-    string[] startupPageItems = { "Recordings", "Uploads", "Settings", "Profile" };
+    List<string> startupPageItems = new List<string> { "Recordings", "Uploads", "Settings", "Profile" };
 
     protected override void OnInitialized()
     {

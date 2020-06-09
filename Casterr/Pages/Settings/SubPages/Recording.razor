@@ -2,9 +2,11 @@
 
 @using Casterr.Shared.UI
 @using Casterr.SettingsLib
+@using Casterr.RecorderLib.FFmpeg
 
 @inject SettingsManager sm
 @inject RecordingSettings rs
+@inject DeviceManager dm
 
 <div class="settings">
     <span class="pageTitle">Recording Settings</span>
@@ -46,13 +48,23 @@
 </div>
 
 @code {
-    private string[] resolutionItems = { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
-    private string[] formatItems = { "mp4", "mkv" };
-    private string[] audioDeviceItems = { "Default" };
+    private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
+    private List<string> formatItems = new List<string> { "mp4", "mkv" };
+    private List<string> audioDeviceItems = new List<string> { };
 
     protected override void OnInitialized()
     {
         sm.GetSettings(rs);
+
+        // Add device from settings to List
+        audioDeviceItems.Add(rs.AudioDevice);
+
+        var allDevices = dm.GetDevices();
+
+        foreach (var audDev in allDevices.Result.Item1)
+        {
+            audioDeviceItems.Add(audDev);
+        }
     }
 
     public void UpdateSettings(string name, string newValue)
