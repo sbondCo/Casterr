@@ -50,6 +50,11 @@
         <span class="title">Seperate Audio Tracks:</span>
         <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick="@UpdateSettings" />
     </div>
+
+    <div class="setting">
+        <span class="title">Record Desktop Audio:</span>
+        <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick="@UpdateSettings" />
+    </div>
 </div>
 
 @code {
@@ -106,6 +111,10 @@
                 break;
             case "seperateAudioTracks":
                 rs.SeperateAudioTracks = newValue;
+                break;
+
+            case "recordDesktopAudio":
+                rs.RecordDesktopAudio = newValue;
                 break;
         }
 
