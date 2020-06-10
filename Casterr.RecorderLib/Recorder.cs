@@ -1,6 +1,6 @@
-﻿using Casterr.RecorderLib.FFmpeg;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Casterr.RecorderLib.FFmpeg;
 
 namespace Casterr.RecorderLib
 {
@@ -13,13 +13,13 @@ namespace Casterr.RecorderLib
         /// </summary>
         /// <param name="args">Arguments to send FFmpeg.</param>
         /// <returns></returns>
-        public async Task Start(string args)
+        public async Task Start()
         {
             // Append finalPath to the end of arguments
-            string finalPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\output.mkv";
-            args = $"{args} {finalPath}";
+            // string finalPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\output.mkv";
+            ArgumentBuilder ag = new ArgumentBuilder();
 
-            await process.StartProcess(args);
+            var p = await process.StartProcess(ag.BuildArgs());
         }
 
         /// <summary>

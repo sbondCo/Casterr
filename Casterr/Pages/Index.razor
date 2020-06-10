@@ -15,7 +15,7 @@
 
 <input name="args" @bind="@args" style="width:1000px;" />
 <br />
-<button @onclick="@(e => rc.Start(@args))">Start Recording</button>
+<button @onclick="@(e => rc.Start())">Start Recording</button>
 <button @onclick="@(e => rc.Stop())">Stop Recording</button>
 <br /><br />
 <button @onclick="@(e => dm.GetDevices())">Get Devices</button>
@@ -29,7 +29,7 @@
 @code {
     //string sp;
 
-    string args = "-f gdigrab -framerate 30 -video_size 1920x1080 -i desktop";
+    string args = "(disabled) -f gdigrab -framerate 30 -video_size 1920x1080 -i desktop";
 
     protected override void OnInitialized()
     {

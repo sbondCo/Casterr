@@ -4,4 +4,8 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
+  </ItemGroup>
+
 </Project>
