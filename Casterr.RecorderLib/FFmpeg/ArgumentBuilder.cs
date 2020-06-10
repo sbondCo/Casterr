@@ -30,17 +30,20 @@ namespace Casterr.RecorderLib.FFmpeg
                 string audio = string.Empty;
 
                 // Audio Device (users mic, unless they have a different weird input)
-                var allDevices = dm.GetDevices();
+                if (rs.AudioDevice.ToLower() != "none")
+                {
+                    var allDevices = dm.GetDevices();
 
-                if (rs.AudioDevice.ToLower().EqualsAnyOf("default"))
-                {
-                    // If set to default, just get first audio device ffmpeg returned
-                    audio = $":audio=\"{allDevices.Result.Item1[0]}\"";
-                }
-                else
-                {
-                    // else, get audio device from settings
-                    audio = $":audio=\"{rs.AudioDevice}\"";
+                    if (rs.AudioDevice.ToLower().EqualsAnyOf("default"))
+                    {
+                        // If set to default, just get first audio device ffmpeg returned
+                        audio = $":audio=\"{allDevices.Result.Item1[0]}\"";
+                    }
+                    else
+                    {
+                        // else, get audio device from settings
+                        audio = $":audio=\"{rs.AudioDevice}\"";
+                    }
                 }
 
                 sb.Append($"-i video=\"{dm.DesktopVideoDevice}\"{audio} ");
@@ -56,16 +59,20 @@ namespace Casterr.RecorderLib.FFmpeg
                 sb.Append($"-f dshow -i audio=\"{dm.DesktopAudioDevice}\" ");
             }
 
-            // Should seperate audio tracks
-            if (rs.SeperateAudioTracks == "true")
+            // Only check if should seperate tracks if recording desktop and mic, so there is more than 1 input device
+            if (rs.RecordDesktopAudio.ToLower() == "true" && rs.AudioDevice.ToLower() != "none")
             {
-                // Seperate audio tracks
-                sb.Append("-map 0 -map 1 ");
-            }
-            else
-            {
-                // Do not seperate audio tracks
-                sb.Append("-filter_complex \"[0:a:0][1:a:0]amix = 2:longest[aout]\" -map 0:V:0 -map \"[aout]\" ");
+                // Should seperate audio tracks
+                if (rs.SeperateAudioTracks == "true")
+                {
+                    // Seperate audio tracks
+                    sb.Append("-map 0 -map 1 ");
+                }
+                else
+                {
+                    // Do not seperate audio tracks
+                    sb.Append("-filter_complex \"[0:a:0][1:a:0]amix = 2:longest[aout]\" -map 0:V:0 -map \"[aout]\" ");
+                }
             }
 
             // Add FPS, if is an integer, otherwise default to 30
