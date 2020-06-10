@@ -25,16 +25,50 @@ namespace Casterr.RecorderLib.FFmpeg
             sb.Append($"-f dshow ");
 
             // Add video device
-            if (rs.VideoDevice.ToLower().EqualsAnyOf("default", "desktop screen"))
+            if (rs.VideoDevice.ToLower().EqualsAnyOf("default", "desktop screen", dm.DesktopVideoDevice))
             {
-                sb.Append($"-i video=\"{dm.DesktopVideoDevice}\" ");
+                string audio = string.Empty;
+
+                // Audio Device (users mic, unless they have a different weird input)
+                var allDevices = dm.GetDevices();
+
+                if (rs.AudioDevice.ToLower().EqualsAnyOf("default"))
+                {
+                    // If set to default, just get first audio device ffmpeg returned
+                    audio = $":audio=\"{allDevices.Result.Item1[0]}\"";
+                }
+                else
+                {
+                    // else, get audio device from settings
+                    audio = $":audio=\"{rs.AudioDevice}\"";
+                }
+
+                sb.Append($"-i video=\"{dm.DesktopVideoDevice}\"{audio} ");
             }
             else
             {
                 sb.Append($"-i video=\"{rs.VideoDevice}\" ");
             }
 
-            //Add FPS, if is an integer, otherwise default to 30
+            // Should Record Desktop Audio
+            if (rs.RecordDesktopAudio == "true")
+            {
+                sb.Append($"-f dshow -i audio=\"{dm.DesktopAudioDevice}\" ");
+            }
+
+            // Should seperate audio tracks
+            if (rs.SeperateAudioTracks == "true")
+            {
+                // Seperate audio tracks
+                sb.Append("-map 0 -map 1 ");
+            }
+            else
+            {
+                // Do not seperate audio tracks
+                sb.Append("-filter_complex \"[0:a:0][1:a:0]amix = 2:longest[aout]\" -map 0:V:0 -map \"[aout]\" ");
+            }
+
+            // Add FPS, if is an integer, otherwise default to 30
             if (rs.FPS.IsInt())
             {
                 sb.Append($"-framerate {rs.FPS} ");
@@ -44,7 +78,7 @@ namespace Casterr.RecorderLib.FFmpeg
                 sb.Append($"-framerate 30 ");
             }
 
-            //Add resolution/ video - size, default to 1920x1080
+            // Add resolution/ video - size, default to 1920x1080
             sb.Append("-video_size ");
 
             switch (rs.Resolution)
@@ -60,16 +94,28 @@ namespace Casterr.RecorderLib.FFmpeg
                     break;
             }
 
+            // Zero Latency
+            if (rs.ZeroLatency == "true")
+            {
+                sb.Append("-tune zerolatency ");
+            }
+
+            // Ultra Fast
+            if (rs.UltraFast == "true")
+            {
+                sb.Append("-preset ultrafast ");
+            }
+
             // Set format
             sb.Append($"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\");
 
             switch (rs.Format)
             {
                 case "mp4":
-                    sb.Append($"out.mp4");
+                    sb.Append($"out.mp4 ");
                     break;
                 case "mkv":
-                    sb.Append($"out.mkv");
+                    sb.Append($"out.mkv "); 
                     break;
             }
 
