@@ -15,12 +15,12 @@
         border-radius: 4px;
         transition: background 250ms ease;
 
-        &:hover + button {
-            display: none;
-        }
-
         &:hover {
             background-color: $tertiaryColor;
+
+            & + button {
+                display: none;
+            }
         }
     }
 
