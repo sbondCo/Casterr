@@ -1,7 +1,13 @@
-﻿namespace Casterr.SettingsLib
+﻿using System;
+
+namespace Casterr.SettingsLib
 {
     public class RecordingSettings
     {
+        #region General
+        public string VideoSaveFolder { get; set; } = PathHelper.FolderPath($"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\Casterr");
+        #endregion
+
         #region Video
         public string VideoDevice { get; set; } = "Default";
         public string FPS { get; set; } = "60";

@@ -114,7 +114,7 @@ namespace Casterr.RecorderLib.FFmpeg
             }
 
             // Set format
-            sb.Append($"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\");
+            sb.Append($"{PathHelper.FolderPath(rs.VideoSaveFolder)}\\");
 
             switch (rs.Format)
             {

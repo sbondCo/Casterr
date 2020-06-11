@@ -55,6 +55,11 @@
         <span class="title">Record Desktop Audio:</span>
         <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick="@UpdateSettings" />
     </div>
+
+    <div class="setting">
+        <span class="title">Video Save Folder:</span>
+        <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings />
+    </div>
 </div>
 
 @code {
@@ -112,9 +117,11 @@
             case "seperateAudioTracks":
                 rs.SeperateAudioTracks = newValue;
                 break;
-
             case "recordDesktopAudio":
                 rs.RecordDesktopAudio = newValue;
+                break;
+            case "videoSaveFolder":
+                rs.VideoSaveFolder = newValue;
                 break;
         }
 

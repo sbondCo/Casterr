@@ -3,14 +3,14 @@ using System.IO;
 
 namespace Casterr.SettingsLib
 {
-    public class PathHelper
+    public static class PathHelper
     {
-        public string MainFolderPath()
+        public static string MainFolderPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Casterr");
         }
 
-        public string FolderPath(string folder)
+        public static string FolderPath(string folder)
         {
             string mainFolder = MainFolderPath();
             folder = Path.Combine(mainFolder, folder);
@@ -24,7 +24,7 @@ namespace Casterr.SettingsLib
             return folder;
         }
 
-        public string FilePath(string folder, string file)
+        public static string FilePath(string folder, string file)
         {
             folder = FolderPath(folder);
             file = Path.Combine(folder, file);

@@ -11,9 +11,7 @@ namespace Casterr.SettingsLib
 
         public string GetFilePath(string file)
         {
-            PathHelper ph = new PathHelper();
-
-            return ph.FilePath("settings", file);
+            return PathHelper.FilePath("settings", file);
         }
 
         public string GetObjectTypeFile(object obj)
