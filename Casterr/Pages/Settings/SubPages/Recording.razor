@@ -33,32 +33,34 @@
 
     <div class="setting">
         <span class="title">Zero Latency:</span>
-        <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick="@UpdateSettings" />
+        <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
     </div>
 
     <div class="setting">
         <span class="title">Ultra Fast:</span>
-        <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick="@UpdateSettings" />
+        <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
     </div>
 
     <div class="setting">
         <span class="title">Audio Device:</span>
-        <DropDown Name="audioDevice" Items="@audioDeviceItems" Placeholder="@rs.AudioDevice" OnSelectedChanged=@UpdateSettings />
+        <DropDown Name="audioDevice" Items="@audioDeviceItems" Placeholder=@rs.AudioDevice OnSelectedChanged=@UpdateSettings />
     </div>
 
     <div class="setting">
         <span class="title">Seperate Audio Tracks:</span>
-        <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick="@UpdateSettings" />
+        <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
     </div>
 
     <div class="setting">
         <span class="title">Record Desktop Audio:</span>
-        <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick="@UpdateSettings" />
+        <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
     </div>
 
     <div class="setting">
         <span class="title">Video Save Folder:</span>
-        <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings />
+        <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
+            <button>Change</button>
+        </TextBox>
     </div>
 </div>
 

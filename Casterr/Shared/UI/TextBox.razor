@@ -1,4 +1,7 @@
-﻿<input class="textBox" type=@Type @bind="Placeholder" @onfocusout="@(e => InputLoseFocus())"/>
+﻿<div class="textBox">
+    <input type=@Type @bind="Placeholder" @onfocusout="@(e => InputLoseFocus())" />
+    @ChildContent
+</div>
 
 @code {
     [Parameter]
@@ -9,6 +12,9 @@
 
     [Parameter]
     public string Type { get; set; } = "text";
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public Action<string, string> OnLoseFocus { get; set; }
