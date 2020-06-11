@@ -11,6 +11,10 @@ namespace Casterr.RecorderLib.FFmpeg
     {
         const string FFmpegExeName = "ffmpeg.exe";
 
+        /// <summary>
+        /// Get path to FFmpeg exe.
+        /// </summary>
+        /// <returns>Path to FFmpeg exe.</returns>
         public async Task<string> GetPath()
         {
             string execPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
