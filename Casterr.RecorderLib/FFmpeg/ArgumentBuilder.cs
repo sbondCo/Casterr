@@ -116,8 +116,6 @@ namespace Casterr.RecorderLib.FFmpeg
             // Set format
             sb.Append($"{PathHelper.FolderPath(rs.VideoSaveFolder)}\\");
 
-            Console.WriteLine($"path: {PathHelper.FolderPath(rs.VideoSaveFolder)}");
-
             switch (rs.Format)
             {
                 case "mp4":
@@ -127,8 +125,6 @@ namespace Casterr.RecorderLib.FFmpeg
                     sb.Append($"out.mkv "); 
                     break;
             }
-
-            Console.WriteLine($"args: {sb}");
 
             return sb.ToString();
         }
