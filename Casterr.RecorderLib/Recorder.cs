@@ -15,11 +15,9 @@ namespace Casterr.RecorderLib
         /// <returns></returns>
         public async Task Start()
         {
-            // Append finalPath to the end of arguments
-            // string finalPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\output.mkv";
             ArgumentBuilder ag = new ArgumentBuilder();
 
-            var p = await process.StartProcess(ag.BuildArgs());
+            await process.StartProcess(ag.BuildArgs());
         }
 
         /// <summary>

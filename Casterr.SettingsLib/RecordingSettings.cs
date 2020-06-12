@@ -5,7 +5,7 @@ namespace Casterr.SettingsLib
     public class RecordingSettings
     {
         #region General
-        public string VideoSaveFolder { get; set; } = PathHelper.FolderPath($"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\Casterr");
+        public string VideoSaveFolder { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\Casterr";
         #endregion
 
         #region Video
