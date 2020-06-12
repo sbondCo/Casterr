@@ -1,5 +1,8 @@
 # Casterr
 
+[![CodeFactor](https://www.codefactor.io/repository/github/casterrtv/casterr/badge)](https://www.codefactor.io/repository/github/casterrtv/casterr)
+[![License](https://img.shields.io/badge/License-GPL%20v3.0-red)](https://github.com/CasterrTV/Casterr/blob/master/LICENSE)
+
 An open-source project with the goal of making it easy to record your games and share clips when you are done.
 
 ## Main Goal
