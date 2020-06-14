@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Casterr.SettingsLib;
-using Casterr.RecorderLib.FFmpeg;
 using Casterr.HelpersLib;
+using System;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -21,6 +20,7 @@ namespace Casterr.RecorderLib.FFmpeg
             // Get settings
             sm.GetSettings(rs);
 
+            #region Add DirectShow and Configure Audio
             // Add directshow
             sb.Append($"-f dshow ");
 
@@ -74,7 +74,9 @@ namespace Casterr.RecorderLib.FFmpeg
                     sb.Append("-filter_complex \"[0:a:0][1:a:0]amix = 2:longest[aout]\" -map 0:V:0 -map \"[aout]\" ");
                 }
             }
+            #endregion
 
+            #region FPS
             // Add FPS, if is an integer, otherwise default to 30
             if (rs.FPS.IsInt())
             {
@@ -84,7 +86,9 @@ namespace Casterr.RecorderLib.FFmpeg
             {
                 sb.Append($"-framerate 30 ");
             }
+            #endregion
 
+            #region Resolution
             // Add resolution/ video - size, default to 1920x1080
             sb.Append("-video_size ");
 
@@ -100,7 +104,9 @@ namespace Casterr.RecorderLib.FFmpeg
                     sb.Append($"1920x1080 ");
                     break;
             }
+            #endregion
 
+            #region Other
             // Zero Latency
             if (rs.ZeroLatency == "true")
             {
@@ -112,7 +118,9 @@ namespace Casterr.RecorderLib.FFmpeg
             {
                 sb.Append("-preset ultrafast ");
             }
+            #endregion
 
+            #region Video Output Location & Format
             // Set format
             sb.Append($"{PathHelper.FolderPath(rs.VideoSaveFolder)}\\");
 
@@ -125,6 +133,7 @@ namespace Casterr.RecorderLib.FFmpeg
                     sb.Append($"out.mkv "); 
                     break;
             }
+            #endregion
 
             return sb.ToString();
         }
