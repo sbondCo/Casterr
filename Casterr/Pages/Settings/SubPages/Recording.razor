@@ -3,6 +3,8 @@
 @using Casterr.Shared.UI
 @using Casterr.SettingsLib
 @using Casterr.RecorderLib.FFmpeg
+@using ElectronNET.API
+@using ElectronNET.API.Entities
 
 @inject SettingsManager sm
 @inject RecordingSettings rs
@@ -59,7 +61,7 @@
     <div class="setting">
         <span class="title">Video Save Folder:</span>
         <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
-            <button>Change</button>
+            <button @onclick=@(e => SelectVideoSaveFolder())>Change</button>
         </TextBox>
     </div>
 </div>
@@ -89,6 +91,23 @@
         {
             videoDeviceItems.Add(vidDev);
         }
+    }
+
+    private async Task SelectVideoSaveFolder()
+    {
+        var options = new OpenDialogOptions
+        {
+            Title = "Select a folder to save videos to",
+            DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
+            Properties = new OpenDialogProperty[]
+            {
+                OpenDialogProperty.openDirectory
+            }
+        };
+
+        var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
+
+        UpdateSettings("videoSaveFolder", path.First());
     }
 
     public void UpdateSettings(string name, string newValue)
