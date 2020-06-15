@@ -44,13 +44,12 @@ namespace Casterr.SettingsLib
         /// <param name="obj">object with settings defined</param>
         public void GetSettings(object obj)
         {
-            JsonHelper jh = new JsonHelper();
             PropertyInfo[] objProps = obj.GetType().GetProperties();
 
             string file = GetObjectTypeFile(obj);
 
             // Deserialize JSON in GeneralSettings.json file
-            definedSettings = jh.ParseJsonFromFile(file);
+            definedSettings = JsonHelper.ParseJsonFromFile(file);
 
             foreach (var prop in objProps)
             {
@@ -68,7 +67,7 @@ namespace Casterr.SettingsLib
             }
 
             // Serialize json back to file in case of missing rules
-            jh.SerializeJsonToFile(file, obj);
+            JsonHelper.SerializeJsonToFile(file, obj);
         }
 
         /// <summary>
@@ -77,12 +76,10 @@ namespace Casterr.SettingsLib
         /// <param name="obj">object with settings defined</param>
         public void UpdateSettingsFile(object obj)
         {
-            JsonHelper jh = new JsonHelper();
-
             string file = GetObjectTypeFile(obj);
 
             // Serialize json to file
-            jh.SerializeJsonToFile(file, obj);
+            JsonHelper.SerializeJsonToFile(file, obj);
         }
     }
 }
