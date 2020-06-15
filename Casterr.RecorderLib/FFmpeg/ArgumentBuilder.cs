@@ -121,18 +121,23 @@ namespace Casterr.RecorderLib.FFmpeg
             #endregion
 
             #region Video Output Location & Format
-            // Set format
-            sb.Append($"{PathHelper.FolderPath(rs.VideoSaveFolder)}\\");
+            // Append VideoSaveFolder and VideoSaveName
+            // Also add speech marks around the path to allow spaces
+            sb.Append($"\"{PathHelper.FolderPath(rs.VideoSaveFolder)}\\{DateTimeCodeConverter.Convert(rs.VideoSaveName)}");
 
+            // Set format
             switch (rs.Format)
             {
                 case "mp4":
-                    sb.Append($"out.mp4 ");
+                    sb.Append($".mp4");
                     break;
                 case "mkv":
-                    sb.Append($"out.mkv "); 
+                    sb.Append($".mkv"); 
                     break;
             }
+
+            // Close speech marks
+            sb.Append("\" ");
             #endregion
 
             return sb.ToString();

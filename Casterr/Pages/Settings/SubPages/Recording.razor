@@ -64,6 +64,11 @@
             <button @onclick=@(e => SelectVideoSaveFolder())>Change</button>
         </TextBox>
     </div>
+
+    <div class="setting">
+        <span class="title">Video Save Name:</span>
+        <TextBox Name="videoSaveName" Placeholder="@rs.VideoSaveName" OnLoseFocus=@UpdateSettings />
+    </div>
 </div>
 
 @code {
@@ -143,6 +148,9 @@
                 break;
             case "videoSaveFolder":
                 rs.VideoSaveFolder = newValue;
+                break;
+            case "videoSaveName":
+                rs.VideoSaveName = newValue;
                 break;
         }
 

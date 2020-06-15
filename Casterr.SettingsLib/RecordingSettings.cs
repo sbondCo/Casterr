@@ -6,6 +6,7 @@ namespace Casterr.SettingsLib
     {
         #region General
         public string VideoSaveFolder { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\Casterr";
+        public string VideoSaveName { get; set; } = "%d.%m.%Y - %H.%i.%s";
         #endregion
 
         #region Video
