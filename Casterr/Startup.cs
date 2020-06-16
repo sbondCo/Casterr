@@ -37,6 +37,7 @@ namespace Casterr
             services.AddTransient<Recorder>();
             services.AddTransient<DeviceManager>();
             services.AddTransient<SettingsManager>();
+            services.AddTransient<Notifications>();
 
             services.AddSingleton<StatusService>();
             services.AddSingleton<GeneralSettings>();

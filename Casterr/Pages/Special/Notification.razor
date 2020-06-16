@@ -1,0 +1,10 @@
+﻿@layout Casterr.Pages.Special.SpecialLayout
+
+@page "/special/notification/{notifyText}"
+
+<span>@NotifyText</span>
+
+@code {
+    [Parameter]
+    public string NotifyText { get; set; } = "Something Happened . . .";
+}

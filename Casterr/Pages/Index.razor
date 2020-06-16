@@ -8,6 +8,7 @@
 @inject Recorder rc
 @inject SettingsManager sm
 @inject DeviceManager dm
+@inject Notifications no
 
 @*@inject StatusService statusService
 <button @onclick="@(e => statusService.ChangeStatus(0))">Zero - Index</button>*@
@@ -25,6 +26,8 @@
 <input name="sp" @bind="@sp" style="width:500px;" />
 <br /><br />*@
 
+<button @onclick=@(e => no.Show("Cool Stuff Happened"))>Show Notification</button>
+
 @code {
     //string sp;
 
@@ -32,7 +35,7 @@
 
     protected override void OnInitialized()
     {
-        //Navigation.NavigateTo("/settings/keybinding", true);
+        //Navigation.NavigateTo("/recordings", true);
     }
 
     private void UpdateSP()
