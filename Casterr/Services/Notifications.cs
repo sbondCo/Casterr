@@ -30,7 +30,7 @@ namespace Casterr.Services
             };
 
             // Create new window, load notification page and send data to it
-            var notificationWindow = Electron.WindowManager.CreateWindowAsync(options, $"http://localhost:{BridgeSettings.WebPort}/special/notification/{notifyText}");
+            var notificationWindow = Electron.WindowManager.CreateWindowAsync(options, $"http://localhost:{BridgeSettings.WebPort}/special/notification/{notifyText}/play");
         }
     }
 }

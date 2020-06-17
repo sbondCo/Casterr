@@ -10,11 +10,14 @@
 // Navbar
 @import "Nav";
 
-// Pages
-@import "Recordings";
-@import "Settings";
-
 // UI Components
 @import "UI/DropDown";
 @import "UI/TextBox";
 @import "UI/TickBox";
+
+// Pages
+@import "Pages/Recordings";
+@import "Pages/Settings";
+
+// Special
+@import "Special/Notification";

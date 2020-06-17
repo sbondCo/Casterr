@@ -1,10 +1,16 @@
 ﻿@layout Casterr.Pages.Special.SpecialLayout
 
-@page "/special/notification/{notifyText}"
+@page "/special/notification/{notifyText}/{icon}"
 
-<span>@NotifyText</span>
+<div class="notificationContainer">
+    <Icon i=@Icon wh="45"/>
+    <span class="title">@NotifyText</span>
+</div>
 
 @code {
     [Parameter]
     public string NotifyText { get; set; } = "Something Happened . . .";
+
+    [Parameter]
+    public string Icon { get; set; } = "play";
 }
