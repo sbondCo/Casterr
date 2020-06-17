@@ -37,7 +37,6 @@ namespace Casterr
             services.AddTransient<Recorder>();
             services.AddTransient<DeviceManager>();
             services.AddTransient<SettingsManager>();
-            services.AddTransient<Notifications>();
 
             services.AddSingleton<StatusService>();
             services.AddSingleton<GeneralSettings>();
@@ -77,13 +76,16 @@ namespace Casterr
                 Height = 650,
                 MinWidth = 800,
                 MinHeight = 500,
-                Frame = false
+                Frame = false,
+                Show = false
             };
 
             // Open Electron window
-            var browserWindow = Electron.WindowManager.CreateWindowAsync(options);
-
-            Task.Run(async () => await browserWindow);
+            Task.Run(async () => 
+            {
+                var mainWindow = await Electron.WindowManager.CreateWindowAsync(options);
+                mainWindow.OnReadyToShow += () => mainWindow.Show();
+            });
 
             // Setup all keybinds
             // Keybinds are unregistered on exit in 'Dragger.razor' component

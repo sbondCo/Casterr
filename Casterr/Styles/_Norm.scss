@@ -20,7 +20,6 @@
 
 body {
     color: $textPrimary;
-    background-color: $primaryColor;
     font-family: sans-serif; // Alef
     user-select: none;
     overflow: hidden;
@@ -39,6 +38,7 @@ section#top {
 section#main {
     height: calc(100vh - 66px);
     overflow-y: auto;
+    background-color: $primaryColor;
 }
 
 .hidden {

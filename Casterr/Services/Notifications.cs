@@ -1,12 +1,13 @@
 ﻿using ElectronNET.API;
 using ElectronNET.API.Entities;
+using System;
 using System.Threading.Tasks;
 
 namespace Casterr.Services
 {
-    public class Notifications
+    public static class Notifications
     {
-        public async Task Show(string notifyText)
+        public static async Task Show(string notifyText)
         {
             var disp = await Electron.Screen.GetPrimaryDisplayAsync();
 
@@ -23,6 +24,8 @@ namespace Casterr.Services
                 Resizable = false,
                 HasShadow = false,
                 Transparent = true,
+                Movable = false,
+                Show = false,
                 WebPreferences = new WebPreferences
                 {
                     DevTools = false
@@ -30,7 +33,8 @@ namespace Casterr.Services
             };
 
             // Create new window, load notification page and send data to it
-            var notificationWindow = Electron.WindowManager.CreateWindowAsync(options, $"http://localhost:{BridgeSettings.WebPort}/special/notification/{notifyText}/play");
+            var notificationWindow = await Electron.WindowManager.CreateWindowAsync(options, $"http://localhost:{BridgeSettings.WebPort}/special/notification/{notifyText}/play");
+            notificationWindow.OnReadyToShow += () => notificationWindow.Show();
         }
     }
 }

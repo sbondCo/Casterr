@@ -3,8 +3,10 @@
 @page "/special/notification/{notifyText}/{icon}"
 
 <div class="notificationContainer">
-    <Icon i=@Icon wh="45"/>
-    <span class="title">@NotifyText</span>
+    <div class="content">
+        <Icon i=@Icon wh="45" />
+        <span class="title">@NotifyText</span>
+    </div>
 </div>
 
 @code {

@@ -1,19 +1,36 @@
 ﻿/// <reference path="../Main.scss" />
 
 .notificationContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
+    position: absolute;
+    background-color: $primaryColor;
+    animation: slideIn 500ms ease-in;
 
-    svg {
-        width: 25%;
-        fill: $textPrimary;
+    .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        animation: slideIn 500ms;
+
+        svg {
+            width: 25%;
+            fill: $textPrimary;
+        }
+
+        .title {
+            width: 75%;
+            font-size: 25px;
+        }
     }
 
-    .title {
-        width: 75%;
-        font-size: 25px;
+    @keyframes slideIn {
+        0% {
+            left: 50%;
+        }
+
+        100% {
+            left: 0px;
+        }
     }
 }
