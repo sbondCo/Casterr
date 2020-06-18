@@ -1,6 +1,6 @@
 ﻿using ElectronNET.API;
 using ElectronNET.API.Entities;
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Casterr.Services
@@ -25,6 +25,7 @@ namespace Casterr.Services
                 HasShadow = false,
                 Transparent = true,
                 Movable = false,
+                Focusable = false,
                 Show = false,
                 WebPreferences = new WebPreferences
                 {
@@ -35,6 +36,13 @@ namespace Casterr.Services
             // Create new window, load notification page and send data to it
             var notificationWindow = await Electron.WindowManager.CreateWindowAsync(options, $"http://localhost:{BridgeSettings.WebPort}/special/notification/{notifyText}/play");
             notificationWindow.OnReadyToShow += () => notificationWindow.Show();
+
+            // Force close window after 5 seconds
+            await Task.Run(() => 
+            {
+                Thread.Sleep(5000);
+                notificationWindow.Destroy();
+            });
         }
     }
 }
