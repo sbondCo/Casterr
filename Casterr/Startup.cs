@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +9,7 @@ using ElectronNET.API.Entities;
 using Casterr.RecorderLib;
 using Casterr.SettingsLib;
 using Casterr.Services;
+using Casterr.Services.KeyBinds;
 using Casterr.RecorderLib.FFmpeg;
 
 namespace Casterr
@@ -88,8 +84,7 @@ namespace Casterr
             });
 
             // Setup all keybinds
-            // Keybinds are unregistered on exit in 'Dragger.razor' component
-            KeyBinds.KeyBinds kb = new KeyBinds.KeyBinds();
+            KeyBinds kb = new KeyBinds();
             kb.RegisterAll();
 
             // Run some tasks before fully closing program

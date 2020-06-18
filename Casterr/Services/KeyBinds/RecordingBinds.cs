@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using ElectronNET.API;
 using Casterr.SettingsLib;
-using Casterr.Services;
 
-namespace Casterr.HelpersLib.KeyBinds
+namespace Casterr.Services.KeyBinds
 {
     public class RecordingBinds
     {

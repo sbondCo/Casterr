@@ -1,6 +1,4 @@
-﻿using Casterr.HelpersLib.KeyBinds;
-
-namespace Casterr.KeyBinds
+﻿namespace Casterr.Services.KeyBinds
 {
     public class KeyBinds
     {
