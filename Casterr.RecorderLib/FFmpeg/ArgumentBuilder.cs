@@ -82,8 +82,6 @@ namespace Casterr.RecorderLib.FFmpeg
 
                 d.Add("seperateAudioTracks", seperateAudioTracks);
             }
-
-            
             #endregion
 
             #region FPS
