@@ -11,4 +11,4 @@ Automatically start recording your game when it is opened. When the game closes,
 
 ## Contributing
 
-If you are looking to contribute any of your ideas or code, look [here](https://github.com/CasterrTV/Casterr/blob/dev/CONTRIBUTING.md)
+If you are looking to contribute any of your ideas or code, look [here](https://github.com/CasterrTV/Casterr/blob/master/CONTRIBUTING.md)
