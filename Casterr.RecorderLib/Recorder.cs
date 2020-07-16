@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Casterr.RecorderLib.FFmpeg;
 
@@ -17,7 +17,7 @@ namespace Casterr.RecorderLib
         {
             ArgumentBuilder ag = new ArgumentBuilder();
 
-            await process.StartProcess(ag.BuildArgs());
+            await process.StartProcess(string.Join(" ", ag.BuildArgs().Select(x => x.Value)));
         }
 
         /// <summary>
