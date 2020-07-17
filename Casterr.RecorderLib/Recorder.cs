@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Casterr.RecorderLib.FFmpeg;
 
@@ -7,6 +8,8 @@ namespace Casterr.RecorderLib
     public class Recorder
     {
         ProcessManager process = new ProcessManager();
+        ArgumentBuilder ab = new ArgumentBuilder();
+        Dictionary<string, string> args;
 
         /// <summary>
         /// Start FFmpeg process and send arguments to it.
@@ -15,16 +18,20 @@ namespace Casterr.RecorderLib
         /// <returns></returns>
         public async Task Start()
         {
-            ArgumentBuilder ag = new ArgumentBuilder();
-
-            await process.StartProcess(string.Join(" ", ag.BuildArgs().Select(x => x.Value)));
+            args = ab.BuildArgs();
+            await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
         }
 
         /// <summary>
         /// Stop FFmpeg process.
         /// </summary>
-        public void Stop()
+        public async Task Stop()
         {
+            // Stop recording process
+            process.StopProcess();
+
+            // Get video thumbnail
+            await process.StartProcess($"-y -i {args["videoOutput"]} -vframes 1 -ss 1 -s 1920x1080 \"{args["videoOutput"].Replace("\"", "")}.png\"");
             process.StopProcess();
         }
     }

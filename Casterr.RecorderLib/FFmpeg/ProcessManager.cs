@@ -79,14 +79,22 @@ namespace Casterr.RecorderLib.FFmpeg
                 {
                     Console.WriteLine("Stopping FFmpeg");
 
-                    AttachConsole(ffProcess.Id);
-                    SetConsoleCtrlHandler(IntPtr.Zero, true);
-                    GenerateConsoleCtrlEvent(0, 0);
+                    // Try closing process twice
+                    // Temporary solution
+                    int i = 0;
+                    while (i <= 1)
+                    {
+                        AttachConsole(ffProcess.Id);
+                        SetConsoleCtrlHandler(IntPtr.Zero, true);
+                        GenerateConsoleCtrlEvent(0, 0);
 
-                    Thread.Sleep(2000);
+                        Thread.Sleep(2000);
 
-                    SetConsoleCtrlHandler(IntPtr.Zero, false);
-                    FreeConsole();
+                        SetConsoleCtrlHandler(IntPtr.Zero, false);
+                        FreeConsole();
+
+                        i++;
+                    }
 
                     Console.WriteLine("Stopped FFmpeg");
                 }
