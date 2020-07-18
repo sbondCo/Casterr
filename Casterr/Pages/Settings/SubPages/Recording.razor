@@ -59,9 +59,16 @@
     </div>
 
     <div class="setting">
+        <span class="title">Thumbnail Save Folder:</span>
+        <TextBox Name="thumbSaveFolder" Placeholder="@rs.ThumbSaveFolder" OnLoseFocus=@UpdateSettings>
+            <button @onclick=@(e => SelectFolder("thumb"))>Change</button>
+        </TextBox>
+    </div>
+
+    <div class="setting">
         <span class="title">Video Save Folder:</span>
         <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
-            <button @onclick=@(e => SelectVideoSaveFolder())>Change</button>
+            <button @onclick=@(e => SelectFolder("video"))>Change</button>
         </TextBox>
     </div>
 
@@ -98,11 +105,12 @@
         }
     }
 
-    private async Task SelectVideoSaveFolder()
+    private async Task SelectFolder(string which)
     {
+        // Options for folder select dialog
         var options = new OpenDialogOptions
         {
-            Title = "Select a folder to save videos to",
+            Title = "Select a folder",
             DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
             Properties = new OpenDialogProperty[]
             {
@@ -110,9 +118,18 @@
             }
         };
 
+        // Open folder select dialog and save path to var
         var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
 
-        UpdateSettings("videoSaveFolder", path.First());
+        // Update settings with folder selected
+        if (which == "video")
+        {
+            UpdateSettings("videoSaveFolder", path.First());
+        }
+        else if (which == "thumb")
+        {
+            UpdateSettings("thumbSaveFolder", path.First());
+        }
     }
 
     public void UpdateSettings(string name, string newValue)
@@ -145,6 +162,9 @@
                 break;
             case "recordDesktopAudio":
                 rs.RecordDesktopAudio = newValue;
+                break;
+            case "thumbSaveFolder":
+                rs.ThumbSaveFolder = newValue;
                 break;
             case "videoSaveFolder":
                 rs.VideoSaveFolder = newValue;
