@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Casterr.RecorderLib.FFmpeg;
@@ -31,8 +33,7 @@ namespace Casterr.RecorderLib
             process.StopProcess();
 
             // Get video thumbnail
-            await process.StartProcess($"-y -i {args["videoOutput"]} -vframes 1 -ss 1 -s 1920x1080 \"{args["videoOutput"].Replace("\"", "")}.png\"");
-            process.StopProcess();
+            await VideoThumbnailer.Create(args["videoOutput"], Path.GetFileName(args["videoOutput"]).Replace("\"", ""));
         }
     }
 }
