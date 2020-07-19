@@ -3,17 +3,17 @@ using System.IO;
 
 namespace Casterr.HelpersLib
 {
-    public class RecordingPaths
+    public class RecordingPath
     {
         public string VideoPath { get; set; }
         public string ThumbPath { get; set; }
     }
 
-    public static class GetRecordings
+    public static class RecordingPaths
     {
-        public static List<RecordingPaths> Get(string videoPath, string thumbPath)
+        public static List<RecordingPath> Get(string videoPath, string thumbPath)
         {
-            List<RecordingPaths> ri = new List<RecordingPaths>();
+            List<RecordingPath> ri = new List<RecordingPath>();
             
             foreach (string f in Directory.GetFiles(videoPath, "*.mp4", SearchOption.AllDirectories))
             {
@@ -27,7 +27,7 @@ namespace Casterr.HelpersLib
                 }
 
                 // Add paths to list
-                ri.Add(new RecordingPaths { VideoPath = f, ThumbPath = tPath});
+                ri.Add(new RecordingPath { VideoPath = f, ThumbPath = tPath});
             }
 
             return ri;
