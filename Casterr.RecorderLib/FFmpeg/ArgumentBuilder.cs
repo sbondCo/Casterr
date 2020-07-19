@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Casterr.SettingsLib;
 using Casterr.HelpersLib;
+using System;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -101,11 +102,25 @@ namespace Casterr.RecorderLib.FFmpeg
 
             switch (rs.Resolution)
             {
+                case "In-Game":
+                    throw new NotImplementedException();
+                case "2160p":
+                    res = "3840x2160";
+                    break;
+                case "1440p":
+                    res = "2560x1440";
+                    break;
                 case "1080p":
                     res = "1920x1080";
                     break;
                 case "720p":
                     res = "1280x720";
+                    break;
+                case "480p":
+                    res = "640x480";
+                    break;
+                case "360p":
+                    res = "480x360";
                     break;
             }
 

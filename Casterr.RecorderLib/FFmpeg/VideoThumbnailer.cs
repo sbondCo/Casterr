@@ -15,7 +15,7 @@ namespace Casterr.RecorderLib.FFmpeg
             sm.GetSettings(rs);
 
             // Get video thumbnail
-            await process.StartProcess($"-y -i {videoPath} -vframes 1 -ss 1 -s 1920x1080 \"{PathHelper.FolderPath(rs.ThumbSaveFolder) + "\\" + videoName}.png\"");
+            await process.StartProcess($"-y -i {videoPath} -ss 1 \"{PathHelper.FolderPath(rs.ThumbSaveFolder) + "\\" + videoName}.png\"");
             process.StopProcess();
         }
     }
