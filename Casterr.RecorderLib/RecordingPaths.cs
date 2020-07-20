@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Casterr.SettingsLib;
 
-namespace Casterr.HelpersLib
+namespace Casterr.RecorderLib
 {
     public class RecordingPath
     {
@@ -11,14 +12,19 @@ namespace Casterr.HelpersLib
 
     public static class RecordingPaths
     {
-        public static List<RecordingPath> Get(string videoPath, string thumbPath)
+        public static List<RecordingPath> Get()
         {
+            SettingsManager sm = new SettingsManager();
+            RecordingSettings rs = new RecordingSettings();
             List<RecordingPath> ri = new List<RecordingPath>();
-            
-            foreach (string f in Directory.GetFiles(videoPath, "*.mp4", SearchOption.AllDirectories))
+
+            // Get settings
+            sm.GetSettings(rs);
+
+            foreach (string f in Directory.GetFiles(rs.VideoSaveFolder, "*.mp4", SearchOption.AllDirectories))
             {
                 // Path that should be to the thumbnail, unless it has been moved/name changed
-                string tPath = $"{thumbPath}\\{Path.GetFileName(f)}.png";
+                string tPath = $"{rs.ThumbSaveFolder}\\{Path.GetFileName(f)}.png";
 
                 // If thumbnail does not exist, make it an empty string for List
                 if (!File.Exists(tPath))
