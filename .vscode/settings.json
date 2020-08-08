@@ -5,5 +5,9 @@
       "extensionName": ".min.css",
       "savePath": "/Casterr/wwwroot/css/"
     }
-  ]
+  ],
+  "files.exclude": {
+    "**/obj": true,
+    "**/bin": true
+  }
 }
