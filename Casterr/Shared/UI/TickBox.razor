@@ -4,42 +4,42 @@
 </label>
 
 @code {
-    [Parameter]
-    public string Name { get; set; }
+  [Parameter]
+  public string Name { get; set; }
 
-    [Parameter]
-    public string Checked { get; set; }
+  [Parameter]
+  public string Checked { get; set; }
 
-    [Parameter]
-    public Action<string, string> OnClick { get; set; }
+  [Parameter]
+  public Action<string, string> OnClick { get; set; }
 
-    private bool checkBoxChecked { get; set; }
+  private bool checkBoxChecked { get; set; }
 
-    protected override void OnInitialized()
+  protected override void OnInitialized()
+  {
+    // Get Checked and set checkBoxChecked
+    if (Checked.ToLower() == "true")
     {
-        // Get Checked and set checkBoxChecked
-        if (Checked.ToLower() == "true")
-        {
-            checkBoxChecked = true;
-        }
-        else
-        {
-            checkBoxChecked = false;
-        }
+      checkBoxChecked = true;
+    }
+    else
+    {
+      checkBoxChecked = false;
+    }
+  }
+
+  private void CheckBoxOnClick()
+  {
+    // Get checkBoxChecked value and change Checked value accordingly
+    if (checkBoxChecked)
+    {
+      Checked = "false";
+    }
+    else
+    {
+      Checked = "true";
     }
 
-    private void CheckBoxOnClick()
-    {
-        // Get checkBoxChecked value and change Checked value accordingly
-        if (checkBoxChecked)
-        {
-            Checked = "false";
-        }
-        else
-        {
-            Checked = "true";
-        }
-
-        OnClick(Name, Checked);
-    }
+    OnClick(Name, Checked);
+  }
 }

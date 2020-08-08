@@ -9,5 +9,6 @@
   "files.exclude": {
     "**/obj": true,
     "**/bin": true
-  }
+  },
+  "editor.tabSize": 2
 }

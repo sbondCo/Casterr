@@ -79,101 +79,101 @@
 </div>
 
 @code {
-    private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
-    private List<string> formatItems = new List<string> { "mp4", "mkv" };
-    private List<string> audioDeviceItems = new List<string> { "Default", "None" };
-    private List<string> videoDeviceItems = new List<string> { "Default" };
+  private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
+  private List<string> formatItems = new List<string> { "mp4", "mkv" };
+  private List<string> audioDeviceItems = new List<string> { "Default", "None" };
+  private List<string> videoDeviceItems = new List<string> { "Default" };
 
-    protected override void OnInitialized()
+  protected override void OnInitialized()
+  {
+    sm.GetSettings(rs);
+
+    // Add device from settings to appropriate list
+    audioDeviceItems.Add(rs.AudioDevice);
+    videoDeviceItems.Add(rs.VideoDevice);
+
+    var allDevices = dm.GetDevices();
+
+    foreach (var audDev in allDevices.Result.Item1)
     {
-        sm.GetSettings(rs);
-
-        // Add device from settings to appropriate list
-        audioDeviceItems.Add(rs.AudioDevice);
-        videoDeviceItems.Add(rs.VideoDevice);
-
-        var allDevices = dm.GetDevices();
-
-        foreach (var audDev in allDevices.Result.Item1)
-        {
-            audioDeviceItems.Add(audDev);
-        }
-
-        foreach (var vidDev in allDevices.Result.Item2)
-        {
-            videoDeviceItems.Add(vidDev);
-        }
+      audioDeviceItems.Add(audDev);
     }
 
-    private async Task SelectFolder(string which)
+    foreach (var vidDev in allDevices.Result.Item2)
     {
-        // Options for folder select dialog
-        var options = new OpenDialogOptions
-        {
-            Title = "Select a folder",
-            DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
-            Properties = new OpenDialogProperty[]
-            {
-                OpenDialogProperty.openDirectory
-            }
-        };
+      videoDeviceItems.Add(vidDev);
+    }
+  }
 
-        // Open folder select dialog and save path to var
-        var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
+  private async Task SelectFolder(string which)
+  {
+    // Options for folder select dialog
+    var options = new OpenDialogOptions
+    {
+      Title = "Select a folder",
+      DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
+      Properties = new OpenDialogProperty[]
+        {
+          OpenDialogProperty.openDirectory
+        }
+    };
 
-        // Update settings with folder selected
-        if (which == "video")
-        {
-            UpdateSettings("videoSaveFolder", path.First());
-        }
-        else if (which == "thumb")
-        {
-            UpdateSettings("thumbSaveFolder", path.First());
-        }
+    // Open folder select dialog and save path to var
+    var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
+
+    // Update settings with folder selected
+    if (which == "video")
+    {
+      UpdateSettings("videoSaveFolder", path.First());
+    }
+    else if (which == "thumb")
+    {
+      UpdateSettings("thumbSaveFolder", path.First());
+    }
+  }
+
+  public void UpdateSettings(string name, string newValue)
+  {
+    switch (name)
+    {
+      case "videoDevice":
+        rs.VideoDevice = newValue;
+        break;
+      case "fps":
+        rs.FPS = newValue;
+        break;
+      case "resolution":
+        rs.Resolution = newValue;
+        break;
+      case "format":
+        rs.Format = newValue;
+        break;
+      case "zeroLatency":
+        rs.ZeroLatency = newValue;
+        break;
+      case "ultraFast":
+        rs.UltraFast = newValue;
+        break;
+      case "audioDevice":
+        rs.AudioDevice = newValue;
+        break;
+      case "seperateAudioTracks":
+        rs.SeperateAudioTracks = newValue;
+        break;
+      case "recordDesktopAudio":
+        rs.RecordDesktopAudio = newValue;
+        break;
+      case "thumbSaveFolder":
+        rs.ThumbSaveFolder = newValue;
+        break;
+      case "videoSaveFolder":
+        rs.VideoSaveFolder = newValue;
+        break;
+      case "videoSaveName":
+        rs.VideoSaveName = newValue;
+        break;
     }
 
-    public void UpdateSettings(string name, string newValue)
-    {
-        switch (name)
-        {
-            case "videoDevice":
-                rs.VideoDevice = newValue;
-                break;
-            case "fps":
-                rs.FPS = newValue;
-                break;
-            case "resolution":
-                rs.Resolution = newValue;
-                break;
-            case "format":
-                rs.Format = newValue;
-                break;
-            case "zeroLatency":
-                rs.ZeroLatency = newValue;
-                break;
-            case "ultraFast":
-                rs.UltraFast = newValue;
-                break;
-            case "audioDevice":
-                rs.AudioDevice = newValue;
-                break;
-            case "seperateAudioTracks":
-                rs.SeperateAudioTracks = newValue;
-                break;
-            case "recordDesktopAudio":
-                rs.RecordDesktopAudio = newValue;
-                break;
-            case "thumbSaveFolder":
-                rs.ThumbSaveFolder = newValue;
-                break;
-            case "videoSaveFolder":
-                rs.VideoSaveFolder = newValue;
-                break;
-            case "videoSaveName":
-                rs.VideoSaveName = newValue;
-                break;
-        }
-
-        sm.UpdateSettingsFile(rs);
-    }
+    sm.UpdateSettingsFile(rs);
+  }
 }

@@ -1,53 +1,53 @@
 ﻿/// <reference path="../Main.scss" />
 
 .recordingsContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .thumbContainer {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  max-width: 1600px;
+
+  .thumb {
+    flex-grow: 1;
+    width: 25%;
     margin: 10px;
-    max-width: 1600px;
+    background-color: $quaternaryColor;
+    border-radius: 4px;
+    overflow: hidden;
 
-    .thumb {
-        flex-grow: 1;
-        width: 25%;
-        margin: 10px;
-        background-color: $quaternaryColor;
-        border-radius: 4px;
-        overflow: hidden;
-
-        img {
-            width: 100%;
-            height: auto;
-        }
-
-        .info {
-            width: 100%;
-            height: 40px;
-            padding: 0 10px;
-            line-height: 40px;
-            background-color: $quaternaryColor;
-
-            .title {
-                font-family: 'Segoe UI';
-                font-weight: 700;
-            }
-        }
-
-        @media (max-width: 800px) {
-            width: 50%;
-        }
-
-        @media (min-width: 800px) and (max-width: 1000px) {
-            width: 33%;
-        }
-
-        @media (min-width: 1200px) {
-            width: 25%;
-        }
+    img {
+      width: 100%;
+      height: auto;
     }
+
+    .info {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      line-height: 40px;
+      background-color: $quaternaryColor;
+
+      .title {
+        font-family: "Segoe UI";
+        font-weight: 700;
+      }
+    }
+
+    @media (max-width: 800px) {
+      width: 50%;
+    }
+
+    @media (min-width: 800px) and (max-width: 1000px) {
+      width: 33%;
+    }
+
+    @media (min-width: 1200px) {
+      width: 25%;
+    }
+  }
 }

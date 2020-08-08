@@ -34,16 +34,16 @@
 </nav>
 
 @code {
-    protected override void OnInitialized()
-    {
-        statusService.ShouldChangeState += UpdateState;
-    }
+  protected override void OnInitialized()
+  {
+    statusService.ShouldChangeState += UpdateState;
+  }
 
-    private void UpdateState()
+  private void UpdateState()
+  {
+    InvokeAsync(() =>
     {
-        InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
-    }
+      StateHasChanged();
+    });
+  }
 }

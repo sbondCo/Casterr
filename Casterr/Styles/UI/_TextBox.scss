@@ -1,45 +1,45 @@
 ﻿/// <reference path="../Main.scss" />
 
 .textBox {
-    position: relative;
+  position: relative;
 
-    input {
-        min-width: 160px;
-        width: 100%;
-        padding: 8px;
-        color: $textPrimary;
-        background-color: $secondaryColor;
-        font-size: 16px;
-        outline: none;
-        border: none;
-        border-radius: 4px;
-        transition: background 250ms ease;
+  input {
+    min-width: 160px;
+    width: 100%;
+    padding: 8px;
+    color: $textPrimary;
+    background-color: $secondaryColor;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    transition: background 250ms ease;
 
-        &:hover {
-            background-color: $tertiaryColor;
+    &:hover {
+      background-color: $tertiaryColor;
 
-            & + button {
-                display: none;
-            }
-        }
+      & + button {
+        display: none;
+      }
     }
+  }
 
-    button {
-        position: absolute;
-        right: 0px;
-        height: 100%;
-        border-radius: 0 4px 4px 0;
-        border: none;
-        outline: none;
-        padding: 5px 7px;
-        font-size: 16px;
-        cursor: pointer;
-        background-color: $darkAccentColor;
-        color: $textPrimary;
-        transition: background 250ms ease;
+  button {
+    position: absolute;
+    right: 0px;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    border: none;
+    outline: none;
+    padding: 5px 7px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: $darkAccentColor;
+    color: $textPrimary;
+    transition: background 250ms ease;
 
-        &:hover {
-            background-color: #333440;
-        }
+    &:hover {
+      background-color: #333440;
     }
+  }
 }

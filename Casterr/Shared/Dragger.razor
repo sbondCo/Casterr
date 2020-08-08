@@ -15,54 +15,54 @@
 </div>
 
 @code {
-    public List<BrowserWindow> GetAllWindows()
+  public List<BrowserWindow> GetAllWindows()
+  {
+    // Add all windows to list and return list
+
+    List<BrowserWindow> windows = new List<BrowserWindow>();
+
+    Electron.WindowManager.BrowserWindows.ToList().ForEach(browserWindow =>
     {
-        // Add all windows to list and return list
+      windows.Add(browserWindow);
+    });
 
-        List<BrowserWindow> windows = new List<BrowserWindow>();
+    return windows;
+  }
 
-        Electron.WindowManager.BrowserWindows.ToList().ForEach(browserWindow =>
-        {
-            windows.Add(browserWindow);
-        });
-
-        return windows;
-    }
-
-    public void Close()
+  public void Close()
+  {
+    // Close all windows
+    foreach (var window in GetAllWindows())
     {
-        // Close all windows
-        foreach (var window in GetAllWindows())
-        {
-            window.Close();
-        }
+      window.Close();
     }
+  }
 
-    public async Task Maximize()
+  public async Task Maximize()
+  {
+    foreach (var window in GetAllWindows())
     {
-        foreach (var window in GetAllWindows())
-        {
-            // is window maximized?
-            var isMaximized = await window.IsMaximizedAsync();
+      // is window maximized?
+      var isMaximized = await window.IsMaximizedAsync();
 
-            if (isMaximized)
-            {
-                // Window is already maximized, so restore it
-                window.Restore();
-            }
-            else
-            {
-                // Window is not maximized, so maximize it
-                window.Maximize();
-            }
-        }
+      if (isMaximized)
+      {
+        // Window is already maximized, so restore it
+        window.Restore();
+      }
+      else
+      {
+        // Window is not maximized, so maximize it
+        window.Maximize();
+      }
     }
+  }
 
-    public void Minimize()
+  public void Minimize()
+  {
+    foreach (var window in GetAllWindows())
     {
-        foreach (var window in GetAllWindows())
-        {
-            window.Minimize();
-        }
+      window.Minimize();
     }
+  }
 }

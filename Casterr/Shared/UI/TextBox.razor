@@ -4,23 +4,23 @@
 </div>
 
 @code {
-    [Parameter]
-    public string Name { get; set; }
+  [Parameter]
+  public string Name { get; set; }
 
-    [Parameter]
-    public string Placeholder { get; set; }
+  [Parameter]
+  public string Placeholder { get; set; }
 
-    [Parameter]
-    public string Type { get; set; } = "text";
+  [Parameter]
+  public string Type { get; set; } = "text";
 
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
+  [Parameter]
+  public RenderFragment ChildContent { get; set; }
 
-    [Parameter]
-    public Action<string, string> OnLoseFocus { get; set; }
+  [Parameter]
+  public Action<string, string> OnLoseFocus { get; set; }
 
-    private void InputLoseFocus()
-    {
-        OnLoseFocus(Name, Placeholder);
-    }
+  private void InputLoseFocus()
+  {
+    OnLoseFocus(Name, Placeholder);
+  }
 }

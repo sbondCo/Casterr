@@ -1,14 +1,14 @@
 ﻿namespace Casterr.Services.KeyBinds
 {
-    public class KeyBinds
+  public class KeyBinds
+  {
+    public void RegisterAll()
     {
-        public void RegisterAll()
-        {
-            // Bind Classes
-            RecordingBinds rb = new RecordingBinds();
+      // Bind Classes
+      RecordingBinds rb = new RecordingBinds();
 
-            // Register all hotkeys in all classes
-            rb.RegisterAll();
-        }
+      // Register all hotkeys in all classes
+      rb.RegisterAll();
     }
+  }
 }
