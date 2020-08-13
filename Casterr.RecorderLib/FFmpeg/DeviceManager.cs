@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -18,6 +20,40 @@ namespace Casterr.RecorderLib.FFmpeg
     {
       ProcessManager process = new ProcessManager();
 
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      {
+        return await FromWindows(process);
+      }
+      else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+      {
+        return await FromLinux(process);
+      }
+      
+      throw new Exception("OS Not supported currently when getting devices.");
+    }
+
+    private async Task<(List<string>, List<string>)> FromLinux(ProcessManager process)
+    {
+      List<string> audioDevices = new List<string>();
+      List<string> videoDevices = new List<string>();
+
+      // Get devices from ffmpeg, exits on its own
+      var p = new Process();
+
+      p.StartInfo.FileName = "pactl";
+      p.StartInfo.Arguments = "list sources";
+      p.StartInfo.CreateNoWindow = true;
+      p.StartInfo.RedirectStandardOutput = true;
+      p.StartInfo.RedirectStandardError = true;
+      p.Start();
+
+      Console.WriteLine($"Response: std: {p.StandardOutput.ReadToEnd()} stderr: {p.StandardError.ReadToEnd()}");
+
+      return (audioDevices, videoDevices);
+    }
+
+    private async Task<(List<string>, List<string>)> FromWindows(ProcessManager process)
+    {
       List<string> audioDevices = new List<string>();
       List<string> videoDevices = new List<string>();
 
