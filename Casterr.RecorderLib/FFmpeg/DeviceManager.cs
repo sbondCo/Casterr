@@ -47,7 +47,31 @@ namespace Casterr.RecorderLib.FFmpeg
       p.StartInfo.RedirectStandardError = true;
       p.Start();
 
-      Console.WriteLine($"Response: std: {p.StandardOutput.ReadToEnd()} stderr: {p.StandardError.ReadToEnd()}");
+      // Console.WriteLine($"Response: std: {p.StandardOutput.ReadToEnd()} stderr: {p.StandardError.ReadToEnd()}");
+
+      var response = p.StandardOutput.ReadToEnd();
+      int sourceNumber = 0;
+
+      // If current device is an input device (eg. microphone)
+      bool isInputDevice = false;
+
+      // Loop over all lines in response
+      foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+      {
+        if (line.ToLower().Contains($"source #")) sourceNumber++;
+
+        if (line.ToLower().Contains($"name: alsa_input")) isInputDevice = true;
+        if (line.ToLower().Contains($"name: alsa_output")) isInputDevice = false;
+
+        if (line.ToLower().Contains($"alsa.card_name"))
+        {
+          if (isInputDevice)
+          {
+            // Add input devices to audioDevices array
+            audioDevices.Add(line.Replace("alsa.card_name = ", "").Replace("\"", ""));
+          }
+        }
+      }
 
       return (audioDevices, videoDevices);
     }
