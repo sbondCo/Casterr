@@ -29,6 +29,10 @@ namespace Casterr.RecorderLib.FFmpeg
       throw new Exception("OS Not supported currently when getting devices.");
     }
 
+    /// <summary>
+    /// Get devices in a way that works on Linux
+    /// </summary>
+    /// <returns>Users devices</returns>
     private async Task<(List<string>, List<string>)> FromLinux()
     {
       List<string> audioDevices = new List<string>();
@@ -58,6 +62,10 @@ namespace Casterr.RecorderLib.FFmpeg
       return (audioDevices, videoDevices);
     }
 
+    /// <summary>
+    /// Get devices in a way that works on Windows
+    /// </summary>
+    /// <returns>Users devices</returns>
     private async Task<(List<string>, List<string>)> FromWindows()
     {
       ProcessManager process = new ProcessManager();

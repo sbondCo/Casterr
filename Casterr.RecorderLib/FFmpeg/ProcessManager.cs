@@ -28,7 +28,7 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <param name="args">Arguments to send FFmpeg process.</param>
     /// <param name="redirectOutput">Should redirect standard output.</param>
     /// <param name="redirectError">Should redirect standard error.</param>
-    /// <returns></returns>
+    /// <returns>Nothing/output/error depending on redirectOutput & redirectError</returns>
     public async Task<string> StartProcess(string args, bool redirectOutput = false, bool redirectError = false)
     {
       ffmpegPath = await FindFFmpeg.GetPath();
