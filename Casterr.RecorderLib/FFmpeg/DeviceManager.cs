@@ -23,7 +23,7 @@ namespace Casterr.RecorderLib.FFmpeg
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
-        return await FromLinux();
+        return FromLinux();
       }
       
       throw new Exception("OS Not supported currently when getting devices.");
@@ -33,7 +33,7 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Get devices in a way that works on Linux
     /// </summary>
     /// <returns>Users devices</returns>
-    private async Task<(List<string>, List<string>)> FromLinux()
+    private (List<string>, List<string>) FromLinux()
     {
       List<string> audioDevices = new List<string>();
       List<string> videoDevices = new List<string>();
