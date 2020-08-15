@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using Casterr.HelpersLib;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace Casterr.SettingsLib
 {
@@ -93,8 +92,8 @@ namespace Casterr.SettingsLib
         }
       }
 
-      // // Serialize json back to file in case of missing rules
-      // JsonHelper.SerializeJsonToFile(file, obj);
+      // Serialize json back to file in case of missing rules
+      JsonHelper.SerializeJsonToFile(file, obj);
     }
 
     /// <summary>
