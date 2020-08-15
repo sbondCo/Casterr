@@ -54,7 +54,12 @@ namespace Casterr.RecorderLib.FFmpeg
           if (isInputDevice)
           {
             // Add input devices to audioDevices array
-            audioDevices.Add(line.Replace("alsa.card_name = ", "").Replace("\"", ""));
+            audioDevices.Add(
+              line
+              .Replace("alsa.card_name = ", "")
+              .Replace("\"", "")
+              .Replace("\t", "")
+            );
           }
         }
       }
