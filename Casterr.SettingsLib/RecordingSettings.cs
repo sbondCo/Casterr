@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 using System.IO;
 
 namespace Casterr.SettingsLib
@@ -21,6 +22,7 @@ namespace Casterr.SettingsLib
     #endregion
 
     #region Audio
+    public List<string> AudioDevicesToRecord { get; set; } = new List<string> { "Default" };
     public string AudioDevice { get; set; } = "Default";
     public string SeperateAudioTracks { get; set; } = "false";
     public string RecordDesktopAudio { get; set; } = "true";

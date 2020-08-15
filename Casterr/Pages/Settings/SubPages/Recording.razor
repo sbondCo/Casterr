@@ -11,72 +11,71 @@
 @inject DeviceManager dm
 
 <div class="settings">
-    <span class="pageTitle">Recording Settings</span>
+  <span class="pageTitle">Recording Settings</span>
 
-    <div class="setting">
-        <span class="title">Video Device:</span>
-        <DropDown Name="videoDevice" Items="@videoDeviceItems" Placeholder="@rs.VideoDevice" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Video Device:</span>
+    <DropDown Name="videoDevice" Items="@videoDeviceItems" Placeholder="@rs.VideoDevice" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">FPS:</span>
-        <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">FPS:</span>
+    <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Resolution:</span>
-        <DropDown Name="resolution" Items="@resolutionItems" Placeholder="@rs.Resolution" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Resolution:</span>
+    <DropDown Name="resolution" Items="@resolutionItems" Placeholder="@rs.Resolution" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Format:</span>
-        <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Format:</span>
+    <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Zero Latency:</span>
-        <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Zero Latency:</span>
+    <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Ultra Fast:</span>
-        <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Ultra Fast:</span>
+    <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        @* <span class="title">Audio Device:</span>
-        <DropDown Name="audioDevice" Items="@audioDeviceItems" Placeholder=@rs.AudioDevice OnSelectedChanged=@UpdateSettings /> *@
-        
-    </div>
+  <div class="setting">
+    <span class="title">Audio Devices To Record:</span>
+    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItems="@rs.AudioDevicesToRecord" OnUpdate=@UpdateAudioDevicesToRecord />
+  </div>
 
-    <div class="setting">
-        <span class="title">Seperate Audio Tracks:</span>
-        <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Seperate Audio Tracks:</span>
+    <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Record Desktop Audio:</span>
-        <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Record Desktop Audio:</span>
+    <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Thumbnail Save Folder:</span>
-        <TextBox Name="thumbSaveFolder" Placeholder="@rs.ThumbSaveFolder" OnLoseFocus=@UpdateSettings>
-            <button @onclick=@(e => SelectFolder("thumb"))>Change</button>
-        </TextBox>
-    </div>
+  <div class="setting">
+    <span class="title">Thumbnail Save Folder:</span>
+    <TextBox Name="thumbSaveFolder" Placeholder="@rs.ThumbSaveFolder" OnLoseFocus=@UpdateSettings>
+      <button @onclick=@(e => SelectFolder("thumb"))>Change</button>
+    </TextBox>
+  </div>
 
-    <div class="setting">
-        <span class="title">Video Save Folder:</span>
-        <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
-            <button @onclick=@(e => SelectFolder("video"))>Change</button>
-        </TextBox>
-    </div>
+  <div class="setting">
+    <span class="title">Video Save Folder:</span>
+    <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
+      <button @onclick=@(e => SelectFolder("video"))>Change</button>
+    </TextBox>
+  </div>
 
-    <div class="setting">
-        <span class="title">Video Save Name:</span>
-        <TextBox Name="videoSaveName" Placeholder="@rs.VideoSaveName" OnLoseFocus=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Video Save Name:</span>
+    <TextBox Name="videoSaveName" Placeholder="@rs.VideoSaveName" OnLoseFocus=@UpdateSettings />
+  </div>
 </div>
 
 @code {
@@ -90,8 +89,8 @@
     sm.GetSettings(rs);
 
     // Add device from settings to appropriate list
-    audioDeviceItems.Add(rs.AudioDevice);
-    videoDeviceItems.Add(rs.VideoDevice);
+    @* audioDeviceItems.Add(rs.AudioDevice);
+    videoDeviceItems.Add(rs.VideoDevice); *@
 
     var allDevices = dm.GetDevices();
 
@@ -131,6 +130,21 @@
     {
       UpdateSettings("thumbSaveFolder", path.First());
     }
+  }
+
+  public void UpdateAudioDevicesToRecord(string name, string device, string newValue)
+  {
+    // If newValue is true add the device to AudioDevicesToRecord, otherwise remove it
+    if (newValue == "true")
+    {
+      rs.AudioDevicesToRecord.Add(device);
+    }
+    else
+    {
+      rs.AudioDevicesToRecord.Remove(device);
+    }
+
+    sm.UpdateSettingsFile(rs);
   }
 
   public void UpdateSettings(string name, string newValue)
