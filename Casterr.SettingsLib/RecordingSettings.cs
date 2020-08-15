@@ -1,12 +1,13 @@
 ﻿using System;
+using System.IO;
 
 namespace Casterr.SettingsLib
 {
   public class RecordingSettings
   {
     #region General
-    public string ThumbSaveFolder { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\Casterr\\Thumbs";
-    public string VideoSaveFolder { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyVideos)}\\Casterr";
+    public string ThumbSaveFolder { get; set; } = $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Casterr", "Thumbs")}";
+    public string VideoSaveFolder { get; set; } = $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Casterr")}";
     public string VideoSaveName { get; set; } = "%d.%m.%Y - %H.%i.%s";
     #endregion
 

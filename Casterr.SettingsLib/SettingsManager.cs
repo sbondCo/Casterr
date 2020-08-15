@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using Casterr.HelpersLib;
 using Newtonsoft.Json.Linq;
@@ -11,7 +12,7 @@ namespace Casterr.SettingsLib
 
     public string GetFilePath(string file)
     {
-      return PathHelper.FilePath($"{PathHelper.MainFolderPath()}\\settings", file);
+      return PathHelper.FilePath($"{Path.Combine(PathHelper.MainFolderPath(), "settings")}", file);
     }
 
     public string GetObjectTypeFile(object obj)
