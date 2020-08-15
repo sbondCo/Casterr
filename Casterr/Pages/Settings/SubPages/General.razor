@@ -7,12 +7,12 @@
 @inject GeneralSettings gs
 
 <div class="settings">
-    <span class="pageTitle">General Settings</span>
+  <span class="pageTitle">General Settings</span>
 
-    <div class="setting">
-        <span class="title">Startup Page:</span>
-        <DropDown Name="startupPage" Items="@startupPageItems" Placeholder="@gs.StartupPage" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Startup Page:</span>
+    <DropDown Name="startupPage" Items="@startupPageItems" Placeholder="@gs.StartupPage" OnSelectedChanged=@UpdateSettings />
+  </div>
 </div>
 
 @code {

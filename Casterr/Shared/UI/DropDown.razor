@@ -1,11 +1,11 @@
 ﻿<div class="dropDownContainer" @onclick="@(e => ToggleState())">
-    <label>@Placeholder</label>
-    <ul class="@string.Join(" ", dropDownListClasses)">
-        @foreach (var item in @Items)
-        {
-            <li class="@(item == Placeholder ? "active" : "")" @onclick="@(e => SwitchItems(@item))">@item</li>
-        }
-    </ul>
+  <label>@Placeholder</label>
+  <ul class="@string.Join(" ", dropDownListClasses)">
+    @foreach (var item in @Items)
+    {
+      <li class="@(item == Placeholder ? "active" : "")" @onclick="@(e => SwitchItems(@item))">@item</li>
+    }
+  </ul>
 </div>
 
 @code {

@@ -1,17 +1,17 @@
 ﻿@using ElectronNET.API
 
 <div class="dragger">
-    <div class="minMaxClose">
-        <div class="close" @onclick="@(e => Close())">
-            <Icon i="close" wh="12" />
-        </div>
-        <div class="max" @onclick="@(e => Maximize())">
-            <Icon i="max" wh="12" />
-        </div>
-        <div class="min" @onclick="@(e => Minimize())">
-            <Icon i="min" wh="12" />
-        </div>
+  <div class="minMaxClose">
+    <div class="close" @onclick="@(e => Close())">
+      <Icon i="close" wh="12" />
     </div>
+    <div class="max" @onclick="@(e => Maximize())">
+      <Icon i="max" wh="12" />
+    </div>
+    <div class="min" @onclick="@(e => Minimize())">
+      <Icon i="min" wh="12" />
+    </div>
+  </div>
 </div>
 
 @code {
