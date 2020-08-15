@@ -1,8 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Reflection;
 using Casterr.HelpersLib;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace Casterr.SettingsLib
 {
@@ -61,14 +63,38 @@ namespace Casterr.SettingsLib
           if (definedSettings[prop.Name] != null)
           {
             // Set prop to value defined in settings file
-            var newVal = definedSettings.GetValue(prop.Name).ToString();
-            prop.SetValue(obj, newVal);
+            var newVal = definedSettings.GetValue(prop.Name);
+
+            // Define settings in different ways depending on their type
+            if (prop.PropertyType == typeof(List<string>))
+            {
+              // Create new temporary list
+              List<string> values = new List<string>();
+
+              // Add all newValues from json array to list
+              foreach (var nv in newVal)
+              {
+                values.Add(nv.ToString());
+              }
+
+              // Set prop to values list
+              prop.SetValue(obj, values);
+            }
+            else if (prop.PropertyType == typeof(string))
+            {
+              // If prop is a string, just simply convert newVal to string
+              prop.SetValue(obj, newVal.ToString());
+            }
+            else
+            {
+              throw new Exception("Defining settings of unknown type.");
+            }
           }
         }
       }
 
-      // Serialize json back to file in case of missing rules
-      JsonHelper.SerializeJsonToFile(file, obj);
+      // // Serialize json back to file in case of missing rules
+      // JsonHelper.SerializeJsonToFile(file, obj);
     }
 
     /// <summary>
