@@ -5,5 +5,9 @@
 
   .listBoxItem {
     padding: 2px;
+
+    span {
+      cursor: help;
+    }
   }
 }

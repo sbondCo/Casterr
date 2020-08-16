@@ -81,7 +81,7 @@
 @code {
   private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
   private List<string> formatItems = new List<string> { "mp4", "mkv" };
-  private List<string> audioDeviceItems = new List<string> { "Default", "None" };
+  private List<ListBox.Item> audioDeviceItems = new List<ListBox.Item> { };
   private List<string> videoDeviceItems = new List<string> { "Default" };
 
   protected override void OnInitialized()
@@ -97,7 +97,9 @@
     foreach (var audDev in allDevices.Result.Item1)
     {
       // Add audio device to list and show if it's an input or output device
-      audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}");
+      @* audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}"); *@
+
+      audioDeviceItems.Add(new ListBox.Item{ Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
     }
 
     foreach (var vidDev in allDevices.Result.Item2)
