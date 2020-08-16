@@ -96,7 +96,8 @@
 
     foreach (var audDev in allDevices.Result.Item1)
     {
-      audioDeviceItems.Add(audDev);
+      // Add audio device to list and show if it's an input or output device
+      audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}");
     }
 
     foreach (var vidDev in allDevices.Result.Item2)

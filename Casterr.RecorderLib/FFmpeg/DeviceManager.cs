@@ -6,6 +6,12 @@ using System.Runtime.InteropServices;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
+  public class Device
+  {
+    public string Name { get; set; }
+    public bool IsInput { get; set; }
+  }
+
   public class DeviceManager
   {
     public string DesktopVideoDevice = "screen-capture-recorder";
@@ -15,11 +21,11 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Get devices from ffmpeg.
     /// </summary>
     /// <returns>2x List<string> for audio and video devices.</returns>
-    public async Task<(List<string>, List<string>)> GetDevices()
+    public async Task<(List<Device>, List<string>)> GetDevices()
     {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        return await FromWindows();
+        // return await FromWindows();
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
@@ -33,9 +39,9 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Get devices in a way that works on Linux
     /// </summary>
     /// <returns>Users devices</returns>
-    private (List<string>, List<string>) FromLinux()
+    private (List<Device>, List<string>) FromLinux()
     {
-      List<string> audioDevices = new List<string>();
+      List<Device> audioDevices = new List<Device>();
       List<string> videoDevices = new List<string>();
 
       var response = Pulse.ProcessManager.StartProcess("list sources", true);
@@ -51,16 +57,16 @@ namespace Casterr.RecorderLib.FFmpeg
 
         if (line.ToLower().Contains($"alsa.card_name"))
         {
-          if (isInputDevice)
-          {
-            // Add input devices to audioDevices array
-            audioDevices.Add(
-              line
-              .Replace("alsa.card_name = ", "")
-              .Replace("\"", "")
-              .Replace("\t", "")
-            );
-          }
+          // Add input devices to audioDevices array
+          audioDevices.Add(
+            new Device{ 
+              Name = line
+                      .Replace("alsa.card_name = ", "")
+                      .Replace("\"", "")
+                      .Replace("\t", ""), 
+              IsInput = isInputDevice 
+            }
+          );
         }
       }
 
