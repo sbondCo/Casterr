@@ -1,29 +1,29 @@
 ﻿/// <reference path="../Main.scss" />
 
 .notificationContainer {
-    position: absolute;
-    background-color: $primaryColor;
-    /*animation: slideIn 500ms ease-in forwards;*/
+  position: absolute;
+  background-color: $primaryColor;
+  /*animation: slideIn 500ms ease-in forwards;*/
 
-    .content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        width: 100vw;
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
 
-        svg {
-            width: 25%;
-            fill: $textPrimary;
-        }
-
-        .title {
-            width: 75%;
-            font-size: 25px;
-        }
+    svg {
+      width: 25%;
+      fill: $textPrimary;
     }
 
-    /*@keyframes slideIn {
+    .title {
+      width: 75%;
+      font-size: 25px;
+    }
+  }
+
+  /*@keyframes slideIn {
         0% {
             left: 100%;
             

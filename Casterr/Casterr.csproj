@@ -6,8 +6,7 @@
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BuildWebCompiler" Version="1.12.394" />
-    <PackageReference Include="ElectronNET.API" Version="7.30.2" />
+    <PackageReference Include="ElectronNET.API" Version="9.31.2" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">

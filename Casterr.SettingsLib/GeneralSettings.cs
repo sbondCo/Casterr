@@ -1,7 +1,7 @@
 ﻿namespace Casterr.SettingsLib
 {
-    public class GeneralSettings
-    {
-        public string StartupPage { get; set; } = "Recordings";
-    }
+  public class GeneralSettings
+  {
+    public string StartupPage { get; set; } = "Recordings";
+  }
 }

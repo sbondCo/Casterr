@@ -7,13 +7,12 @@
 @inject KeyBindingSettings kbs
 
 <div class="settings">
-    <span class="pageTitle">Key Binding Settings</span>
-
+  <span class="pageTitle">Key Binding Settings</span>
 </div>
 
 @code {
-    protected override void OnInitialized()
-    {
-        sm.GetSettings(kbs);
-    }
+  protected override void OnInitialized()
+  {
+    sm.GetSettings(kbs);
+  }
 }

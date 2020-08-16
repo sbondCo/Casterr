@@ -11,149 +11,187 @@
 @inject DeviceManager dm
 
 <div class="settings">
-    <span class="pageTitle">Recording Settings</span>
+  <span class="pageTitle">Recording Settings</span>
 
-    <div class="setting">
-        <span class="title">Video Device:</span>
-        <DropDown Name="videoDevice" Items="@videoDeviceItems" Placeholder="@rs.VideoDevice" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Video Device:</span>
+    <DropDown Name="videoDevice" Items="@videoDeviceItems" Placeholder="@rs.VideoDevice" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">FPS:</span>
-        <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">FPS:</span>
+    <TextBox Name="fps" Placeholder="@rs.FPS" Type="number" OnLoseFocus=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Resolution:</span>
-        <DropDown Name="resolution" Items="@resolutionItems" Placeholder="@rs.Resolution" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Resolution:</span>
+    <DropDown Name="resolution" Items="@resolutionItems" Placeholder="@rs.Resolution" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Format:</span>
-        <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Format:</span>
+    <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Zero Latency:</span>
-        <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Zero Latency:</span>
+    <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Ultra Fast:</span>
-        <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Ultra Fast:</span>
+    <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Audio Device:</span>
-        <DropDown Name="audioDevice" Items="@audioDeviceItems" Placeholder=@rs.AudioDevice OnSelectedChanged=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Audio Devices To Record:</span>
+    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItems="@rs.AudioDevicesToRecord" OnUpdate=@UpdateAudioDevicesToRecord />
+  </div>
 
-    <div class="setting">
-        <span class="title">Seperate Audio Tracks:</span>
-        <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Seperate Audio Tracks:</span>
+    <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Record Desktop Audio:</span>
-        <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Record Desktop Audio:</span>
+    <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
+  </div>
 
-    <div class="setting">
-        <span class="title">Video Save Folder:</span>
-        <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
-            <button @onclick=@(e => SelectVideoSaveFolder())>Change</button>
-        </TextBox>
-    </div>
+  <div class="setting">
+    <span class="title">Thumbnail Save Folder:</span>
+    <TextBox Name="thumbSaveFolder" Placeholder="@rs.ThumbSaveFolder" OnLoseFocus=@UpdateSettings>
+      <button @onclick=@(e => SelectFolder("thumb"))>Change</button>
+    </TextBox>
+  </div>
 
-    <div class="setting">
-        <span class="title">Video Save Name:</span>
-        <TextBox Name="videoSaveName" Placeholder="@rs.VideoSaveName" OnLoseFocus=@UpdateSettings />
-    </div>
+  <div class="setting">
+    <span class="title">Video Save Folder:</span>
+    <TextBox Name="videoSaveFolder" Placeholder="@rs.VideoSaveFolder" OnLoseFocus=@UpdateSettings>
+      <button @onclick=@(e => SelectFolder("video"))>Change</button>
+    </TextBox>
+  </div>
+
+  <div class="setting">
+    <span class="title">Video Save Name:</span>
+    <TextBox Name="videoSaveName" Placeholder="@rs.VideoSaveName" OnLoseFocus=@UpdateSettings />
+  </div>
 </div>
 
 @code {
-    private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
-    private List<string> formatItems = new List<string> { "mp4", "mkv" };
-    private List<string> audioDeviceItems = new List<string> { "Default", "None" };
-    private List<string> videoDeviceItems = new List<string> { "Default" };
+  private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
+  private List<string> formatItems = new List<string> { "mp4", "mkv" };
+  private List<ListBox.Item> audioDeviceItems = new List<ListBox.Item> { };
+  private List<string> videoDeviceItems = new List<string> { "Default" };
 
-    protected override void OnInitialized()
+  protected override void OnInitialized()
+  {
+    sm.GetSettings(rs);
+
+    // Add device from settings to appropriate list
+    @* audioDeviceItems.Add(rs.AudioDevice);
+    videoDeviceItems.Add(rs.VideoDevice); *@
+
+    var allDevices = dm.GetDevices();
+
+    foreach (var audDev in allDevices.Result.Item1)
     {
-        sm.GetSettings(rs);
+      // Add audio device to list and show if it's an input or output device
+      @* audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}"); *@
 
-        // Add device from settings to appropriate list
-        audioDeviceItems.Add(rs.AudioDevice);
-        videoDeviceItems.Add(rs.VideoDevice);
-
-        var allDevices = dm.GetDevices();
-
-        foreach (var audDev in allDevices.Result.Item1)
-        {
-            audioDeviceItems.Add(audDev);
-        }
-
-        foreach (var vidDev in allDevices.Result.Item2)
-        {
-            videoDeviceItems.Add(vidDev);
-        }
+      audioDeviceItems.Add(new ListBox.Item{ Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
     }
 
-    private async Task SelectVideoSaveFolder()
+    foreach (var vidDev in allDevices.Result.Item2)
     {
-        var options = new OpenDialogOptions
-        {
-            Title = "Select a folder to save videos to",
-            DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
-            Properties = new OpenDialogProperty[]
-            {
-                OpenDialogProperty.openDirectory
-            }
-        };
-
-        var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
-
-        UpdateSettings("videoSaveFolder", path.First());
+      videoDeviceItems.Add(vidDev);
     }
+  }
 
-    public void UpdateSettings(string name, string newValue)
+  private async Task SelectFolder(string which)
+  {
+    // Options for folder select dialog
+    var options = new OpenDialogOptions
     {
-        switch (name)
+      Title = "Select a folder",
+      DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
+      Properties = new OpenDialogProperty[]
         {
-            case "videoDevice":
-                rs.VideoDevice = newValue;
-                break;
-            case "fps":
-                rs.FPS = newValue;
-                break;
-            case "resolution":
-                rs.Resolution = newValue;
-                break;
-            case "format":
-                rs.Format = newValue;
-                break;
-            case "zeroLatency":
-                rs.ZeroLatency = newValue;
-                break;
-            case "ultraFast":
-                rs.UltraFast = newValue;
-                break;
-            case "audioDevice":
-                rs.AudioDevice = newValue;
-                break;
-            case "seperateAudioTracks":
-                rs.SeperateAudioTracks = newValue;
-                break;
-            case "recordDesktopAudio":
-                rs.RecordDesktopAudio = newValue;
-                break;
-            case "videoSaveFolder":
-                rs.VideoSaveFolder = newValue;
-                break;
-            case "videoSaveName":
-                rs.VideoSaveName = newValue;
-                break;
+          OpenDialogProperty.openDirectory
         }
+    };
 
-        sm.UpdateSettingsFile(rs);
+    // Open folder select dialog and save path to var
+    var path = await Electron.Dialog.ShowOpenDialogAsync(Electron.WindowManager.BrowserWindows.First(), options);
+
+    // Update settings with folder selected
+    if (which == "video")
+    {
+      UpdateSettings("videoSaveFolder", path.First());
     }
+    else if (which == "thumb")
+    {
+      UpdateSettings("thumbSaveFolder", path.First());
+    }
+  }
+
+  public void UpdateAudioDevicesToRecord(string name, string device, string newValue)
+  {
+    // If newValue is true add the device to AudioDevicesToRecord, otherwise remove it
+    if (newValue == "true")
+    {
+      rs.AudioDevicesToRecord.Add(device);
+    }
+    else
+    {
+      rs.AudioDevicesToRecord.Remove(device);
+    }
+
+    sm.UpdateSettingsFile(rs);
+  }
+
+  public void UpdateSettings(string name, string newValue)
+  {
+    switch (name)
+    {
+      case "videoDevice":
+        rs.VideoDevice = newValue;
+        break;
+      case "fps":
+        rs.FPS = newValue;
+        break;
+      case "resolution":
+        rs.Resolution = newValue;
+        break;
+      case "format":
+        rs.Format = newValue;
+        break;
+      case "zeroLatency":
+        rs.ZeroLatency = newValue;
+        break;
+      case "ultraFast":
+        rs.UltraFast = newValue;
+        break;
+      case "audioDevice":
+        rs.AudioDevice = newValue;
+        break;
+      case "seperateAudioTracks":
+        rs.SeperateAudioTracks = newValue;
+        break;
+      case "recordDesktopAudio":
+        rs.RecordDesktopAudio = newValue;
+        break;
+      case "thumbSaveFolder":
+        rs.ThumbSaveFolder = newValue;
+        break;
+      case "videoSaveFolder":
+        rs.VideoSaveFolder = newValue;
+        break;
+      case "videoSaveName":
+        rs.VideoSaveName = newValue;
+        break;
+    }
+
+    sm.UpdateSettingsFile(rs);
+  }
 }

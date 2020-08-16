@@ -1,0 +1,34 @@
+<div class="listBoxContainer">
+  @foreach (var item in @Items)
+  {
+    <div class="listBoxItem">
+      <TickBox Name="@item.Name" Checked="@EnabledItems.Contains(@item.Name).ToString()" OnClick=@Updated />
+      <span title="@item.Title">@item.Name</span>
+    </div>
+  }
+</div>
+
+@code {
+  public class Item 
+  {
+    public string Name { get; set; }
+    public string Title { get; set; }
+  }
+
+  [Parameter]
+  public string Name { get; set; }
+
+  [Parameter]
+  public List<Item> Items { get; set; }
+
+  [Parameter]
+  public List<string> EnabledItems { get; set; }
+
+  [Parameter]
+  public Action<string, string, string> OnUpdate { get; set; }
+
+  public void Updated(string name, string newValue)
+  {
+    OnUpdate(Name, name, newValue);
+  }
+}

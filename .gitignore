@@ -37,7 +37,7 @@ bld/
 #wwwroot/
 
 # Ignore static css files in wwwroot
-casterr/wwwroot/css/
+Casterr/wwwroot/css/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
