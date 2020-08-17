@@ -3,7 +3,7 @@
   {
     string name = $"{item.ID}:{item.Name}";
     <div class="listBoxItem">
-      <TickBox Name="@name" Checked="@EnabledItems.Contains(@item.Name).ToString()" OnClick=@Updated />
+      <TickBox Name="@name" Checked="@EnabledItemIds.Contains(@item.ID).ToString()" OnClick=@Updated />
       <span title="@item.Title">@item.Name</span>
     </div>
   }
@@ -24,7 +24,7 @@
   public List<Item> Items { get; set; }
 
   [Parameter]
-  public List<string> EnabledItems { get; set; }
+  public List<int> EnabledItemIds { get; set; }
 
   [Parameter]
   public Action<string, string, string> OnUpdate { get; set; }
