@@ -54,12 +54,12 @@ namespace Casterr.RecorderLib.FFmpeg
 
       // If current device is an input device (eg. microphone)
       bool isInputDevice = false;
+      int sourceNumber = 0;
 
       // Loop over all lines in response
       foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
       {
         // Get source number
-        int sourceNumber = 0;
         if (line.ToLower().Contains("source"))
         {
           sourceNumber = Int32.Parse(line.ToLower().Replace("source #", ""));

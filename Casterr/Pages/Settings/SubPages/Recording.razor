@@ -100,7 +100,7 @@
       // Add audio device to list and show if it's an input or output device
       @* audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}"); *@
 
-      audioDeviceItems.Add(new ListBox.Item{ Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
+      audioDeviceItems.Add(new ListBox.Item{ ID = audDev.ID, Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
     }
 
     foreach (var vidDev in allDevices.Result.Item2)
@@ -108,6 +108,7 @@
       videoDeviceItems.Add(vidDev);
     }
 
+    // Add enabled audio devices
     foreach (var ed in rs.AudioDevicesToRecord)
     {
       audioDeviceEnabledItems.Add(ed.Name);
@@ -143,14 +144,16 @@
 
   public void UpdateAudioDevicesToRecord(string name, string device, string newValue)
   {
+    string[] deviceDetails = device.Split(":");
+
     // If newValue is true add the device to AudioDevicesToRecord, otherwise remove it
     if (newValue == "true")
     {
-      rs.AudioDevicesToRecord.Add(new SettingsLib.AudioDeviceToRecord { SourceNumber = 0, Name = device });
+      rs.AudioDevicesToRecord.Add(new SettingsLib.AudioDeviceToRecord { SourceNumber = Int32.Parse(deviceDetails[0]), Name = deviceDetails[1] });
     }
     else
     {
-      rs.AudioDevicesToRecord.Remove(new SettingsLib.AudioDeviceToRecord { SourceNumber = 0, Name = device });
+      rs.AudioDevicesToRecord.Remove(new SettingsLib.AudioDeviceToRecord { SourceNumber = Int32.Parse(deviceDetails[0]), Name = deviceDetails[1] });
     }
 
     sm.UpdateSettingsFile(rs);

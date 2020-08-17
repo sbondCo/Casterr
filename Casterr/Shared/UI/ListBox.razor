@@ -1,8 +1,9 @@
 <div class="listBoxContainer">
   @foreach (var item in @Items)
   {
+    string name = $"{item.ID}:{item.Name}";
     <div class="listBoxItem">
-      <TickBox Name="@item.Name" Checked="@EnabledItems.Contains(@item.Name).ToString()" OnClick=@Updated />
+      <TickBox Name="@name" Checked="@EnabledItems.Contains(@item.Name).ToString()" OnClick=@Updated />
       <span title="@item.Title">@item.Name</span>
     </div>
   }
@@ -11,6 +12,7 @@
 @code {
   public class Item 
   {
+    public int ID { get; set; }
     public string Name { get; set; }
     public string Title { get; set; }
   }
@@ -29,6 +31,7 @@
 
   public void Updated(string name, string newValue)
   {
+    //Console.WriteLine($"{Name} {name} {newValue}");
     OnUpdate(Name, name, newValue);
   }
 }
