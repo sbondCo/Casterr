@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Casterr.HelpersLib\Casterr.HelpersLib.csproj" />
     <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
   </ItemGroup>
 

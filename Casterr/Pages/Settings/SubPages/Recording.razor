@@ -45,7 +45,7 @@
 
   <div class="setting">
     <span class="title">Audio Devices To Record:</span>
-    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItems="@rs.AudioDevicesToRecord" OnUpdate=@UpdateAudioDevicesToRecord />
+    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItems="@audioDeviceEnabledItems" OnUpdate=@UpdateAudioDevicesToRecord />
   </div>
 
   <div class="setting">
@@ -82,6 +82,7 @@
   private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
   private List<string> formatItems = new List<string> { "mp4", "mkv" };
   private List<ListBox.Item> audioDeviceItems = new List<ListBox.Item> { };
+  private List<string> audioDeviceEnabledItems = new List<string> { };
   private List<string> videoDeviceItems = new List<string> { "Default" };
 
   protected override void OnInitialized()
@@ -105,6 +106,11 @@
     foreach (var vidDev in allDevices.Result.Item2)
     {
       videoDeviceItems.Add(vidDev);
+    }
+
+    foreach (var ed in rs.AudioDevicesToRecord)
+    {
+      audioDeviceEnabledItems.Add(ed.Name);
     }
   }
 
@@ -140,11 +146,11 @@
     // If newValue is true add the device to AudioDevicesToRecord, otherwise remove it
     if (newValue == "true")
     {
-      rs.AudioDevicesToRecord.Add(device);
+      rs.AudioDevicesToRecord.Add(new SettingsLib.AudioDeviceToRecord { SourceNumber = 0, Name = device });
     }
     else
     {
-      rs.AudioDevicesToRecord.Remove(device);
+      rs.AudioDevicesToRecord.Remove(new SettingsLib.AudioDeviceToRecord { SourceNumber = 0, Name = device });
     }
 
     sm.UpdateSettingsFile(rs);

@@ -8,7 +8,13 @@ namespace Casterr.RecorderLib.FFmpeg
 {
   public class Device
   {
+    // Source Number
+    public int ID { get; set; }
+
+    // Name of device
     public string Name { get; set; }
+
+    // Is device an input
     public bool IsInput { get; set; }
   }
 
@@ -52,6 +58,13 @@ namespace Casterr.RecorderLib.FFmpeg
       // Loop over all lines in response
       foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
       {
+        // Get source number
+        int sourceNumber = 0;
+        if (line.ToLower().Contains("source"))
+        {
+          sourceNumber = Int32.Parse(line.ToLower().Replace("source #", ""));
+        }
+
         if (line.ToLower().Contains($"name: alsa_input")) isInputDevice = true;
         if (line.ToLower().Contains($"name: alsa_output")) isInputDevice = false;
 
@@ -59,7 +72,8 @@ namespace Casterr.RecorderLib.FFmpeg
         {
           // Add input devices to audioDevices array
           audioDevices.Add(
-            new Device{ 
+            new Device {
+              ID = sourceNumber,
               Name = line
                       .Replace("alsa.card_name = ", "")
                       .Replace("\"", "")
