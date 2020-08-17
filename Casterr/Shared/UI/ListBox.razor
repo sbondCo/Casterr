@@ -4,7 +4,7 @@
     string name = $"{item.ID}:{item.Name}";
     <div class="listBoxItem">
       <TickBox Name="@name" Checked="@EnabledItemIds.Contains(@item.ID).ToString()" OnClick=@Updated />
-      <span title="@item.Title">@item.Name</span>
+      <span class="body" title="@item.Title">@item.Name</span>
     </div>
   }
 </div>
@@ -31,7 +31,6 @@
 
   public void Updated(string name, string newValue)
   {
-    //Console.WriteLine($"{Name} {name} {newValue}");
     OnUpdate(Name, name, newValue);
   }
 }
