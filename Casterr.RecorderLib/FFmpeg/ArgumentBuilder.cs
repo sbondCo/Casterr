@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿using System.IO;
 using System.Collections.Generic;
 using Casterr.SettingsLib;
 using Casterr.HelpersLib;
 using System;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -45,13 +46,16 @@ namespace Casterr.RecorderLib.FFmpeg
       // Add x11grab
       d.Add("x11grab", $"-f x11grab");
 
+      // Region on desktop to record
+      d.Add("desktopRegion", "-i :0.0+0,0");
+
       d.Add("fps", $"-framerate {GetFPS(rs.FPS)}");
 
       d.Add("res", $"-video_size {GetResolution(rs.Resolution)}");
 
       d.Add("videoOutput", $"\"{GetVideoOutput(PathHelper.FolderPath(rs.VideoSaveFolder), DateTimeCodeConverter.Convert(rs.VideoSaveName), GetVideoFormat(rs.Format))}\"");
 
-      
+      Console.WriteLine(string.Join(" ", d.Select(x => x.Value)));
 
       return d;
     }
@@ -154,13 +158,7 @@ namespace Casterr.RecorderLib.FFmpeg
 
     private string GetVideoOutput(string folder, string name, string format)
     {
-      StringBuilder vo = new StringBuilder();
-
-      vo.Append(folder);
-      vo.Append(name);
-      vo.Append("." + format);
-
-      return vo.ToString();
+      return Path.Combine(folder, $"{name}.{format}");
     }
 
     private string GetVideoFormat(string fmt)
