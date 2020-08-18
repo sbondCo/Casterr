@@ -37,11 +37,11 @@ namespace Casterr.RecorderLib.FFmpeg
       {
         if (bits == 64)
         {
-          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-linux-amd64.zip");
+          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip");
         }
         else
         {
-          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-linux-i686.zip");
+          throw new Exception("No FFmpeg download link for 32 bit systems on Linux.");
         }
       }
 
