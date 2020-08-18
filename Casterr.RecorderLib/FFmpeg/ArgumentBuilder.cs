@@ -35,6 +35,10 @@ namespace Casterr.RecorderLib.FFmpeg
       return d;
     }
 
+    /// <summary>
+    /// Build ffmpeg args for Linux
+    /// </summary>
+    /// <returns>FFmpeg arguments for recording</returns>
     public Dictionary<string, string> ForLinux(Dictionary<string, string> d, RecordingSettings rs, DeviceManager dm)
     {
       // Add audio devices
@@ -60,6 +64,10 @@ namespace Casterr.RecorderLib.FFmpeg
       return d;
     }
 
+    /// <summary>
+    /// Build ffmpeg args for Windows
+    /// </summary>
+    /// <returns>FFmpeg arguments for recording</returns>
     public Dictionary<string, string> ForWindows(Dictionary<string, string> d, RecordingSettings rs, DeviceManager dm)
     {
       #region Add DirectShow and Configure Audio
@@ -156,11 +164,23 @@ namespace Casterr.RecorderLib.FFmpeg
       return d;
     }
 
+    /// <summary>
+    /// Get video output path
+    /// </summary>
+    /// <param name="folder">Folder to save file</param>
+    /// <param name="name">Name of file to save</param>
+    /// <param name="format">Format of file to save</param>
+    /// <returns></returns>
     private string GetVideoOutput(string folder, string name, string format)
     {
       return Path.Combine(folder, $"{name}.{format}");
     }
 
+    /// <summary>
+    /// Get video format - Default to MP4
+    /// </summary>
+    /// <param name="fmt">Video format</param>
+    /// <returns>Video format</returns>
     private string GetVideoFormat(string fmt)
     {
       // Default format to mp4
@@ -179,6 +199,11 @@ namespace Casterr.RecorderLib.FFmpeg
       return format;
     }
 
+    /// <summary>
+    /// Get Recording FPS
+    /// </summary>
+    /// <param name="fps">Recording FPS</param>
+    /// <returns>Recording FPS</returns>
     private int GetFPS(string fps)
     {
       if (fps.IsInt())
@@ -192,6 +217,11 @@ namespace Casterr.RecorderLib.FFmpeg
       }
     }
 
+    /// <summary>
+    /// Get resolution to record in
+    /// </summary>
+    /// <param name="resolution">Resolution</param>
+    /// <returns>Resolution</returns>
     private string GetResolution(string resolution)
     {
       // Default to 1920x1080

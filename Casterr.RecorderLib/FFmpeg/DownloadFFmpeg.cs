@@ -13,12 +13,21 @@ namespace Casterr.RecorderLib.FFmpeg
     static Uri DownloadUri;
     static string ZipPath;
 
+    /// <summary>
+    /// Download and extract FFmpeg
+    /// </summary>
+    /// <param name="finalPath">Final path for FFmpeg</param>
+    /// <param name="exeName">FFmpeg binary name</param>
+    /// <returns></returns>
     public static async Task Download(string finalPath, string exeName)
     {
       await DownloadZip();
       await ExtractZip(finalPath, exeName);
     }
 
+    /// <summary>
+    /// Download correct version of FFmpeg depending on your OS
+    /// </summary>
     public static async Task DownloadZip()
     {
       var bits = Environment.Is64BitOperatingSystem ? 64 : 32;
@@ -51,6 +60,11 @@ namespace Casterr.RecorderLib.FFmpeg
       await wc.DownloadFileTaskAsync(DownloadUri, ZipPath);
     }
 
+    /// <summary>
+    /// Extract FFmpeg binary from downloaded zip
+    /// </summary>
+    /// <param name="finalPath">Place to extract FFmpeg binary</param>
+    /// <param name="exeName">Name of FFmpeg binary</param>
     public static async Task ExtractZip(string finalPath, string exeName)
     {
       ZipArchive zip;
