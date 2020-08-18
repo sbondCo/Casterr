@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Casterr.HelpersLib;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -17,8 +18,6 @@ namespace Casterr.RecorderLib.FFmpeg
     [DllImport("kernel32.dll")]
     public static extern bool FreeConsole();
 
-    // FindFFmpeg ff = new FindFFmpeg();
-
     private string ffmpegPath;
     private readonly Process ffProcess = new Process();
 
@@ -32,6 +31,9 @@ namespace Casterr.RecorderLib.FFmpeg
     public async Task<string> StartProcess(string args, bool redirectOutput = false, bool redirectError = false)
     {
       ffmpegPath = await FindFFmpeg.GetPath();
+
+      // Make sure we have exec rights to ffmpeg executable
+      PermissionsHelper.GetExecRights(ffmpegPath);
 
       if (ffProcess != null)
       {
