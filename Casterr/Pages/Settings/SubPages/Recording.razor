@@ -1,5 +1,6 @@
 ﻿@page "/settings/recording"
 
+@using System.Runtime.InteropServices;
 @using Casterr.Shared.UI
 @using Casterr.SettingsLib
 @using Casterr.RecorderLib.FFmpeg
@@ -33,15 +34,19 @@
     <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
   </div>
 
-  <div class="setting">
-    <span class="title">Zero Latency:</span>
-    <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
-  </div>
+  @* Zero Latency and Ultra Fast are only options for windows device *@
+  @if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+  {
+    <div class="setting">
+      <span class="title">Zero Latency:</span>
+      <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
+    </div>
 
-  <div class="setting">
-    <span class="title">Ultra Fast:</span>
-    <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
-  </div>
+    <div class="setting">
+      <span class="title">Ultra Fast:</span>
+      <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
+    </div>
+  }
 
   <div class="setting">
     <span class="title">Audio Devices To Record:</span>
@@ -53,10 +58,17 @@
     <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
   </div>
 
-  <div class="setting">
-    <span class="title">Record Desktop Audio:</span>
-    <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
-  </div>
+  @* 
+    RecordDesktopAudio only needed on windows so that virtual-audio-capturer can be added.
+    ! This device might be added to ListBox above
+  *@
+  @if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+  {
+    <div class="setting">
+      <span class="title">Record Desktop Audio:</span>
+      <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
+    </div>
+  }
 
   <div class="setting">
     <span class="title">Thumbnail Save Folder:</span>
