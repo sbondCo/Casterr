@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Text;
+using System.IO;
 using System.Collections.Generic;
 using Casterr.SettingsLib;
 using Casterr.HelpersLib;
@@ -59,11 +60,35 @@ namespace Casterr.RecorderLib.FFmpeg
       // Recording Resolution
       d.Add("res", $"-video_size {GetResolution(rs.Resolution)}");
 
-      // Map audio/video
-      // Minus one from capacity otherwise it will add extra maps
-      for (var i = 0; i < rs.AudioDevicesToRecord.Capacity - 1; ++i)
+      // Should seperate audio tracks
+      if (rs.SeperateAudioTracks == "true")
       {
-        d.Add($"map{i}", $"-map {i}");
+        // Map audio/video
+        // Plus one to also map desktop recording
+        for (var i = 0; i < rs.AudioDevicesToRecord.Count() + 1; ++i)
+        {
+          d.Add($"map{i}", $"-map {i}");
+        }
+      }
+      else
+      {
+        // Use StringBuilder to contruct argument that records to one track
+        StringBuilder sa = new StringBuilder();
+
+        // Minus 2 from cap as to not include recording desktop
+        int cap = rs.AudioDevicesToRecord.Count();
+
+        sa.Append("-filter_complex \"");
+
+        for (var i = 0; i < cap; ++i)
+        {
+          sa.Append($"[{i}:a:0]");
+        }
+        
+        sa.Append($"amix = {cap}:longest[aout]\"");
+        sa.Append($" -map {cap}:V:0 -map \"[aout]\"");
+
+        d.Add("maps", sa.ToString());
       }
 
       // Video output path
