@@ -80,7 +80,6 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <returns>Users devices</returns>
     private async Task<(List<Device>, List<string>)> FromWindows()
     {
-
       ProcessManager process = new ProcessManager();
 
       List<Device> audioDevices = new List<Device>();
@@ -93,8 +92,6 @@ namespace Casterr.RecorderLib.FFmpeg
       bool isAudioDevice = false;
 
       Regex rx = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
-
-      
 
       // Loop over all lines in response
       foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
@@ -140,16 +137,13 @@ namespace Casterr.RecorderLib.FFmpeg
           {
             continue;
           }
-          Console.WriteLine("Starting Return 22");
 
           // Add devices to correct List, if they aren't skipped above
           if (isAudioDevice)
           {
-            Console.WriteLine("Starting Return");
             Device d = new Device();
             d.Name = val;
             audioDevices.Add(d);
-            Console.WriteLine("Returned");
           }
           else
           {
