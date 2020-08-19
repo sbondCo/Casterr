@@ -53,10 +53,20 @@ namespace Casterr.RecorderLib.FFmpeg
       // Region on desktop to record
       d.Add("desktopRegion", "-i :0.0+0,0");
 
+      // Recording FPS
       d.Add("fps", $"-framerate {GetFPS(rs.FPS)}");
 
+      // Recording Resolution
       d.Add("res", $"-video_size {GetResolution(rs.Resolution)}");
 
+      // Map audio/video
+      // Minus one from capacity otherwise it will add extra maps
+      for (var i = 0; i < rs.AudioDevicesToRecord.Capacity - 1; ++i)
+      {
+        d.Add($"map{i}", $"-map {i}");
+      }
+
+      // Video output path
       d.Add("videoOutput", $"\"{GetVideoOutput(PathHelper.FolderPath(rs.VideoSaveFolder), DateTimeCodeConverter.Convert(rs.VideoSaveName), GetVideoFormat(rs.Format))}\"");
 
       Console.WriteLine(string.Join(" ", d.Select(x => x.Value)));
