@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -25,7 +26,7 @@ namespace Casterr.RecorderLib.FFmpeg
     {
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        // return await FromWindows();
+        return await FromWindows();
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
@@ -77,17 +78,23 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Get devices in a way that works on Windows
     /// </summary>
     /// <returns>Users devices</returns>
-    private async Task<(List<string>, List<string>)> FromWindows()
+    private async Task<(List<Device>, List<string>)> FromWindows()
     {
+
       ProcessManager process = new ProcessManager();
 
-      List<string> audioDevices = new List<string>();
+      List<Device> audioDevices = new List<Device>();
       List<string> videoDevices = new List<string>();
 
       // Get devices from ffmpeg, exits on its own
+
       var response = await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", false, true);
+      Console.WriteLine("Starting Sp[ace mission");
       bool isAudioDevice = false;
+
       Regex rx = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+      
 
       // Loop over all lines in response
       foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
@@ -133,11 +140,16 @@ namespace Casterr.RecorderLib.FFmpeg
           {
             continue;
           }
+          Console.WriteLine("Starting Return 22");
 
           // Add devices to correct List, if they aren't skipped above
           if (isAudioDevice)
           {
-            audioDevices.Add(val);
+            Console.WriteLine("Starting Return");
+            Device d = new Device();
+            d.Name = val;
+            audioDevices.Add(d);
+            Console.WriteLine("Returned");
           }
           else
           {
