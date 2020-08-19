@@ -42,17 +42,16 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <returns>FFmpeg arguments for recording</returns>
     public Dictionary<string, string> ForLinux(Dictionary<string, string> d, RecordingSettings rs, DeviceManager dm)
     {
+      #region Add Pulse Inputs
       // Add audio devices
       foreach (var ad in rs.AudioDevicesToRecord)
       {
         d.Add($"pulse{ad.SourceNumber}", $"-f pulse -i {ad.SourceNumber}");
       }
+      #endregion
 
-      // Add x11grab
-      d.Add("x11grab", $"-f x11grab");
-
-      // Region on desktop to record
-      d.Add("desktopRegion", "-i :0.0+0,0");
+      #region Video Settings
+      // Put video settings before x11grab device to make sure they actually apply
 
       // Recording FPS
       d.Add("fps", $"-framerate {GetFPS(rs.FPS)}");
@@ -60,6 +59,14 @@ namespace Casterr.RecorderLib.FFmpeg
       // Recording Resolution
       d.Add("res", $"-video_size {GetResolution(rs.Resolution)}");
 
+      // Add x11grab
+      d.Add("x11grab", $"-f x11grab");
+
+      // Region on desktop to record
+      d.Add("desktopRegion", "-i :0.0+0,0");
+      #endregion
+
+      #region Audio mapping
       // Should seperate audio tracks
       if (rs.SeperateAudioTracks == "true")
       {
@@ -90,11 +97,10 @@ namespace Casterr.RecorderLib.FFmpeg
 
         d.Add("maps", sa.ToString());
       }
+      #endregion
 
       // Video output path
       d.Add("videoOutput", $"\"{GetVideoOutput(PathHelper.FolderPath(rs.VideoSaveFolder), DateTimeCodeConverter.Convert(rs.VideoSaveName), GetVideoFormat(rs.Format))}\"");
-
-      Console.WriteLine(string.Join(" ", d.Select(x => x.Value)));
 
       return d;
     }
