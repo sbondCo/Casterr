@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using Casterr.SettingsLib;
 
 namespace Casterr.RecorderLib.FFmpeg
@@ -14,9 +15,8 @@ namespace Casterr.RecorderLib.FFmpeg
       // Get settings
       sm.GetSettings(rs);
 
-      // Get video thumbnail
-      await process.StartProcess($"-y -i {videoPath} -ss 1 \"{PathHelper.FolderPath(rs.ThumbSaveFolder) + "\\" + videoName}.png\"");
-      process.StopProcess();
+      // Get video thumbnail - Closes automatically
+      await process.StartProcess($"-y -i {videoPath} -frames:v 1 -ss 1 \"{Path.Combine(PathHelper.FolderPath(rs.ThumbSaveFolder), (videoName + ".png"))}\"");
     }
   }
 }
