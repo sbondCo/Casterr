@@ -102,7 +102,6 @@ namespace Casterr.RecorderLib.FFmpeg
       // Get devices from ffmpeg, exits on its own
 
       var response = await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", false, true);
-      Console.WriteLine("Starting Sp[ace mission");
       bool isAudioDevice = false;
 
       Regex rx = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
