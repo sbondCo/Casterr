@@ -26,10 +26,7 @@ namespace Casterr.RecorderLib.FFmpeg
       // Set DownloadUri depending on OS
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        Console.WriteLine("Is Working");
         DownloadUri = new Uri($"https://ffmpeg.zeranoe.com/builds/win{bits}/static/ffmpeg-latest-win{bits}-static.zip");
-        Console.WriteLine("Is Working");
-
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
