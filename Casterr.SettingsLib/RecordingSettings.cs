@@ -29,9 +29,7 @@ namespace Casterr.SettingsLib
 
     #region Audio
     public List<AudioDeviceToRecord> AudioDevicesToRecord { get; set; } = new List<AudioDeviceToRecord> { };
-    public string AudioDevice { get; set; } = "Default";
     public string SeperateAudioTracks { get; set; } = "false";
-    public string RecordDesktopAudio { get; set; } = "true";
     #endregion
   }
 }

@@ -33,7 +33,7 @@ namespace Casterr.RecorderLib.FFmpeg
         return ForLinux(d, rs, dm);
       }
 
-      return d;
+      throw new Exception("Could not build args, OSX is not supported.");
     }
 
     /// <summary>
@@ -120,26 +120,7 @@ namespace Casterr.RecorderLib.FFmpeg
 
       if (rs.VideoDevice.ToLower().EqualsAnyOf("default", "desktop screen", dm.DesktopVideoDevice))
       {
-        string audio = string.Empty;
-
-        // Audio Device (users mic, unless they have a different weird input)
-        if (rs.AudioDevice.ToLower() != "none")
-        {
-          var allDevices = dm.GetDevices();
-
-          if (rs.AudioDevice.ToLower().EqualsAnyOf("default"))
-          {
-            // If set to default, just get first audio device ffmpeg returned
-            audio = $":audio=\"{allDevices.Result.Item1[0]}\"";
-          }
-          else
-          {
-            // else, get audio device from settings
-            audio = $":audio=\"{rs.AudioDevice}\"";
-          }
-        }
-
-        videoDevice = $"-i video=\"{dm.DesktopVideoDevice}\"{audio}";
+        videoDevice = $"-i video=\"{dm.DesktopVideoDevice}\"";
       }
       else
       {
@@ -148,30 +129,44 @@ namespace Casterr.RecorderLib.FFmpeg
 
       d.Add("videoDevice", videoDevice);
 
-      // Should Record Desktop Audio
-      if (rs.RecordDesktopAudio == "true")
+      // Add audio devices
+      string audioDevices = String.Empty;
+      foreach (var ad in rs.AudioDevicesToRecord)
       {
-        d.Add("recordDesktopAudio", $"-f dshow -i audio=\"{dm.DesktopAudioDevice}\"");
+        audioDevices += $"-f dshow -i audio=\"{ad.Name}\"";
       }
 
-      // Only check if should seperate tracks if recording desktop and mic, so there is more than 1 input device
-      if (rs.RecordDesktopAudio.ToLower() == "true" && rs.AudioDevice.ToLower() != "none")
+      d.Add($"audioDevices", audioDevices);
+
+      // Should seperate audio tracks
+      if (rs.SeperateAudioTracks == "true")
       {
-        string seperateAudioTracks;
-
-        // Should seperate audio tracks
-        if (rs.SeperateAudioTracks == "true")
+        // Map audio/video
+        // Plus one to also map desktop recording
+        for (var i = 0; i < rs.AudioDevicesToRecord.Count() + 1; ++i)
         {
-          // Seperate audio tracks
-          seperateAudioTracks = "-map 0 -map 1";
+          d.Add($"map{i}", $"-map {i}");
         }
-        else
-        {
-          // Do not seperate audio tracks
-          seperateAudioTracks = "-filter_complex \"[0:a:0][1:a:0]amix = 2:longest[aout]\" -map 0:V:0 -map \"[aout]\"";
-        }
+      }
+      else
+      {
+        // Use StringBuilder to contruct argument that records to one track
+        StringBuilder sa = new StringBuilder();
 
-        d.Add("seperateAudioTracks", seperateAudioTracks);
+        // Minus 2 from cap as to not include recording desktop
+        int cap = rs.AudioDevicesToRecord.Count();
+
+        sa.Append("-filter_complex \"");
+
+        for (var i = 0; i < cap; ++i)
+        {
+          sa.Append($"[{i}:a:0]");
+        }
+        
+        sa.Append($"amix = {cap}:longest[aout]\"");
+        sa.Append($" -map {cap}:V:0 -map \"[aout]\"");
+
+        d.Add("maps", sa.ToString());
       }
       #endregion
 
@@ -271,7 +266,7 @@ namespace Casterr.RecorderLib.FFmpeg
       switch (resolution)
       {
         case "In-Game":
-          throw new NotImplementedException();
+          throw new NotImplementedException("In-Game directive not currently supported.");
         case "2160p":
           res = "3840x2160";
           break;

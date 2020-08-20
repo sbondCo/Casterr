@@ -58,18 +58,6 @@
     <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
   </div>
 
-  @* 
-    RecordDesktopAudio only needed on windows so that virtual-audio-capturer can be added.
-    ! This device might be added to ListBox above
-  *@
-  @if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-  {
-    <div class="setting">
-      <span class="title">Record Desktop Audio:</span>
-      <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
-    </div>
-  }
-
   <div class="setting">
     <span class="title">Thumbnail Save Folder:</span>
     <TextBox Name="thumbSaveFolder" Placeholder="@rs.ThumbSaveFolder" OnLoseFocus=@UpdateSettings>
@@ -101,17 +89,11 @@
   {
     sm.GetSettings(rs);
 
-    // Add device from settings to appropriate list
-    @* audioDeviceItems.Add(rs.AudioDevice);
-    videoDeviceItems.Add(rs.VideoDevice); *@
-
     var allDevices = dm.GetDevices();
 
     foreach (var audDev in allDevices.Result.Item1)
     {
       // Add audio device to list and show if it's an input or output device
-      @* audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}"); *@
-
       audioDeviceItems.Add(new ListBox.Item{ ID = audDev.ID, Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
     }
 
@@ -194,14 +176,8 @@
       case "ultraFast":
         rs.UltraFast = newValue;
         break;
-      case "audioDevice":
-        rs.AudioDevice = newValue;
-        break;
       case "seperateAudioTracks":
         rs.SeperateAudioTracks = newValue;
-        break;
-      case "recordDesktopAudio":
-        rs.RecordDesktopAudio = newValue;
         break;
       case "thumbSaveFolder":
         rs.ThumbSaveFolder = newValue;
