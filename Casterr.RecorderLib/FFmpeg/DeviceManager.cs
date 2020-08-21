@@ -146,7 +146,6 @@ namespace Casterr.RecorderLib.FFmpeg
           // Add devices to correct List, if they aren't skipped above
           if (isAudioDevice)
           {
-            Console.WriteLine(currentIteration);
             audioDevices.Add(new Device {
               // Use currentIteration as device ID for now
               // ! This may cause a bug that requires users to re-apply all active devices if plugging in a new device.
