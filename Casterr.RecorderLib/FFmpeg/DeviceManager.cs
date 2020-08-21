@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
   public class Device
   {
+    // Source Number
+    public int ID { get; set; }
+
+    // Name of device
     public string Name { get; set; }
+
+    // Is device an input
     public bool IsInput { get; set; }
   }
 
@@ -49,10 +54,17 @@ namespace Casterr.RecorderLib.FFmpeg
 
       // If current device is an input device (eg. microphone)
       bool isInputDevice = false;
+      int sourceNumber = 0;
 
       // Loop over all lines in response
       foreach (var line in response.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
       {
+        // Get source number
+        if (line.ToLower().Contains("source"))
+        {
+          sourceNumber = Int32.Parse(line.ToLower().Replace("source #", ""));
+        }
+
         if (line.ToLower().Contains($"name: alsa_input")) isInputDevice = true;
         if (line.ToLower().Contains($"name: alsa_output")) isInputDevice = false;
 
@@ -60,7 +72,8 @@ namespace Casterr.RecorderLib.FFmpeg
         {
           // Add input devices to audioDevices array
           audioDevices.Add(
-            new Device{ 
+            new Device {
+              ID = sourceNumber,
               Name = line
                       .Replace("alsa.card_name = ", "")
                       .Replace("\"", "")
@@ -86,9 +99,9 @@ namespace Casterr.RecorderLib.FFmpeg
       List<string> videoDevices = new List<string>();
 
       // Get devices from ffmpeg, exits on its own
-
-      var response = await process.StartProcess("ffmpeg -list_devices true -f dshow -i dummy", false, true);
+      var response = await process.StartProcess("-list_devices true -f dshow -i dummy", false, true);
       bool isAudioDevice = false;
+      int currentIteration = 0;
 
       Regex rx = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
@@ -130,25 +143,23 @@ namespace Casterr.RecorderLib.FFmpeg
             continue;
           }
 
-          // Skip if DesktopAudioDevice, because this is
-          // a toggle in settings, and won't be shown in a ListBox
-          if (val.ToLower().Contains(DesktopAudioDevice))
-          {
-            continue;
-          }
-
           // Add devices to correct List, if they aren't skipped above
           if (isAudioDevice)
           {
-            Device d = new Device();
-            d.Name = val;
-            audioDevices.Add(d);
+            audioDevices.Add(new Device {
+              // Use currentIteration as device ID for now
+              // ! This may cause a bug that requires users to re-apply all active devices if plugging in a new device.
+              ID = currentIteration,
+              Name = val
+            });
           }
           else
           {
             videoDevices.Add(val);
           }
         }
+
+        currentIteration++;
       }
 
       return (audioDevices, videoDevices);

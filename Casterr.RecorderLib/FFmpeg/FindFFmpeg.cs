@@ -38,12 +38,10 @@ namespace Casterr.RecorderLib.FFmpeg
       string execPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
       string ffmpegPath = Path.Combine(execPath, FFmpegExeName);
-      Console.WriteLine(ffmpegPath);
 
       // If FFmpegPath does not exist, go download it
       if (!File.Exists(ffmpegPath))
       {
-        // DownloadFFmpeg df = new DownloadFFmpeg();
         await DownloadFFmpeg.Download(ffmpegPath, FFmpegExeName);
       }
 

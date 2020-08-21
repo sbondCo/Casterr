@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
+using Casterr.HelpersLib;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -16,8 +16,6 @@ namespace Casterr.RecorderLib.FFmpeg
     public static extern bool AttachConsole(int dwProcessId);
     [DllImport("kernel32.dll")]
     public static extern bool FreeConsole();
-
-    // FindFFmpeg ff = new FindFFmpeg();
 
     private string ffmpegPath;
     private readonly Process ffProcess = new Process();
@@ -33,6 +31,9 @@ namespace Casterr.RecorderLib.FFmpeg
     {
       ffmpegPath = await FindFFmpeg.GetPath();
 
+      // Make sure we have exec rights to ffmpeg executable
+      PermissionsHelper.GetExecRights(ffmpegPath);
+
       if (ffProcess != null)
       {
         ffProcess.StartInfo.FileName = ffmpegPath;
@@ -40,6 +41,7 @@ namespace Casterr.RecorderLib.FFmpeg
         ffProcess.StartInfo.CreateNoWindow = true;
         ffProcess.StartInfo.RedirectStandardOutput = redirectOutput;
         ffProcess.StartInfo.RedirectStandardError = redirectError;
+        ffProcess.StartInfo.RedirectStandardInput = true;
         ffProcess.Start();
 
         Console.WriteLine("Started FFmpeg");
@@ -73,37 +75,26 @@ namespace Casterr.RecorderLib.FFmpeg
     /// </summary>
     public void StopProcess()
     {
-      try
+      if (ffProcess != null)
       {
-        if (ffProcess != null)
+        Console.WriteLine("Stopping FFmpeg");
+
+        try
         {
-          Console.WriteLine("Stopping FFmpeg");
+          // Send 'q' to ffmpeg process, which will make it quit
+          ffProcess.StandardInput.WriteLine("q");
 
-          // Try closing process twice
-          // Temporary solution
-          int i = 0;
-          while (i <= 1)
-          {
-            AttachConsole(ffProcess.Id);
-            SetConsoleCtrlHandler(IntPtr.Zero, true);
-            GenerateConsoleCtrlEvent(0, 0);
-
-            Thread.Sleep(2000);
-
-            SetConsoleCtrlHandler(IntPtr.Zero, false);
-            FreeConsole();
-
-            i++;
-          }
-
-          Console.WriteLine("Stopped FFmpeg");
+          // Wait for ffmpeg process to exit
+          ffProcess.WaitForExit();
         }
-        else
+        catch (Exception)
         {
-          throw new RecorderException("Can't stop recording, when not already recording.");
+          throw new RecorderException("Error trying to stop recording.");
         }
+
+        Console.WriteLine("Stopped FFmpeg");
       }
-      catch (Exception)
+      else
       {
         throw new RecorderException("Can't stop recording, when not already recording.");
       }

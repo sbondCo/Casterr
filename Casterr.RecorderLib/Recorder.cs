@@ -31,7 +31,7 @@ namespace Casterr.RecorderLib
       // Stop recording process
       process.StopProcess();
 
-      // Get video thumbnail
+      // Make video thumbnail
       await VideoThumbnailer.Create(args["videoOutput"], Path.GetFileName(args["videoOutput"]).Replace("\"", ""));
     }
   }

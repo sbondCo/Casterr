@@ -8,9 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr", "Casterr\Casterr.
 		{7B145375-9AF0-484A-B231-9F63643283B1} = {7B145375-9AF0-484A-B231-9F63643283B1}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.RecorderLib", "Casterr.RecorderLib\Casterr.RecorderLib.csproj", "{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.SettingsLib", "Casterr.SettingsLib\Casterr.SettingsLib.csproj", "{7B145375-9AF0-484A-B231-9F63643283B1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.RecorderLib", "Casterr.RecorderLib\Casterr.RecorderLib.csproj", "{F084E714-1C48-4FEA-A4F4-23A3D815BDAF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casterr.HelpersLib", "Casterr.HelpersLib\Casterr.HelpersLib.csproj", "{13FB70E2-7676-4AD0-8C97-658AE3622E68}"
 EndProject
