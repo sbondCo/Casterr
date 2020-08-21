@@ -91,15 +91,12 @@
 
     var allDevices = dm.GetDevices();
 
+    #region Audio Devices
+    // Add audio devices to ListBox
     foreach (var audDev in allDevices.Result.Item1)
     {
       // Add audio device to list and show if it's an input or output device
       audioDeviceItems.Add(new ListBox.Item{ ID = audDev.ID, Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
-    }
-
-    foreach (var vidDev in allDevices.Result.Item2)
-    {
-      videoDeviceItems.Add(vidDev);
     }
 
     // Add enabled audio devices
@@ -107,6 +104,15 @@
     {
       audioDeviceEnabledItems.Add(ed.SourceNumber);
     }
+    #endregion
+
+    #region Video Devices
+    // Add videoDevices
+    foreach (var vidDev in allDevices.Result.Item2)
+    {
+      videoDeviceItems.Add(vidDev);
+    }
+    #endregion
   }
 
   private async Task SelectFolder(string which)

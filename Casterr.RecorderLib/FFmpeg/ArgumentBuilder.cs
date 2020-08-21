@@ -111,11 +111,21 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <returns>FFmpeg arguments for recording</returns>
     public Dictionary<string, string> ForWindows(Dictionary<string, string> d, RecordingSettings rs, DeviceManager dm)
     {
-      #region Add DirectShow and Configure Audio
+      #region Add audio devices
+      string audioDevices = String.Empty;
+
+      foreach (var ad in rs.AudioDevicesToRecord)
+      {
+        audioDevices += $" -f dshow -i audio=\"{ad.Name}\"";
+      }
+
+      d.Add($"audioDevices", audioDevices);
+      #endregion
+
+      #region Add video device
       // Add directshow
       d.Add("dshow", $"-f dshow");
 
-      // Add video device
       string videoDevice;
 
       if (rs.VideoDevice.ToLower().EqualsAnyOf("default", "desktop screen", dm.DesktopVideoDevice))
@@ -128,17 +138,9 @@ namespace Casterr.RecorderLib.FFmpeg
       }
 
       d.Add("videoDevice", videoDevice);
+      #endregion
 
-      // Add audio devices
-      string audioDevices = String.Empty;
-      foreach (var ad in rs.AudioDevicesToRecord)
-      {
-        audioDevices += $"-f dshow -i audio=\"{ad.Name}\"";
-      }
-
-      d.Add($"audioDevices", audioDevices);
-
-      // Should seperate audio tracks
+      #region Audio mapping
       if (rs.SeperateAudioTracks == "true")
       {
         // Map audio/video
