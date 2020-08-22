@@ -1,5 +1,6 @@
 ﻿@page "/settings/recording"
 
+@using System.Runtime.InteropServices;
 @using Casterr.Shared.UI
 @using Casterr.SettingsLib
 @using Casterr.RecorderLib.FFmpeg
@@ -33,29 +34,28 @@
     <DropDown Name="format" Items="@formatItems" Placeholder="@rs.Format" OnSelectedChanged=@UpdateSettings />
   </div>
 
-  <div class="setting">
-    <span class="title">Zero Latency:</span>
-    <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
-  </div>
+  @* Zero Latency and Ultra Fast are only options for windows device *@
+  @if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+  {
+    <div class="setting">
+      <span class="title">Zero Latency:</span>
+      <TickBox Name="zeroLatency" Checked="@rs.ZeroLatency" OnClick=@UpdateSettings />
+    </div>
 
-  <div class="setting">
-    <span class="title">Ultra Fast:</span>
-    <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
-  </div>
+    <div class="setting">
+      <span class="title">Ultra Fast:</span>
+      <TickBox Name="ultraFast" Checked="@rs.UltraFast" OnClick=@UpdateSettings />
+    </div>
+  }
 
   <div class="setting">
     <span class="title">Audio Devices To Record:</span>
-    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItems="@rs.AudioDevicesToRecord" OnUpdate=@UpdateAudioDevicesToRecord />
+    <ListBox Name="audioDevicesToRecord" Items="@audioDeviceItems" EnabledItemIds="@audioDeviceEnabledItems" OnUpdate=@UpdateAudioDevicesToRecord />
   </div>
 
   <div class="setting">
     <span class="title">Seperate Audio Tracks:</span>
     <TickBox Name="seperateAudioTracks" Checked="@rs.SeperateAudioTracks" OnClick=@UpdateSettings />
-  </div>
-
-  <div class="setting">
-    <span class="title">Record Desktop Audio:</span>
-    <TickBox Name="recordDesktopAudio" Checked="@rs.RecordDesktopAudio" OnClick=@UpdateSettings />
   </div>
 
   <div class="setting">
@@ -82,30 +82,37 @@
   private List<string> resolutionItems = new List<string> { "In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p" };
   private List<string> formatItems = new List<string> { "mp4", "mkv" };
   private List<ListBox.Item> audioDeviceItems = new List<ListBox.Item> { };
+  private List<int> audioDeviceEnabledItems = new List<int> { };
   private List<string> videoDeviceItems = new List<string> { "Default" };
 
   protected override void OnInitialized()
   {
     sm.GetSettings(rs);
 
-    // Add device from settings to appropriate list
-    @* audioDeviceItems.Add(rs.AudioDevice);
-    videoDeviceItems.Add(rs.VideoDevice); *@
-
     var allDevices = dm.GetDevices();
 
+    #region Audio Devices
+    // Add audio devices to ListBox
     foreach (var audDev in allDevices.Result.Item1)
     {
       // Add audio device to list and show if it's an input or output device
-      @* audioDeviceItems.Add($"{(audDev.IsInput ? "(IN)" : "(OUT)")} {audDev.Name}"); *@
-
-      audioDeviceItems.Add(new ListBox.Item{ Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
+      audioDeviceItems.Add(new ListBox.Item{ ID = audDev.ID, Name = audDev.Name, Title = audDev.IsInput ? "Input Device" : "Output Device"});
     }
 
+    // Add enabled audio devices
+    foreach (var ed in rs.AudioDevicesToRecord)
+    {
+      audioDeviceEnabledItems.Add(ed.SourceNumber);
+    }
+    #endregion
+
+    #region Video Devices
+    // Add videoDevices
     foreach (var vidDev in allDevices.Result.Item2)
     {
       videoDeviceItems.Add(vidDev);
     }
+    #endregion
   }
 
   private async Task SelectFolder(string which)
@@ -137,14 +144,17 @@
 
   public void UpdateAudioDevicesToRecord(string name, string device, string newValue)
   {
+    string[] deviceDetails = device.Split(":");
+
     // If newValue is true add the device to AudioDevicesToRecord, otherwise remove it
     if (newValue == "true")
     {
-      rs.AudioDevicesToRecord.Add(device);
+      rs.AudioDevicesToRecord.Add(new SettingsLib.AudioDeviceToRecord { SourceNumber = Int32.Parse(deviceDetails[0]), Name = deviceDetails[1] });
     }
     else
     {
-      rs.AudioDevicesToRecord.Remove(device);
+      SettingsLib.AudioDeviceToRecord toRemove = rs.AudioDevicesToRecord.Where(u => u.SourceNumber == Int32.Parse(deviceDetails[0])).FirstOrDefault();
+      rs.AudioDevicesToRecord.Remove(toRemove);
     }
 
     sm.UpdateSettingsFile(rs);
@@ -172,14 +182,8 @@
       case "ultraFast":
         rs.UltraFast = newValue;
         break;
-      case "audioDevice":
-        rs.AudioDevice = newValue;
-        break;
       case "seperateAudioTracks":
         rs.SeperateAudioTracks = newValue;
-        break;
-      case "recordDesktopAudio":
-        rs.RecordDesktopAudio = newValue;
         break;
       case "thumbSaveFolder":
         rs.ThumbSaveFolder = newValue;

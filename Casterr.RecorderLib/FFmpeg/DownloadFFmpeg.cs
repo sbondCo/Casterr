@@ -13,12 +13,21 @@ namespace Casterr.RecorderLib.FFmpeg
     static Uri DownloadUri;
     static string ZipPath;
 
+    /// <summary>
+    /// Download and extract FFmpeg
+    /// </summary>
+    /// <param name="finalPath">Final path for FFmpeg</param>
+    /// <param name="exeName">FFmpeg binary name</param>
+    /// <returns></returns>
     public static async Task Download(string finalPath, string exeName)
     {
       await DownloadZip();
       await ExtractZip(finalPath, exeName);
     }
 
+    /// <summary>
+    /// Download correct version of FFmpeg depending on your OS
+    /// </summary>
     public static async Task DownloadZip()
     {
       var bits = Environment.Is64BitOperatingSystem ? 64 : 32;
@@ -26,10 +35,7 @@ namespace Casterr.RecorderLib.FFmpeg
       // Set DownloadUri depending on OS
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        Console.WriteLine("Is Working");
         DownloadUri = new Uri($"https://ffmpeg.zeranoe.com/builds/win{bits}/static/ffmpeg-latest-win{bits}-static.zip");
-        Console.WriteLine("Is Working");
-
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
@@ -40,11 +46,11 @@ namespace Casterr.RecorderLib.FFmpeg
       {
         if (bits == 64)
         {
-          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-linux-amd64.zip");
+          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip");
         }
         else
         {
-          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-linux-i686.zip");
+          throw new Exception("No FFmpeg download link for 32 bit systems on Linux.");
         }
       }
 
@@ -54,6 +60,11 @@ namespace Casterr.RecorderLib.FFmpeg
       await wc.DownloadFileTaskAsync(DownloadUri, ZipPath);
     }
 
+    /// <summary>
+    /// Extract FFmpeg binary from downloaded zip
+    /// </summary>
+    /// <param name="finalPath">Place to extract FFmpeg binary</param>
+    /// <param name="exeName">Name of FFmpeg binary</param>
     public static async Task ExtractZip(string finalPath, string exeName)
     {
       ZipArchive zip;

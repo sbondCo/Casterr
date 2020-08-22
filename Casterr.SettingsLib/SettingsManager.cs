@@ -65,15 +65,15 @@ namespace Casterr.SettingsLib
             var newVal = definedSettings.GetValue(prop.Name);
 
             // Define settings in different ways depending on their type
-            if (prop.PropertyType == typeof(List<string>))
+            if (prop.PropertyType == typeof(List<AudioDeviceToRecord>))
             {
               // Create new temporary list
-              List<string> values = new List<string>();
+              List<AudioDeviceToRecord> values = new List<AudioDeviceToRecord>();
 
               // Add all newValues from json array to list
               foreach (var nv in newVal)
               {
-                values.Add(nv.ToString());
+                values.Add(new AudioDeviceToRecord { SourceNumber = Int32.Parse(nv["SourceNumber"].ToString()), Name = nv["Name"].ToString() });
               }
 
               // Set prop to values list

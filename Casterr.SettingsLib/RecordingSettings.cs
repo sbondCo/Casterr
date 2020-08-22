@@ -4,6 +4,12 @@ using System.IO;
 
 namespace Casterr.SettingsLib
 {
+  public class AudioDeviceToRecord
+  {
+    public int SourceNumber { get; set; }
+    public string Name { get; set; }
+  }
+
   public class RecordingSettings
   {
     #region General
@@ -22,10 +28,8 @@ namespace Casterr.SettingsLib
     #endregion
 
     #region Audio
-    public List<string> AudioDevicesToRecord { get; set; } = new List<string> { "Default" };
-    public string AudioDevice { get; set; } = "Default";
+    public List<AudioDeviceToRecord> AudioDevicesToRecord { get; set; } = new List<AudioDeviceToRecord> { };
     public string SeperateAudioTracks { get; set; } = "false";
-    public string RecordDesktopAudio { get; set; } = "true";
     #endregion
   }
 }
