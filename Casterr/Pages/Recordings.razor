@@ -5,7 +5,7 @@
     @for (int i = 0; i < 6; i++)
     {
       <div class="thumb">
-        <img src="https://i.imgur.com/PRImvGE.png" alt="" />
+        <img src="data:image/jpeg;base64,@Convert.ToBase64String(System.IO.File.ReadAllBytes("/home/sbondo/Casterr/Thumbs/test.jpg"))" alt="" />
 
         <div class="info">
           <span class="title">Trock Dioes</span>
