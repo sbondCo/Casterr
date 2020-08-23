@@ -5,17 +5,19 @@
     @foreach (var v in MediaLib.Recordings.Get())
     {
       <div class="thumb">
-        @if (v.ThumbPath != null)
-        {
-          <img src="data:image/jpeg;base64,@Convert.ToBase64String(System.IO.File.ReadAllBytes(v.ThumbPath))" alt="" />
-        }
-        else
-        {
-          <span>No Thumbnail Found</span>
-        }
+        <div class="inner">
+          @if (v.ThumbPath != null)
+          {
+            <img src="data:image/jpeg;base64,@Convert.ToBase64String(System.IO.File.ReadAllBytes(v.ThumbPath))" alt="" />
+          }
+          else
+          {
+            <span class="noThumb">No Thumbnail Found</span>
+          }
 
-        <div class="info">
-          <span class="title">Trock Dioes</span>
+          <div class="info">
+            <span class="title">Trock Dioes</span>
+          </div>
         </div>
       </div>
     }
