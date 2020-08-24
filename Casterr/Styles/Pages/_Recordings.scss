@@ -55,19 +55,22 @@
           height: 40px;
           padding: 0 10px;
           line-height: 40px;
-          background-color: rgba(30, 30, 37, .5);
+          background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
           font-weight: 700;
+          transition: background-color 250ms ease-in-out;
         }
 
         .edit {
-          display: none;
+          display: flex;
           justify-content: center;
           align-items: center;
           position: absolute;
+          opacity: 0;
           top: 0;
           bottom: 0;
           left: 0;
           right: 0;
+          transition: opacity 250ms ease-in-out;
 
           svg {
             fill: $textPrimary;
@@ -75,8 +78,14 @@
           }
         }
 
-        &:hover > .edit {
-          display: flex;
+        &:hover {
+          > .title {
+            background-color: $darkAccentColor;
+          }
+
+          > .edit {
+            opacity: 1;
+          }
         }
       }
     }
