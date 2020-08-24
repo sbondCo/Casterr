@@ -8,15 +8,6 @@ namespace Casterr.RecorderLib.FFmpeg
 {
   public class ProcessManager
   {
-    [DllImport("kernel32.dll")]
-    public static extern bool GenerateConsoleCtrlEvent(int dwCtrlEvent, int dwProcessGroupId);
-    [DllImport("kernel32.dll")]
-    public static extern bool SetConsoleCtrlHandler(IntPtr handlerRoutine, bool add);
-    [DllImport("kernel32.dll")]
-    public static extern bool AttachConsole(int dwProcessId);
-    [DllImport("kernel32.dll")]
-    public static extern bool FreeConsole();
-
     private string ffmpegPath;
     private readonly Process ffProcess = new Process();
 
