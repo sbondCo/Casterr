@@ -35,22 +35,48 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 206px;
+        width: 100%;
+        height: 100%;
         font-size: 25px;
       }
   
       .info {
         position: absolute;
-        bottom: 0;
-        right: 0;
+        top: 0;
+        height: 100%;
         width: 100%;
-        height: 40px;
-        padding: 0 10px;
-        line-height: 40px;
-        background-color: rgba(30, 30, 37, .5);
-  
+        cursor: pointer;
+    
         .title {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 100%;
+          height: 40px;
+          padding: 0 10px;
+          line-height: 40px;
+          background-color: rgba(30, 30, 37, .5);
           font-weight: 700;
+        }
+
+        .edit {
+          display: none;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+
+          svg {
+            fill: $textPrimary;
+            filter: drop-shadow(0 0 5px $primaryColor);
+          }
+        }
+
+        &:hover > .edit {
+          display: flex;
         }
       }
     }
