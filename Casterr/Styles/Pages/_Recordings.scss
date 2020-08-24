@@ -47,7 +47,7 @@
         width: 100%;
         cursor: pointer;
     
-        .title {
+        .bar {
           position: absolute;
           bottom: 0;
           right: 0;
@@ -56,8 +56,22 @@
           padding: 0 10px;
           line-height: 40px;
           background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
-          font-weight: 700;
           transition: background-color 250ms ease-in-out;
+
+          .title {
+            font-weight: 700;
+          }
+
+          .videoInfo {
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+
+            span {
+              padding: 5px;
+              font-size: 15px;
+            }
+          }
         }
 
         .edit {
