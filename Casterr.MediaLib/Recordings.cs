@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,11 +23,13 @@ namespace Casterr.MediaLib
 
       foreach (var v in videos)
       {
+        var fi = new FileInfo(v);
         var thumbPath = Path.Combine(rs.ThumbSaveFolder, $"{Path.GetFileName(v)}.png");
 
         recordings.Add(new Recording {
           VideoPath = v,
-          ThumbPath = (File.Exists(thumbPath)) ? thumbPath : null
+          ThumbPath = (File.Exists(thumbPath)) ? thumbPath : null,
+          FileSize = fi.Length
         });
       }
 
