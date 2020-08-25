@@ -2,7 +2,7 @@
 
 <div class="recordingsContainer">
   <div class="thumbContainer">
-    @foreach (var v in MediaLib.Recordings.Get())
+    @foreach (var v in MediaLib.Recordings.Get().Result)
     {
       <div class="thumb">
         <div class="inner">
@@ -20,7 +20,7 @@
               <span class="title">Trock Dioes</span>
 
               <div class="videoInfo">
-                <span>198 Min</span>
+                <span>@v.Duration Min</span>
                 <span>@v.FileSize.ToReadableFileSize()</span>
               </div>
             </div>

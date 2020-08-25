@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
+    <ProjectReference Include="..\Casterr.RecorderLib\Casterr.RecorderLib.csproj" />
   </ItemGroup>
 
 </Project>
