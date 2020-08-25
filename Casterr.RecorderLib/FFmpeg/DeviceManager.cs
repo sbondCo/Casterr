@@ -99,7 +99,7 @@ namespace Casterr.RecorderLib.FFmpeg
       List<string> videoDevices = new List<string>();
 
       // Get devices from ffmpeg, exits on its own
-      var response = await process.StartProcess("-list_devices true -f dshow -i dummy", false, true);
+      var response = await process.StartProcess("-list_devices true -f dshow -i dummy", "ffmpeg", false, true);
       bool isAudioDevice = false;
       int currentIteration = 0;
 
