@@ -78,7 +78,15 @@ namespace Casterr.RecorderLib.FFmpeg
         // Extract ffFiles to folder current app is being run from
         foreach (var f in ffFiles)
         {
-          f.ExtractToFile(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), f.Name), true);
+          var dest = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), f.Name);
+
+          // Don't extract if file already exists
+          // This avoids a 'file already exists' error when extracting ...
+          // ... without overwrite if file already exists and it has exec rights
+          if (!File.Exists(dest))
+          {
+            f.ExtractToFile(Path.Combine(dest));
+          }
         }
 
         // Dispose and delete zip file
