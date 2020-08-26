@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
     <ProjectReference Include="..\Casterr.RecorderLib\Casterr.RecorderLib.csproj" />
   </ItemGroup>
