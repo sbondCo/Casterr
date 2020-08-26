@@ -33,6 +33,9 @@ namespace Casterr.RecorderLib
 
       // Make video thumbnail
       await VideoThumbnailer.Create(args["videoOutput"], Path.GetFileName(args["videoOutput"]).Replace("\"", ""));
+
+      // Add video to PastRecordings
+      await Recordings.Add(args["videoOutput"].Replace("\"", ""));
     }
   }
 }

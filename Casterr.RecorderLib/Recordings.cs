@@ -1,25 +1,20 @@
-using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using Casterr.SettingsLib;
 using Casterr.RecorderLib.FFmpeg;
-using Casterr.HelpersLib;
 using Newtonsoft.Json.Linq;
+using System;
 
-namespace Casterr.MediaLib
+namespace Casterr.RecorderLib
 {
   public static class Recordings
   {
-    public static async Task<List<Recording>> Get()
+    public static List<Recording> Get()
     {
       List<Recording> recordings = new List<Recording>();
       SettingsManager sm = new SettingsManager();
-      RecordingSettings rs = new RecordingSettings();
-
-      sm.GetSettings(rs);
 
       // Deserialize past recordings into array
       var videos = JsonConvert.DeserializeObject<JArray>(
@@ -29,7 +24,7 @@ namespace Casterr.MediaLib
       foreach (var v in videos)
       {
         var videoPath = (string) v["VideoPath"];
-        var thumbPath = Path.Combine(rs.ThumbSaveFolder, $"{Path.GetFileName(videoPath)}.png");
+        var thumbPath = (string) v["ThumbPath"];
         var fileSize = (long) v["FileSize"];
         var fps = (string) v["FPS"];
         var duration = (string) v["Duration"];
@@ -46,14 +41,24 @@ namespace Casterr.MediaLib
       return recordings;
     }
 
-    private static async Task<Dictionary<string, string>> GetVideoInfo(string video)
+    public static async Task Add(string videoPath)
     {
       var ff = new ProcessManager();
-      var d = new Dictionary<string, string>();
+      var rc = new Recording();
+      var sm = new SettingsManager();
+      var rs = new RecordingSettings();
+      var sw = new StreamWriter(sm.GetFilePath("PastRecordings.json"), true);
 
+      sm.GetSettings(rs);
+
+      rc.VideoPath = videoPath;
+      rc.ThumbPath = Path.Combine(rs.ThumbSaveFolder, $"{Path.GetFileName(videoPath)}.png");
+      rc.FileSize = new FileInfo(videoPath).Length;
+
+      #region Get Infro from ffprobe (fps, duration)
       // Query ffprobe to get video duration and fps
       var info = await ff.StartProcess(
-        $"-v error -select_streams v:0 -show_entries format=duration -sexagesimal -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1 \"{video}\"",
+        $"-v error -select_streams v:0 -show_entries format=duration -sexagesimal -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1 \"{videoPath}\"",
         "ffprobe",
         true,
         true
@@ -65,17 +70,23 @@ namespace Casterr.MediaLib
         // Get framerate
         if (line.ToLower().Contains("avg_frame_rate"))
         {
-          d.Add("fps", line.ToLower().Replace("avg_frame_rate=", ""));
+          rc.FPS = line.ToLower().Replace("avg_frame_rate=", "");
         }
 
         // Get duration
         if (line.ToLower().Contains("duration"))
         {
-          d.Add("duration", line.ToLower().Replace("duration=", ""));
+          rc.Duration = line.ToLower().Replace("duration=", "");
         }
       }
+      #endregion
 
-      return d;
+      // Serialize json from Recording object
+      var json = (JObject) JToken.FromObject(rc);
+
+      // If file is empty then append json normally, if it isn't then append json starting with a ','
+      sw.Write((new FileInfo(sm.GetFilePath("PastRecordings.json")).Length == 0) ? json.ToString() : $",{json}");
+      sw.Close();
     }
   }
 }

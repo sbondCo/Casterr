@@ -1,4 +1,4 @@
-namespace Casterr.MediaLib
+namespace Casterr.RecorderLib
 {
   public class Recording
   {
