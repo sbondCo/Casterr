@@ -29,6 +29,13 @@ namespace Casterr.RecorderLib
         var fps = (string) v["FPS"];
         var duration = (string) v["Duration"];
 
+        // Skip this iteration if video path doesn't exist
+        if (!File.Exists(videoPath))
+        {
+          continue;
+        }
+
+        // Add recording to list
         recordings.Add(new Recording {
           VideoPath = videoPath,
           ThumbPath = (File.Exists(thumbPath)) ? thumbPath : null,
@@ -51,8 +58,13 @@ namespace Casterr.RecorderLib
 
       sm.GetSettings(rs);
 
+      // Video Path
       rc.VideoPath = videoPath;
+
+      // Thumbnail Path
       rc.ThumbPath = Path.Combine(rs.ThumbSaveFolder, $"{Path.GetFileName(videoPath)}.png");
+
+      // File Size
       rc.FileSize = new FileInfo(videoPath).Length;
 
       #region Get Infro from ffprobe (fps, duration)
