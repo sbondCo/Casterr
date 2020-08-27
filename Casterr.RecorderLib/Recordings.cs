@@ -47,7 +47,7 @@ namespace Casterr.RecorderLib
       var rc = new Recording();
       var sm = new SettingsManager();
       var rs = new RecordingSettings();
-      var sw = new StreamWriter(sm.GetFilePath("PastRecordings.json"), true);
+      using var sw = new StreamWriter(sm.GetFilePath("PastRecordings.json"), true);
 
       sm.GetSettings(rs);
 
