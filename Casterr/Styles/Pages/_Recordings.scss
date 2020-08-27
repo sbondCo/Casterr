@@ -4,6 +4,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .noRecordings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 86px);
+    font-size: 32px;
+  }
 }
 
 .thumbContainer {
