@@ -1,11 +1,12 @@
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Casterr.SettingsLib;
 using Casterr.RecorderLib.FFmpeg;
-using Newtonsoft.Json.Linq;
-using System;
 
 namespace Casterr.RecorderLib
 {
@@ -82,7 +83,17 @@ namespace Casterr.RecorderLib
         // Get framerate
         if (line.ToLower().Contains("avg_frame_rate"))
         {
-          rc.FPS = line.ToLower().Replace("avg_frame_rate=", "");
+          var fps = line.ToLower().Replace("avg_frame_rate=", "").Split("/");
+
+          // Check that fps contains more than 1 item, 2 are needed
+          if (fps.Count() > 1)
+          {
+            // Make sure fps[0 & 1] are able to be parsed
+            if (int.TryParse(fps[0], out int res0) && int.TryParse(fps[1], out int res1))
+            {
+              rc.FPS = (int.Parse(fps[0]) / int.Parse(fps[1])).ToString();
+            }
+          }
         }
 
         // Get duration
