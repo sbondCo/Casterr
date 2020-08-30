@@ -71,7 +71,7 @@ namespace Casterr.RecorderLib
       #region Get Infro from ffprobe (fps, duration)
       // Query ffprobe to get video duration and fps
       var info = await ff.StartProcess(
-        $"-v error -select_streams v:0 -show_entries format=duration -sexagesimal -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1 \"{videoPath}\"",
+        $"-v error -select_streams v:0 -show_entries format=duration -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1 \"{videoPath}\"",
         "ffprobe",
         true,
         true
@@ -99,7 +99,47 @@ namespace Casterr.RecorderLib
         // Get duration
         if (line.ToLower().Contains("duration"))
         {
-          rc.Duration = line.ToLower().Replace("duration=", "");
+          // Try parsing duration of video into float, if can't don't set any duration
+          if (float.TryParse(line.ToLower().Replace("duration=", ""), out var res))
+          {
+            // Convert duration in seconds to TimeSpan
+            var t = TimeSpan.FromSeconds(res);
+
+            #region Set Readable Duration
+            // If t.Days > 0, then set Duration to it and append Day(s) ...
+            // ... and skip rest of foreach iteration
+
+            if (t.Days > 0)
+            {
+              rc.Duration = (t.Days > 1) ? $"{t.Days} Days" : $"{t.Days} Day";
+              continue;
+            }
+
+            if (t.Hours > 0)
+            {
+              rc.Duration = (t.Hours > 1) ? $"{t.Hours} Hours" : $"{t.Hours} Hour";
+              continue;
+            }
+
+            if (t.Minutes > 0)
+            {
+              rc.Duration = (t.Minutes > 1) ? $"{t.Minutes} Minutes" : $"{t.Minutes} Minute";
+              continue;
+            }
+
+            if (t.Seconds > 0)
+            {
+              rc.Duration = (t.Seconds > 1) ? $"{t.Seconds} Seconds" : $"{t.Seconds} Second";
+              continue;
+            }
+
+            if (t.Milliseconds > 0)
+            {
+              rc.Duration = (t.Milliseconds > 1) ? $"{t.Milliseconds} Milliseconds" : $"{t.Milliseconds} Milliseconds";
+              continue;
+            }
+            #endregion
+          }
         }
       }
       #endregion
