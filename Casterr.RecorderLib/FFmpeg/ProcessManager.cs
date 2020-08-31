@@ -75,8 +75,6 @@ namespace Casterr.RecorderLib.FFmpeg
     {
       if (ffProcess != null)
       {
-        Console.WriteLine("Stopping FFmpeg");
-
         try
         {
           // Send 'q' to ffmpeg process, which will make it quit
@@ -89,8 +87,6 @@ namespace Casterr.RecorderLib.FFmpeg
         {
           throw new RecorderException("Error trying to stop recording.");
         }
-
-        Console.WriteLine("Stopped FFmpeg");
       }
       else
       {
