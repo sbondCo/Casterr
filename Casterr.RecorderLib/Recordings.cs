@@ -70,8 +70,9 @@ namespace Casterr.RecorderLib
 
       #region Get Infro from ffprobe (fps, duration)
       // Query ffprobe to get video duration and fps
+      // https://trac.ffmpeg.org/wiki/FFprobeTips
       var info = await ff.StartProcess(
-        $"-v error -select_streams v:0 -show_entries format=duration -show_entries stream=avg_frame_rate -of default=noprint_wrappers=1 \"{videoPath}\"",
+        $"-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 \"{videoPath}\"",
         "ffprobe",
         true,
         true
@@ -91,7 +92,7 @@ namespace Casterr.RecorderLib
             // Make sure fps[0 & 1] are able to be parsed
             if (int.TryParse(fps[0], out int res0) && int.TryParse(fps[1], out int res1))
             {
-              rc.FPS = (int.Parse(fps[0]) / int.Parse(fps[1])).ToString();
+              rc.FPS = (res0 / res1).ToString();
             }
           }
         }
