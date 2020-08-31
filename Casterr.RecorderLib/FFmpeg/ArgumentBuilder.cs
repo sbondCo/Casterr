@@ -254,7 +254,7 @@ namespace Casterr.RecorderLib.FFmpeg
           // Plus one to also map desktop recording
           for (var i = 0; i < audioDevicesToRecord.Count() + 1; ++i)
           {
-            am.Append($"-map {i}");
+            am.Append($"-map {i} ");
           }
         }
         else
