@@ -1,29 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
+
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\Main.css" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
   </ItemGroup>
+
   <ItemGroup>
     <Content Update="electron.manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Casterr.RecorderLib\Casterr.RecorderLib.csproj" />
     <ProjectReference Include="..\Casterr.SettingsLib\Casterr.SettingsLib.csproj" />
   </ItemGroup>
+
 </Project>

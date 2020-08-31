@@ -67,36 +67,7 @@ namespace Casterr.RecorderLib.FFmpeg
       #endregion
 
       #region Audio mapping
-      // Should seperate audio tracks
-      if (rs.SeperateAudioTracks == "true")
-      {
-        // Map audio/video
-        // Plus one to also map desktop recording
-        for (var i = 0; i < rs.AudioDevicesToRecord.Count() + 1; ++i)
-        {
-          d.Add($"map{i}", $"-map {i}");
-        }
-      }
-      else
-      {
-        // Use StringBuilder to contruct argument that records to one track
-        StringBuilder sa = new StringBuilder();
-
-        // Minus 2 from cap as to not include recording desktop
-        int cap = rs.AudioDevicesToRecord.Count();
-
-        sa.Append("-filter_complex \"");
-
-        for (var i = 0; i < cap; ++i)
-        {
-          sa.Append($"[{i}:a:0]");
-        }
-        
-        sa.Append($"amix = {cap}:longest[aout]\"");
-        sa.Append($" -map {cap}:V:0 -map \"[aout]\"");
-
-        d.Add("maps", sa.ToString());
-      }
+      d.Add("maps", GetAudioMaps((rs.SeperateAudioTracks == "true") ? true : false, rs.AudioDevicesToRecord));
       #endregion
 
       // Video output path
@@ -141,35 +112,7 @@ namespace Casterr.RecorderLib.FFmpeg
       #endregion
 
       #region Audio mapping
-      if (rs.SeperateAudioTracks == "true")
-      {
-        // Map audio/video
-        // Plus one to also map desktop recording
-        for (var i = 0; i < rs.AudioDevicesToRecord.Count() + 1; ++i)
-        {
-          d.Add($"map{i}", $"-map {i}");
-        }
-      }
-      else
-      {
-        // Use StringBuilder to contruct argument that records to one track
-        StringBuilder sa = new StringBuilder();
-
-        // Minus 2 from cap as to not include recording desktop
-        int cap = rs.AudioDevicesToRecord.Count();
-
-        sa.Append("-filter_complex \"");
-
-        for (var i = 0; i < cap; ++i)
-        {
-          sa.Append($"[{i}:a:0]");
-        }
-        
-        sa.Append($"amix = {cap}:longest[aout]\"");
-        sa.Append($" -map {cap}:V:0 -map \"[aout]\"");
-
-        d.Add("maps", sa.ToString());
-      }
+      d.Add("maps", GetAudioMaps((rs.SeperateAudioTracks == "true") ? true : false, rs.AudioDevicesToRecord));
       #endregion
 
       #region FPS
@@ -290,6 +233,53 @@ namespace Casterr.RecorderLib.FFmpeg
       }
 
       return res;
+    }
+
+    /// <summary>
+    /// Make correct audio maps depending on if should seperateTracks and how many audio devices to map
+    /// </summary>
+    /// <param name="seperateAudioTracks">Should seperate audio tracks</param>
+    /// <param name="audioDevicesToRecord">List of audio devices to map</param>
+    /// <returns></returns>
+    private string GetAudioMaps(bool seperateAudioTracks, List<AudioDeviceToRecord> audioDevicesToRecord)
+    {
+      var am = new StringBuilder();
+
+      // Only make maps if there are any audio devices to record
+      if (audioDevicesToRecord.Count() > 0)
+      {
+        if (seperateAudioTracks)
+        {
+          // Map audio/video
+          // Plus one to also map desktop recording
+          for (var i = 0; i < audioDevicesToRecord.Count() + 1; ++i)
+          {
+            am.Append($"-map {i} ");
+          }
+        }
+        else
+        {
+          // Use StringBuilder to contruct argument that records to one track
+          StringBuilder sa = new StringBuilder();
+
+          // Minus 2 from cap as to not include recording desktop
+          int cap = audioDevicesToRecord.Count();
+
+          sa.Append("-filter_complex \"");
+
+          for (var i = 0; i < cap; ++i)
+          {
+            sa.Append($"[{i}:a:0]");
+          }
+          
+          sa.Append($"amix = {cap}:longest[aout]\"");
+          sa.Append($" -map {cap}:V:0 -map \"[aout]\"");
+
+          am.Append(sa.ToString());
+        }
+      }
+
+      return am.ToString();
     }
   }
 }

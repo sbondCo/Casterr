@@ -1,16 +1,57 @@
 ﻿@page "/recordings"
 
 <div class="recordingsContainer">
-  <div class="thumbContainer">
-    @for (int i = 0; i < 6; i++)
-    {
-      <div class="thumb">
-        <img src="https://i.imgur.com/PRImvGE.png" alt="" />
+  @if (recordings.Count() > 0)
+  {
+    <div class="thumbContainer">
+      @foreach (var v in recordings)
+      {
+        <div class="thumb">
+          <div class="inner">
+            @if (v.ThumbPath != null)
+            {
+              <img src="data:image/jpeg;base64,@Convert.ToBase64String(System.IO.File.ReadAllBytes(v.ThumbPath))" alt="" />
+            }
+            else
+            {
+              <span class="noThumb">No Thumbnail Found</span>
+            }
 
-        <div class="info">
-          <span class="title">Trock Dioes</span>
+            <div class="info">
+              <span class="fps">
+                @v.FPS <p>FPS</p>
+              </span>
+
+              <span class="edit">
+                <Icon i="edit" />
+              </span>
+
+              <div class="bar">
+                <span class="title">Trock Dioes</span>
+
+                <div class="videoInfo">
+                  <span>@v.Duration</span>
+                  <span>@v.FileSize.ToReadableFileSize()</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }
+  else
+  {
+    <span class="noRecordings">You Have No Recordings!</span>
+  }
 </div>
+
+@code {
+  private List<RecorderLib.Recording> recordings;
+
+  protected override void OnInitialized()
+  {
+    // Get recordings
+    recordings = RecorderLib.Recordings.Get();
+  }
+}

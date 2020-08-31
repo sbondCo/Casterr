@@ -6,18 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
-  public class Device
-  {
-    // Source Number
-    public int ID { get; set; }
-
-    // Name of device
-    public string Name { get; set; }
-
-    // Is device an input
-    public bool IsInput { get; set; }
-  }
-
   public class DeviceManager
   {
     public string DesktopVideoDevice = "screen-capture-recorder";
@@ -99,7 +87,7 @@ namespace Casterr.RecorderLib.FFmpeg
       List<string> videoDevices = new List<string>();
 
       // Get devices from ffmpeg, exits on its own
-      var response = await process.StartProcess("-list_devices true -f dshow -i dummy", false, true);
+      var response = await process.StartProcess("-list_devices true -f dshow -i dummy", "ffmpeg", false, true);
       bool isAudioDevice = false;
       int currentIteration = 0;
 

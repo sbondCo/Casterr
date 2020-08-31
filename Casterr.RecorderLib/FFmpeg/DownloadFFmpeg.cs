@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Casterr.RecorderLib.FFmpeg
 {
@@ -17,12 +18,10 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Download and extract FFmpeg
     /// </summary>
     /// <param name="finalPath">Final path for FFmpeg</param>
-    /// <param name="exeName">FFmpeg binary name</param>
-    /// <returns></returns>
-    public static async Task Download(string finalPath, string exeName)
+    public static async Task Download()
     {
       await DownloadZip();
-      await ExtractZip(finalPath, exeName);
+      await ExtractZip();
     }
 
     /// <summary>
@@ -64,8 +63,7 @@ namespace Casterr.RecorderLib.FFmpeg
     /// Extract FFmpeg binary from downloaded zip
     /// </summary>
     /// <param name="finalPath">Place to extract FFmpeg binary</param>
-    /// <param name="exeName">Name of FFmpeg binary</param>
-    public static async Task ExtractZip(string finalPath, string exeName)
+    public static async Task ExtractZip()
     {
       ZipArchive zip;
 
@@ -73,10 +71,23 @@ namespace Casterr.RecorderLib.FFmpeg
       {
         // Read all zip contents and find ffmpeg.exe
         zip = ZipFile.OpenRead(ZipPath);
-        var ffmpegExeFile = zip.Entries.First(M => M.Name == exeName);
 
-        // Extract ffmpeg.exe to finalpath
-        ffmpegExeFile.ExtractToFile(finalPath, true);
+        // Get ffmpeg and ffprobe from zip
+        var ffFiles = zip.Entries.Where(f => f.Name == FindFFmpeg.FFmpegExeName || f.Name == FindFFmpeg.FFprobeExeName);
+
+        // Extract ffFiles to folder current app is being run from
+        foreach (var f in ffFiles)
+        {
+          var dest = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), f.Name);
+
+          // Don't extract if file already exists
+          // This avoids a 'file already exists' error when extracting ...
+          // ... without overwrite if file already exists and it has exec rights
+          if (!File.Exists(dest))
+          {
+            f.ExtractToFile(Path.Combine(dest));
+          }
+        }
 
         // Dispose and delete zip file
         zip.Dispose();
