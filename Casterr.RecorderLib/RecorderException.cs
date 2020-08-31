@@ -4,14 +4,8 @@ namespace Casterr.RecorderLib
 {
   class RecorderException : Exception
   {
-    public RecorderException()
-    {
-
-    }
-
-    public RecorderException(string msg) : base(msg)
-    {
-
-    }
+    public RecorderException() { }
+    
+    public RecorderException(string msg) : base(msg) { }
   }
 }
