@@ -63,7 +63,7 @@ namespace Casterr.RecorderLib
       rc.VideoPath = videoPath;
 
       // Thumbnail Path
-      rc.ThumbPath = Path.Combine(rs.ThumbSaveFolder, $"{Path.GetFileName(videoPath)}.png");
+      rc.ThumbPath = await VideoThumbnailer.Create(videoPath);
 
       // File Size
       rc.FileSize = new FileInfo(videoPath).Length;

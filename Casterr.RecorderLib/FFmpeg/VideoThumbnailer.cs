@@ -6,17 +6,20 @@ namespace Casterr.RecorderLib.FFmpeg
 {
   public static class VideoThumbnailer
   {
-    public static async Task Create(string videoPath, string videoName)
+    public static async Task<string> Create(string videoPath)
     {
-      ProcessManager process = new ProcessManager();
-      SettingsManager sm = new SettingsManager();
-      RecordingSettings rs = new RecordingSettings();
+      var process = new ProcessManager();
+      var sm = new SettingsManager();
+      var rs = new RecordingSettings();
+      var thumbPath = Path.Combine(PathHelper.FolderPath(rs.ThumbSaveFolder), (Path.GetFileName(videoPath) + ".png"));
 
       // Get settings
       sm.GetSettings(rs);
 
-      // Get video thumbnail - Closes automatically
-      await process.StartProcess($"-y -i {videoPath} -frames:v 1 -ss 1 \"{Path.Combine(PathHelper.FolderPath(rs.ThumbSaveFolder), (videoName + ".png"))}\"");
+      // Get video thumbnail - closes automatically
+      await process.StartProcess($"-i \"{videoPath}\" -frames:v 1 \"{thumbPath}\"");
+
+      return thumbPath;
     }
   }
 }
