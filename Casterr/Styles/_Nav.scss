@@ -1,6 +1,7 @@
 ﻿/// <reference path="_Vars.scss" />
 
 nav {
+  display: flex;
   min-height: 48px;
   background-color: $secondaryColor;
 
@@ -56,7 +57,7 @@ nav {
         }
       }
 
-      span {
+      span:not(#timeElapsed) {
         @media (max-width: 910px) {
           display: none;
         }
@@ -78,7 +79,7 @@ nav {
         cursor: default;
 
         span {
-          margin: 0 10px;
+          margin: 0 15px;
           font-size: 18px;
         }
 
