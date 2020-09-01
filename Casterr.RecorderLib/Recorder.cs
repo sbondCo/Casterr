@@ -19,7 +19,7 @@ namespace Casterr.RecorderLib
     /// <returns></returns>
     public async Task Start()
     {
-      StatusService.ChangeStatus(1);
+      StatusService.ChangeStatus(StatusService.Status.Recording);
       // args = ab.BuildArgs();
       // await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
     }

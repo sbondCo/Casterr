@@ -10,7 +10,14 @@ namespace Casterr.HelpersLib
     public static string ElapsedClass = "hidden";
     public static string CircleClass = "danger";
 
-    public static void ChangeStatus(int status)
+    public enum Status
+    {
+      Idle,
+      Recording,
+      Error
+    }
+
+    public static void ChangeStatus(Status status)
     {
       // Status States:
       // 0 = Idle
@@ -19,15 +26,15 @@ namespace Casterr.HelpersLib
 
       switch (status)
       {
-        case 0:
+        case Status.Idle:
           ElapsedClass = "hidden";
           CircleClass = "idle";
           break;
-        case 1:
+        case Status.Recording:
           ElapsedClass = "";
           CircleClass = "safety";
           break;
-        case 2:
+        case Status.Error:
           ElapsedClass = "hidden";
           CircleClass = "danger";
           break;
