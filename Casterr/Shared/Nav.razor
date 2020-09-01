@@ -25,14 +25,14 @@
       </NavLink>
     </li>
     <li id="status">
-      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">@stopwatchElasped</span>
+      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">@($"{elaspedTime:hh\\:mm\\:ss}")</span>
       <div class="circle @RecorderLib.RecordingStatus.CircleClass"></div>
     </li>
   </ul>
 </nav>
 
 @code {
-  private TimeSpan stopwatchElasped;
+  private TimeSpan elaspedTime;
 
   protected override void OnAfterRender(bool firstRender)
   {
@@ -55,7 +55,7 @@
     {
       await Task.Delay(1000);
 
-      stopwatchElasped = RecorderLib.RecordingStatus.RecordingWatch.Elapsed;
+      elaspedTime = RecorderLib.RecordingStatus.RecordingWatch.Elapsed;
 
       await InvokeAsync(() =>
       {
