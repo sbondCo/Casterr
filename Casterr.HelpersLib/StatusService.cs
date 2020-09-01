@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace Casterr.Services
+namespace Casterr.HelpersLib
 {
   public delegate void ShouldChangeStateHandler();
 
-  public class StatusService
+  public static class StatusService
   {
-    public event ShouldChangeStateHandler ShouldChangeState;
-    public string ElapsedClass = "hidden";
-    public string CircleClass = "danger";
+    public static event ShouldChangeStateHandler ShouldChangeState;
+    public static string ElapsedClass = "hidden";
+    public static string CircleClass = "danger";
 
-    public void ChangeStatus(int status)
+    public static void ChangeStatus(int status)
     {
       // Status States:
       // 0 = Idle

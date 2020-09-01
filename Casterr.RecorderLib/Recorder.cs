@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Casterr.HelpersLib;
 using Casterr.RecorderLib.FFmpeg;
 
 namespace Casterr.RecorderLib
@@ -18,8 +19,9 @@ namespace Casterr.RecorderLib
     /// <returns></returns>
     public async Task Start()
     {
-      args = ab.BuildArgs();
-      await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
+      StatusService.ChangeStatus(1);
+      // args = ab.BuildArgs();
+      // await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
     }
 
     /// <summary>

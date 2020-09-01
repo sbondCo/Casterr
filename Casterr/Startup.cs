@@ -34,7 +34,6 @@ namespace Casterr
       services.AddTransient<SettingsManager>();
 
       services.AddSingleton<Recorder>();
-      services.AddSingleton<StatusService>();
       services.AddSingleton<GeneralSettings>();
       services.AddSingleton<RecordingSettings>();
       services.AddSingleton<KeyBindingSettings>();

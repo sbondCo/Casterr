@@ -1,6 +1,4 @@
-﻿@inject StatusService statusService
-
-<nav>
+﻿<nav>
   <ul>
     <li>
       <NavLink href="recordings">
@@ -27,8 +25,8 @@
       </NavLink>
     </li>
     <li id="status">
-      <span id="timeElapsed" class="@statusService.ElapsedClass">15:50</span>
-      <div class="circle @statusService.CircleClass"></div>
+      <span id="timeElapsed" class="@StatusService.ElapsedClass">15:50</span>
+      <div class="circle @StatusService.CircleClass"></div>
     </li>
   </ul>
 </nav>
@@ -36,7 +34,7 @@
 @code {
   protected override void OnInitialized()
   {
-    statusService.ShouldChangeState += UpdateState;
+    StatusService.ShouldChangeState += UpdateState;
   }
 
   private void UpdateState()
