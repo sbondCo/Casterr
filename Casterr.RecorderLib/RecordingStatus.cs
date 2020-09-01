@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 
-namespace Casterr.HelpersLib
+namespace Casterr.RecorderLib
 {
   public delegate void ShouldChangeStateHandler();
 
-  public static class StatusService
+  public static class RecordingStatus
   {
     public static event ShouldChangeStateHandler ShouldChangeState;
+    public static Stopwatch RecordingWatch = new Stopwatch();
     public static string ElapsedClass = "hidden";
     public static string CircleClass = "danger";
 
@@ -19,10 +21,8 @@ namespace Casterr.HelpersLib
 
     public static void ChangeStatus(Status status)
     {
-      // Status States:
-      // 0 = Idle
-      // 1 = Recording
-      // 2 = There has been an error
+      // Reset stopwatch before doing anything else
+      RecordingWatch.Reset();
 
       switch (status)
       {
@@ -33,6 +33,9 @@ namespace Casterr.HelpersLib
         case Status.Recording:
           ElapsedClass = "";
           CircleClass = "safety";
+
+          // Start stopwatch if status is Recording
+          RecordingWatch.Start();
           break;
         case Status.Error:
           ElapsedClass = "hidden";

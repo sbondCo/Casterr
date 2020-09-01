@@ -25,23 +25,42 @@
       </NavLink>
     </li>
     <li id="status">
-      <span id="timeElapsed" class="@StatusService.ElapsedClass">15:50</span>
-      <div class="circle @StatusService.CircleClass"></div>
+      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">@stopwatchElasped</span>
+      <div class="circle @RecorderLib.RecordingStatus.CircleClass"></div>
     </li>
   </ul>
 </nav>
 
 @code {
-  protected override void OnInitialized()
+  private TimeSpan stopwatchElasped;
+
+  protected override void OnAfterRender(bool firstRender)
   {
-    StatusService.ShouldChangeState += UpdateState;
+    RecorderLib.RecordingStatus.ShouldChangeState += UpdateState;
   }
 
-  private void UpdateState()
+  private async void UpdateState()
   {
-    InvokeAsync(() =>
+    await InvokeAsync(() =>
     {
       StateHasChanged();
     });
+
+    await UpdateTimer();
+  }
+
+  private async Task UpdateTimer()
+  {
+    while (RecorderLib.RecordingStatus.RecordingWatch.IsRunning)
+    {
+      await Task.Delay(1000);
+
+      stopwatchElasped = RecorderLib.RecordingStatus.RecordingWatch.Elapsed;
+
+      await InvokeAsync(() =>
+      {
+        StateHasChanged();
+      });
+    }
   }
 }
