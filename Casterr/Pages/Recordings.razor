@@ -4,7 +4,7 @@
   @if (recordings.Count() > 0)
   {
     <div class="thumbContainer">
-      @foreach (var v in recordings)
+      @foreach (var v in testRecordings)
       {
         <div class="thumb">
           <div class="inner">
@@ -48,8 +48,42 @@
   }
 </div>
 
+<button @onclick=@(e => LoadMoreRecordings())>Test Load Next</button>
+
 @code {
+  private List<RecorderLib.Recording> testRecordings = new List<RecorderLib.Recording>();
   private List<RecorderLib.Recording> recordings;
+  private int recordingsOn = 0;
+
+  protected override void OnAfterRender(bool firstRender)
+  {
+    if (firstRender)
+      // Load first set of recordings
+      LoadMoreRecordings();
+  }
+
+  private void LoadMoreRecordings()
+  {
+    var itemsToTake = 9;
+    var rec = recordings.Skip(recordingsOn).Take(itemsToTake).ToList();
+
+    foreach (var v in rec)
+    {
+      testRecordings.Add(new RecorderLib.Recording(){
+        VideoPath = v.VideoPath,
+        ThumbPath = v.ThumbPath,
+        FileSize = 6456456,
+        FPS = "60",
+        Duration = "dur"
+      });
+    }
+
+    recordingsOn += itemsToTake;
+
+    InvokeAsync(() => {
+      StateHasChanged();
+    });
+  }
 
   protected override void OnInitialized()
   {
