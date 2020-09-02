@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Casterr.HelpersLib;
 using Casterr.RecorderLib.FFmpeg;
 
 namespace Casterr.RecorderLib
@@ -20,8 +19,8 @@ namespace Casterr.RecorderLib
     public async Task Start()
     {
       // Build args and start recording by sending args to ffmpeg
-      // args = ab.BuildArgs();
-      // await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
+      args = ab.BuildArgs();
+      await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
 
       // Change status to recording
       RecordingStatus.ChangeStatus(RecordingStatus.Status.Recording);
@@ -32,11 +31,11 @@ namespace Casterr.RecorderLib
     /// </summary>
     public async Task Stop()
     {
-      // // Stop recording process
-      // process.StopProcess();
+      // Stop recording process
+      process.StopProcess();
 
-      // // Add video to PastRecordings
-      // await Recordings.Add(args["videoOutput"].Replace("\"", ""));
+      // Add video to PastRecordings
+      await Recordings.Add(args["videoOutput"].Replace("\"", ""));
 
       // Update recording status to idle, this will automatically reset stopwatch
       RecordingStatus.ChangeStatus(RecordingStatus.Status.Idle);

@@ -46,6 +46,11 @@ namespace Casterr.RecorderLib
         });
       }
 
+      // Reverse recordings list to show latest recordings first.
+      // Since the latest recordings are at the bottom of the json,
+      // they end up at the bottom of the list
+      recordings.Reverse();
+
       return recordings;
     }
 
