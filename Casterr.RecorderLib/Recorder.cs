@@ -12,10 +12,9 @@ namespace Casterr.RecorderLib
     Dictionary<string, string> args;
 
     /// <summary>
-    /// Start FFmpeg process and send arguments to it.
+    /// Start recording.
+    /// Gets correct arguments automatically.
     /// </summary>
-    /// <param name="args">Arguments to send FFmpeg.</param>
-    /// <returns></returns>
     public async Task Start()
     {
       // Do before anything else to avoid some task thinking the wrong thing
@@ -28,7 +27,7 @@ namespace Casterr.RecorderLib
     }
 
     /// <summary>
-    /// Stop FFmpeg process.
+    /// Stop recording.
     /// </summary>
     public async Task Stop()
     {
@@ -41,6 +40,23 @@ namespace Casterr.RecorderLib
       // Do after anything else to avoid some task thinking the wrong thing
       // Update recording status to idle, this will automatically reset stopwatch
       RecordingStatus.ChangeStatus(RecordingStatus.Status.Idle);
+    }
+
+    /// <summary>
+    /// Automatically decide whether to start or stop recording.
+    /// Depends on IsRecording.
+    /// </summary>
+    public async Task Automatic()
+    {
+      // Start or stop recording depending on 'RecordingStatus.IsRecording'
+      if (RecorderLib.RecordingStatus.IsRecording)
+      {
+        await Stop();
+      }
+      else
+      {
+        await Start();
+      }
     }
   }
 }

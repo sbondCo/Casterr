@@ -28,7 +28,7 @@
     </li>
     <li id="status">
       <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">@($"{elaspedTime:hh\\:mm\\:ss}")</span>
-      <div class="circle @RecorderLib.RecordingStatus.CircleClass" @onclick="@(e => StartStopRecording())"></div>
+      <div class="circle @RecorderLib.RecordingStatus.CircleClass" @onclick="@(e => r.Automatic())"></div>
     </li>
   </ul>
 </nav>
@@ -63,22 +63,6 @@
       {
         StateHasChanged();
       });
-    }
-  }
-
-  /// <summary>
-  /// Start or stop recording depending on IsRecording
-  /// </summary>
-  private async Task StartStopRecording()
-  {
-    // Start or stop recording
-    if (RecorderLib.RecordingStatus.IsRecording)
-    {
-      await r.Stop();
-    }
-    else
-    {
-      await r.Start();
     }
   }
 }
