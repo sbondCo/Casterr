@@ -11,7 +11,7 @@ namespace Casterr.RecorderLib
     public static event ShouldChangeStateHandler ShouldChangeState;
     public static Stopwatch RecordingWatch = new Stopwatch();
     public static string ElapsedClass = "hidden";
-    public static string CircleClass = "danger";
+    public static string CircleClass = "idle";
 
     public enum Status
     {

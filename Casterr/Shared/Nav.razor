@@ -27,14 +27,21 @@
       </NavLink>
     </li>
     <li id="status">
-      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">@($"{elaspedTime:hh\\:mm\\:ss}")</span>
-      <div class="circle @RecorderLib.RecordingStatus.CircleClass" @onclick="@(e => r.Automatic())"></div>
+      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">
+        @($"{elaspedTime:hh\\:mm\\:ss}")
+      </span>
+
+      <div class="circle @RecorderLib.RecordingStatus.CircleClass" 
+        title="@statusCircleTitle"
+        @onclick="@(e => r.Automatic())">
+      </div>
     </li>
   </ul>
 </nav>
 
 @code {
   private TimeSpan elaspedTime;
+  private string statusCircleTitle = $@"Start/Stop Recording {Environment.NewLine}{Environment.NewLine}White => Idle {Environment.NewLine}Green => Recording {Environment.NewLine}Red => Error";
 
   protected override void OnAfterRender(bool firstRender)
   {
