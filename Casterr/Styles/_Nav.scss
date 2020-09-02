@@ -79,8 +79,15 @@ nav {
         cursor: default;
 
         span {
+          opacity: 1;
           margin: 0 15px;
           font-size: 18px;
+          transition: opacity 250ms ease-in-out;
+
+          &.hidden {
+            display: unset !important;
+            opacity: 0 !important;
+          }
         }
 
         .circle {
@@ -88,6 +95,8 @@ nav {
           height: 20px;
           padding: 0 !important;
           border-radius: 50%;
+          transition: background-color 250ms ease-in-out,
+                      box-shadow       250ms ease-in-out;
           cursor: pointer;
 
           &.safety {
