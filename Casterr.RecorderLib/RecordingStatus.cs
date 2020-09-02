@@ -7,6 +7,7 @@ namespace Casterr.RecorderLib
 
   public static class RecordingStatus
   {
+    public static bool IsRecording { get; set; } = false;
     public static event ShouldChangeStateHandler ShouldChangeState;
     public static Stopwatch RecordingWatch = new Stopwatch();
     public static string ElapsedClass = "hidden";
@@ -21,6 +22,10 @@ namespace Casterr.RecorderLib
 
     public static void ChangeStatus(Status status)
     {
+      // Default to is not recording so it only needs
+      // to be changed in Status.Recording case
+      IsRecording = false;
+
       // Reset stopwatch before doing anything else
       RecordingWatch.Reset();
 
@@ -33,6 +38,7 @@ namespace Casterr.RecorderLib
         case Status.Recording:
           ElapsedClass = "";
           CircleClass = "safety";
+          IsRecording = true;
 
           // Start stopwatch if status is Recording
           RecordingWatch.Start();

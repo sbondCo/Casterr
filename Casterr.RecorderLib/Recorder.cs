@@ -18,12 +18,13 @@ namespace Casterr.RecorderLib
     /// <returns></returns>
     public async Task Start()
     {
+      // Do before anything else to avoid some task thinking the wrong thing
+      // Change status to recording
+      RecordingStatus.ChangeStatus(RecordingStatus.Status.Recording);
+
       // Build args and start recording by sending args to ffmpeg
       args = ab.BuildArgs();
       await process.StartProcess(string.Join(" ", args.Select(x => x.Value)));
-
-      // Change status to recording
-      RecordingStatus.ChangeStatus(RecordingStatus.Status.Recording);
     }
 
     /// <summary>
@@ -37,6 +38,7 @@ namespace Casterr.RecorderLib
       // Add video to PastRecordings
       await Recordings.Add(args["videoOutput"].Replace("\"", ""));
 
+      // Do after anything else to avoid some task thinking the wrong thing
       // Update recording status to idle, this will automatically reset stopwatch
       RecordingStatus.ChangeStatus(RecordingStatus.Status.Idle);
     }
