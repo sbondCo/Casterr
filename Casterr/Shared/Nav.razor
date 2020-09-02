@@ -1,4 +1,4 @@
-﻿@inject StatusService statusService
+﻿@inject RecorderLib.Recorder r
 
 <nav>
   <ul>
@@ -27,23 +27,49 @@
       </NavLink>
     </li>
     <li id="status">
-      <span id="timeElapsed" class="@statusService.ElapsedClass">15:50</span>
-      <div class="circle @statusService.CircleClass"></div>
+      <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">
+        @($"{elaspedTime:hh\\:mm\\:ss}")
+      </span>
+
+      <div class="circle @RecorderLib.RecordingStatus.CircleClass" 
+        title="@statusCircleTitle"
+        @onclick="@(e => r.Automatic())">
+      </div>
     </li>
   </ul>
 </nav>
 
 @code {
-  protected override void OnInitialized()
+  private TimeSpan elaspedTime;
+  private string statusCircleTitle = $@"Start/Stop Recording {Environment.NewLine}{Environment.NewLine}White => Idle {Environment.NewLine}Green => Recording {Environment.NewLine}Red => Error";
+
+  protected override void OnAfterRender(bool firstRender)
   {
-    statusService.ShouldChangeState += UpdateState;
+    RecorderLib.RecordingStatus.ShouldChangeState += UpdateState;
   }
 
-  private void UpdateState()
+  private async void UpdateState()
   {
-    InvokeAsync(() =>
+    await InvokeAsync(() =>
     {
       StateHasChanged();
     });
+
+    await UpdateTimer();
+  }
+
+  private async Task UpdateTimer()
+  {
+    while (RecorderLib.RecordingStatus.RecordingWatch.IsRunning)
+    {
+      await Task.Delay(1000);
+
+      elaspedTime = RecorderLib.RecordingStatus.RecordingWatch.Elapsed;
+
+      await InvokeAsync(() =>
+      {
+        StateHasChanged();
+      });
+    }
   }
 }
