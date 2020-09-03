@@ -1,5 +1,7 @@
 ﻿@page "/recordings"
 
+@inject IJSRuntime JSRuntime
+
 <div class="recordingsContainer">
   @if (allRecordings.Count() > 0)
   {
@@ -48,21 +50,30 @@
   }
 </div>
 
-<button @onclick=@(e => LoadMoreRecordings())>Test Load Next</button>
-
 @code {
-  private List<RecorderLib.Recording> allRecordings = RecorderLib.Recordings.Get();
+  private readonly List<RecorderLib.Recording> allRecordings = RecorderLib.Recordings.Get();
   private List<RecorderLib.Recording> loadedRecordings = new List<RecorderLib.Recording>();
   private int recordingsOn = 0;
 
-  protected override void OnAfterRender(bool firstRender)
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     if (firstRender)
+    {
       // Load first set of recordings
-      LoadMoreRecordings();
+      await LoadMoreRecordings();
+
+      // Run LoadMoreRecordings when user scrolls to end of #main
+      await JSRuntime.InvokeAsync<string>(
+        "scrolling.runFuncAtEnd",
+        "main",
+        "LoadMoreRecordings",
+        DotNetObjectReference.Create(this)
+      );
+    }
   }
 
-  private void LoadMoreRecordings()
+  [JSInvokable]
+  public async Task LoadMoreRecordings()
   {
     // How many videos to load in
     var itemsToTake = 9;
@@ -77,7 +88,7 @@
     recordingsOn += itemsToTake;
 
     // Update UI
-    InvokeAsync(() => {
+    await InvokeAsync(() => {
       StateHasChanged();
     });
   }
