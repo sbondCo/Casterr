@@ -64,22 +64,19 @@
 
   private void LoadMoreRecordings()
   {
+    // How many videos to load in
     var itemsToTake = 9;
-    var rec = allRecordings.Skip(recordingsOn).Take(itemsToTake).ToList();
 
-    foreach (var v in rec)
+    // Get next recordings from allRecordings then add them to the loadedRecordings list
+    foreach (var v in allRecordings.Skip(recordingsOn).Take(itemsToTake).ToList())
     {
-      loadedRecordings.Add(new RecorderLib.Recording(){
-        VideoPath = v.VideoPath,
-        ThumbPath = v.ThumbPath,
-        FileSize = 6456456,
-        FPS = "60",
-        Duration = "dur"
-      });
+      loadedRecordings.Add(v);
     }
 
+    // Update recordings on
     recordingsOn += itemsToTake;
 
+    // Update UI
     InvokeAsync(() => {
       StateHasChanged();
     });
