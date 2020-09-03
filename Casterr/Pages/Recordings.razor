@@ -1,10 +1,12 @@
 ﻿@page "/recordings"
 
+@inject IJSRuntime JSRuntime
+
 <div class="recordingsContainer">
-  @if (recordings.Count() > 0)
+  @if (allRecordings.Count() > 0)
   {
     <div class="thumbContainer">
-      @foreach (var v in recordings)
+      @foreach (var v in loadedRecordings)
       {
         <div class="thumb">
           <div class="inner">
@@ -27,7 +29,9 @@
               </span>
 
               <div class="bar">
-                <span class="title">Trock Dioes</span>
+                <span class="title">
+                  <p>@(System.IO.Path.GetFileNameWithoutExtension(v.VideoPath))</p>
+                </span>
 
                 <div class="videoInfo">
                   <span>@v.Duration</span>
@@ -47,11 +51,45 @@
 </div>
 
 @code {
-  private List<RecorderLib.Recording> recordings;
+  private readonly List<RecorderLib.Recording> allRecordings = RecorderLib.Recordings.Get();
+  private List<RecorderLib.Recording> loadedRecordings = new List<RecorderLib.Recording>();
+  private int recordingsOn = 0;
 
-  protected override void OnInitialized()
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    // Get recordings
-    recordings = RecorderLib.Recordings.Get();
+    if (firstRender)
+    {
+      // Load first set of recordings
+      await LoadMoreRecordings();
+
+      // Run LoadMoreRecordings when user scrolls to end of #main
+      await JSRuntime.InvokeAsync<string>(
+        "scrolling.runFuncAtEnd",
+        "main",
+        "LoadMoreRecordings",
+        DotNetObjectReference.Create(this)
+      );
+    }
+  }
+
+  [JSInvokable]
+  public async Task LoadMoreRecordings()
+  {
+    // How many videos to load in
+    var itemsToTake = 9;
+
+    // Get next recordings from allRecordings then add them to the loadedRecordings list
+    foreach (var v in allRecordings.Skip(recordingsOn).Take(itemsToTake).ToList())
+    {
+      loadedRecordings.Add(v);
+    }
+
+    // Update recordings on
+    recordingsOn += itemsToTake;
+
+    // Update UI
+    await InvokeAsync(() => {
+      StateHasChanged();
+    });
   }
 }

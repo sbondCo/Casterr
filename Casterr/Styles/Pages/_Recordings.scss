@@ -99,7 +99,28 @@
           transition: background-color 250ms ease-in-out;
 
           .title {
+            display: flex;
+            width: 60%;
             font-weight: 700;
+            transition: width 250ms ease-in-out;
+
+            p {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+
+            @media (max-width: 1370px) {
+              width: 50%;
+            }
+            
+            @media (max-width: 1130px) {
+              width: 40%;
+            }
+            
+            @media (max-width: 1000px) {
+              width: 50%;
+            }
           }
 
           .videoInfo {
