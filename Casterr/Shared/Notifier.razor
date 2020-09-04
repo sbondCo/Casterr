@@ -1,0 +1,33 @@
+<div class="notifierContainer @hiddenClass">
+  <p>@description</p>
+</div>
+
+@code {
+  private string hiddenClass = "hidden";
+  private string description = "";
+
+  protected override void OnAfterRender(bool firstRender)
+  {
+    if (firstRender)
+      HelpersLib.ProgramStatus.TaskRunning += NotifyUser;
+  }
+
+  private void NotifyUser(bool done, string desc)
+  {
+    // If done, then hide notifier
+    if (done)
+    {
+      hiddenClass = "hidden";
+    }
+    else
+    {
+      hiddenClass = "";
+      description = desc;
+    }
+
+    InvokeAsync(() =>
+    {
+      StateHasChanged();
+    });
+  }
+}

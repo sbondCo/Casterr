@@ -20,8 +20,14 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <param name="finalPath">Final path for FFmpeg</param>
     public static async Task Download()
     {
-      await DownloadZip();
-      await ExtractZip();
+      HelpersLib.ProgramStatus.DoingSomething(false, "Downloading FFmpeg");
+
+      await Task.Delay(2000);
+
+      HelpersLib.ProgramStatus.DoingSomething(true);
+
+      // await DownloadZip();
+      // await ExtractZip();
     }
 
     /// <summary>

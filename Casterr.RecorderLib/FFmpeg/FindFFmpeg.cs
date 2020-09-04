@@ -49,6 +49,9 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <returns>Path to FFmpeg exe.</returns>
     public static async Task<string> GetPath(string which = "ffmpeg")
     {
+      // TEST
+      await DownloadFFmpeg.Download();
+
       string execPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
       string ffmpegPath = Path.Combine(execPath, FFmpegExeName);
