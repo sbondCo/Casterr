@@ -12,17 +12,17 @@
       HelpersLib.ProgramStatus.TaskRunning += NotifyUser;
   }
 
-  private void NotifyUser(bool done, string desc)
+  private void NotifyUser(bool doing, string desc)
   {
     // If done, then hide notifier
-    if (done)
-    {
-      hiddenClass = "hidden";
-    }
-    else
+    if (doing)
     {
       hiddenClass = "";
       description = desc;
+    }
+    else
+    {
+      hiddenClass = "hidden";
     }
 
     InvokeAsync(() =>

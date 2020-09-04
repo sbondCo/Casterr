@@ -2,15 +2,15 @@ using System;
 
 namespace Casterr.HelpersLib
 {
-  public delegate void TaskRunning(bool done, string description);
+  public delegate void TaskRunning(bool doing, string description);
 
   public static class ProgramStatus
   {
     public static event TaskRunning TaskRunning;
 
-    public static void DoingSomething(bool done, string description = "")
+    public static void DoingSomething(bool doing, string description = "")
     {
-      TaskRunning?.Invoke(done, description);
+      TaskRunning?.Invoke(doing, description);
     }
   }
 }
