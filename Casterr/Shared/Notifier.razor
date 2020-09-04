@@ -2,13 +2,9 @@
   <div class="notification">
     <span class="title">@description</span>
 
-    <div class="progressBar">
-      <div class="inner" style="width: @percentage%"></div>
-    </div>
+    <ProgressBar Percentage=@percentage />
   </div>
 </div>
-
-@inject IJSRuntime JSRuntime
 
 @code {
   private string hiddenClass = "hidden";
