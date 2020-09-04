@@ -2,13 +2,18 @@
   <div class="notification">
     <span class="title">@description</span>
 
-    <progress value="32" max="100" />
+    <div class="progressBar">
+      <div class="inner" style="width: @percentage%"></div>
+    </div>
   </div>
 </div>
+
+@inject IJSRuntime JSRuntime
 
 @code {
   private string hiddenClass = "hidden";
   private string description = "";
+  private int percentage = 0;
 
   protected override void OnAfterRender(bool firstRender)
   {
@@ -16,13 +21,14 @@
       HelpersLib.ProgramStatus.TaskRunning += NotifyUser;
   }
 
-  private void NotifyUser(bool doing, string desc)
+  private void NotifyUser(bool doing, string desc, int percent)
   {
     // If done, then hide notifier
     if (doing)
     {
       hiddenClass = "";
       description = desc;
+      percentage = percent;
     }
     else
     {
