@@ -61,11 +61,7 @@ namespace Casterr.RecorderLib.FFmpeg
 
     public static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
-      double bytesIn = double.Parse(e.BytesReceived.ToString());
-      double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
-      double percentage = bytesIn / totalBytes * 100;
-      
-      ProgramStatus.DoingSomething(true, "Downloading FFmpeg", (int) percentage);
+      ProgramStatus.DoingSomething(true, "Downloading FFmpeg", e.ProgressPercentage);
     }
 
     /// <summary>
