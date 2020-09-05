@@ -36,26 +36,20 @@ namespace Casterr.RecorderLib.FFmpeg
     {
       var bits = Environment.Is64BitOperatingSystem ? 64 : 32;
 
+      if (bits == 32) throw new Exception("No FFmpeg download link for 32 bit systems.");
+
       // Set DownloadUri depending on OS
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
-        DownloadUri = new Uri($"https://ffmpeg.zeranoe.com/builds/win{bits}/static/ffmpeg-latest-win{bits}-static.zip");
+        DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip");
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       {
-        // I believe MacOS is only compatible with 64 bit applications
-        DownloadUri = new Uri($"https://ffmpeg.zeranoe.com/builds/macos64/static/ffmpeg-latest-macos64-static.zip");
+        DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-latest-macos-amd64.zip");
       }
       else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
       {
-        if (bits == 64)
-        {
-          DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip");
-        }
-        else
-        {
-          throw new Exception("No FFmpeg download link for 32 bit systems on Linux.");
-        }
+        DownloadUri = new Uri($"https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip");
       }
 
       ZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg.zip");
@@ -70,7 +64,7 @@ namespace Casterr.RecorderLib.FFmpeg
       double bytesIn = double.Parse(e.BytesReceived.ToString());
       double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
       double percentage = bytesIn / totalBytes * 100;
-
+      
       ProgramStatus.DoingSomething(true, "Downloading FFmpeg", (int) percentage);
     }
 
