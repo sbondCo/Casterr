@@ -37,6 +37,7 @@ Automatically start recording your game when it is opened. When the game closes,
   - Name
   - Length
   - Size
+  - FPS
   - Thumbnail
 - **Settings**
   - ***General***

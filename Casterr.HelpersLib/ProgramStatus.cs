@@ -1,5 +1,3 @@
-using System;
-
 namespace Casterr.HelpersLib
 {
   public delegate void TaskRunning(bool doing, string description, int percentComplete);
