@@ -17,7 +17,7 @@
       HelpersLib.ProgramStatus.TaskRunning += NotifyUser;
   }
 
-  private void NotifyUser(bool doing, string desc, int percent)
+  private async void NotifyUser(bool doing, string desc, int percent)
   {
     // If done, then hide notifier
     if (doing)
@@ -28,10 +28,11 @@
     }
     else
     {
+      await Task.Delay(500);
       hiddenClass = "hidden";
     }
 
-    InvokeAsync(() =>
+    await InvokeAsync(() =>
     {
       StateHasChanged();
     });
