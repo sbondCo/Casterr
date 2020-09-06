@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Reflection;
 using Casterr.HelpersLib;
@@ -54,14 +53,8 @@ namespace Casterr.RecorderLib.FFmpeg
 
       ZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg.zip");
 
-      var wc = new WebClient();
-      wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
-      await wc.DownloadFileTaskAsync(DownloadUri, ZipPath);
-    }
-
-    public static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-    {
-      ProgramStatus.DoingSomething(true, "Downloading FFmpeg", e.ProgressPercentage);
+      DownloadHelper.ProgressChanged += (progress => { ProgramStatus.DoingSomething(true, "Downloading FFmpeg", progress); });
+      await DownloadHelper.Download(DownloadUri, ZipPath);
     }
 
     /// <summary>
