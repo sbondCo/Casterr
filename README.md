@@ -34,6 +34,10 @@ Automatically start recording your game when it is opened. When the game closes,
   - Start / Stop
   - Status indicator
 - **Show recordings**
+  - Name
+  - Length
+  - Size
+  - Thumbnail
 - **Settings**
   - ***General***
     - Startup Page
@@ -58,6 +62,7 @@ Automatically start recording your game when it is opened. When the game closes,
   - ***KeyBinding***
     
     Not fully implemented yet.
+- **Show progress of task (if performing one)**
 
 ## Contributing
 
