@@ -20,7 +20,7 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <param name="finalPath">Final path for FFmpeg</param>
     public static async Task Download()
     {
-      ProgramStatus.DoingSomething(true, "Downloading FFmpeg", 0);
+      ProgramStatus.DoingSomething(true, "Fetching Recording Utilities", 0);
 
       await DownloadZip();
       await ExtractZip();
@@ -54,7 +54,7 @@ namespace Casterr.RecorderLib.FFmpeg
       ZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg.zip");
 
       // Update programStatus on ProgressChanged
-      DownloadHelper.ProgressChanged += (progress => { ProgramStatus.DoingSomething(true, "Downloading FFmpeg", progress); });
+      DownloadHelper.ProgressChanged += (progress => { ProgramStatus.DoingSomething(true, "Fetching Recording Utilities", progress); });
       await DownloadHelper.Download(DownloadUri, ZipPath);
     }
 
@@ -64,7 +64,7 @@ namespace Casterr.RecorderLib.FFmpeg
     /// <param name="finalPath">Place to extract FFmpeg binary</param>
     public static async Task ExtractZip()
     {
-      ProgramStatus.DoingSomething(true, "Extracting FFmpeg", 0);
+      ProgramStatus.DoingSomething(true, "Extracting Recording Utilities", 0);
 
       ZipArchive zip;
 
@@ -91,7 +91,7 @@ namespace Casterr.RecorderLib.FFmpeg
           }
 
           // Set progess percentage to amount of files extracted
-          ProgramStatus.DoingSomething(true, "Extracting FFmpeg", (int) (Decimal.Divide(iteration, ffFiles.Count()) * 100));
+          ProgramStatus.DoingSomething(true, "Extracting Recording Utilities", (int) (Decimal.Divide(iteration, ffFiles.Count()) * 100));
           iteration++;
         }
 
@@ -100,7 +100,7 @@ namespace Casterr.RecorderLib.FFmpeg
         File.Delete(ZipPath);
       });
 
-      ProgramStatus.DoingSomething(true, "Extracting FFmpeg", 100);
+      ProgramStatus.DoingSomething(true, "Extracting Recording Utilities", 100);
     }
   }
 }

@@ -13,7 +13,7 @@
       -webkit-linear-gradient(-45deg, transparent 33%, #19181f 33%, #19181f 66%, transparent 66%),
       -webkit-linear-gradient(#333440, #333440);
     background-size: 40px 20px, 100% 100%, 100% 100%;
-    transition: width 250ms ease-in-out;
+    transition: width 150ms ease-in-out;
     animation: progressConveyor 50s linear infinite;
 
     @keyframes progressConveyor {
