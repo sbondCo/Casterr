@@ -1,0 +1,30 @@
+.notifierContainer {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  background-color: change-color($color: $quaternaryColor, $alpha: 0.5);
+
+  .notification {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    min-width: 500px;
+    min-height: 150px;
+    flex-flow: column;
+    border-radius: 7px;
+    background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
+    box-shadow: 0 3px 2px rgba(0, 0, 0, .5);
+
+    .title {
+      font-size: 25px;
+      padding: 5px;
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+  }
+}
