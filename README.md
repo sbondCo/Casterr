@@ -7,11 +7,11 @@
   <br />
   <br />
   
-  <a>
+  <a href="https://www.codefactor.io/repository/github/casterrtv/casterr">
     <img src="https://www.codefactor.io/repository/github/casterrtv/casterr/badge" alt="CodeFactor" />
   </a>
   
-  <a>
+  <a href="LICENSE">
     <img src="https://img.shields.io/github/license/CasterrTV/Casterr.svg" alt="License" />
   </a>
   
