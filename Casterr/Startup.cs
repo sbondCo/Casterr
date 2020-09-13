@@ -67,9 +67,9 @@ namespace Casterr
       // Window options
       var options = new BrowserWindowOptions
       {
-        // Relative path to icon from Casterr exe is wwwroot/logo.png ...
+        // Relative path to icon from Casterr exe is wwwroot/icon.png ...
         // ... But need to get full path so browserWindows.js can see it
-        Icon = Path.GetFullPath(Path.Join("wwwroot", "logo.png")),
+        Icon = Path.GetFullPath(Path.Join("wwwroot", "icon.png")),
 
         // Applications title, currently overwritten by <title> in _Host.cshtml
         Title = "Casterr",
