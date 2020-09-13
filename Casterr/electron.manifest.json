@@ -7,7 +7,7 @@
   "build": {
     "appId": "com.Casterr.app",
     "productName": "Casterr",
-    "copyright": "Copyright © 2020",
+    "copyright": "Copyright © 2020 CasterrTV",
     "buildVersion": "1.0.0",
     "compression": "maximum",
     "directories": {
@@ -31,6 +31,17 @@
         ]
       },
       "**/*"
-    ]
+    ],
+    "linux": {
+      "icon": "bin/wwwroot/icon.png",
+      "category": "Utility",
+      "desktop": {
+        "Name": "Casterr",
+        "GenericName": "Screen Recorder",
+        "Comment": "Easy video recording and sharing",
+        "Type": "Application",
+        "Terminal": "false"
+      }
+    }
   }
 }
