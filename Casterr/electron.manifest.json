@@ -40,14 +40,18 @@
       "**/*"
     ],
     "linux": {
+      "target": "AppImage",
       "icon": "bin/wwwroot/icon.png",
       "category": "Utility",
+      "synopsis": "Easy video recording and sharing",
       "desktop": {
         "Name": "Casterr",
         "GenericName": "Screen Recorder",
         "Comment": "Easy video recording and sharing",
         "Type": "Application",
-        "Terminal": "false"
+        "Terminal": "false",
+        "Categories": "Utility",
+        "Icon": "bin/wwwroot/icon.png"
       }
     },
     "win": {
