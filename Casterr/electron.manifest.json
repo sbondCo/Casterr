@@ -41,18 +41,9 @@
     ],
     "linux": {
       "target": "AppImage",
-      "icon": "bin/wwwroot/icon.png",
+      "icon": "bin/wwwroot/branding/icons",
       "category": "Utility",
-      "synopsis": "Easy video recording and sharing",
-      "desktop": {
-        "Name": "Casterr",
-        "GenericName": "Screen Recorder",
-        "Comment": "Easy video recording and sharing",
-        "Type": "Application",
-        "Terminal": "false",
-        "Categories": "Utility",
-        "Icon": "bin/wwwroot/icon.png"
-      }
+      "synopsis": "Easy video recording and sharing"
     },
     "win": {
       "icon": "bin/wwwroot/icon.ico"
