@@ -51,7 +51,7 @@
       "synopsis": "Easy video recording and sharing"
     },
     "win": {
-      "icon": "bin/wwwroot/256x256.ico"
+      "icon": "bin/wwwroot/branding/icons/256x256.ico"
     }
   }
 }
