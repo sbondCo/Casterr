@@ -1,12 +1,19 @@
 {
   "executable": "Casterr",
   "name": "Casterr",
+  "productName": "Casterr",
+  "version": "0.1.0",
   "description": "Best way to record your clips.",
+  "homepage": "https://github.com/CasterrTV/Casterr",
+  "copyright": "Copyright © 2020 CasterrTV",
+  "license": "GPL-3.0",
   "author": {
     "name": "CasterrTV"
   },
-  "homepage": "https://github.com/CasterrTV/Casterr",
-  "license": "GPL-3.0",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/CasterrTV/Casterr.git"
+  },
   "splashscreen": {
     "imageFile": ""
   },
@@ -14,8 +21,6 @@
   "build": {
     "appId": "com.Casterr.app",
     "productName": "Casterr",
-    "copyright": "Copyright © 2020 CasterrTV",
-    "buildVersion": "0.1.0",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
