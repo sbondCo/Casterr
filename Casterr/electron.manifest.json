@@ -3,7 +3,7 @@
   "name": "Casterr",
   "productName": "Casterr",
   "version": "0.1.0",
-  "description": "Best way to record your clips.",
+  "description": "Easy screen recording and sharing",
   "homepage": "https://github.com/CasterrTV/Casterr",
   "copyright": "Copyright © 2020 CasterrTV",
   "license": "GPL-3.0",
@@ -48,7 +48,8 @@
       "target": "AppImage",
       "icon": "bin/wwwroot/branding/icons",
       "category": "Utility",
-      "synopsis": "Easy video recording and sharing"
+      "synopsis": "Screen recorder",
+      "description": "Easy screen recording and sharing"
     },
     "win": {
       "icon": "bin/wwwroot/branding/icons/256x256.ico"
