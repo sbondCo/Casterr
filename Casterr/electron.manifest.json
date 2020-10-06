@@ -1,15 +1,12 @@
 {
   "executable": "Casterr",
   "name": "Casterr",
-  "productName": "Casterr",
   "version": "0.1.0",
   "description": "Easy screen recording and sharing",
   "homepage": "https://github.com/CasterrTV/Casterr",
   "copyright": "Copyright © 2020 CasterrTV",
   "license": "GPL-3.0",
-  "author": {
-    "name": "CasterrTV"
-  },
+  "author": "CasterrTV",
   "repository": {
     "type" : "git",
     "url" : "https://github.com/CasterrTV/Casterr.git"
@@ -21,6 +18,7 @@
   "build": {
     "appId": "CasterrTV.Casterr",
     "productName": "Casterr",
+    "buildVersion": "0.1.0",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
@@ -52,6 +50,8 @@
       "description": "Easy screen recording and sharing"
     },
     "win": {
+      "target": "NSIS",
+      "artifactName": "${productName} ${version} Setup.${ext}",
       "icon": "bin/wwwroot/branding/icons/256x256.ico"
     }
   }
