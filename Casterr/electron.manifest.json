@@ -19,7 +19,7 @@
   },
   "singleInstance": false,
   "build": {
-    "appId": "com.Casterr.app",
+    "appId": "CasterrTV.Casterr",
     "productName": "Casterr",
     "compression": "maximum",
     "directories": {
