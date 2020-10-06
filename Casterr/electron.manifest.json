@@ -4,21 +4,21 @@
   "version": "0.1.0",
   "description": "Easy screen recording and sharing",
   "homepage": "https://github.com/CasterrTV/Casterr",
-  "copyright": "Copyright © 2020 CasterrTV",
   "license": "GPL-3.0",
   "author": "CasterrTV",
+  "singleInstance": false,
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/CasterrTV/Casterr.git"
+    "type": "git",
+    "url": "https://github.com/CasterrTV/Casterr.git"
   },
   "splashscreen": {
     "imageFile": ""
   },
-  "singleInstance": false,
   "build": {
     "appId": "CasterrTV.Casterr",
     "productName": "Casterr",
     "buildVersion": "0.1.0",
+    "copyright": "Copyright © 2020 CasterrTV",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
