@@ -2,12 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build and run",
-      "command": "electronize",
+      "label": "Run",
+      "command": "npm run electron:serve --prefix Casterr",
       "type": "shell",
-      "args": [
-        "start"
-      ],
       "problemMatcher": "$msCompile",
       "group": {
         "kind": "build",
