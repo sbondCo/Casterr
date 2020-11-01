@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    Hello
-
     <Dragger />
   </div>
 </template>
@@ -15,6 +13,7 @@ import Dragger from './components/Dragger.vue';
     Dragger,
   },
 })
+
 export default class App extends Vue {}
 </script>
 

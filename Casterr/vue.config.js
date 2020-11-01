@@ -1,6 +1,7 @@
 module.exports = {
   pluginOptions: {
     electronBuilder: {
+      nodeIntegration: true,
       builderOptions: {
         appId: "CasterrTV.Casterr",
         productName: "Casterr",
