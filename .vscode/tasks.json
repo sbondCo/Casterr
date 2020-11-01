@@ -2,14 +2,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run",
-      "command": "npm run electron:serve --prefix Casterr",
-      "type": "shell",
-      "problemMatcher": "$msCompile",
+      "label": "Watch all",
+      "dependsOn": [
+        "Run API",
+        "Run electron"
+      ],
+      "dependsOrder": "parallel",
       "group": {
         "kind": "build",
         "isDefault": true
-      }
+      },
+      "problemMatcher": "$msCompile",
+      "isBackground": true
+    },
+    {
+      "label": "Run electron",
+      "command": "npm run electron:serve --prefix Casterr",
+      "type": "shell",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Run API",
+      "command": "dotnet run -p Casterr.API/Casterr.API.csproj",
+      "type": "shell",
+      "problemMatcher": "$msCompile"
     }
   ]
 }

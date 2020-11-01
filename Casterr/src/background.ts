@@ -4,6 +4,7 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const path = require('path')
+const WebSocket = require('ws')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -82,3 +83,25 @@ if (isDevelopment) {
     })
   }
 }
+
+var ws = new WebSocket("ws://127.0.0.1:8099/");
+
+ws.addEventListener("open", () => {
+  console.log("ws conn open");
+
+  ws.send(JSON.stringify({
+    operation: 1
+  }));
+});
+
+ws.addEventListener("message", (e: any) => {
+  console.log("msg recieved");
+
+  var msg = JSON.parse(e.data);
+
+  switch (msg.operation) {
+    case 2:
+      console.log(msg.video.thumb);
+      break;
+  }
+});
