@@ -41,3 +41,37 @@ export default class Dragger extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.dragger {
+  height: 18px;
+  overflow: hidden;
+  -webkit-app-region: drag;
+  background-color: $darkAccentColor;
+
+  .minMaxClose {
+    display: flex;
+    flex-direction: row-reverse;
+    fill: $textPrimary;
+
+    div {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-app-region: no-drag;
+      width: 30px;
+      height: 18px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $lightHoverColor;
+      }
+    }
+
+    .close:hover {
+      background-color: $dangerColor;
+    }
+  }
+}
+</style>
