@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Watch all",
+      "label": "Run",
       "dependsOn": [
         "Run API",
         "Run electron"
