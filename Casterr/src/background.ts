@@ -19,10 +19,12 @@ protocol.registerSchemesAsPrivileged([
  * Create app window
  */
 async function createWindow() {
+  console.log(path.resolve("src/assets/icons/512x512.png"));
+
   // Create the browser window.
   const win = new BrowserWindow({
     title: "Casterr",
-    icon: path.resolve("build/icons/512x512.png"),
+    icon: path.resolve("src/assets/icons/512x512.png"),
     width: 1200,
     height: 650,
     minWidth: 800,
@@ -50,7 +52,7 @@ async function createWindow() {
  * Quit when all windows are closed
  */
 app.on('window-all-closed', () => {
-  // Close API
+  // Close API - Add check to see if api is running before killing
   apiProcess.kill(2)
 
   // On macOS it is common for applications and their menu bar
@@ -70,6 +72,8 @@ app.on('activate', () => {
  * When Electron is finished initializing
  */
 app.on('ready', async () => {
+  let apiPath;
+  
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -77,13 +81,23 @@ app.on('ready', async () => {
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
+
+    apiPath = path.join(__dirname.replace('app.asar', ''), 'linux-unpacked') + '/Casterr.API';
+  }
+  else {
+    apiPath = path.join(__dirname.replace('app.asar', ''), '../') + 'Casterr.API';
   }
 
   createWindow()
 
-  // Start Casterr.API as child process
-  var apiProcess = spawn('./Caster.API')
+  // console.log(__filename)
+  // console.log(path.join(__dirname.replace('app.asar', ''), 'linux-unpacked'))
+  // console.log(path.join(__dirname.replace('app.asar', ''), '../') + 'Casterr.API')
+  // console.log(path.join(__dirname, '../../'))
 
+  // Start Casterr.API as child process
+  apiProcess = spawn(apiPath)
+  
   // Print apiProcess output
   apiProcess.stdout.on('data', (msg: any) => {
     console.log(`Casterr API: ${msg.toString()}`)

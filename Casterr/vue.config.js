@@ -19,7 +19,7 @@ module.exports = {
         compression: "maximum",
         linux: {
           target: ["AppImage"],
-          icon: "./icons",
+          icon: "./src/assets/icons",
           category: "Utility",
           synopsis: "Screen recorder",
           description: "Easy screen recording and sharing"
@@ -27,7 +27,7 @@ module.exports = {
         win: {
           target: "NSIS",
           artifactName: "${productName} ${version} Setup.${ext}",
-          icon: "./icons/256x256.ico"
+          icon: "./src/assets/icons/256x256.ico"
         },
         files: [
           "**/*"
