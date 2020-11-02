@@ -5,8 +5,10 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const path = require('path')
 // const WebSocket = require('ws')
-const spawn = require('child_process')
+const spawn = require('child_process').spawn
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+var apiProcess: NodeJS.Process;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -48,6 +50,9 @@ async function createWindow() {
  * Quit when all windows are closed
  */
 app.on('window-all-closed', () => {
+  // Close API
+  apiProcess.kill(2)
+
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
