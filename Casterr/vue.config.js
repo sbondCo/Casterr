@@ -28,7 +28,19 @@ module.exports = {
           target: "NSIS",
           artifactName: "${productName} ${version} Setup.${ext}",
           icon: "./icons/256x256.ico"
-        }
+        },
+        files: [
+          "**/*"
+        ],
+        extraFiles: [
+          {
+            from: "./bin/api",
+            to: "./",
+            filter: [
+              "**/*"
+            ]
+          }
+        ]
       }
     }
   }

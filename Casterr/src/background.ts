@@ -4,7 +4,8 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const path = require('path')
-const WebSocket = require('ws')
+// const WebSocket = require('ws')
+const spawn = require('child_process')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -12,6 +13,9 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
+/**
+ * Create app window
+ */
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
@@ -34,12 +38,15 @@ async function createWindow() {
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
+
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    win.loadURL('app://index.html')
   }
 }
 
-// Quit when all windows are closed.
+/**
+ * Quit when all windows are closed
+ */
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
@@ -54,9 +61,9 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+/**
+ * When Electron is finished initializing
+ */
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
@@ -66,10 +73,43 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+
   createWindow()
+
+  // Start Casterr.API as child process
+  var apiProcess = spawn('./Caster.API')
+
+  // Print apiProcess output
+  apiProcess.stdout.on('data', (msg: any) => {
+    console.log(`Casterr API: ${msg.toString()}`)
+  });
+
+  // var ws = new WebSocket("ws://127.0.0.1:8099/");
+
+  // ws.addEventListener("open", () => {
+  //   console.log("ws conn open");
+  
+  //   ws.send(JSON.stringify({
+  //     operation: 1
+  //   }));
+  // });
+  
+  // ws.addEventListener("message", (e: any) => {
+  //   console.log("msg recieved");
+  
+  //   var msg = JSON.parse(e.data);
+  
+  //   switch (msg.operation) {
+  //     case 2:
+  //       console.log(msg.video.thumb);
+  //       break;
+  //   }
+  // });
 })
 
-// Exit cleanly on request from parent process in development mode.
+/**
+ * Exit cleanly on request from parent process in development mode
+ */
 if (isDevelopment) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
@@ -83,25 +123,3 @@ if (isDevelopment) {
     })
   }
 }
-
-var ws = new WebSocket("ws://127.0.0.1:8099/");
-
-ws.addEventListener("open", () => {
-  console.log("ws conn open");
-
-  ws.send(JSON.stringify({
-    operation: 1
-  }));
-});
-
-ws.addEventListener("message", (e: any) => {
-  console.log("msg recieved");
-
-  var msg = JSON.parse(e.data);
-
-  switch (msg.operation) {
-    case 2:
-      console.log(msg.video.thumb);
-      break;
-  }
-});
