@@ -19,12 +19,19 @@ protocol.registerSchemesAsPrivileged([
  * Create app window
  */
 async function createWindow() {
-  console.log(path.resolve("src/assets/icons/512x512.png"));
+  let iconPath;
+
+  if (isDevelopment && !process.env.IS_TEST) {
+    iconPath = path.join(__dirname.replace('app.asar', ''), 'linux-unpacked', 'assets', 'icons', '512x512.png');
+  }
+  else {
+    iconPath = path.join(__dirname.replace('app.asar', ''), '../', 'assets', 'icons', '512x512.png');
+  }
 
   // Create the browser window.
   const win = new BrowserWindow({
     title: "Casterr",
-    icon: path.resolve("src/assets/icons/512x512.png"),
+    icon: iconPath,
     width: 1200,
     height: 650,
     minWidth: 800,
@@ -85,15 +92,10 @@ app.on('ready', async () => {
     apiPath = path.join(__dirname.replace('app.asar', ''), 'linux-unpacked') + '/Casterr.API';
   }
   else {
-    apiPath = path.join(__dirname.replace('app.asar', ''), '../') + 'Casterr.API';
+    apiPath = path.join(__dirname.replace('app.asar', ''), '../', 'Casterr.API');
   }
 
   createWindow()
-
-  // console.log(__filename)
-  // console.log(path.join(__dirname.replace('app.asar', ''), 'linux-unpacked'))
-  // console.log(path.join(__dirname.replace('app.asar', ''), '../') + 'Casterr.API')
-  // console.log(path.join(__dirname, '../../'))
 
   // Start Casterr.API as child process
   apiProcess = spawn(apiPath)
