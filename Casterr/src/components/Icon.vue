@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from "vue-property-decorator";
 
 const IconProps = Vue.extend({
   props: {
@@ -26,13 +26,13 @@ export default class Icon extends IconProps {
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 7L0.5 14V0L11.5 7ZM7.77002 7L2.5 3.64V10.36L7.77002 7Z" />
           </svg>
-        `
+        `;
       case "upload":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 16 18" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0 2V0H16V2H0ZM7 8H4L8 4L12 8H9V18H7V8Z" />
           </svg>
-        `
+        `;
       case "settings":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -51,19 +51,19 @@ export default class Icon extends IconProps {
               1.27.51.7-1.21-1.08-.84-.89-.7.14-1.13c.03-.3.05-.52.05-.73zm-5.5-4c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79
               4-4-1.79-4-4-4zm-2 4c0 1.1.9 2 2 2s2-.9 2-2-.9-2-2-2-2 .9-2 2z" />
           </svg>
-        `
+        `;
       case "min":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 12">
             <rect width="10" height="1" x="1" y="6"></rect>
           </svg>
-        `
+        `;
       case "max":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 12">
             <rect width="9" height="9" x="1.5" y="1.5" fill="none" stroke="currentColor"></rect>
           </svg>
-        `
+        `;
       case "close":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 12">
@@ -71,7 +71,7 @@ export default class Icon extends IconProps {
               points="11 1.576 6.583 6 11 10.424 10.424 11 6 6.583
               1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1"></polygon>
           </svg>
-        `
+        `;
       case "edit":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 512 512">
@@ -82,11 +82,11 @@ export default class Icon extends IconProps {
               55.274L38.198 350.506l123.284 123.293 295.209-295.231z">
             </path>
           </svg>
-        `
+        `;
       default:
         return `
           oops
-        `
+        `;
     }
   }
 }
