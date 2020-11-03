@@ -22,7 +22,7 @@ async function createWindow() {
   let iconPath;
 
   if (isDevelopment && !process.env.IS_TEST) {
-    iconPath = path.join(__dirname.replace('app.asar', ''), 'linux-unpacked', 'assets', 'icons', '512x512.png');
+    iconPath = path.join(__dirname.replace('app.asar', ''), '../', 'assets', 'icons', '512x512.png');
   }
   else {
     iconPath = path.join(__dirname.replace('app.asar', ''), '../', 'assets', 'icons', '512x512.png');
@@ -89,7 +89,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
 
-    apiPath = path.join(__dirname.replace('app.asar', ''), 'linux-unpacked') + '/Casterr.API';
+    apiPath = path.join(__dirname.replace('app.asar', ''), 'bin', 'api', 'Casterr.API');
   }
   else {
     apiPath = path.join(__dirname.replace('app.asar', ''), '../', 'Casterr.API');
