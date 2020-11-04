@@ -3,8 +3,8 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import { APIInteract } from "./ts/apiInteract";
 const path = require("path");
-// const WebSocket = require("ws");
 const spawn = require("child_process").spawn;
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -98,35 +98,29 @@ app.on("ready", async () => {
 
   createWindow();
 
+  // Create file protocol, so we can access users files
+  let protocolName = "secfile"
+  protocol.registerFileProtocol(protocolName, (request, callback) => {
+    const url = request.url.replace(`${protocolName}://`, '')
+    try {
+      return callback(decodeURIComponent(url))
+    }
+    catch (error) {
+      // Handle the error as needed
+      console.error(error)
+    }
+  })
+
   // Start Casterr.API as child process
-  apiProcess = spawn(apiPath);
+  apiProcess = await spawn(apiPath);
   
   // Print apiProcess output
   apiProcess.stdout.on("data", (msg: any) => {
     console.log(`Casterr API: ${msg.toString()}`);
   });
 
-  // var ws = new WebSocket("ws://127.0.0.1:8099/");
-
-  // ws.addEventListener("open", () => {
-  //   console.log("ws conn open");
-  
-  //   ws.send(JSON.stringify({
-  //     operation: 1
-  //   }));
-  // });
-  
-  // ws.addEventListener("message", (e: any) => {
-  //   console.log("msg recieved");
-  
-  //   var msg = JSON.parse(e.data);
-  
-  //   switch (msg.operation) {
-  //     case 2:
-  //       console.log(msg.video.thumb);
-  //       break;
-  //   }
-  // });
+  // Connect to API
+  APIInteract.connect();
 })
 
 /**
