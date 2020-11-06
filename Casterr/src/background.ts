@@ -3,12 +3,12 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import { APIInteract } from "./ts/apiInteract";
+// import { API } from "./ts/apiInteract";
 const path = require("path");
-const spawn = require("child_process").spawn;
+// const spawn = require("child_process").spawn;
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-var apiProcess: NodeJS.Process;
+// var apiProcess: NodeJS.Process;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -61,7 +61,7 @@ async function createWindow() {
  */
 app.on("window-all-closed", () => {
   // Close API - Add check to see if api is running before killing
-  apiProcess.kill(2);
+  // apiProcess.kill(2);
 
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
@@ -111,16 +111,17 @@ app.on("ready", async () => {
     }
   })
 
-  // Start Casterr.API as child process
-  apiProcess = await spawn(apiPath);
+  // // Start Casterr.API as child process
+  // apiProcess = await spawn(apiPath);
   
-  // Print apiProcess output
-  apiProcess.stdout.on("data", (msg: any) => {
-    console.log(`Casterr API: ${msg.toString()}`);
-  });
+  // // Print apiProcess output
+  // apiProcess.stdout.on("data", (msg: any) => {
+  //   console.log(`Casterr API: ${msg.toString()}`);
+  // });
 
   // Connect to API
-  APIInteract.connect();
+  // const interact = API.APIInteract.Instance;
+  // interact.connect();
 })
 
 /**
