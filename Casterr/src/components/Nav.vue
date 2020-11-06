@@ -52,7 +52,7 @@ import Icon from "./Icon.vue";
   },
 })
 
-export default class Nav extends Vue{}
+export default class Nav extends Vue {}
 </script>
 
 <style lang="scss">
