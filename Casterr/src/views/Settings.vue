@@ -2,7 +2,7 @@
   <div id="settingsPage">
     <div class="nav">
       <ul>
-        <li @click="activeSubPage = 'GeneralSettings'">
+        <li @click="swapComponent('GeneralSettings')">
           <span>General</span>
         </li>
         <li @click="swapComponent('RecordingSettings')">
@@ -14,7 +14,7 @@
       </ul>
     </div>
 
-    <div id="l" :is="activeSubPage" :swap-component="swapComponent"></div>
+    <div id="l" :is="activeSubPage"></div>
   </div>
 </template>
 
@@ -65,16 +65,13 @@ export default Vue.extend({
       overflow-y: auto;
 
       li {
+        display: flex;
         font-size: 24px;
         background-position: right;
         transition: all 150ms linear;
-
-        a {
-          display: flex;
-          width: 100%;
-          padding: 10px 15px;
-          cursor: pointer;
-        }
+        width: 100%;
+        padding: 10px 15px;
+        cursor: pointer;
 
         .active,
         &.save:hover,
