@@ -14,7 +14,9 @@
       </ul>
     </div>
 
-    <div id="l" :is="activeSubPage"></div>
+    <keep-alive>
+      <div id="l" v-bind:is="activeSubPage"></div>
+    </keep-alive>
   </div>
 </template>
 
@@ -65,7 +67,6 @@ export default Vue.extend({
       overflow-y: auto;
 
       li {
-        display: flex;
         font-size: 24px;
         background-position: right;
         transition: all 150ms linear;
