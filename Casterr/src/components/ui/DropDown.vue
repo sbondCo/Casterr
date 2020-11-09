@@ -93,7 +93,7 @@ export default class DropDown extends DropDownProps {
 
     &::-webkit-scrollbar-thumb {
       background: $tertiaryColor;
-      -webkit-border-radius: 1ex;
+      border-radius: 1ex;
     }
   }
 }
