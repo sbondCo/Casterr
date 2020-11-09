@@ -1,9 +1,17 @@
 <template>
   <div id="app">
-    <Dragger />
-    <Nav />
+    <!-- <section id="notify">
+      <Notifier />
+    </section> -->
 
-    <router-view />
+    <section id="top">
+      <Dragger />
+      <Nav />
+    </section>
+
+    <section id="main">
+      <router-view />
+    </section>
   </div>
 </template>
 

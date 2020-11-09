@@ -15,7 +15,9 @@
     </div>
 
     <keep-alive>
-      <div id="l" v-bind:is="activeSubPage"></div>
+      <div class="settingsContent">
+        <div v-bind:is="activeSubPage"></div>
+      </div>
     </keep-alive>
   </div>
 </template>
@@ -44,10 +46,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-#l {
-  padding-left: 300px;
-}
-
 #settingsPage {
   .nav {
     position: absolute;
@@ -82,6 +80,49 @@ export default Vue.extend({
           background-size: 200% 100%;
           background-position: left;
         }
+      }
+    }
+  }
+
+  .settingsContent {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    position: absolute;
+    right: 0;
+    width: calc(100% - 200px);
+    height: calc(100% - 66px);
+    overflow-y: auto;
+
+    .pageTitle {
+      font-size: 30px;
+    }
+
+    .settings {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-flow: column;
+      margin: 15px 15px;
+      width: 50%;
+
+      .setting {
+        width: 100%;
+        margin: 15px 0;
+
+        .title {
+          display: inline-flex;
+          font-weight: bold;
+          margin-bottom: 8px;
+        }
+
+        .checkBoxContainer {
+          margin-left: 5px;
+        }
+      }
+
+      @media (max-width: 1000px) {
+        width: 80%;
       }
     }
   }

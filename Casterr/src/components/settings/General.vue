@@ -1,5 +1,12 @@
 <template>
-  <span>GeneralSettings</span>
+  <div class="settings">
+    <span class="pageTitle">General Settings</span>
+
+    <div class="setting">
+      <span class="title">Startup Page:</span>
+      <!-- <DropDown Name="startupPage" Items="@startupPageItems" Placeholder="@gs.StartupPage" OnSelectedChanged=@UpdateSettings /> -->
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
