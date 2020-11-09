@@ -1,0 +1,100 @@
+<template>
+  <div id="dropDown" @click="toggleDropDown()">
+    <label>{{ this.placeholder }}</label>
+    <ul id="dropDownItems">
+      <li v-for="item in items" :key="item">
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+const DropDownProps = Vue.extend({
+  props: {
+    placeholder: String,
+    items: Array
+  }
+});
+
+@Component
+
+export default class DropDown extends DropDownProps {
+  private toggleDropDown() {
+    let dd = document.getElementById("dropDown")!;
+    let items = document.getElementById("dropDownItems")!;
+
+    if (items.classList.contains("opened")) {
+      dd.style.borderRadius = "4px";
+      items.classList.remove("opened");
+    }
+    else {
+      dd.style.borderRadius = "4px 4px 0 0";
+      items.classList.add("opened");
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+#dropDown {
+  position: relative;
+  display: inline-block;
+  min-width: 160px;
+  width: 100%;
+  padding: 8px;
+  background-color: $secondaryColor;
+  border-radius: 4px;
+  cursor: pointer;
+
+  label {
+    transition: all 250ms ease;
+    cursor: pointer;
+  }
+
+  ul {
+    display: none;
+    position: absolute;
+    right: 0;
+    max-height: 160px;
+    width: 100%;
+    margin: 8px 0 0 0;
+    z-index: 1;
+    overflow-y: auto;
+    border-radius: 0 0 4px 4px;
+    cursor: pointer;
+
+    li {
+      width: 100%;
+      padding: 8px;
+      list-style: none;
+      background-color: $secondaryColor;
+      cursor: pointer;
+
+      &.active {
+        background-color: $quaternaryColor !important;
+      }
+
+      &:hover {
+        background-color: $tertiaryColor;
+      }
+    }
+
+    &.opened {
+      display: block;
+    }
+
+    &::-webkit-scrollbar {
+      width: 5px;
+      background: $primaryColor;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $tertiaryColor;
+      -webkit-border-radius: 1ex;
+    }
+  }
+}
+</style>

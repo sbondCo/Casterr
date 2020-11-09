@@ -4,15 +4,28 @@
 
     <div class="setting">
       <span class="title">Startup Page:</span>
-      <!-- <DropDown Name="startupPage" Items="@startupPageItems" Placeholder="@gs.StartupPage" OnSelectedChanged=@UpdateSettings /> -->
+      <DropDown placeholder="Page setting" :items="startupPageItems" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Component, Vue } from "vue-property-decorator";
+import DropDown from "./../ui/DropDown.vue";
 
-export default class GeneralSettings extends Vue{}
+@Component({
+  components: {
+    DropDown,
+  },
+})
+
+export default class GeneralSettings extends Vue{
+  data() {
+    return {
+      startupPageItems: ["Recordings", "Uploads", "Settings", "Profile"]
+    }
+  }
+}
 </script>
 
 <style lang="scss">
