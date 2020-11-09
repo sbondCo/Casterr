@@ -4,7 +4,6 @@
     {
       "label": "Run",
       "dependsOn": [
-        // "Build API",
         "Run Client App"
       ],
       "dependsOrder": "sequence",
@@ -17,13 +16,7 @@
     },
     {
       "label": "Run Client App",
-      "command": "npm run electron:serve --prefix Casterr",
-      "type": "shell",
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "Build API",
-      "command": "dotnet publish -c debug --output ./Casterr/bin/api --no-self-contained ./Casterr.API/Casterr.API.csproj",
+      "command": "npm run electron:serve",
       "type": "shell",
       "problemMatcher": "$msCompile"
     }
