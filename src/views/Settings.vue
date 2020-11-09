@@ -51,7 +51,7 @@ export default Vue.extend({
     position: absolute;
     height: 100%;
     width: 200px;
-    top: 66px;
+    top: 68px;
     left: 0;
     background-color: $secondaryColor;
 
@@ -61,7 +61,7 @@ export default Vue.extend({
       position: absolute;
       list-style: none;
       width: 100%;
-      height: calc(100% - 66px);
+      height: calc(100% - 68px);
       overflow-y: auto;
 
       li {
