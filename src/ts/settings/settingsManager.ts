@@ -24,14 +24,14 @@ export namespace Settings {
           objToCastTo = Settings.RecordingSettings;
           break;
         case "KeyBinding":
-          // objToCastTo = Settings.KeyBindingSettings;
+          objToCastTo = Settings.KeyBindingSettings;
           break;
         default:
           throw new Error(`Requested settings (${which}) do not exist.`);
           break;
       }
 
-      fs.readFile(path.join(PathHelper.mainFolderPath(), "settings", `${which}Settings.json`), (err: any, data: string) => {
+      fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}Settings.json`), (err: any, data: string) => {
         if (err) throw err;
 
         // Cast json from setting file to correct object
@@ -77,17 +77,17 @@ export namespace Settings {
    * Recording Settings
    */
   export class RecordingSettings {
-    private static _thumbSaveFolder: string;
-    private static _videoSaveFolder: string;
-    private static _videoSaveName: string;
-    private static _videoDevice: string;
-    private static _fps: string;
-    private static _resolution: string;
-    private static _format: string;
-    private static _zeroLatency: string;
-    private static _ultraFast: string;
+    private static _thumbSaveFolder: string = PathHelper.thumbsFolderPath;
+    private static _videoSaveFolder: string = ``;
+    private static _videoSaveName: string = "%d.%m.%Y - %H.%i.%s";
+    private static _videoDevice: string = "Default";
+    private static _fps: string = "60";
+    private static _resolution: string = "In-Game";
+    private static _format: string = "mp4";
+    private static _zeroLatency: boolean = true;
+    private static _ultraFast: boolean = true;
     private static _audioDevicesToRecord: Array<string>;
-    private static _seperateAudioTracks: string;
+    private static _seperateAudioTracks: boolean = false;
 
     /**
      * thumbSaveFolder
