@@ -2,14 +2,20 @@ import PathHelper from "./helpers/pathHelper";
 const fs = require("fs");
 const path = require("path");
 
+export enum SettingsFiles {
+  General = "GeneralSettings",
+  Recording = "RecordingSettings",
+  KeyBinding = "KeyBindingSettings"
+}
+
 export default class SettingsManager {
   /**
    * Write settings to file
    */
-  public static writeSettings() {
-    fs.writeFile(path.join(PathHelper.mainFolderPath(), "settings", "GeneralSettings.json"), "hi", (err: any) => {
+  public static writeSettings(which: SettingsFiles) {
+    fs.writeFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), "hi", (err: any) => {
       if (err) throw err;
-      console.log('The file has been saved!');
+      console.log('Settings saved');
     });
   }
 
@@ -17,33 +23,36 @@ export default class SettingsManager {
    * Get settings from file
    * @param which Which settings to get
    */
-  public static getSettings(which: string) {
-    let objToCastTo: object;
-    
-    // Set objToCastTo var depending on `which` setting is requested.
-    // If not understood throw an error
-    switch (which) {
-      case "General":
-        objToCastTo = GeneralSettings;
-        break;
-      case "Recording":
-        objToCastTo = RecordingSettings;
-        break;
-      case "KeyBinding":
-        objToCastTo = KeyBindingSettings;
-        break;
-      default:
-        throw new Error(`Requested settings (${which}) do not exist.`);
-        break;
-    }
-
+  public static getSettings(which: SettingsFiles) {
     // Read settings file
-    fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}Settings.json`), (err: any, data: string) => {
+    fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), (err: any, data: string) => {
       if (err) throw err;
 
       // Cast json from setting file to correct object
-      Object.assign(objToCastTo, JSON.parse(data.toString()));
+      Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data.toString()));
     });
+  }
+
+  /**
+   * Get settings object from name as a string
+   * @param name Name of object wanted
+   */
+  private static getObjectFromName(name: SettingsFiles) {
+    // Switch over name to get correct object. If unrecognized name set, throw an err
+    switch (name) {
+      case SettingsFiles.General:
+        return GeneralSettings;
+        break;
+      case SettingsFiles.Recording:
+        return RecordingSettings;
+        break;
+      case SettingsFiles.KeyBinding:
+        return KeyBindingSettings;
+        break;
+      default:
+        throw new Error(`Requested settings (${name}) do not exist.`);
+        break;
+    }
   }
 }
 

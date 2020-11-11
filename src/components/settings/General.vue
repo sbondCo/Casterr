@@ -12,9 +12,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
-import SettingsManager from "./../../ts/settings";
+import SettingsManager, { SettingsFiles } from "./../../ts/settings";
 
-SettingsManager.getSettings("Recording");
+// SettingsManager.writeSettings(SettingsFiles.General);
+SettingsManager.getSettings(SettingsFiles.Recording);
 
 @Component({
   components: {
