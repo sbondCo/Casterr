@@ -8,11 +8,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Settings } from "./../ts/settings/settingsManager";
+import { RecordingSettings } from "./../ts/settings/settingsManager";
 
 export default Vue.extend({
   mounted() {
-    return console.log(Settings.GeneralSettings.startupPage);
+    return console.log(RecordingSettings.thumbSaveFolder);
   }
 })
 </script>
