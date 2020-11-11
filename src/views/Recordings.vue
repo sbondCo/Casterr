@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { RecordingSettings } from "./../ts/settings/settingsManager";
+import { RecordingSettings } from "./../ts/settings";
 
 export default Vue.extend({
   mounted() {

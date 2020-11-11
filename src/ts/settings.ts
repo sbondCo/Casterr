@@ -1,8 +1,11 @@
-import PathHelper from "./../helpers/pathHelper";
+import PathHelper from "./helpers/pathHelper";
 const fs = require("fs");
 const path = require("path");
 
-export class SettingsManager {
+export default class SettingsManager {
+  /**
+   * Write settings to file
+   */
   public static writeSettings() {
     fs.writeFile(path.join(PathHelper.mainFolderPath(), "settings", "GeneralSettings.json"), "hi", (err: any) => {
       if (err) throw err;
@@ -10,6 +13,10 @@ export class SettingsManager {
     });
   }
 
+  /**
+   * Get settings from file
+   * @param which Which settings to get
+   */
   public static getSettings(which: string) {
     let objToCastTo: object;
     
@@ -30,6 +37,7 @@ export class SettingsManager {
         break;
     }
 
+    // Read settings file
     fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}Settings.json`), (err: any, data: string) => {
       if (err) throw err;
 
