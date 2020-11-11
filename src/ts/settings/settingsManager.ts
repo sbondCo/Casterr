@@ -210,4 +210,22 @@ export namespace Settings {
       this._seperateAudioTracks = seperateTracks;
     }
   }
+
+  /**
+   * KeyBinding Settings
+   */
+  export class KeyBindingSettings {
+    private static _startStopRecording: string = "CommandOrControl+X";
+
+    /**
+     * startStopRecording
+     */
+    public static get startStopRecording() {
+      return this._startStopRecording;
+    }
+
+    public static set startStopRecording(key) {
+      this._startStopRecording = key;
+    }
+  }
 }
