@@ -12,18 +12,30 @@ export namespace Settings {
     }
   
     public static getSettings(which: string) {
-      // Check if requested settings exist by matching it to items in settingsFiles array
-      if (!Settings.App.settingsFiles.includes(which)) {
-        throw new Error(`Requested settings (${which}) do not exist.`);
+      let objToCastTo: object;
+      
+      // Set objToCastTo var depending on `which` setting is requested.
+      // If not understood throw an error
+      switch (which) {
+        case "General":
+          objToCastTo = Settings.GeneralSettings;
+          break;
+        case "Recording":
+          objToCastTo = Settings.RecordingSettings;
+          break;
+        case "KeyBinding":
+          // objToCastTo = Settings.KeyBindingSettings;
+          break;
+        default:
+          throw new Error(`Requested settings (${which}) do not exist.`);
+          break;
       }
 
-      fs.readFile(path.join(PathHelper.mainFolderPath(), "settings", `RecordingSettings.json`), (err: any, data: string) => {
+      fs.readFile(path.join(PathHelper.mainFolderPath(), "settings", `${which}Settings.json`), (err: any, data: string) => {
         if (err) throw err;
 
         // Cast json from setting file to correct object
-        Object.assign(Settings.RecordingSettings, JSON.parse(data.toString()));
-
-        console.log(Settings.RecordingSettings.videoSaveName);
+        Object.assign(objToCastTo, JSON.parse(data.toString()));
       });
     }
   }
