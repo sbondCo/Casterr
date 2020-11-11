@@ -9,8 +9,4 @@ export default class PathHelper {
   public static get settingsFolderPath() {
     return path.join(PathHelper.mainFolderPath, "Settings");
   }
-
-  public static get thumbsFolderPath() {
-    return path.join(PathHelper.mainFolderPath, "Thumbs");
-  }
 }
