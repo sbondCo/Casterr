@@ -13,7 +13,16 @@ export default class SettingsManager {
    * Write settings to file
    */
   public static writeSettings(which: SettingsFiles) {
-    fs.writeFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), "hi", (err: any) => {
+    let json: any = {};
+
+    // Read all entries in correct settings object and make a json object to write
+    Object.entries(SettingsManager.getObjectFromName(which)).forEach((pair) => {
+      // Remove '_' from pair[0]/key then set it to pair[1]/value
+      json[pair[0].substring(1)] = pair[1];
+    });
+
+    // Write settings in objects to correct file, format json with 2 spaces
+    fs.writeFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), JSON.stringify(json, null, 2), (err: any) => {
       if (err) throw err;
       console.log('Settings saved');
     });
