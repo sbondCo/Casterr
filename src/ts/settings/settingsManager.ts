@@ -11,8 +11,13 @@ export namespace Settings {
       });
     }
   
-    public static getSettings() {
-      fs.readFile(path.join(PathHelper.mainFolderPath(), "settings", "RecordingSettings.json"), (err: any, data: string) => {
+    public static getSettings(which: string) {
+      // Check if requested settings exist by matching it to items in settingsFiles array
+      if (!Settings.App.settingsFiles.includes(which)) {
+        throw new Error(`Requested settings (${which}) do not exist.`);
+      }
+
+      fs.readFile(path.join(PathHelper.mainFolderPath(), "settings", `RecordingSettings.json`), (err: any, data: string) => {
         if (err) throw err;
 
         // Cast json from setting file to correct object
@@ -20,6 +25,21 @@ export namespace Settings {
 
         console.log(Settings.RecordingSettings.videoSaveName);
       });
+    }
+  }
+
+  /**
+   * Application wide settings that can't be changed
+   */
+  export class App {
+    // Pages in application
+    public static get pages() {
+      return ["Recordings", "Uploads", "Settings", "Profile"];
+    }
+
+    // Settings files
+    public static get settingsFiles() {
+      return ["General", "Recording", "KeyBinding"];
     }
   }
   

@@ -14,7 +14,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import { Settings } from "./../../ts/settings/settingsManager";
 
-Settings.Manager.getSettings();
+Settings.Manager.getSettings("Recording");
 
 // Settings.GeneralSettings.startupPage = "Settings";
 
