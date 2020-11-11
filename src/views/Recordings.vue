@@ -8,6 +8,11 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Settings } from "./../ts/settings/settingsManager";
 
-export default Vue.extend({})
+export default Vue.extend({
+  mounted() {
+    return console.log(Settings.GeneralSettings.startupPage);
+  }
+})
 </script>

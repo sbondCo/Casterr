@@ -12,6 +12,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
+import { SettingsManager } from "./../../ts/settings/settingsManager";
+
+SettingsManager.getSettings();
+
+// Settings.GeneralSettings.startupPage = "Settings";
 
 @Component({
   components: {
