@@ -3,12 +3,8 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-// import { API } from "./ts/apiInteract";
 const path = require("path");
-// const spawn = require("child_process").spawn;
 const isDevelopment = process.env.NODE_ENV !== "production";
-
-// var apiProcess: NodeJS.Process;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -60,9 +56,6 @@ async function createWindow() {
  * Quit when all windows are closed
  */
 app.on("window-all-closed", () => {
-  // Close API - Add check to see if api is running before killing
-  // apiProcess.kill(2);
-
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {
@@ -80,22 +73,6 @@ app.on("activate", () => {
  * When Electron is finished initializing
  */
 app.on("ready", async () => {
-  let apiPath;
-  
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      console.error("Vue Devtools failed to install:", e.toString());
-    }
-
-    apiPath = path.join(__dirname.replace("app.asar", ""), "bin", "api", "Casterr.API");
-  }
-  else {
-    apiPath = path.join(__dirname.replace("app.asar", ""), "../", "Casterr.API");
-  }
-
   createWindow();
 
   // Create file protocol, so we can access users files
@@ -110,18 +87,6 @@ app.on("ready", async () => {
       console.error(error)
     }
   })
-
-  // // Start Casterr.API as child process
-  // apiProcess = await spawn(apiPath);
-  
-  // // Print apiProcess output
-  // apiProcess.stdout.on("data", (msg: any) => {
-  //   console.log(`Casterr API: ${msg.toString()}`);
-  // });
-
-  // Connect to API
-  // const interact = API.APIInteract.Instance;
-  // interact.connect();
 })
 
 /**
