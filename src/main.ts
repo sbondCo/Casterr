@@ -17,4 +17,7 @@ Promise.all(promises).then(result => {
     router,
     render: h => h(App),
   }).$mount("#app");
+
+  // Redirect to startup page defined in settings
+  // router.push("recordings");
 });
