@@ -33,12 +33,16 @@ export default class SettingsManager {
    * @param which Which settings to get
    */
   public static getSettings(which: SettingsFiles) {
-    // Read settings file
-    fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), (err: any, data: string) => {
-      if (err) throw err;
+    return new Promise((resolve, reject) => {
+      // Read settings file
+      fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), 'utf8', (err: any, data: string) => {
+        if (err) reject(err);
 
-      // Cast json from setting file to correct object
-      Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data.toString()));
+        // Cast json from setting file to correct object
+        Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data));
+
+        resolve(null);
+      });
     });
   }
 
@@ -68,7 +72,7 @@ export default class SettingsManager {
 /**
  * Application wide settings that can't be changed
  */
-export class App {
+export class AppSettings {
   // Pages in application
   public static get pages() {
     return ["Recordings", "Uploads", "Settings", "Profile"];

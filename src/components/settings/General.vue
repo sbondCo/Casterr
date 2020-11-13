@@ -12,10 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
-import SettingsManager, { SettingsFiles } from "./../../ts/settings";
-
-// SettingsManager.writeSettings(SettingsFiles.General);
-SettingsManager.getSettings(SettingsFiles.Recording);
+import { AppSettings } from "./../../ts/settings";
 
 @Component({
   components: {
@@ -26,7 +23,7 @@ SettingsManager.getSettings(SettingsFiles.Recording);
 export default class GeneralSettings extends Vue{
   data() {
     return {
-      startupPageItems: ["Recordings", "Uploads", "Settings", "Profile"]
+      startupPageItems: AppSettings.pages
     }
   }
 }
