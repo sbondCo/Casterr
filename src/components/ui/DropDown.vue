@@ -1,7 +1,7 @@
 <template>
   <div id="dropDown" @click="toggleDropDown()">
     <label>{{ pholder }}</label>
-    <ul id="dropDownItems">
+    <ul ref="dropDownItems" id="dropDownItems">
       <li v-for="item in dropDownItems" :key="item" @click="switchItems(item)">
         {{ item }}
       </li>
@@ -31,8 +31,8 @@ export default class DropDown extends DropDownProps {
   }
 
   private toggleDropDown() {
-    let dd = document.getElementById("dropDown")!;
-    let items = document.getElementById("dropDownItems")!;
+    let dd = this.$el as HTMLElement;
+    let items = this.$refs.dropDownItems as HTMLElement;
 
     if (items.classList.contains("opened")) {
       dd.style.borderRadius = "4px";
