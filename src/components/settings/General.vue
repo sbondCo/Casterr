@@ -4,7 +4,7 @@
 
     <div class="setting">
       <span class="title">Startup Page:</span>
-      <DropDown :placeholder="startupPage" :items="startupPageItems" />
+      <DropDown name="startupPage" :placeholder="startupPage" :items="startupPageItems" @itemChanged="updateSettings" />
     </div>
   </div>
 </template>
@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
-import { AppSettings, GeneralSettings } from "./../../ts/settings";
+import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./../../ts/settings";
 import "../../ts/helpers/extensions/ArrayExtensions";
 
 @Component({
@@ -27,6 +27,18 @@ export default class GeneralSettingsComponent extends Vue {
       startupPage: GeneralSettings.startupPage,
       startupPageItems: AppSettings.pages
     }
+  }
+
+  updateSettings(toUpdate: string, newValue: string) {
+    // Update settings in obj
+    switch (toUpdate) {
+      case "startupPage":
+        GeneralSettings.startupPage = newValue
+        break;
+    }
+
+    // Write new settings
+    SettingsManager.writeSettings(SettingsFiles.General);
   }
 }
 </script>

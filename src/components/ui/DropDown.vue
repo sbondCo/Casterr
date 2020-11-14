@@ -14,6 +14,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 const DropDownProps = Vue.extend({
   props: {
+    name: String,
     placeholder: String,
     items: Array
   }
@@ -49,6 +50,8 @@ export default class DropDown extends DropDownProps {
 
     // Update pholder prop with itemClicked on
     this.$set(this.$data, 'pholder', itemClicked);
+
+    this.$emit('itemChanged', this.name, this.$data.pholder);
   }
 }
 </script>
