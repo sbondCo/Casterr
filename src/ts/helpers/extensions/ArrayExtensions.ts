@@ -1,11 +1,6 @@
 interface Array<T> {
-  toUnique(): string[];
   remove(toRemove: string): string[];
   replace(toReplace: string, replaceWith: string): string[];
-}
-
-Array.prototype.toUnique = function (this): string[] {
-  return this.filter((v, i, a) => a.indexOf(v) === i);
 }
 
 /**
