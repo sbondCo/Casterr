@@ -1,8 +1,8 @@
 <template>
   <div id="dropDown" @click="toggleDropDown()">
-    <label>{{ this.placeholder }}</label>
+    <label>{{ pholder }}</label>
     <ul id="dropDownItems">
-      <li v-for="item in items" :key="item">
+      <li v-for="item in dropDownItems" :key="item" @click="switchItems(item)">
         {{ item }}
       </li>
     </ul>
@@ -22,6 +22,13 @@ const DropDownProps = Vue.extend({
 @Component
 
 export default class DropDown extends DropDownProps {
+  data() {
+    return {
+      pholder: this.placeholder,
+      dropDownItems: this.items.remove(this.placeholder)
+    }
+  }
+
   private toggleDropDown() {
     let dd = document.getElementById("dropDown")!;
     let items = document.getElementById("dropDownItems")!;
@@ -34,6 +41,14 @@ export default class DropDown extends DropDownProps {
       dd.style.borderRadius = "4px 4px 0 0";
       items.classList.add("opened");
     }
+  }
+
+  private switchItems(itemClicked: string) {
+    // Replace itemClicked on with current placeholder
+    this.$data.dropDownItems.replace(itemClicked, this.$data.pholder);
+
+    // Update pholder prop with itemClicked on
+    this.$set(this.$data, 'pholder', itemClicked);
   }
 }
 </script>

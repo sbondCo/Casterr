@@ -5,7 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-export default class RecordingSettings extends Vue{}
+export default class RecordingSettingsComponent extends Vue{}
 </script>
 
 <style lang="scss">

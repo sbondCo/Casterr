@@ -4,7 +4,7 @@
 
     <div class="setting">
       <span class="title">Startup Page:</span>
-      <DropDown placeholder="Page setting" :items="startupPageItems" />
+      <DropDown :placeholder="startupPage" :items="startupPageItems" />
     </div>
   </div>
 </template>
@@ -12,7 +12,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
-import { AppSettings } from "./../../ts/settings";
+import { AppSettings, GeneralSettings } from "./../../ts/settings";
+import "../../ts/helpers/extensions/ArrayExtensions";
 
 @Component({
   components: {
@@ -20,9 +21,10 @@ import { AppSettings } from "./../../ts/settings";
   },
 })
 
-export default class GeneralSettings extends Vue{
+export default class GeneralSettingsComponent extends Vue {
   data() {
     return {
+      startupPage: GeneralSettings.startupPage,
       startupPageItems: AppSettings.pages
     }
   }
