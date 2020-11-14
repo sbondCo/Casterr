@@ -65,6 +65,7 @@ export default class DropDown extends DropDownProps {
   padding: 8px;
   background-color: $secondaryColor;
   border-radius: 4px;
+  transition: background-color 250ms ease;
   cursor: pointer;
 
   label {
@@ -113,6 +114,10 @@ export default class DropDown extends DropDownProps {
       background: $tertiaryColor;
       border-radius: 1ex;
     }
+  }
+
+  &:hover {
+    background-color: $tertiaryColor;
   }
 }
 </style>
