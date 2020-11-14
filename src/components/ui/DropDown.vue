@@ -51,7 +51,7 @@ export default class DropDown extends DropDownProps {
     // Update pholder prop with itemClicked on
     this.$set(this.$data, 'pholder', itemClicked);
 
-    this.$emit('itemChanged', this.name, this.$data.pholder);
+    this.$emit('item-changed', this.name, this.$data.pholder);
   }
 }
 </script>

@@ -4,57 +4,57 @@
 
     <div class="setting">
       <span class="title">Video Device:</span>
-      <DropDown name="videoDevice" :placeholder="videoDevice" :items="videoDevices" @itemChanged="updateSettings" />
+      <DropDown name="videoDevice" :placeholder="videoDevice" :items="videoDevices" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">FPS:</span>
-      <!-- <TextBox name="fps" :placeholder="" type="number" @itemChanged="updateSettings" /> -->
+      <TextBox name="fps" :placeholder="d" type="number" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Resolution:</span>
-      <DropDown name="resolution" :placeholder="resolution" :items="resolutions" @itemChanged="updateSettings" />
+      <DropDown name="resolution" :placeholder="resolution" :items="resolutions" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Format:</span>
-      <DropDown name="format" :placeholder="format" :items="formats" @itemChanged="updateSettings" />
+      <DropDown name="format" :placeholder="format" :items="formats" @item-changed="updateSettings" />
     </div>
 
     <div v-if="this.isWindows" class="setting">
       <span class="title">Zero Latency:</span>
-      <!-- <TickBox name="zeroLatency" :checked="zeroLatency" @itemChanged="updateSettings" /> -->
+      <!-- <TickBox name="zeroLatency" :checked="zeroLatency" @item-changed="updateSettings" /> -->
     </div>
 
     <div v-if="this.isWindows" class="setting">
       <span class="title">Ultra Fast:</span>
-      <!-- <TickBox name="ultraFast" :checked="ultraFast" @itemChanged="updateSettings" /> -->
+      <!-- <TickBox name="ultraFast" :checked="ultraFast" @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Audio Devices To Record:</span>
-      <!-- <ListBox name="audioDevicesToRecord"  @itemChanged="updateSettings" /> -->
+      <!-- <ListBox name="audioDevicesToRecord"  @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Seperate Audio Tracks:</span>
-      <!-- <TickBox name="seperateAudioTracks"  @itemChanged="updateSettings" /> -->
+      <!-- <TickBox name="seperateAudioTracks"  @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Thumbnail Save Folder:</span>
-      <!-- <TextBox name="thumbSaveFolder"  @itemChanged="updateSettings" /> -->
+      <!-- <TextBox name="thumbSaveFolder"  @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Video Save Folder:</span>
-      <!-- <TextBox name="videoSaveFolder"  @itemChanged="updateSettings" /> -->
+      <!-- <TextBox name="videoSaveFolder"  @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Video Save Name:</span>
-      <!-- <TextBox name="videoSaveName"  @itemChanged="updateSettings" /> -->
+      <!-- <TextBox name="videoSaveName"  @item-changed="updateSettings" /> -->
     </div>
   </div>
 </template>
