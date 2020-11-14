@@ -9,7 +9,7 @@
 
     <div class="setting">
       <span class="title">FPS:</span>
-      <TextBox name="fps" :placeholder="d" type="number" @item-changed="updateSettings" />
+      <TextBox name="fps" :value="fps" placeholder="30" type="number" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -62,12 +62,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
+import TextBox from "./../ui/TextBox.vue";
 import { RecordingSettings } from "./../../ts/settings";
 import "../../ts/helpers/extensions/ArrayExtensions";
 
 @Component({
   components: {
     DropDown,
+    TextBox
   },
 })
 
@@ -77,6 +79,7 @@ export default class RecordingSettingsComponent extends Vue {
       isWindows: (require("os").platform == 'win32'),
       videoDevice: "Some Mic",
       videoDevices: ["Some Mic", "A TV?", "Is this a headset?", "G40${randNum}"],
+      fps: RecordingSettings.fps,
       resolution: RecordingSettings.resolution,
       resolutions: ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"],
       format: RecordingSettings.format,
