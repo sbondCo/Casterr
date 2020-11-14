@@ -1,6 +1,6 @@
 <template>
   <div class="textBox">
-    <input ref="textBox" :type="type" :value="value" :placeholder="placeholder" @blur="$emit('item-changed', name, $refs.textBox.value)" />
+    <input ref="textBox" :type="type" :value="value" :placeholder="placeholder" spellcheck="false" @blur="$emit('item-changed', name, $refs.textBox.value)" />
   </div>
 </template>
 
