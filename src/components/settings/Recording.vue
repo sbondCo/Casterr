@@ -44,17 +44,17 @@
 
     <div class="setting">
       <span class="title">Thumbnail Save Folder:</span>
-      <!-- <TextBox name="thumbSaveFolder"  @item-changed="updateSettings" /> -->
+      <TextBox name="thumbSaveFolder" :value="thumbSaveFolder" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Video Save Folder:</span>
-      <!-- <TextBox name="videoSaveFolder"  @item-changed="updateSettings" /> -->
+      <TextBox name="videoSaveFolder" :value="videoSaveFolder" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Video Save Name:</span>
-      <!-- <TextBox name="videoSaveName"  @item-changed="updateSettings" /> -->
+      <TextBox name="videoSaveName" :value="videoSaveName" @item-changed="updateSettings" />
     </div>
   </div>
 </template>
@@ -83,7 +83,10 @@ export default class RecordingSettingsComponent extends Vue {
       resolution: RecordingSettings.resolution,
       resolutions: ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"],
       format: RecordingSettings.format,
-      formats: ["mp4", "mkv"]
+      formats: ["mp4", "mkv"],
+      thumbSaveFolder: RecordingSettings.thumbSaveFolder,
+      videoSaveFolder: RecordingSettings.videoSaveFolder,
+      videoSaveName: RecordingSettings.videoSaveName
     }
   }
 
