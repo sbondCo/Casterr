@@ -39,6 +39,11 @@ export default class TextBox extends TextBoxProps {
     border-radius: 4px;
     transition: background-color 250ms ease;
 
+    &[type=number]::-webkit-inner-spin-button,
+    &[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
     &:hover {
       background-color: $tertiaryColor;
 
