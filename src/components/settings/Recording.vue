@@ -44,12 +44,12 @@
 
     <div class="setting">
       <span class="title">Thumbnail Save Folder:</span>
-      <TextBox name="thumbSaveFolder" :value="thumbSaveFolder" @item-changed="updateSettings" />
+      <TextBox name="thumbSaveFolder" :value="thumbSaveFolder" @item-changed="updateSettings" folderSelect/>
     </div>
 
     <div class="setting">
       <span class="title">Video Save Folder:</span>
-      <TextBox name="videoSaveFolder" :value="videoSaveFolder" @item-changed="updateSettings" />
+      <TextBox name="videoSaveFolder" :value="videoSaveFolder" @item-changed="updateSettings" folderSelect/>
     </div>
 
     <div class="setting">
