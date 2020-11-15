@@ -2,7 +2,7 @@
   <div class="listBoxContainer">
     <div v-for="item in items" :key="item.id">
       <div class="listBoxItem">
-        <TickBox name="temp" />
+        <TickBox name="temp" :ticked="shouldBeEnabled(item.id)" />
         <span class="body" :title="item.title">{{ item.name }}</span>
       </div>
     </div>
@@ -27,6 +27,11 @@ export class ListBoxItem {
 export default class ListBox extends Vue {
   @Prop(String) name!: string
   @Prop(Array) items!: Array<ListBoxItem>
+  @Prop(Array) enabled!: Array<Number>
+
+  shouldBeEnabled(id: Number): Boolean {
+    return this.enabled.includes(id);
+  }
 }
 </script>
 

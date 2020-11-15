@@ -34,7 +34,7 @@
 
     <div class="setting">
       <span class="title">Audio Devices To Record:</span>
-      <ListBox name="audioDevicesToRecord" :items="audioDevicesToRecord" @item-changed="updateSettings" />
+      <ListBox name="audioDevicesToRecord" :items="audioDevicesToRecord" :enabled="audioDevicesToRecordEnabled" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -91,6 +91,7 @@ export default class RecordingSettingsComponent extends Vue {
       zeroLatency: RecordingSettings.zeroLatency,
       ultraFast: RecordingSettings.ultraFast,
       audioDevicesToRecord: [new ListBoxItem(0, "Some Mic", "Input Device"), new ListBoxItem(1, "Another Mic", "Input Device")],
+      audioDevicesToRecordEnabled: [1],
       seperateAudioTracks: RecordingSettings.seperateAudioTracks,
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
