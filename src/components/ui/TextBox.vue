@@ -1,6 +1,6 @@
 <template>
   <div class="textBox">
-    <input ref="textBox" :type="type" :value="textBoxValue" :placeholder="placeholder" spellcheck="false" @blur="$emit('item-changed', name, $refs.textBox.value)" />
+    <input :type="type" v-model="textBoxValue" :placeholder="placeholder" spellcheck="false" @blur="textBoxValueUpdated" />
 
     <button v-if="folderSelect" @click="selectFolder">Change</button>
   </div>
@@ -31,6 +31,10 @@ export default class TextBox extends TextBoxProps {
     }
   }
 
+  textBoxValueUpdated() {
+    this.$emit('item-changed', this.name, this.$data.textBoxValue);
+  }
+
   selectFolder() {
     let defaultFolder = this.$data.textBoxValue;
 
@@ -48,6 +52,7 @@ export default class TextBox extends TextBoxProps {
       // If a folder was selected, set textBox value to it
       if (folder != null) {
         this.$set(this.$data, 'textBoxValue', folder);
+        this.textBoxValueUpdated();
       }
     });
   }

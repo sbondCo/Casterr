@@ -63,7 +63,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
-import { RecordingSettings } from "./../../ts/settings";
+import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../ts/settings";
 import "../../ts/helpers/extensions/ArrayExtensions";
 
 @Component({
@@ -92,6 +92,16 @@ export default class RecordingSettingsComponent extends Vue {
 
   updateSettings(toUpdate: string, newValue: string) {
     console.log(toUpdate + ' ' + newValue);
+
+    // Update settings in obj
+    switch (toUpdate) {
+      case "thumbSaveFolder":
+        RecordingSettings.thumbSaveFolder = newValue;
+        break;
+    }
+
+    // Write new settings
+    SettingsManager.writeSettings(SettingsFiles.Recording);
   }
 }
 </script>
