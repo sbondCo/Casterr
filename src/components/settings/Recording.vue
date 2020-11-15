@@ -34,7 +34,7 @@
 
     <div class="setting">
       <span class="title">Audio Devices To Record:</span>
-      <!-- <ListBox name="audioDevicesToRecord" @item-changed="updateSettings" /> -->
+      <ListBox name="audioDevicesToRecord" :items="audioDevicesToRecord" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -64,6 +64,7 @@ import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
+import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../ts/settings";
 import "../../ts/helpers/extensions/ArrayExtensions";
 
@@ -71,7 +72,8 @@ import "../../ts/helpers/extensions/ArrayExtensions";
   components: {
     DropDown,
     TextBox,
-    TickBox
+    TickBox,
+    ListBox
   },
 })
 
@@ -88,6 +90,7 @@ export default class RecordingSettingsComponent extends Vue {
       formats: ["mp4", "mkv"],
       zeroLatency: RecordingSettings.zeroLatency,
       ultraFast: RecordingSettings.ultraFast,
+      audioDevicesToRecord: [new ListBoxItem(0, "Some Mic", "Input Device"), new ListBoxItem(1, "Another Mic", "Input Device")],
       seperateAudioTracks: RecordingSettings.seperateAudioTracks,
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
