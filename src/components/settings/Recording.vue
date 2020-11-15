@@ -65,8 +65,8 @@ import DropDown from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
-import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../ts/settings";
-import "../../ts/helpers/extensions/ArrayExtensions";
+import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
+import "../../libs/helpers/extensions/ArrayExtensions";
 
 @Component({
   components: {

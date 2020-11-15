@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import SettingsManager, { SettingsFiles } from "./ts/settings";
+import SettingsManager, { SettingsFiles } from "./libs/settings";
 
 // Create promises to complete before rendering app
 // Currently only for gettings all user settings

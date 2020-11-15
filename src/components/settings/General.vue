@@ -12,8 +12,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
-import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./../../ts/settings";
-import "../../ts/helpers/extensions/ArrayExtensions";
+import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./../../libs/settings";
+import "../../libs/helpers/extensions/ArrayExtensions";
 
 @Component({
   components: {
