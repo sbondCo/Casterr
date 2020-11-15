@@ -24,22 +24,22 @@
 
     <div v-if="this.isWindows" class="setting">
       <span class="title">Zero Latency:</span>
-      <!-- <TickBox name="zeroLatency" :checked="zeroLatency" @item-changed="updateSettings" /> -->
+      <TickBox name="zeroLatency" :ticked="zeroLatency" @item-changed="updateSettings" />
     </div>
 
     <div v-if="this.isWindows" class="setting">
       <span class="title">Ultra Fast:</span>
-      <!-- <TickBox name="ultraFast" :checked="ultraFast" @item-changed="updateSettings" /> -->
+      <TickBox name="ultraFast" :ticked="ultraFast" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Audio Devices To Record:</span>
-      <!-- <ListBox name="audioDevicesToRecord"  @item-changed="updateSettings" /> -->
+      <!-- <ListBox name="audioDevicesToRecord" @item-changed="updateSettings" /> -->
     </div>
 
     <div class="setting">
       <span class="title">Seperate Audio Tracks:</span>
-      <!-- <TickBox name="seperateAudioTracks"  @item-changed="updateSettings" /> -->
+      <TickBox name="seperateAudioTracks" :ticked="seperateAudioTracks" @item-changed="updateSettings"/>
     </div>
 
     <div class="setting">
@@ -63,13 +63,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
+import TickBox from "./../ui/TickBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../ts/settings";
 import "../../ts/helpers/extensions/ArrayExtensions";
 
 @Component({
   components: {
     DropDown,
-    TextBox
+    TextBox,
+    TickBox
   },
 })
 
@@ -84,17 +86,23 @@ export default class RecordingSettingsComponent extends Vue {
       resolutions: ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"],
       format: RecordingSettings.format,
       formats: ["mp4", "mkv"],
+      zeroLatency: RecordingSettings.zeroLatency,
+      ultraFast: RecordingSettings.ultraFast,
+      seperateAudioTracks: RecordingSettings.seperateAudioTracks,
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
       videoSaveName: RecordingSettings.videoSaveName
     }
   }
 
-  updateSettings(toUpdate: string, newValue: string) {
+  updateSettings(toUpdate: string, newValue: any) {
     console.log(toUpdate + ' ' + newValue);
 
     // Update settings in obj
     switch (toUpdate) {
+      case "seperateAudioTracks":
+        RecordingSettings.seperateAudioTracks = newValue;
+        break;
       case "thumbSaveFolder":
         RecordingSettings.thumbSaveFolder = newValue;
         break;
