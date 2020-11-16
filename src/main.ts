@@ -1,7 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import SettingsManager, { SettingsFiles } from "./libs/settings";
+import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./libs/settings";
 
 // Create promises to complete before rendering app
 // Currently only for gettings all user settings
@@ -19,5 +19,10 @@ Promise.all(promises).then(result => {
   }).$mount("#app");
 
   // Redirect to startup page defined in settings
-  // router.push("recordings");
+  // If startupPage setting is a page in the application, redirect to it
+  // Else go to first page in AppSettings.pages setting
+  if (AppSettings.pages.includes(GeneralSettings.startupPage)) {
+    router.push(GeneralSettings.startupPage).catch(()=>{});
+  }
+  else router.push(AppSettings.pages[0]).catch(()=>{});
 });
