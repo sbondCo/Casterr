@@ -1,6 +1,7 @@
 <template>
   <div id="recordings">
     <span>Recordings Page</span>
+    <button @click="startRecording">Start recording</button>
 
     <!-- <video id="video" src="" width="450" controls></video> -->
   </div>
@@ -8,11 +9,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { RecordingSettings } from "./../libs/settings";
+import Recorder from "./../libs/recorder";
 
 export default Vue.extend({
-  mounted() {
-    return console.log(RecordingSettings.thumbSaveFolder);
+  methods: {
+    startRecording: function () {
+      Recorder.start();
+    }
   }
 })
 </script>
