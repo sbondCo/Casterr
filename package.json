@@ -21,6 +21,7 @@
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/node": "^14.14.7",
     "core-js": "^3.6.5",
+    "jszip": "^3.5.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
