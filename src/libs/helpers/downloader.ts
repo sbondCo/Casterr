@@ -18,14 +18,6 @@ export default class Downloader {
   }
 
   public static extract(zipPath: string, destFolder: string) {
-    let options = {
-      autoClose: true,
-      lazyEntries: true,
-      decodeStrings: true,
-      validateEntrySizes: true,
-      strictFileNames: false
-    };
-
     fs.readFile(zipPath, (err, data) => {
       if (!err) {
         var zip = new jsZip();
