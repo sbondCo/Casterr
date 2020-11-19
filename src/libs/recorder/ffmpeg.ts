@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import * as childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 
 export default class FFmpeg {
@@ -25,9 +26,26 @@ export default class FFmpeg {
     }
   }
 
-  public run() {
+  public async run() {
     // Get FFmpeg path
-    var ffPath = this.getPath();
+    var ffPath = await this.getPath();
+
+    // Get exec perms for ff binary
+    fs.chmodSync(ffPath, 0o111);
+
+    var ff = childProcess.exec(`${ffPath} -f x11grab -i :0.0+0,0 output.mkv`);
+
+    ff.stdout!.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+    
+    ff.stderr!.on('data', (data) => {
+      console.log(`stderr: ${data}`);
+    });
+    
+    ff.on('close', (code) => {
+      console.log(`ffmpeg exited with code ${code}`);
+    });
   }
 
   public async getPath() {
@@ -51,6 +69,9 @@ export default class FFmpeg {
         console.log(progress + '%');
       });
       await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+
+      // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     // Return path to executable
