@@ -4,6 +4,9 @@ export default class Recorder {
   private static ffmpeg = new FFmpeg();
   private static isRecording: Boolean = false;
 
+  /**
+   * Start recording
+   */
   public static start() {
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
@@ -17,6 +20,9 @@ export default class Recorder {
     }
   }
 
+  /**
+   * Stop recording
+   */
   public static stop() {
     this.ffmpeg.kill();
     this.isRecording = false;
