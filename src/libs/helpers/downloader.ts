@@ -17,7 +17,7 @@ export default class Downloader {
       console.log("hi downloader i am");
 
       https.get(uri, (resp: IncomingMessage) => {
-        let contentLength = parseInt(resp.headers['content-length']!);
+        let contentLength = parseInt(resp.headers['content-length']!, 10);
         let chunksCompleted = 0;
 
         resp.on("data", (chunk) => {
