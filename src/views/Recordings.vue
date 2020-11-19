@@ -2,6 +2,7 @@
   <div id="recordings">
     <span>Recordings Page</span>
     <button @click="startRecording">Start recording</button>
+    <button @click="stopRecording">Start recording</button>
 
     <!-- <video id="video" src="" width="450" controls></video> -->
   </div>
@@ -15,6 +16,9 @@ export default Vue.extend({
   methods: {
     startRecording: function () {
       Recorder.start();
+    },
+    stopRecording: function() {
+      Recorder.stop()
     }
   }
 })

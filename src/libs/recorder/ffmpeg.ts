@@ -26,6 +26,8 @@ export default class FFmpeg {
     }
   }
 
+  private ffProcess: childProcess.ChildProcess; 
+
   public async run() {
     // Get FFmpeg path
     var ffPath = await this.getPath();
@@ -33,19 +35,23 @@ export default class FFmpeg {
     // Get exec perms for ff binary
     fs.chmodSync(ffPath, 0o111);
 
-    var ff = childProcess.exec(`${ffPath} -f x11grab -i :0.0+0,0 output.mkv`);
+    this.ffProcess = childProcess.exec(`${ffPath} -f x11grab -i :0.0+0,0 /home/sbondo/Videos/Casterr/output.mkv`);
 
-    ff.stdout!.on('data', (data) => {
+    this.ffProcess.stdout!.on('data', (data) => {
       console.log(`stdout: ${data}`);
     });
     
-    ff.stderr!.on('data', (data) => {
+    this.ffProcess.stderr!.on('data', (data) => {
       console.log(`stderr: ${data}`);
     });
     
-    ff.on('close', (code) => {
+    this.ffProcess.on('close', (code) => {
       console.log(`ffmpeg exited with code ${code}`);
     });
+  }
+
+  public async kill() {
+    this.ffProcess.kill();
   }
 
   public async getPath() {

@@ -6,4 +6,8 @@ export default class Recorder {
   public static start() {
     this.ffmpeg.run();
   }
+
+  public static stop() {
+    this.ffmpeg.kill();
+  }
 }
