@@ -37,10 +37,17 @@ export default class FFmpeg {
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
+      let winDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
+      let linuxDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
+      let downloadURL: string;
       let downloadTo = ffmpegPath + '.zip';
 
+      if (process.platform == 'win32') downloadURL = winDownloadURL;
+      else if (process.platform == 'linux') downloadURL = linuxDownloadURL;
+      else throw new Error('Unsupported platform');
+
       // Download and extract zip
-      await Downloader.get("https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip", downloadTo);
+      await Downloader.get(downloadURL, downloadTo);
       await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
     }
 
