@@ -28,21 +28,21 @@ export default class FFmpeg {
 
   private ffProcess: childProcess.ChildProcess; 
 
-  public async run() {
+  public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction }) {
     // Get FFmpeg path
     var ffPath = await this.getPath();
 
     // Get exec perms for ff binary
     fs.chmodSync(ffPath, 0o111);
 
-    this.ffProcess = childProcess.exec(`${ffPath} -f x11grab -i :0.0+0,0 /home/sbondo/Videos/Casterr/output.mkv`);
+    this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
     this.ffProcess.stdout!.on('data', (data) => {
-      console.log(`stdout: ${data}`);
+      if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
     });
     
     this.ffProcess.stderr!.on('data', (data) => {
-      console.log(`stderr: ${data}`);
+      if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
     });
     
     this.ffProcess.on('close', (code) => {
