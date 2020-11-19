@@ -47,7 +47,9 @@ export default class FFmpeg {
       else throw new Error('Unsupported platform');
 
       // Download and extract zip
-      await Downloader.get(downloadURL, downloadTo);
+      await Downloader.get(downloadURL, downloadTo, (progress: Number) => {
+        console.log(progress + '%');
+      });
       await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
     }
 

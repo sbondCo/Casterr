@@ -10,7 +10,7 @@ export default class Downloader {
    * @param uri URI to download file from
    * @param dest Destination path for downloaded file
    */
-  public static get(uri: string, dest: string) {
+  public static get(uri: string, dest: string, reportPercentage?: CallableFunction) {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
 
@@ -22,10 +22,9 @@ export default class Downloader {
 
         resp.on("data", (chunk) => {
           chunksCompleted += chunk.length;
-
-          let percentDone = (100.0 * chunksCompleted / contentLength).toFixed(0);
-
-          console.log(percentDone + '%');
+          
+          // Call callback function if its set and pass percentage to it
+          if (reportPercentage != undefined) reportPercentage((100.0 * chunksCompleted / contentLength).toFixed(0));
         });
 
         // When connection is closed, resolve promise
