@@ -38,9 +38,10 @@ export default class FFmpeg {
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
       let downloadTo = ffmpegPath + '.zip';
+
+      // Download and extract zip
       await Downloader.get("https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip", downloadTo);
-      await Downloader.extract(downloadTo, execPath);
-      console.log("DONE");
+      await Downloader.extract(downloadTo, execPath, ["ffmpeg", "ffprobe"]);
     }
 
     // Return path to executable
