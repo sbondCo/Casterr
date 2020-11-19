@@ -30,18 +30,17 @@ export default class FFmpeg {
     var ffPath = this.getPath();
   }
 
-  public getPath() {
+  public async getPath() {
     let execPath = path.dirname(process.execPath);
     let ffmpegPath = path.join(execPath, FFmpeg.ffmpegExeName);
     let ffprobePath = path.join(execPath, FFmpeg.ffprobeExeName);
 
-    console.log(path.dirname(process.execPath));
-
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
       let downloadTo = ffmpegPath + '.zip';
-      Downloader.get("https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip", downloadTo);
-      Downloader.extract(downloadTo, execPath);
+      await Downloader.get("https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip", downloadTo);
+      await Downloader.extract(downloadTo, execPath);
+      console.log("DONE");
     }
 
     // Return path to executable
