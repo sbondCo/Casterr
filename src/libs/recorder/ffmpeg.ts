@@ -26,7 +26,7 @@ export default class FFmpeg {
     }
   }
 
-  private ffProcess: childProcess.ChildProcess; 
+  private ffProcess: childProcess.ChildProcess;
 
   public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction }) {
     // Get FFmpeg path
