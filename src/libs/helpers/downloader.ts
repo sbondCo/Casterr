@@ -17,10 +17,15 @@ export default class Downloader {
       console.log("hi downloader i am");
 
       https.get(uri, (resp: IncomingMessage) => {
-        console.log(resp.headers['content-length']);
+        let contentLength = parseInt(resp.headers['content-length']!);
+        let chunksCompleted = 0;
 
-        resp.on("data",(chunk) => {
-          console.log(chunk);
+        resp.on("data", (chunk) => {
+          chunksCompleted += chunk.length;
+
+          let percentDone = (100.0 * chunksCompleted / contentLength).toFixed(0);
+
+          console.log(percentDone + '%');
         });
 
         // When connection is closed, resolve promise
@@ -58,7 +63,7 @@ export default class Downloader {
               zip.file(filename)!.async('nodebuffer').then((content: any) => {
                 fs.writeFileSync(path.join(destFolder, filename), content);
               });
-            }
+            };
 
             // If filesToExtract is empty just unzip all files
             // If filesToExtract isn't empty, if it includes filename then unzip
