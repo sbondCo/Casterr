@@ -51,7 +51,7 @@ export default class FFmpeg {
   }
 
   public async kill() {
-    this.ffProcess.kill();
+    if (this.ffProcess != undefined) this.ffProcess.kill();
   }
 
   public async getPath() {
