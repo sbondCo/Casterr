@@ -41,7 +41,7 @@ export default class FFmpeg {
 
       // Download and extract zip
       await Downloader.get("https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip", downloadTo);
-      await Downloader.extract(downloadTo, execPath, ["ffmpeg", "ffprobe"]);
+      await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
     }
 
     // Return path to executable
