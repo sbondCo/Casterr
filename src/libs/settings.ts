@@ -115,7 +115,7 @@ export class RecordingSettings {
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
-  private static _audioDevicesToRecord: Array<string>;
+  private static _audioDevicesToRecord: Array<{ sourceNumber: number, name: string }>;
   private static _seperateAudioTracks: boolean = false;
 
   /**

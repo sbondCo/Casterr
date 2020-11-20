@@ -9,10 +9,14 @@
 </template>
 
 <script lang="ts">
+import ArgumentBuilder from "@/libs/recorder/argumentBuilder";
 import Vue from "vue";
 import Recorder from "./../libs/recorder";
 
 export default Vue.extend({
+  mounted() {
+    console.log(ArgumentBuilder.getArgs().toString())
+  },
   methods: {
     startRecording: function () {
       Recorder.start();
