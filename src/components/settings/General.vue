@@ -13,7 +13,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./../../libs/settings";
-import "../../libs/helpers/extensions/ArrayExtensions";
+import "../../libs/helpers/extensions/arrayExtensions";
 
 @Component({
   components: {

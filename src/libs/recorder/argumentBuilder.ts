@@ -108,12 +108,15 @@ export default class ArgumentBuilder {
 
     if (audToRec.length > 0) {
       if (RecordingSettings.seperateAudioTracks) {
+        // Make maps so that audio devices are put on separate tracks
+        // Add one to length of audToRec to include the one video device
         for (let i = 0, n = audToRec.length + 1; i < n; ++i)
         {
           maps.push(`-map ${i}`);
         }
       }
       else {
+        // Make maps to put all audio devices onto the same track
         let cap = RecordingSettings.audioDevicesToRecord.length;
 
         maps.push(`-filter_complex "`);
