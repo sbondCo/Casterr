@@ -38,7 +38,14 @@ export default class ArgumentBuilder {
   }
 
   private static get fps(): String {
-    return RecordingSettings.fps;
+    // If can get number from FPS setting, then use it
+    // If not, then just return 30fps as a default
+    if (!isNaN(parseInt(RecordingSettings.fps))) {
+      return parseInt(RecordingSettings.fps).toString();
+    }
+    else {
+      return "30";
+    }
   }
 
   private static get resolution(): String {
