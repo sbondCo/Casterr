@@ -5,20 +5,25 @@ export default class ArgumentBuilder {
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
-    if (process.platform == "win32" || process.platform == "linux") {
-      return ArgumentBuilder.buildArgs();
-    }
+    // if (process.platform == "win32" || process.platform == "linux") {
+    //   return ArgumentBuilder.buildArgs();
+    // }
+
+    if (process.platform == "win32") return ArgumentBuilder.buildWindowsArgs();
+    else if (process.platform == "linux") return ArgumentBuilder.buildLinuxArgs();
 
     throw new Error("Could not build args for currently system. It isn't supported.")
   }
 
-  private static buildArgs(): String {
+  private static buildLinuxArgs(): String {
     let args = new Array<string>();
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach(ad => {
       args.push(`-f pulse -i ${ad.sourceNumber}`);
     });
+
+    args.push(`-f ${this.videoDevice}`);
 
     // Recording FPS
     args.push(`-framerate ${this.fps}`);
@@ -35,6 +40,10 @@ export default class ArgumentBuilder {
     args.push(`"${this.videoOutputPath}"`);
 
     return args.join(" ").toString();
+  }
+
+  private static buildWindowsArgs(): String {
+    throw new Error("buildWindowsArgs not finished");
   }
 
   private static get fps(): String {
@@ -84,7 +93,9 @@ export default class ArgumentBuilder {
   }
 
   private static get videoDevice(): String {
-    return "x11grab";
+    if (process.platform == "win32") return "dshow";
+    else if (process.platform == "linux") return "x11grab";
+    else throw new Error("No video device to fetch for unsupported platform.");
   }
 
   private static get recordingRegion(): String {
@@ -92,10 +103,36 @@ export default class ArgumentBuilder {
   }
 
   private static get audioMaps(): String {
-    return "";
+    let maps = new Array<string>();
+    let audToRec = RecordingSettings.audioDevicesToRecord;
+
+    if (audToRec.length > 0) {
+      if (RecordingSettings.seperateAudioTracks) {
+        for (let i = 0, n = audToRec.length + 1; i < n; ++i)
+        {
+          maps.push(`-map ${i}`);
+        }
+      }
+      else {
+        let cap = RecordingSettings.audioDevicesToRecord.length;
+
+        maps.push(`-filter_complex "`);
+
+        for (let i = 0; i < cap; ++i)
+        {
+          maps.push(`[${i}:a:0]`);
+        }
+
+        maps.push(`amix = ${cap}:longest[aout]"`);
+        maps.push(`-map ${cap}:V:0 -map "[aout]"`);
+      }
+    }
+    
+    return maps.join(" ").toString();
   }
 
   private static get videoOutputPath(): String {
-    return "";
+    // temporary
+    return "~/Videos/Casterr/output.mkv";
   }
 }
