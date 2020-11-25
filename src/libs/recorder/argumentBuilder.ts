@@ -1,4 +1,6 @@
 import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
+import "../helpers/extensions";
+import * as path from "path";
 
 export default class ArgumentBuilder {
   public static getArgs() {
@@ -135,7 +137,6 @@ export default class ArgumentBuilder {
   }
 
   private static get videoOutputPath(): String {
-    // temporary
-    return "~/Videos/Casterr/output.mkv";
+    return path.join(RecordingSettings.videoSaveFolder, `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`);
   }
 }
