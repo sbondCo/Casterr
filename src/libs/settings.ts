@@ -82,6 +82,11 @@ export class AppSettings {
   public static get settingsFiles() {
     return ["General", "Recording", "KeyBinding"];
   }
+
+  // Supported recording formats
+  public static get supportedRecordingFormats() {
+    return ["mp4", "mkv"];
+  }
 }
 
 /**
@@ -188,7 +193,10 @@ export class RecordingSettings {
    * format
    */
   public static get format() {
-    return this._format;
+    // If format equals a supported format, return it
+    // If it doesn't return the default of `mp4`
+    if (this._format.equalsAnyOf(AppSettings.supportedRecordingFormats)) return this._format
+    else return "mp4"
   }
 
   public static set format(format) {
