@@ -66,7 +66,7 @@ import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
-import "../../libs/helpers/extensions/arrayExtensions";
+import "../../libs/helpers/extensions";
 
 @Component({
   components: {
