@@ -22,8 +22,6 @@ export default class ArgumentBuilder {
       args.push(`-f pulse -i ${ad.sourceNumber}`);
     });
 
-    args.push(`-f ${this.videoDevice}`);
-
     // Recording FPS
     args.push(`-framerate ${this.fps}`);
 
