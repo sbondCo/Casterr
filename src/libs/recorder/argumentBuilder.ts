@@ -7,17 +7,14 @@ export default class ArgumentBuilder {
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
-    // if (process.platform == "win32" || process.platform == "linux") {
-    //   return ArgumentBuilder.buildArgs();
-    // }
-
+    // Build args differently depending on OS
     if (process.platform == "win32") return ArgumentBuilder.buildWindowsArgs();
     else if (process.platform == "linux") return ArgumentBuilder.buildLinuxArgs();
 
-    throw new Error("Could not build args for currently system. It isn't supported.")
+    throw new Error("Could not build args for currently system. It isn't supported.");
   }
 
-  private static buildLinuxArgs(): String {
+  private static buildLinuxArgs(): string {
     let args = new Array<string>();
 
     // Audio devices
@@ -33,18 +30,22 @@ export default class ArgumentBuilder {
     // Recording resolution
     args.push(`-video_size ${this.resolution}`);
 
+    // Video device
     args.push(`-f ${this.videoDevice}`);
 
+    // Recording region
     args.push(`-i ${this.recordingRegion}`);
 
+    // Audio maps
     args.push(`${this.audioMaps}`);
 
+    // Video output path
     args.push(`"${this.videoOutputPath}"`);
 
     return args.join(" ").toString();
   }
 
-  private static buildWindowsArgs(): String {
+  private static buildWindowsArgs(): string {
     throw new Error("buildWindowsArgs not finished");
   }
 
@@ -64,8 +65,7 @@ export default class ArgumentBuilder {
   private static get resolution(): String {
     let res;
 
-    switch (RecordingSettings.resolution)
-    {
+    switch (RecordingSettings.resolution) {
       case "In-Game":
         throw new Error("In-Game directive not currently supported.");
       case "2160p":
@@ -112,8 +112,7 @@ export default class ArgumentBuilder {
       if (RecordingSettings.seperateAudioTracks) {
         // Make maps so that audio devices are put on separate tracks
         // Add one to length of audToRec to include the one video device
-        for (let i = 0, n = audToRec.length + 1; i < n; ++i)
-        {
+        for (let i = 0, n = audToRec.length + 1; i < n; ++i) {
           maps.push(`-map ${i}`);
         }
       }
@@ -123,8 +122,7 @@ export default class ArgumentBuilder {
 
         maps.push(`-filter_complex "`);
 
-        for (let i = 0; i < cap; ++i)
-        {
+        for (let i = 0; i < cap; ++i) {
           maps.push(`[${i}:a:0]`);
         }
 
@@ -132,7 +130,7 @@ export default class ArgumentBuilder {
         maps.push(`-map ${cap}:V:0 -map "[aout]"`);
       }
     }
-    
+
     return maps.join(" ").toString();
   }
 

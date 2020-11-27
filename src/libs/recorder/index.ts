@@ -1,4 +1,5 @@
 import FFmpeg from "./ffmpeg";
+import ArgumentBuilder from "./argumentBuilder";
 
 export default class Recorder {
   private static ffmpeg = new FFmpeg();
@@ -10,7 +11,7 @@ export default class Recorder {
   public static start() {
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
-      this.ffmpeg.run("-f x11grab -i :0.0+0,0 /home/sbondo/Videos/Casterr/output.mkv", {
+      this.ffmpeg.run(ArgumentBuilder.getArgs(), {
         stderrCallback: (err: string) => {
           console.log(err);
         }
