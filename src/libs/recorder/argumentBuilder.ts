@@ -72,16 +72,14 @@ export default class ArgumentBuilder {
     args.push(`-video_size ${this.resolution}`);
 
     // Zero Latency
-    if (RecordingSettings.zeroLatency)
-    {
+    if (RecordingSettings.zeroLatency) {
       args.push("tune", "-tune zerolatency");
     }
 
     // Ultra Fast
-    if (RecordingSettings.ultraFast)
-    {
+    if (RecordingSettings.ultraFast) {
       args.push("preset", "-preset ultrafast");
-    }    
+    }
 
     // Video output path
     args.push(`"${this.videoOutputPath}"`);

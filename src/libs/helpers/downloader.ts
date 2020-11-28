@@ -20,7 +20,7 @@ export default class Downloader {
 
         resp.on("data", (chunk) => {
           chunksCompleted += chunk.length;
-          
+
           // Call callback function if its set and pass percentage to it
           if (reportPercentage != undefined) reportPercentage((100.0 * chunksCompleted / contentLength).toFixed(0));
         });
