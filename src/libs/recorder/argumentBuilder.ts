@@ -48,7 +48,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach(ad => {
-      args.push(`-f pulse -i ${ad.sourceNumber}`);
+      args.push(`-f dshow -i audio="${ad.name}"`);
     });
 
     // FFmpeg video device
