@@ -22,16 +22,14 @@ export default class ArgumentBuilder {
       args.push(`-f pulse -i ${ad.sourceNumber}`);
     });
 
-    args.push(`-f ${this.videoDevice}`);
-
     // Recording FPS
     args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
     args.push(`-video_size ${this.resolution}`);
 
-    // Video device
-    args.push(`-f ${this.videoDevice}`);
+    // FFmpeg video device
+    args.push(`-f ${this.ffmpegVideoDevice}`);
 
     // Recording region
     args.push(`-i ${this.recordingRegion}`);
@@ -46,7 +44,49 @@ export default class ArgumentBuilder {
   }
 
   private static buildWindowsArgs(): string {
-    throw new Error("buildWindowsArgs not finished");
+    let args = new Array<string>();
+
+    // Audio devices
+    RecordingSettings.audioDevicesToRecord.forEach(ad => {
+      args.push(`-f pulse -i ${ad.sourceNumber}`);
+    });
+
+    // FFmpeg video device
+    args.push(`-f ${this.ffmpegVideoDevice}`);
+
+    // Video device
+    if (RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])) {
+      args.push("-i video=screen-capture-recorder");
+    }
+    else {
+      args.push(`-i video=${RecordingSettings.videoDevice}`);
+    }
+
+    // Audio maps
+    args.push(`${this.audioMaps}`);
+
+    // Recording FPS
+    args.push(`-framerate ${this.fps}`);
+
+    // Recording resolution
+    args.push(`-video_size ${this.resolution}`);
+
+    // Zero Latency
+    if (RecordingSettings.zeroLatency)
+    {
+      args.push("tune", "-tune zerolatency");
+    }
+
+    // Ultra Fast
+    if (RecordingSettings.ultraFast)
+    {
+      args.push("preset", "-preset ultrafast");
+    }    
+
+    // Video output path
+    args.push(`"${this.videoOutputPath}"`);
+
+    return args.join(" ").toString();
   }
 
   private static get fps(): String {
@@ -94,7 +134,7 @@ export default class ArgumentBuilder {
     return res;
   }
 
-  private static get videoDevice(): String {
+  private static get ffmpegVideoDevice(): String {
     if (process.platform == "win32") return "dshow";
     else if (process.platform == "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
