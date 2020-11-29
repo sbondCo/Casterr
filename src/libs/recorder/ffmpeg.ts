@@ -4,7 +4,7 @@ import * as childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 
 export default class FFmpeg {
-  constructor(private which = "ffmpeg") {
+  constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {
 
   }
 
@@ -13,10 +13,10 @@ export default class FFmpeg {
    */
   public static get ffmpegExeName() {
     if (process.platform == 'win32') {
-      return "ffmpeg.exe"
+      return "ffmpeg.exe";
     }
     else {
-      return "ffmpeg"
+      return "ffmpeg";
     }
   }
 
@@ -25,10 +25,10 @@ export default class FFmpeg {
    */
   public static get ffprobeExeName() {
     if (process.platform == 'win32') {
-      return "ffprobe.exe"
+      return "ffprobe.exe";
     }
     else {
-      return "ffprobe"
+      return "ffprobe";
     }
   }
 
