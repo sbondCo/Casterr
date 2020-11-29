@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts">
-import ArgumentBuilder from "@/libs/recorder/argumentBuilder";
 import Vue from "vue";
 import Recorder from "./../libs/recorder";
+import RecordingsManager from "./../libs/recorder/recordingsManager";
 
 export default Vue.extend({
   mounted() {
-    console.log(ArgumentBuilder.getArgs())
+    RecordingsManager.add("/home/sbondo/Videos/Casterr/night_of_the_living_dead.mp4");
   },
   methods: {
     startRecording: function () {
