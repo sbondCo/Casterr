@@ -54,12 +54,12 @@ export default class FFmpeg {
     this.ffProcess.stdout!.on('data', (data) => {
       if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
     });
-    
+
     // Run stderrCallback when recieving stderr
     this.ffProcess.stderr!.on('data', (data) => {
       if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
     });
-    
+
     // When ffProcess exits
     this.ffProcess.on('close', (code) => {
       console.log(`ffmpeg exited with code ${code}`);
@@ -105,11 +105,10 @@ export default class FFmpeg {
     }
 
     // Return path to executable
-    if (this.which == "ffprobe")
-    {
+    if (this.which == "ffprobe") {
       return ffprobePath;
     }
-    
+
     // Return ffmpegPath as default, anything else should be returned above
     return ffmpegPath;
   }

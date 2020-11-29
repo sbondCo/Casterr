@@ -14,15 +14,13 @@ export default class Downloader {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
 
-      console.log("hi downloader i am");
-
       https.get(uri, (resp: IncomingMessage) => {
         let contentLength = parseInt(resp.headers['content-length']!, 10);
         let chunksCompleted = 0;
 
         resp.on("data", (chunk) => {
           chunksCompleted += chunk.length;
-          
+
           // Call callback function if its set and pass percentage to it
           if (reportPercentage != undefined) reportPercentage((100.0 * chunksCompleted / contentLength).toFixed(0));
         });
@@ -46,7 +44,7 @@ export default class Downloader {
    * Extract zip archive
    * @param zipPath Path to zip file that should be uncompressed
    * @param destFolder Path to destination folder for uncompressed files
-   * @param filesToExtract String array of file names, only files included in this array will be extracted
+   * @param filesToExtract String array of file names, only files included in this array will be extracted. Leave empty to extract all files.
    */
   public static extract(zipPath: string, destFolder: string, filesToExtract: Array<string> = []) {
     return new Promise((resolve, reject) => {
@@ -57,17 +55,19 @@ export default class Downloader {
 
         zip.loadAsync(data).then((contents: any) => {
           Object.keys(contents.files).forEach((filename: string) => {
+            let filenameWithoutFolder = path.basename(filename);
+
             // Write zip file to destination folder
             let unzip = () => {
               zip.file(filename)!.async('nodebuffer').then((content: any) => {
-                fs.writeFileSync(path.join(destFolder, filename), content);
+                fs.writeFileSync(path.join(destFolder, filenameWithoutFolder), content);
               });
             };
 
             // If filesToExtract is empty just unzip all files
             // If filesToExtract isn't empty, if it includes filename then unzip
             if (filesToExtract.length == 0) unzip();
-            else if (filesToExtract.includes(filename)) unzip();
+            else if (filesToExtract.includes(filenameWithoutFolder)) unzip();
           });
         }).then(() => {
           resolve();

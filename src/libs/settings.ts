@@ -229,7 +229,7 @@ export class RecordingSettings {
   public static set ultraFast(ultraFast) {
     this._ultraFast = ultraFast;
   }
-  
+
   /**
    * audioDevicesToRecord
    */
