@@ -1,6 +1,6 @@
 import PathHelper from "./helpers/pathHelper";
-const fs = require("fs");
-const path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
 export enum SettingsFiles {
   General = "GeneralSettings",
@@ -35,11 +35,16 @@ export default class SettingsManager {
   public static getSettings(which: SettingsFiles) {
     return new Promise((resolve, reject) => {
       // Read settings file
-      fs.readFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), 'utf8', (err: any, data: string) => {
+      fs.readFile(PathHelper.ensureExists(path.join(PathHelper.settingsFolderPath, `${which}.json`)), 'utf8', (err: any, data: string) => {
         if (err) reject(err);
 
-        // Cast json from setting file to correct object
-        Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data));
+        // If file isn't empty, cast json from setting file to correct object
+        if (data != "") {
+          Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data));
+        }
+
+        // Write settings back to file, incase of missing rules
+        this.writeSettings(which);
 
         resolve(null);
       });
@@ -120,7 +125,7 @@ export class RecordingSettings {
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
-  private static _audioDevicesToRecord: Array<{ sourceNumber: number, name: string }>;
+  private static _audioDevicesToRecord: Array<{ sourceNumber: number, name: string }> = [];
   private static _seperateAudioTracks: boolean = false;
 
   /**

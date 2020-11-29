@@ -15,7 +15,7 @@ import Recorder from "./../libs/recorder";
 
 export default Vue.extend({
   mounted() {
-    console.log(ArgumentBuilder.getArgs().toString())
+    console.log(ArgumentBuilder.getArgs())
   },
   methods: {
     startRecording: function () {
