@@ -13,14 +13,14 @@ export default class RecordingsManager {
             // Get framerate
             if (l.includes("avg_frame_rate=")) {
               // Framerate is returned like: '60/1', '30/1', '30000/1001', etc
-              // We need to do the math to get the framerate to avoid 
+              // We need to do the math to get the framerate to avoid
               // returning something like 30000, so split the response by the slash
               let fps = l.replace("avg_frame_rate=", "").split("/");
 
               // If fps array has more than 1 items, then divide
-              // the first by the second and round to nearest whole number.
+              // the first by the second and round to nearest whole number
               if (fps.length > 1) {
-                console.log((parseInt(fps[0]) / parseInt(fps[1])).toFixed(0));
+                console.log((parseInt(fps[0], 10) / parseInt(fps[1], 10)).toFixed(0));
               }
             }
 
