@@ -26,7 +26,7 @@ export default class RecordingsManager {
 
             // Get duration
             if (l.includes("duration=")) {
-              let duration = l.replace("duration=", "");
+              let duration = parseInt(l.replace("duration=", ""), 10).toReadableFromSeconds();
 
               console.log(duration);
             }
