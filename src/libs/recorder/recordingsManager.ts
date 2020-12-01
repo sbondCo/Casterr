@@ -15,11 +15,14 @@ export default class RecordingsManager {
   private static ffprobe = new FFmpeg("ffprobe");
 
   public static async add(videoPath: string) {
+    // Throw exception if videoPath does not exist
+    if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
+
     let recording = {} as Recording;
 
     recording.videoPath = videoPath;
     recording.thumbPath = videoPath + "/thumb";
-    recording.fileSize = 69;
+    recording.fileSize = fs.statSync(videoPath).size;
 
     // Get video info from ffprobe
     this.ffprobe.run(
@@ -49,7 +52,10 @@ export default class RecordingsManager {
           });
 
           // Append recording to PastRecordings file
-          fs.appendFile(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), JSON.stringify(recording, null, 2), (err: any) => {
+          // JSON string is appended with a ',' at the end. If you are going to use
+          // the data in this file, always remove the last letter (the ',') first.
+          // This is done so that we don't have to read the whole file first to append it properly.
+          fs.appendFile(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), `${JSON.stringify(recording, null, 2)},`, (err: any) => {
             if (err) throw err;
           });
         }
