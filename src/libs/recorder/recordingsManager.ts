@@ -15,6 +15,10 @@ export interface Recording {
 export default class RecordingsManager {
   private static ffprobe = new FFmpeg("ffprobe");
 
+  /**
+   * Add video to user's PastRecordings file
+   * @param videoPath Path to video that should be added
+   */
   public static async add(videoPath: string) {
     // Throw exception if videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
@@ -64,6 +68,10 @@ export default class RecordingsManager {
     );
   }
 
+  /**
+   * Create thumbnail for video
+   * @param videoPath Path to video to create thumbnail for
+   */
   public static createThumbnail(videoPath: string): string {
     let ffmpeg = new FFmpeg();
     let thumbPath = path.join(PathHelper.ensureExists(RecordingSettings.thumbSaveFolder), (path.basename(videoPath) + ".png"));
