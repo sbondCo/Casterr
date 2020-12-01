@@ -1,10 +1,28 @@
 import FFmpeg from "./ffmpeg";
+import PathHelper from "./../helpers/pathHelper";
+import * as fs from "fs";
+import * as path from "path";
+
+export interface Recording {
+  videoPath: string;
+  thumbPath: string | undefined;
+  fileSize: number | undefined;
+  fps: string | undefined;
+  duration: number | undefined;
+}
 
 export default class RecordingsManager {
   private static ffprobe = new FFmpeg("ffprobe");
 
-  public static add(videoPath: string) {
-    var info = this.ffprobe.run(
+  public static async add(videoPath: string) {
+    let recording = {} as Recording;
+
+    recording.videoPath = videoPath;
+    recording.thumbPath = videoPath + "/thumb";
+    recording.fileSize = 69;
+
+    // Get video info from ffprobe
+    this.ffprobe.run(
       `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
       {
         stdoutCallback: (out: string) => {
@@ -20,15 +38,13 @@ export default class RecordingsManager {
               // If fps array has more than 1 items, then divide
               // the first by the second and round to nearest whole number
               if (fps.length > 1) {
-                console.log((parseInt(fps[0], 10) / parseInt(fps[1], 10)).toFixed(0));
+                recording.fps = (parseInt(fps[0], 10) / parseInt(fps[1], 10)).toFixed(0);
               }
             }
 
             // Get duration
             if (l.includes("duration=")) {
-              let duration = parseInt(l.replace("duration=", ""), 10).toReadableFromSeconds();
-
-              console.log(duration);
+              recording.duration = parseFloat(l.replace("duration=", ""));
             }
           });
         }
