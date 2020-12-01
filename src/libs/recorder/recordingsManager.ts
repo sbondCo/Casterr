@@ -42,10 +42,15 @@ export default class RecordingsManager {
               }
             }
 
-            // Get duration
+            // Get duration (in seconds)
             if (l.includes("duration=")) {
               recording.duration = parseFloat(l.replace("duration=", ""));
             }
+          });
+
+          // Append recording to PastRecordings file
+          fs.appendFile(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), JSON.stringify(recording, null, 2), (err: any) => {
+            if (err) throw err;
           });
         }
       }
