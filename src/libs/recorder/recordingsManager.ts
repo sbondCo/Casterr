@@ -1,5 +1,6 @@
 import FFmpeg from "./ffmpeg";
 import PathHelper from "./../helpers/pathHelper";
+import { RecordingSettings } from "./../settings";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -21,7 +22,7 @@ export default class RecordingsManager {
     let recording = {} as Recording;
 
     recording.videoPath = videoPath;
-    recording.thumbPath = videoPath + "/thumb";
+    recording.thumbPath = this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
 
     // Get video info from ffprobe
@@ -61,5 +62,14 @@ export default class RecordingsManager {
         }
       }
     );
+  }
+
+  public static createThumbnail(videoPath: string): string {
+    let ffmpeg = new FFmpeg();
+    let thumbPath = path.join(PathHelper.ensureExists(RecordingSettings.thumbSaveFolder), (path.basename(videoPath) + ".png"));
+
+    ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
+
+    return thumbPath;
   }
 }
