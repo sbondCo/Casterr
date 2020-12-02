@@ -3,9 +3,9 @@ import * as fs from "fs";
 import * as path from "path";
 
 export enum SettingsFiles {
-  General = "GeneralSettings",
-  Recording = "RecordingSettings",
-  KeyBinding = "KeyBindingSettings"
+  General = "GeneralSettings.json",
+  Recording = "RecordingSettings.json",
+  KeyBinding = "KeyBindingSettings.json"
 }
 
 export default class SettingsManager {
@@ -22,7 +22,7 @@ export default class SettingsManager {
     });
 
     // Write settings in objects to correct file, format json with 2 spaces
-    fs.writeFile(path.join(PathHelper.settingsFolderPath, `${which}.json`), JSON.stringify(json, null, 2), (err: any) => {
+    fs.writeFile(path.join(PathHelper.settingsFolderPath, which), JSON.stringify(json, null, 2), (err: any) => {
       if (err) throw err;
       console.log('Settings saved');
     });
@@ -35,7 +35,7 @@ export default class SettingsManager {
   public static getSettings(which: SettingsFiles) {
     return new Promise((resolve, reject) => {
       // Read settings file
-      fs.readFile(PathHelper.ensureExists(path.join(PathHelper.settingsFolderPath, `${which}.json`)), 'utf8', (err: any, data: string) => {
+      fs.readFile(PathHelper.ensureExists(path.join(PathHelper.settingsFolderPath, which)), 'utf8', (err: any, data: string) => {
         if (err) reject(err);
 
         // If file isn't empty, cast json from setting file to correct object
@@ -81,11 +81,6 @@ export class AppSettings {
   // Pages in application
   public static get pages() {
     return ["Recordings", "Uploads", "Settings", "Profile"];
-  }
-
-  // Settings files
-  public static get settingsFiles() {
-    return ["General", "Recording", "KeyBinding"];
   }
 
   // Supported recording formats
