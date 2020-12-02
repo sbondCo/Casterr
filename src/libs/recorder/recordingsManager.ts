@@ -13,11 +13,27 @@ export interface Recording {
 }
 
 export default class RecordingsManager {
+  public static get(): Array<Recording> {
+    let recordings = new Array<Recording>();
+
+    // Get all pastRecordings from json file
+    let data = fs.readFileSync(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), 'utf8');
+
+    // Parse JSON from file and assign it to recordings variable.
+    // Because it is stored in a way so that we don't have to read the file
+    // before writing to it, we need to prepare the data in the file before it is parsable JSON.
+    // 1. Make into array by wrapping [square brackets] around it.
+    // 2. If last letter in data is a ',' then remove it.
+    Object.assign(recordings, JSON.parse(`[${(data.slice(-1) == "," ? data.slice(0, -1) : data)}]`));
+
+    return recordings;
+  }
+
   /**
    * Add video to user's PastRecordings file
    * @param videoPath Path to video that should be added
    */
-  public static async add(videoPath: string) {
+  public static async add(videoPath: string): Promise<void> {
     // Throw exception if videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
