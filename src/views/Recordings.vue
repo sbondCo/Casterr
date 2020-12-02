@@ -30,7 +30,7 @@
 
                 <div class="videoInfo">
                   <span>{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                  <span>{{ vid.fileSize }}</span>
+                  <span>{{ vid.fileSize.toReadableFileSize() }}</span>
                 </div>
               </div>
             </div>

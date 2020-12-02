@@ -1,5 +1,6 @@
 interface Number {
   toReadableTimeFromSeconds(): string;
+  toReadableFileSize(): string;
 }
 
 Number.prototype.toReadableTimeFromSeconds = function (this: number): string {
@@ -17,4 +18,11 @@ Number.prototype.toReadableTimeFromSeconds = function (this: number): string {
 
   // Return readable format
   return dDisplay + hDisplay + mDisplay + sDisplay;
+}
+
+Number.prototype.toReadableFileSize = function (this: number): string {
+  let i = Math.floor(Math.log(this) / Math.log(1024));
+
+  // Tell me who else supports yottabytes
+  return Math.round((this / Math.pow(1024, i))) * 1 + " " + ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i];
 }
