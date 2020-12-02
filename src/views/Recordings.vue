@@ -3,8 +3,10 @@
     <!-- <button @click="startRecording">Start recording</button> -->
     <!-- <button @click="stopRecording">Stop recording</button> -->
 
+    <button @click="loadMoreRecordings">Load More</button>
+
     <div class="thumbContainer" v-if="allRecordings.length > 0">
-      <div class="thumb" v-for="vid in allRecordings" :key="vid.id">
+      <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
           <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
           <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail"/>
@@ -58,7 +60,28 @@ export default class extends Vue {
   data() {
     return {
       allRecordings: RecordingsManager.get(),
+      loadedRecordings: new Array
     };
+  }
+
+  mounted() {
+    this.loadMoreRecordings();
+  }
+
+  /**
+   * Load more recordings into view
+   */
+  loadMoreRecordings() {
+    let videosToLoad = 8;
+
+    // Loop over allRecordings after removing currently loaded recordings adding to loadedRecordings
+    for (let [i, v] of this.$data.allRecordings.slice(this.$data.loadedRecordings.length).entries()) {
+      // Add to loadedRecordings
+      this.$data.loadedRecordings.push(v);
+
+      // Stop for loop if index >= videosToLoad
+      if (i >= videosToLoad) return;
+    }
   }
 
   startRecording() {
