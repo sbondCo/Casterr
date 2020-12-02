@@ -6,12 +6,9 @@
     <div class="thumbContainer" v-if="allRecordings.length > 0">
         <div class="thumb" v-for="vid in allRecordings" :key="vid.id">
           <div class="inner">
-            <div v-if="false">
-              <img :src="vid.thumbPath" alt="Video Thumbnail" />
-            </div>
-            <div v-else>
-              <span class="noThumb">No Thumbnail Found</span>
-            </div>
+            <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
+            <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail" />
+            <span v-else class="noThumb">No Thumbnail Found</span>
 
             <div class="info">
               <span class="fps">
@@ -58,10 +55,6 @@ import "./../libs/helpers/extensions";
   },
 })
 export default class extends Vue {
-  mounted() {
-    console.log(this.$data.allRecordings);
-  }
-
   data() {
     return {
       allRecordings: RecordingsManager.get(),
