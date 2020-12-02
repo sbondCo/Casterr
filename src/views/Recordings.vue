@@ -3,8 +3,6 @@
     <!-- <button @click="startRecording">Start recording</button> -->
     <!-- <button @click="stopRecording">Stop recording</button> -->
 
-    <button @click="loadMoreRecordings">Load More</button>
-
     <div class="thumbContainer" v-if="allRecordings.length > 0">
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
@@ -65,13 +63,23 @@ export default class extends Vue {
   }
 
   mounted() {
+    // Load initial set of recordings
     this.loadMoreRecordings();
+
+    let el = document.getElementById("main");
+    el?.addEventListener("scroll", () => {
+      // If scrolled to bottom loadMoreRecordings
+      if (el?.scrollHeight! - el?.scrollTop! === el?.clientHeight) {
+        this.loadMoreRecordings();
+      }
+    });
   }
 
   /**
    * Load more recordings into view
    */
   loadMoreRecordings() {
+    // How many videos to load in
     let videosToLoad = 8;
 
     // Loop over allRecordings after removing currently loaded recordings adding to loadedRecordings
