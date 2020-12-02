@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, globalShortcut } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const path = require("path");
@@ -61,33 +61,45 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
-})
+});
+
+/**
+ * App is quitting
+ */
+app.on("will-quit", () => {
+  // Unregister all shortcuts
+  globalShortcut.unregisterAll();
+});
 
 app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
-})
+});
 
 /**
  * When Electron is finished initializing
  */
 app.on("ready", async () => {
-  createWindow();
-
   // Create file protocol, so we can access users files
-  let protocolName = "secfile"
+  let protocolName = "secfile";
   protocol.registerFileProtocol(protocolName, (request, callback) => {
-    const url = request.url.replace(`${protocolName}://`, '')
+    const url = request.url.replace(`${protocolName}://`, '');
     try {
-      return callback(decodeURIComponent(url))
+      return callback(decodeURIComponent(url));
     }
     catch (error) {
       // Handle the error as needed
-      console.error(error)
+      console.error(error);
     }
+  });
+
+  globalShortcut.register('CommandOrControl+X', () => {
+    console.log('You pressed a button! Good job!');
   })
-})
+
+  createWindow();
+});
 
 /**
  * Exit cleanly on request from parent process in development mode
@@ -98,10 +110,10 @@ if (isDevelopment) {
       if (data === "graceful-exit") {
         app.quit();
       }
-    })
+    });
   } else {
     process.on("SIGTERM", () => {
       app.quit();
-    })
+    });
   }
 }
