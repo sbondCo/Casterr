@@ -26,7 +26,7 @@ export default class RecordingsManager {
     // 2. If last letter in data is a ',' then remove it.
     Object.assign(recordings, JSON.parse(`[${(data.slice(-1) == "," ? data.slice(0, -1) : data)}]`));
 
-    return recordings;
+    return recordings.reverse();
   }
 
   /**
