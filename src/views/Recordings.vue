@@ -4,35 +4,35 @@
     <!-- <button @click="stopRecording">Stop recording</button> -->
 
     <div class="thumbContainer" v-if="allRecordings.length > 0">
-        <div class="thumb" v-for="vid in allRecordings" :key="vid.id">
-          <div class="inner">
-            <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-            <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail" />
-            <span v-else class="noThumb">No Thumbnail Found</span>
+      <div class="thumb" v-for="vid in allRecordings" :key="vid.id">
+        <div class="inner">
+          <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
+          <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail"/>
+          <span v-else class="noThumb">No Thumbnail Found</span>
 
-            <div class="info">
-              <span class="fps">
-                {{ vid.fps }}
-                <p>FPS</p>
+          <div class="info">
+            <span class="fps">
+              {{ vid.fps }}
+              <p>FPS</p>
+            </span>
+
+            <span class="edit">
+              <Icon i="edit" :wh="25" />
+            </span>
+
+            <div class="bar">
+              <span class="title">
+                <p>{{ vid.videoPath }}</p>
               </span>
 
-              <span class="edit">
-                <Icon i="edit" :wh="25" />
-              </span>
-
-              <div class="bar">
-                <span class="title">
-                  <p>{{ vid.videoPath }}</p>
-                </span>
-
-                <div class="videoInfo">
-                  <span>{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                  <span>{{ vid.fileSize.toReadableFileSize() }}</span>
-                </div>
+              <div class="videoInfo">
+                <span>{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                <span>{{ vid.fileSize.toReadableFileSize() }}</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
     </div>
     <div v-else>
       <span class="noRecordings">You Have No Recordings!</span>
