@@ -13,8 +13,6 @@ export interface Recording {
 }
 
 export default class RecordingsManager {
-  private static ffprobe = new FFmpeg("ffprobe");
-
   /**
    * Add video to user's PastRecordings file
    * @param videoPath Path to video that should be added
@@ -23,6 +21,7 @@ export default class RecordingsManager {
     // Throw exception if videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
+    let ffprobe = new FFmpeg("ffprobe");
     let recording = {} as Recording;
 
     recording.videoPath = videoPath;
@@ -30,7 +29,7 @@ export default class RecordingsManager {
     recording.fileSize = fs.statSync(videoPath).size;
 
     // Get video info from ffprobe
-    this.ffprobe.run(
+    ffprobe.run(
       `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
       {
         stdoutCallback: (out: string) => {
