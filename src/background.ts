@@ -1,9 +1,9 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, globalShortcut } from "electron";
+import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-const path = require("path");
+import * as path from "path";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
@@ -63,14 +63,6 @@ app.on("window-all-closed", () => {
   }
 });
 
-/**
- * App is quitting
- */
-app.on("will-quit", () => {
-  // Unregister all shortcuts
-  globalShortcut.unregisterAll();
-});
-
 app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -93,10 +85,6 @@ app.on("ready", async () => {
       console.error(error);
     }
   });
-
-  globalShortcut.register('CommandOrControl+X', () => {
-    console.log('You pressed a button! Good job!');
-  })
 
   createWindow();
 });
