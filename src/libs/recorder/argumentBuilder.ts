@@ -1,4 +1,5 @@
 import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
+import PathHelper from "../helpers/pathHelper";
 import "../helpers/extensions";
 import * as path from "path";
 
@@ -173,6 +174,9 @@ export default class ArgumentBuilder {
   }
 
   private static get videoOutputPath(): String {
-    return path.join(RecordingSettings.videoSaveFolder, `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`);
+    return path.join(
+      PathHelper.ensureExists(RecordingSettings.videoSaveFolder, true),
+      `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`
+    );
   }
 }
