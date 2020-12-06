@@ -11,10 +11,10 @@ Number.prototype.toReadableTimeFromSeconds = function (this: number): string {
   let s = Math.floor(this % 60);
   
   // Turn into readable format
-  let dDisplay = d > 0 ? d + ":" : "";
-  let hDisplay = h > 0 ? h + ":" : "";
-  let mDisplay = m > 0 ? m + ":" : "";
-  let sDisplay = s > 0 ? s + "" : "";
+  let dDisplay = d > 0 ? (d < 10 ? "0" + d : d) + ":" : "";
+  let hDisplay = h > 0 ? (h < 10 ? "0" + h : h) + ":" : "";
+  let mDisplay = m > 0 ? (m < 10 ? "0" + m : m) + ":" : "00:";
+  let sDisplay = s > 0 ? (s < 10 ? "0" + s : s) : "00";
 
   // Return readable format
   return dDisplay + hDisplay + mDisplay + sDisplay;
