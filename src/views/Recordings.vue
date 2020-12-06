@@ -7,7 +7,7 @@
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
           <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-          <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail"/>
+          <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail" />
           <span v-else class="noThumb">No Thumbnail Found</span>
 
           <div class="info">
@@ -26,8 +26,8 @@
               </span>
 
               <div class="videoInfo">
-                <span>{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                <span>{{ vid.fileSize.toReadableFileSize() }}</span>
+                <span v-if="vid.duration">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                <span v-if="vid.fileSize">{{ vid.fileSize.toReadableFileSize() }}</span>
               </div>
             </div>
           </div>
