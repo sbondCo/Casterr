@@ -31,11 +31,10 @@
         </span>
 
         <!-- Hook this up - add onclick start recording and change class depending on status -->
-        <div class="circle safety" title="
+        <div ref="recordingStatus" class="circle idle" title="
           Start/Stop Recording
           White => Idle
-          Green => Recording
-          Red => Error">
+          Red => Recording">
         </div>
       </li>
     </ul>
@@ -45,6 +44,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
+import Recorder from "./../libs/recorder";
 
 @Component({
   components: {
@@ -52,7 +52,21 @@ import Icon from "./Icon.vue";
   },
 })
 
-export default class Nav extends Vue {}
+export default class Nav extends Vue {
+  mounted() {
+    // Change recordingStatus circle depending on whether isRecording
+    Recorder.recordingStatus.on("changed", (isRecording) => {
+      let rs = this.$refs.recordingStatus as HTMLElement;
+      
+      if (isRecording) {
+        rs.classList.add("isRecording");
+      }
+      else {
+        rs.classList.remove("isRecording");
+      }
+    });
+  }
+}
 </script>
 
 <style lang="scss">
@@ -140,20 +154,12 @@ nav {
           transition: background-color 250ms ease-in-out,
                       box-shadow       250ms ease-in-out;
           cursor: pointer;
+          background-color: $textPrimary;
+          box-shadow: 0 0 8px $textPrimary;
 
-          &.safety {
-            background-color: $safetyColor;
-            box-shadow: 0 0 8px $safetyColor;
-          }
-
-          &.idle {
-            background-color: $textPrimary;
-            box-shadow: 0 0 8px $textPrimary;
-          }
-
-          &.danger {
-            background-color: $dangerColor;
-            box-shadow: 0 0 8px $dangerColor;
+          &.isRecording {
+            background-color: $dangerColor !important;
+            box-shadow: 0 0 8px $dangerColor !important;
           }
         }
       }

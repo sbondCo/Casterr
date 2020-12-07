@@ -1,11 +1,13 @@
 import FFmpeg from "./ffmpeg";
 import ArgumentBuilder from "./argumentBuilder";
 import RecordingsManager from "./recordingsManager";
+import * as events from "events";
 
 export default class Recorder {
   private static ffmpeg = new FFmpeg();
-  private static isRecording: Boolean = false;
   private static args: ReturnType<typeof ArgumentBuilder.createArgs>;
+  private static _isRecording: boolean = false;
+  public static readonly recordingStatus = new events.EventEmitter();
 
   /**
    * Start recording
@@ -37,5 +39,25 @@ export default class Recorder {
 
     // Add recording to pastRecordings
     RecordingsManager.add(this.args.videoPath);
+  }
+
+  /**
+   * isRecording getter
+   */
+  private static get isRecording() {
+    return this._isRecording;
+  }
+
+  /**
+   * isRecording setter
+   * Emits recordingStatus event when changed
+   */
+  private static set isRecording(recording: boolean) {
+    // Only emit event if isRecording value has actually changed
+    if (this.isRecording != recording) {
+      this.recordingStatus.emit('changed', recording);
+    }
+
+    this._isRecording = recording;
   }
 }
