@@ -34,7 +34,7 @@ export default class RecordingsManager {
    * @param videoPath Path to video that should be added
    */
   public static async add(videoPath: string): Promise<void> {
-    // Throw exception if videoPath does not exist
+    // Throw exception if video from videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
     let ffprobe = new FFmpeg("ffprobe");

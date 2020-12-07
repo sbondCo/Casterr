@@ -40,7 +40,7 @@ export default class FFmpeg {
    * @param args Args to send
    * @param outputs Holds optional callback functions with outputs from FFmpeg/FFprobe
    */
-  public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction }) {
+  public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction; }) {
     // Get FFmpeg path
     var ffPath = await this.getPath();
 
@@ -70,7 +70,13 @@ export default class FFmpeg {
    * Kill FF process
    */
   public async kill() {
-    if (this.ffProcess != undefined) this.ffProcess.kill();
+    return new Promise((resolve) => {
+      if (this.ffProcess != undefined) this.ffProcess.kill();
+
+      this.ffProcess.on("exit", () => {
+        resolve();
+      });
+    });
   }
 
   /**
