@@ -18,7 +18,7 @@ export default class Recorder {
     if (this.isRecording == false) {
       this.ffmpeg.run(this.args.args.toString(), {
         stderrCallback: (err: string) => {
-          // console.log(err);
+          console.log(err);
         }
       });
 

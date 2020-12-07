@@ -8,100 +8,98 @@ export default class ArgumentBuilder {
     args: string,
     videoPath: string;
   } {
-    let args = new Map<string, string>();
-
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
     // Build and return args differently depending on OS
-    if (process.platform == "win32") args = ArgumentBuilder.buildWindowsArgs();
-    else if (process.platform == "linux") args = ArgumentBuilder.buildLinuxArgs();
-
-    // If args were set above, return them
-    if (args.size > 0) {
-      return {
-        args: Array.from(args, ([k, v]) => (v)).join(" ").toString(),
-        videoPath: args.get("videoPath")?.replace(/"/g, "")!
-      };
-    }
+    if (process.platform == "win32") return ArgumentBuilder.buildWindowsArgs();
+    else if (process.platform == "linux") return ArgumentBuilder.buildLinuxArgs();
 
     throw new Error("Could not build args for currently system. It isn't supported.");
   }
 
   private static buildLinuxArgs() {
-    let args = new Map<string, string>();
+    let args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach((ad, i) => {
-      args.set(`aud${i}`, `-f pulse -i ${ad.sourceNumber}`);
+    RecordingSettings.audioDevicesToRecord.forEach(ad => {
+      args.push(`-f pulse -i ${ad.sourceNumber}`);
     });
 
     // Recording FPS
-    args.set("fps", `-framerate ${this.fps}`);
+    args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.set("resolution", `-video_size ${this.resolution}`);
+    args.push(`-video_size ${this.resolution}`);
 
     // FFmpeg video device
-    args.set("ffmpegDevice", `-f ${this.ffmpegDevice}`);
+    args.push(`-f ${this.ffmpegDevice}`);
 
     // Recording region
-    args.set("region", `-i ${this.recordingRegion}`);
+    args.push(`-i ${this.recordingRegion}`);
 
     // Audio maps
-    args.set("audMaps", `${this.audioMaps}`);
+    args.push(`${this.audioMaps}`);
 
     // Video output path
-    args.set("videoPath", `"${this.videoOutputPath}"`);
+    let videoOutputPath = this.videoOutputPath;
+    args.push(`"${this.videoOutputPath}"`);
 
-    return args;
+    return {
+      args: args.join(" ").toString(),
+      videoPath: videoOutputPath
+    };
   }
 
   private static buildWindowsArgs() {
-    let args = new Map<string, string>();
+    let args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach((ad, i) => {
-      args.set(`aud${i}`, `-f dshow -i audio="${ad.name}"`);
+    RecordingSettings.audioDevicesToRecord.forEach(ad => {
+      args.push(`-f dshow -i audio="${ad.name}"`);
     });
 
     // FFmpeg video device
-    args.set("ffmpegDevice", `-f ${this.ffmpegDevice}`);
+    args.push(`-f ${this.ffmpegDevice}`);
 
     // Video device
     if (RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])) {
-      args.set("videoDevice", "-i video=screen-capture-recorder");
+      args.push("-i video=screen-capture-recorder");
     }
     else {
-      args.set("videoDevice", `-i video=${RecordingSettings.videoDevice}`);
+      args.push(`-i video=${RecordingSettings.videoDevice}`);
     }
 
     // Audio maps
-    args.set("audMaps", `${this.audioMaps}`);
+    args.push(`${this.audioMaps}`);
 
     // Recording FPS
-    args.set("fps", `-framerate ${this.fps}`);
+    args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.set("resolution", `-video_size ${this.resolution}`);
+    args.push(`-video_size ${this.resolution}`);
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
-      args.set("zerolatency", "-tune zerolatency");
+      args.push("-tune zerolatency");
     }
 
     // Ultra Fast
     if (RecordingSettings.ultraFast) {
-      args.set("ultrafast", "-preset ultrafast");
+      args.push("-preset ultrafast");
     }
 
     // Video output path
-    args.set("videoPath", `"${this.videoOutputPath}"`);
+    let videoOutputPath = this.videoOutputPath;
+    args.push(`"${this.videoOutputPath}"`);
 
-    return new Map<string, string>();
+    return {
+      args: args.join(" ").toString(),
+      videoPath: videoOutputPath
+    };
   }
 
-  private static get fps(): String {
+  private static get fps(): string {
     let fps = parseInt(RecordingSettings.fps, 10);
 
     // If can get number from FPS setting, then use it
@@ -114,7 +112,7 @@ export default class ArgumentBuilder {
     }
   }
 
-  private static get resolution(): String {
+  private static get resolution(): string {
     let res;
 
     switch (RecordingSettings.resolution) {
@@ -146,7 +144,7 @@ export default class ArgumentBuilder {
     return res;
   }
 
-  private static get ffmpegDevice(): String {
+  private static get ffmpegDevice(): string {
     if (process.platform == "win32") return "dshow";
     else if (process.platform == "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
@@ -156,7 +154,7 @@ export default class ArgumentBuilder {
     return ":0.0+0,0";
   }
 
-  private static get audioMaps(): String {
+  private static get audioMaps(): string {
     let maps = new Array<string>();
     let audToRec = RecordingSettings.audioDevicesToRecord;
 
@@ -186,7 +184,7 @@ export default class ArgumentBuilder {
     return maps.join(" ").toString();
   }
 
-  private static get videoOutputPath(): String {
+  private static get videoOutputPath(): string {
     return path.join(
       PathHelper.ensureExists(RecordingSettings.videoSaveFolder, true),
       `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`
