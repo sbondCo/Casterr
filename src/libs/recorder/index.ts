@@ -5,7 +5,7 @@ import RecordingsManager from "./recordingsManager";
 export default class Recorder {
   private static ffmpeg = new FFmpeg();
   private static isRecording: Boolean = false;
-  private static args: any;
+  private static args: ReturnType<typeof ArgumentBuilder.createArgs>;
 
   /**
    * Start recording
