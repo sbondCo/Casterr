@@ -9,7 +9,7 @@ export default class ArgumentBuilder {
     videoPath: string;
   } {
     let args = new Map<string, string>();
-    
+
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
@@ -43,7 +43,7 @@ export default class ArgumentBuilder {
     args.set("resolution", `-video_size ${this.resolution}`);
 
     // FFmpeg video device
-    args.set("videoDevice", `-f ${this.ffmpegVideoDevice}`);
+    args.set("ffmpegDevice", `-f ${this.ffmpegDevice}`);
 
     // Recording region
     args.set("region", `-i ${this.recordingRegion}`);
@@ -58,47 +58,46 @@ export default class ArgumentBuilder {
   }
 
   private static buildWindowsArgs() {
-    let args = new Array<string>();
+    let args = new Map<string, string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach(ad => {
-      args.push(`-f dshow -i audio="${ad.name}"`);
+    RecordingSettings.audioDevicesToRecord.forEach((ad, i) => {
+      args.set(`aud${i}`, `-f dshow -i audio="${ad.name}"`);
     });
 
     // FFmpeg video device
-    args.push(`-f ${this.ffmpegVideoDevice}`);
+    args.set("ffmpegDevice", `-f ${this.ffmpegDevice}`);
 
     // Video device
     if (RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])) {
-      args.push("-i video=screen-capture-recorder");
+      args.set("videoDevice", "-i video=screen-capture-recorder");
     }
     else {
-      args.push(`-i video=${RecordingSettings.videoDevice}`);
+      args.set("videoDevice", `-i video=${RecordingSettings.videoDevice}`);
     }
 
     // Audio maps
-    args.push(`${this.audioMaps}`);
+    args.set("audMaps", `${this.audioMaps}`);
 
     // Recording FPS
-    args.push(`-framerate ${this.fps}`);
+    args.set("fps", `-framerate ${this.fps}`);
 
     // Recording resolution
-    args.push(`-video_size ${this.resolution}`);
+    args.set("resolution", `-video_size ${this.resolution}`);
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
-      args.push("-tune zerolatency");
+      args.set("zerolatency", "-tune zerolatency");
     }
 
     // Ultra Fast
     if (RecordingSettings.ultraFast) {
-      args.push("-preset ultrafast");
+      args.set("ultrafast", "-preset ultrafast");
     }
 
     // Video output path
-    args.push(`"${this.videoOutputPath}"`);
+    args.set("videoPath", `"${this.videoOutputPath}"`);
 
-    // return args.join(" ").toString();
     return new Map<string, string>();
   }
 
@@ -147,7 +146,7 @@ export default class ArgumentBuilder {
     return res;
   }
 
-  private static get ffmpegVideoDevice(): String {
+  private static get ffmpegDevice(): String {
     if (process.platform == "win32") return "dshow";
     else if (process.platform == "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
