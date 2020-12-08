@@ -10,7 +10,7 @@ export default class Recorder {
   public static readonly recordingStatus = new events.EventEmitter();
 
   /**
-   * Start recording
+   * Start recording.
    */
   public static start() {
     // Create args from user's settings
@@ -29,7 +29,7 @@ export default class Recorder {
   }
 
   /**
-   * Stop recording
+   * Stop recording.
    */
   public static async stop() {
     this.isRecording = false;
@@ -42,15 +42,15 @@ export default class Recorder {
   }
 
   /**
-   * isRecording getter
+   * isRecording getter.
    */
   private static get isRecording() {
     return this._isRecording;
   }
 
   /**
-   * isRecording setter
-   * Emits recordingStatus event when changed
+   * isRecording setter.
+   * Emits recordingStatus event when changed.
    */
   private static set isRecording(recording: boolean) {
     // Only emit event if isRecording value has actually changed

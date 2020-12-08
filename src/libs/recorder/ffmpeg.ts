@@ -9,7 +9,7 @@ export default class FFmpeg {
   }
 
   /**
-   * FFmpeg exe name which is dependent on the user's platform
+   * FFmpeg exe name which is dependent on the user's platform.
    */
   public static get ffmpegExeName() {
     if (process.platform == 'win32') {
@@ -21,7 +21,7 @@ export default class FFmpeg {
   }
 
   /**
-   * FFprobe exe name which is dependent on the user's platform
+   * FFprobe exe name which is dependent on the user's platform.
    */
   public static get ffprobeExeName() {
     if (process.platform == 'win32') {
@@ -36,9 +36,9 @@ export default class FFmpeg {
   private ffProcess: childProcess.ChildProcess;
 
   /**
-   * Run FF process and send args to it
-   * @param args Args to send
-   * @param outputs Holds optional callback functions with outputs from FFmpeg/FFprobe
+   * Run FF process and send args to it.
+   * @param args Args to send.
+   * @param outputs Holds optional callback functions with outputs from FFmpeg/FFprobe.
    */
   public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction; }) {
     // Get FFmpeg path
@@ -67,7 +67,7 @@ export default class FFmpeg {
   }
 
   /**
-   * Kill FF process
+   * Kill FF process.
    */
   public async kill() {
     return new Promise((resolve) => {
