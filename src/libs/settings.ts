@@ -13,7 +13,7 @@ export default class SettingsManager {
    * Write settings to file
    */
   public static writeSettings(which: SettingsFiles) {
-    let json: any = {};
+    const json: any = {};
 
     // Read all entries in correct settings object and make a json object to write
     Object.entries(SettingsManager.getObjectFromName(which)).forEach((pair) => {

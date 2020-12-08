@@ -14,10 +14,10 @@ export interface Recording {
 
 export default class RecordingsManager {
   public static get(): Array<Recording> {
-    let recordings = new Array<Recording>();
+    const recordings = new Array<Recording>();
 
     // Get all pastRecordings from json file
-    let data = fs.readFileSync(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), 'utf8');
+    const data = fs.readFileSync(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), 'utf8');
 
     // Parse JSON from file and assign it to recordings variable.
     // Because it is stored in a way so that we don't have to read the file
@@ -37,8 +37,8 @@ export default class RecordingsManager {
     // Throw exception if video from videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
-    let ffprobe = new FFmpeg("ffprobe");
-    let recording = {} as Recording;
+    const ffprobe = new FFmpeg("ffprobe");
+    const recording = {} as Recording;
 
     recording.videoPath = videoPath;
     recording.thumbPath = this.createThumbnail(videoPath);
@@ -56,7 +56,7 @@ export default class RecordingsManager {
               // Framerate is returned like: '60/1', '30/1', '30000/1001', etc
               // We need to do the math to get the framerate to avoid
               // returning something like 30000, so split the response by the slash
-              let fps = l.replace("avg_frame_rate=", "").split("/");
+              const fps = l.replace("avg_frame_rate=", "").split("/");
 
               // If fps array has more than 1 items, then divide
               // the first by the second and round to nearest whole number
@@ -88,8 +88,8 @@ export default class RecordingsManager {
    * @param videoPath Path to video to create thumbnail for
    */
   public static createThumbnail(videoPath: string): string {
-    let ffmpeg = new FFmpeg();
-    let thumbPath = path.join(PathHelper.ensureExists(RecordingSettings.thumbSaveFolder), (path.basename(videoPath) + ".png"));
+    const ffmpeg = new FFmpeg();
+    const thumbPath = path.join(PathHelper.ensureExists(RecordingSettings.thumbSaveFolder), (path.basename(videoPath) + ".png"));
 
     ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
 

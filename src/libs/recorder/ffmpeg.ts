@@ -42,7 +42,7 @@ export default class FFmpeg {
    */
   public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction; }) {
     // Get FFmpeg path
-    var ffPath = await this.getPath();
+    const ffPath = await this.getPath();
 
     // Get exec perms for ff binary
     fs.chmodSync(ffPath, 0o111);
@@ -70,7 +70,7 @@ export default class FFmpeg {
    * Kill FF process.
    */
   public async kill() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       if (this.ffProcess != undefined) this.ffProcess.kill();
 
       this.ffProcess.on("exit", () => {
@@ -84,16 +84,16 @@ export default class FFmpeg {
    * If FFmpeg/probe doesn't exist, download it first then return its path.
    */
   public async getPath() {
-    let execPath = path.dirname(process.execPath);
-    let ffmpegPath = path.join(execPath, FFmpeg.ffmpegExeName);
-    let ffprobePath = path.join(execPath, FFmpeg.ffprobeExeName);
+    const execPath = path.dirname(process.execPath);
+    const ffmpegPath = path.join(execPath, FFmpeg.ffmpegExeName);
+    const ffprobePath = path.join(execPath, FFmpeg.ffprobeExeName);
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
-      let winDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
-      let linuxDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
+      const winDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
+      const linuxDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
+      const downloadTo = ffmpegPath + '.zip';
       let downloadURL: string;
-      let downloadTo = ffmpegPath + '.zip';
 
       // Set downloadURL depending on users platform
       if (process.platform == 'win32') downloadURL = winDownloadURL;

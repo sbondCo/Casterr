@@ -5,7 +5,7 @@ import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./
 
 // Create promises to complete before rendering app
 // Currently only for gettings all user settings
-var promises = Object.values(SettingsFiles).map(s => {
+const promises = Object.values(SettingsFiles).map(s => {
   return SettingsManager.getSettings(s);
 });
 

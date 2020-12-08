@@ -8,7 +8,7 @@ interface String {
  */
 String.prototype.toReadableDateTime = function (this): string {
   let rdt = this;
-  let now = new Date();
+  const now = new Date();
 
   //#region Day
   // Day of the month, 01 to 31
@@ -92,7 +92,7 @@ String.prototype.toReadableDateTime = function (this): string {
   //#region Timezone
   // Difference to Greenwich time, BST = +0100
   if (this.includes("%O")) {
-    let tzoh = Math.abs(now.getTimezoneOffset() / 60);
+    const tzoh = Math.abs(now.getTimezoneOffset() / 60);
     rdt = rdt.replace("%O",
       (-now.getTimezoneOffset() < 0 ? '-' : '+') + (tzoh < 10 ? '0' : '') + (tzoh) + '00'
     );

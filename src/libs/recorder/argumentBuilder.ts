@@ -19,7 +19,7 @@ export default class ArgumentBuilder {
   }
 
   private static buildLinuxArgs() {
-    let args = new Array<string>();
+    const args = new Array<string>();
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach(ad => {
@@ -42,7 +42,7 @@ export default class ArgumentBuilder {
     args.push(`${this.audioMaps}`);
 
     // Video output path
-    let videoOutputPath = this.videoOutputPath;
+    const videoOutputPath = this.videoOutputPath;
     args.push(`"${this.videoOutputPath}"`);
 
     return {
@@ -52,7 +52,7 @@ export default class ArgumentBuilder {
   }
 
   private static buildWindowsArgs() {
-    let args = new Array<string>();
+    const args = new Array<string>();
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach(ad => {
@@ -90,7 +90,7 @@ export default class ArgumentBuilder {
     }
 
     // Video output path
-    let videoOutputPath = this.videoOutputPath;
+    const videoOutputPath = this.videoOutputPath;
     args.push(`"${this.videoOutputPath}"`);
 
     return {
@@ -100,7 +100,7 @@ export default class ArgumentBuilder {
   }
 
   private static get fps(): string {
-    let fps = parseInt(RecordingSettings.fps, 10);
+    const fps = parseInt(RecordingSettings.fps, 10);
 
     // If can get number from FPS setting, then use it
     // If not, then just return 30fps as a default
@@ -155,8 +155,8 @@ export default class ArgumentBuilder {
   }
 
   private static get audioMaps(): string {
-    let maps = new Array<string>();
-    let audToRec = RecordingSettings.audioDevicesToRecord;
+    const maps = new Array<string>();
+    const audToRec = RecordingSettings.audioDevicesToRecord;
 
     if (audToRec.length > 0) {
       if (RecordingSettings.seperateAudioTracks) {
@@ -168,7 +168,7 @@ export default class ArgumentBuilder {
       }
       else {
         // Make maps to put all audio devices onto the same track
-        let cap = RecordingSettings.audioDevicesToRecord.length;
+        const cap = RecordingSettings.audioDevicesToRecord.length;
 
         maps.push(`-filter_complex "`);
 

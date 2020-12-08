@@ -15,7 +15,7 @@ export default class Downloader {
       const file = fs.createWriteStream(dest);
 
       https.get(uri, (resp: IncomingMessage) => {
-        let contentLength = parseInt(resp.headers['content-length']!, 10);
+        const contentLength = parseInt(resp.headers['content-length']!, 10);
         let chunksCompleted = 0;
 
         resp.on("data", (chunk) => {
@@ -27,7 +27,7 @@ export default class Downloader {
 
         // When connection is closed, resolve promise
         resp.on("close", () => {
-          resolve();
+          resolve("");
         });
 
         // Reject promise on error
@@ -51,14 +51,14 @@ export default class Downloader {
       fs.readFile(zipPath, (err, data) => {
         if (err) reject(err);
 
-        var zip = new jsZip();
+        const zip = new jsZip();
 
         zip.loadAsync(data).then((contents: any) => {
           Object.keys(contents.files).forEach((filename: string) => {
-            let filenameWithoutFolder = path.basename(filename);
+            const filenameWithoutFolder = path.basename(filename);
 
             // Write zip file to destination folder
-            let unzip = () => {
+            const unzip = () => {
               zip.file(filename)!.async('nodebuffer').then((content: any) => {
                 fs.writeFileSync(path.join(destFolder, filenameWithoutFolder), content);
               });
@@ -70,7 +70,7 @@ export default class Downloader {
             else if (filesToExtract.includes(filenameWithoutFolder)) unzip();
           });
         }).then(() => {
-          resolve();
+          resolve("");
         });
       });
     });
