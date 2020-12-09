@@ -35,8 +35,7 @@ export default class Dragger extends Vue {
   public maximize() {
     if (window.isMaximized()) {
       window.unmaximize();
-    }
-    else {
+    } else {
       window.maximize();
     }
   }

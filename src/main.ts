@@ -23,6 +23,7 @@ Promise.all(promises).then(result => {
   // Else go to first page in AppSettings.pages setting
   if (AppSettings.pages.includes(GeneralSettings.startupPage)) {
     router.push(GeneralSettings.startupPage).catch(()=>{});
+  } else {
+    router.push(AppSettings.pages[0]).catch(()=>{});
   }
-  else router.push(AppSettings.pages[0]).catch(()=>{});
 });

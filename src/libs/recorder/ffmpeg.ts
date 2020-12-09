@@ -14,8 +14,7 @@ export default class FFmpeg {
   public static get ffmpegExeName() {
     if (process.platform == 'win32') {
       return "ffmpeg.exe";
-    }
-    else {
+    } else {
       return "ffmpeg";
     }
   }
@@ -26,8 +25,7 @@ export default class FFmpeg {
   public static get ffprobeExeName() {
     if (process.platform == 'win32') {
       return "ffprobe.exe";
-    }
-    else {
+    } else {
       return "ffprobe";
     }
   }
@@ -77,8 +75,7 @@ export default class FFmpeg {
         this.ffProcess.on("exit", () => {
           resolve();
         });
-      }
-      else {
+      } else {
         reject("Can't stop FFmpeg when it's not currently running!");
       }
     });

@@ -37,8 +37,7 @@ export default class DropDown extends DropDownProps {
     if (items.classList.contains("opened")) {
       dd.style.borderRadius = "4px";
       items.classList.remove("opened");
-    }
-    else {
+    } else {
       dd.style.borderRadius = "4px 4px 0 0";
       items.classList.add("opened");
     }

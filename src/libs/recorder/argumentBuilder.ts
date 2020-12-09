@@ -65,8 +65,7 @@ export default class ArgumentBuilder {
     // Video device
     if (RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])) {
       args.push("-i video=screen-capture-recorder");
-    }
-    else {
+    } else {
       args.push(`-i video=${RecordingSettings.videoDevice}`);
     }
 
@@ -106,8 +105,7 @@ export default class ArgumentBuilder {
     // If not, then just return 30fps as a default
     if (!isNaN(fps)) {
       return fps.toString();
-    }
-    else {
+    } else {
       return "30";
     }
   }
@@ -165,8 +163,7 @@ export default class ArgumentBuilder {
         for (let i = 0, n = audToRec.length + 1; i < n; ++i) {
           maps.push(`-map ${i}`);
         }
-      }
-      else {
+      } else {
         // Make maps to put all audio devices onto the same track
         const cap = RecordingSettings.audioDevicesToRecord.length;
 

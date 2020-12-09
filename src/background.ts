@@ -19,8 +19,7 @@ async function createWindow() {
 
   if (isDevelopment && !process.env.IS_TEST) {
     iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
-  }
-  else {
+  } else {
     iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
   }
 
@@ -79,8 +78,7 @@ app.on("ready", async () => {
     const url = request.url.replace(`${protocolName}://`, '');
     try {
       return callback(decodeURIComponent(url));
-    }
-    catch (error) {
+    } catch (error) {
       // Handle the error as needed
       console.error(error);
     }

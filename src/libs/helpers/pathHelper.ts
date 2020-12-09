@@ -29,8 +29,7 @@ export default class PathHelper {
     try {
       // Create file if it doesn't exist
       fs.writeFileSync(path, "", { flag: 'wx' });
-    }
-    catch (err) {
+    } catch (err) {
       // If exception is caused by file already existing,
       // don't throw it. Throw again if caused by something else.
       if (err.code != "EEXIST") {
