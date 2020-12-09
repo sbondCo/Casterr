@@ -7,35 +7,39 @@
           <span>Recordings</span>
         </router-link>
       </li>
+
       <li>
         <router-link to="/uploads">
           <Icon i="upload" :wh="24" />
           <span>Uploads</span>
         </router-link>
       </li>
+
       <li>
         <router-link to="/settings">
           <Icon i="settings" :wh="24" />
           <span>Settings</span>
         </router-link>
       </li>
+
       <li>
         <router-link to="/profile">
           <Icon i="play" :wh="24" />
           <span>Profile</span>
         </router-link>
       </li>
-      <li id="status">
-        <span id="timeElapsed" class="@RecorderLib.RecordingStatus.ElapsedClass">
-          elapsedTime
-        </span>
 
-        <!-- Hook this up - add onclick start recording and change class depending on status -->
-        <div ref="recordingStatus" class="circle idle" title="
+      <li id="status">
+        <span ref="timeElapsed" class="timeElapsed">{{ timeElapsed }}</span>
+
+        <div
+          ref="recordingStatus"
+          class="circle idle"
+          title="
           Start/Stop Recording
           White => Idle
-          Red => Recording">
-        </div>
+          Red => Recording"
+        ></div>
       </li>
     </ul>
   </nav>
@@ -51,18 +55,42 @@ import Recorder from "./../libs/recorder";
     Icon,
   },
 })
-
 export default class Nav extends Vue {
+  data() {
+    return {
+      timeElapsed: "",
+    };
+  }
+
   mounted() {
+    let timer: any;
+
     // Change recordingStatus circle depending on whether isRecording
     Recorder.recordingStatus.on("changed", (isRecording) => {
       let rs = this.$refs.recordingStatus as HTMLElement;
-      
+      const timeoutScheduled = Date.now();
+
       if (isRecording) {
         rs.classList.add("isRecording");
-      }
-      else {
+
+        // Set timeElapsed to `00:00` so you
+        // get instant feedback once you start recording
+        this.$data.timeElapsed = "00:00";
+
+        // Update elapsed time every second
+        timer = setInterval(() => {
+          // Get time elapsed in seconds
+          const elapsed = (Date.now() - timeoutScheduled) / 1000;
+
+          // Update time elapsed in a readable format
+          this.$data.timeElapsed = `${elapsed.toReadableTimeFromSeconds()}`;
+        }, 1000);
+      } else {
         rs.classList.remove("isRecording");
+
+        // Clear timer if running and set timeElapsed to empty string
+        clearTimeout(timer);
+        this.$data.timeElapsed = ``;
       }
     });
   }
@@ -113,7 +141,7 @@ nav {
         }
       }
 
-      span:not(#timeElapsed) {
+      span:not(.timeElapsed) {
         @media (max-width: 910px) {
           display: none;
         }
@@ -152,7 +180,7 @@ nav {
           padding: 0 !important;
           border-radius: 50%;
           transition: background-color 250ms ease-in-out,
-                      box-shadow       250ms ease-in-out;
+            box-shadow 250ms ease-in-out;
           cursor: pointer;
           background-color: $textPrimary;
           box-shadow: 0 0 8px $textPrimary;
