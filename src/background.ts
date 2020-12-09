@@ -15,13 +15,7 @@ protocol.registerSchemesAsPrivileged([
  * Create app window
  */
 async function createWindow() {
-  let iconPath;
-
-  if (isDevelopment && !process.env.IS_TEST) {
-    iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
-  } else {
-    iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
-  }
+  let iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
 
   // Create the browser window.
   const win = new BrowserWindow({
