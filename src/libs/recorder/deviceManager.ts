@@ -33,7 +33,7 @@ export default class DeviceManager {
 
           // Get source number
           if (l.includes("source")) {
-            sourceNumber = parseInt(l.replace("source #", ""));
+            sourceNumber = parseInt(l.replace("source #", ""), 10);
           }
 
           if (l.includes("name: alsa_input")) isInputDevice = true;
