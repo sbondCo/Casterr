@@ -29,18 +29,18 @@ export default class DeviceManager {
           let sourceNumber = 0;
 
           // Find audioDevices and add them to audioDevices array
-          out.toLowerCase().split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
-            l = l.toLowerCase();
+          out.split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
+            const ll = l.toLowerCase();
 
             // Get source number
-            if (l.includes("source")) {
-              sourceNumber = parseInt(l.replace("source #", ""), 10);
+            if (ll.includes("source")) {
+              sourceNumber = parseInt(ll.replace("source #", ""), 10);
             }
 
-            if (l.includes("name: alsa_input")) isInputDevice = true;
-            if (l.includes("name: alsa_output")) isInputDevice = false;
+            if (ll.includes("name: alsa_input")) isInputDevice = true;
+            if (ll.includes("name: alsa_output")) isInputDevice = false;
 
-            if (l.includes("alsa.card_name")) {
+            if (ll.includes("alsa.card_name")) {
               // Add input devices to audioDevices array
               audioDevices.push({
                 ID: sourceNumber,
@@ -74,27 +74,27 @@ export default class DeviceManager {
 
     ffmpeg.run("-list_devices true -f dshow -i dummy", {
       stdoutCallback: (out: string) => {
-        out.toLowerCase().split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
-          l = l.toLowerCase();
+        out.split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
+          const ll = l.toLowerCase();
 
           // Check if next devices to be looked at will be audio or video
-          if (l.includes("] directshow video devices")) {
+          if (ll.includes("] directshow video devices")) {
             isAudioDevice = false;
             return;
           }
 
-          if (l.includes("] directshow audio devices")) {
+          if (ll.includes("] directshow audio devices")) {
             isAudioDevice = true;
             return;
           }
 
           // Skip line if it is a device alternate name
-          if (l.includes("@device")) {
+          if (ll.includes("@device")) {
             return;
           }
 
           // Check for matches to regex
-          const match = l.match(`[dshow @ w+]  ""(.+)""`);
+          const match = ll.match(`[dshow @ w+]  ""(.+)""`);
 
           if (match) {
             // Remove all speech marks from line
