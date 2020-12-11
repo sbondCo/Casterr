@@ -113,8 +113,8 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
-    RecordingSettings.audioDevicesToRecord.forEach((obj: {sourceNumber: number, name: string}) => {
-      this.$data.audioDevicesToRecordEnabled.push(obj.sourceNumber);
+    RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
+      this.$data.audioDevicesToRecordEnabled.push(adtr.sourceNumber);
     });
   }
 
