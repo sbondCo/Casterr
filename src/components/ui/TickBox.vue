@@ -6,18 +6,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
-
-const TickBoxProps = Vue.extend({
-  props: {
-    name: String,
-    ticked: Boolean
-  }
-});
+import { Prop, Component, Vue, Watch } from "vue-property-decorator";
 
 @Component
+export default class TickBox extends Vue {
+  @Prop(String) name: string
+  @Prop(Boolean) ticked: boolean
 
-export default class TickBox extends TickBoxProps {
   data() {
     return {
       isTicked: this.ticked

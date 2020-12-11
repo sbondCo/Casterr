@@ -7,24 +7,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Prop, Component, Vue } from "vue-property-decorator";
 import { remote } from "electron";
 import * as fs from "fs";
 
-const TextBoxProps = Vue.extend({
-  props: {
-    name: String,
-    value: String,
-    placeholder: String,
-    type: String,
-
-    folderSelect: Boolean
-  }
-});
-
 @Component
+export default class TextBox extends Vue {
+  @Prop(String) name: string
+  @Prop(String) value: string
+  @Prop(String) placeholder?: string
+  @Prop(String) type?: string
+  @Prop(String) folderSelect?: boolean
 
-export default class TextBox extends TextBoxProps {
   data() {
     return {
       textBoxValue: this.value

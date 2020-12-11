@@ -10,19 +10,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-const DropDownProps = Vue.extend({
-  props: {
-    name: String,
-    placeholder: String,
-    items: Array
-  }
-});
+import { Prop, Component, Vue } from "vue-property-decorator";
 
 @Component
+export default class DropDown extends Vue {
+  @Prop(String) name: string
+  @Prop(String) placeholder: string
+  @Prop(Array) items: Array<any>
 
-export default class DropDown extends DropDownProps {
   data() {
     return {
       pholder: this.placeholder,

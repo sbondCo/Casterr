@@ -119,9 +119,6 @@ export default class RecordingSettingsComponent extends Vue {
   }
 
   updateSettings(toUpdate: string, newValue: any) {
-    // console.log(toUpdate + ' ' + newValue);
-    console.log(newValue[1]);
-
     // Update settings in obj
     switch (toUpdate) {
       case "videoDevice":

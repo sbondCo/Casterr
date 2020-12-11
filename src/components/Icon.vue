@@ -3,18 +3,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-
-const IconProps = Vue.extend({
-  props: {
-    i: String,
-    wh: Number
-  }
-});
+import { Prop, Component, Vue } from "vue-property-decorator";
 
 @Component
+export default class Icon extends Vue {
+  @Prop(String) i: string
+  @Prop(Number) wh: number
 
-export default class Icon extends IconProps {
   /**
    * Return html string for Icon
    * requested with correct width and height
