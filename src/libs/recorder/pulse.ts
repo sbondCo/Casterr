@@ -3,6 +3,11 @@ import * as childProcess from "child_process";
 export default class Pulse {
   private pulseProcess: childProcess.ChildProcess;
 
+  /**
+   * Run pactl and send arguments to it.
+   * @param args args to send to pactl.
+   * @param outputs Holds optional callback functions with outputs from pactl.
+   */
   public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction, onExitCallback?: CallableFunction; }) {
     // pactl path
     const pulsePath = "pactl";
@@ -32,6 +37,7 @@ export default class Pulse {
       // could result in not being able to find what you need.
       if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(stdout);
 
+      // Call onExitCallback is set to do so
       if (outputs?.onExitCallback != undefined) outputs?.onExitCallback();
     });
   }
