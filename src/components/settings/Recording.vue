@@ -92,7 +92,7 @@ export default class RecordingSettingsComponent extends Vue {
       zeroLatency: RecordingSettings.zeroLatency,
       ultraFast: RecordingSettings.ultraFast,
       audioDevicesToRecord: [],
-      audioDevicesToRecordEnabled: [1],
+      audioDevicesToRecordEnabled: [],
       seperateAudioTracks: RecordingSettings.seperateAudioTracks,
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
@@ -110,6 +110,11 @@ export default class RecordingSettingsComponent extends Vue {
         ad.name,
         (ad.isInput) ? "Input Device" : "Output Device"
       ));
+    });
+
+    // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
+    RecordingSettings.audioDevicesToRecord.forEach((obj: {sourceNumber: number, name: string}) => {
+      this.$data.audioDevicesToRecordEnabled.push(obj.sourceNumber);
     });
   }
 
