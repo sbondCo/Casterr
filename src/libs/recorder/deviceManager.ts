@@ -18,46 +18,48 @@ export default class DeviceManager {
   }
 
   private static getLinuxDevices() {
-    const pulse = new Pulse();
-    const audioDevices = new Array<AudioDevice>();
+    return new Promise<{ audioDevices: AudioDevice[], videoDevices: string; }>((resolve) => {
+      const pulse = new Pulse();
+      const audioDevices = new Array<AudioDevice>();
 
-    pulse.run("list sources", {
-      stdoutCallback: (out: string) => {
-        // If current device is an input device (eg. microphone)
-        let isInputDevice = false;
-        let sourceNumber = 0;
+      pulse.run("list sources", {
+        stdoutCallback: (out: string) => {
+          // If current device is an input device (eg. microphone)
+          let isInputDevice = false;
+          let sourceNumber = 0;
 
-        // Find audioDevices and add them to audioDevices array
-        out.toLowerCase().split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
-          l = l.toLowerCase();
+          // Find audioDevices and add them to audioDevices array
+          out.toLowerCase().split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
+            l = l.toLowerCase();
 
-          // Get source number
-          if (l.includes("source")) {
-            sourceNumber = parseInt(l.replace("source #", ""), 10);
-          }
+            // Get source number
+            if (l.includes("source")) {
+              sourceNumber = parseInt(l.replace("source #", ""), 10);
+            }
 
-          if (l.includes("name: alsa_input")) isInputDevice = true;
-          if (l.includes("name: alsa_output")) isInputDevice = false;
+            if (l.includes("name: alsa_input")) isInputDevice = true;
+            if (l.includes("name: alsa_output")) isInputDevice = false;
 
-          if (l.includes("alsa.card_name")) {
-            // Add input devices to audioDevices array
-            audioDevices.push({
-              ID: sourceNumber,
-              name: l
-                .replace("alsa.card_name = ", "")
-                .replace("\"", "")
-                .replace("\t", ""),
-              isInput: isInputDevice
-            });
-          }
-        });
-      }
+            if (l.includes("alsa.card_name")) {
+              // Add input devices to audioDevices array
+              audioDevices.push({
+                ID: sourceNumber,
+                name: l
+                  .replace("alsa.card_name = ", "")
+                  .replace("\"", "")
+                  .replace("\t", ""),
+                isInput: isInputDevice
+              });
+            }
+          });
+
+          resolve({
+            audioDevices: audioDevices,
+            videoDevices: ""
+          });
+        }
+      });
     });
-
-    return {
-      audioDevices: audioDevices,
-      videoDevices: ""
-    }
   }
 
   private static getWindowsDevices() {
@@ -126,6 +128,6 @@ export default class DeviceManager {
     return {
       audioDevices: audioDevices,
       videoDevices: videoDevices
-    }
+    };
   }
 }

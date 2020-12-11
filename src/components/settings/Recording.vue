@@ -66,6 +66,7 @@ import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
+import DeviceManager, { AudioDevice } from "./../../libs/recorder/deviceManager";
 import "../../libs/helpers/extensions";
 
 @Component({
@@ -90,13 +91,26 @@ export default class RecordingSettingsComponent extends Vue {
       formats: ["mp4", "mkv"],
       zeroLatency: RecordingSettings.zeroLatency,
       ultraFast: RecordingSettings.ultraFast,
-      audioDevicesToRecord: [new ListBoxItem(0, "Some Mic", "Input Device"), new ListBoxItem(1, "Another Mic", "Input Device")],
+      audioDevicesToRecord: [],
       audioDevicesToRecordEnabled: [1],
       seperateAudioTracks: RecordingSettings.seperateAudioTracks,
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
       videoSaveName: RecordingSettings.videoSaveName
     }
+  }
+
+  async mounted() {
+    let d = await DeviceManager.getDevices();
+
+    // Add audio devices to audioDevicesToRecord
+    d.audioDevices.forEach((ad: AudioDevice) => { 
+      this.$data.audioDevicesToRecord.push(new ListBoxItem(
+        ad.ID,
+        ad.name,
+        (ad.isInput) ? "Input Device" : "Output Device"
+      ));
+    });
   }
 
   updateSettings(toUpdate: string, newValue: any) {
