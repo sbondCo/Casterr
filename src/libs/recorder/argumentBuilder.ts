@@ -15,7 +15,7 @@ export default class ArgumentBuilder {
     if (process.platform == "win32") return ArgumentBuilder.buildWindowsArgs();
     else if (process.platform == "linux") return ArgumentBuilder.buildLinuxArgs();
 
-    throw new Error("Could not build args for currently system. It isn't supported.");
+    throw new Error("Could not build args for current system. It isn't supported.");
   }
 
   private static buildLinuxArgs() {

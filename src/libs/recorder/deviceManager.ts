@@ -14,7 +14,10 @@ export interface AudioDevice {
 
 export default class DeviceManager {
   public static getDevices() {
-    return this.getLinuxDevices();
+    if (process.platform == "win32") return this.getWindowsDevices();
+    else if (process.platform == "linux") return this.getLinuxDevices();
+
+    throw new Error("Could not get devices for current system. It isn't supported.");
   }
 
   private static getLinuxDevices() {
