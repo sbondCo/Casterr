@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <!-- <section id="notify">
+    <section ref="notifier" id="notify">
       <Notifier />
-    </section> -->
+    </section>
 
     <section id="top">
       <Dragger />
@@ -19,11 +19,13 @@
 import { Component, Vue } from "vue-property-decorator";
 import Dragger from "./components/Dragger.vue";
 import Nav from "./components/Nav.vue";
+import Notifier from "./components/Notifier.vue";
 
 @Component({
   components: {
     Dragger,
     Nav,
+    Notifier,
   }
 })
 
