@@ -1,5 +1,11 @@
 interface Number {
+  /**
+   * Convert time in seconds to a readable string.
+   */
   toReadableTimeFromSeconds(): string;
+  /**
+   * Convert bytes to readable file size string.
+   */
   toReadableFileSize(): string;
 }
 

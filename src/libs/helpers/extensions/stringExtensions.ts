@@ -1,11 +1,14 @@
 interface String {
+  /**
+   * Convert string of time codes to readable format.
+   */
   toReadableDateTime(): string;
+  /**
+   * Returns true if string equals any of the items in array.
+   */
   equalsAnyOf(toCompareWith: Array<any>): boolean;
 }
 
-/**
- * Convert string of time codes to readable format.
- */
 String.prototype.toReadableDateTime = function (this): string {
   let rdt = this;
   const now = new Date();
@@ -102,9 +105,6 @@ String.prototype.toReadableDateTime = function (this): string {
   return rdt.toString();
 };
 
-/**
- * Returns true if string equals any of the items in array.
- */
 String.prototype.equalsAnyOf = function (this, toCompareWith: Array<any>): boolean {
   return toCompareWith.some((rdtw) => rdtw === this);
 };
