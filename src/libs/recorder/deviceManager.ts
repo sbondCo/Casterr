@@ -52,7 +52,8 @@ export default class DeviceManager {
               });
             }
           });
-
+        },
+        onExitCallback: () => {
           resolve({
             audioDevices: audioDevices,
             videoDevices: ""
