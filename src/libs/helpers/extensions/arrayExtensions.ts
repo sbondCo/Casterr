@@ -3,7 +3,7 @@ interface Array<T> {
    * Remove an item from an array, identified with its value
    * @param toRemove Item to remove from the array
    */
-  remove(toRemove: string): string[];
+  remove(toRemove: string | object): any[];
   /**
    * Remove an item from an array, identified with its value
    * @param toRemove Item to remove from the array
@@ -11,8 +11,8 @@ interface Array<T> {
   replace(toReplace: string, replaceWith: string): string[];
 }
 
-Array.prototype.remove = function (this, toRemove: string): string[] {
-  return this.filter(e => e !== toRemove);
+Array.prototype.remove = function (this, toRemove: string | object): any[] {
+  return this.filter(e => JSON.stringify(e) !== JSON.stringify(toRemove));
 }
 
 Array.prototype.replace = function (this, toReplace: string, replaceWith: string): string[] {

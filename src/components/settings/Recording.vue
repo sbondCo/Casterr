@@ -114,15 +114,49 @@ export default class RecordingSettingsComponent extends Vue {
   }
 
   updateSettings(toUpdate: string, newValue: any) {
-    console.log(toUpdate + ' ' + newValue);
+    // console.log(toUpdate + ' ' + newValue);
+    console.log(newValue[1]);
 
     // Update settings in obj
     switch (toUpdate) {
+      case "videoDevice":
+        RecordingSettings.videoDevice = newValue
+        break;
+      case "fps":
+        RecordingSettings.fps = newValue
+        break;
+      case "resolution":
+        RecordingSettings.resolution = newValue
+        break;
+      case "format":
+        RecordingSettings.format = newValue
+        break;
+      case "zeroLatency":
+        RecordingSettings.zeroLatency = newValue
+        break;
+      case "ultraFast":
+        RecordingSettings.ultraFast = newValue
+        break;
+      case "audioDevicesToRecord":
+        if (newValue[1]) {
+          // Add new audio device to audioDevicesToRecord
+          RecordingSettings.audioDevicesToRecord.push({ sourceNumber: parseInt(newValue[0][0], 10), name: newValue[0][1] });
+        } else {
+          // Remove audio device from audioDevicesToRecord
+          RecordingSettings.audioDevicesToRecord = RecordingSettings.audioDevicesToRecord.remove({ sourceNumber: parseInt(newValue[0][0], 10), name: newValue[0][1] });
+        }
+        break;
       case "seperateAudioTracks":
         RecordingSettings.seperateAudioTracks = newValue;
         break;
       case "thumbSaveFolder":
         RecordingSettings.thumbSaveFolder = newValue;
+        break;
+      case "videoSaveFolder":
+        RecordingSettings.videoSaveFolder = newValue
+        break;
+      case "videoSaveName":
+        RecordingSettings.videoSaveName = newValue
         break;
     }
 

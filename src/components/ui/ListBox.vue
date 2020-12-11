@@ -2,7 +2,7 @@
   <div class="listBoxContainer">
     <div v-for="item in items" :key="item.id">
       <div class="listBoxItem">
-        <TickBox name="temp" :ticked="shouldBeEnabled(item.id)" />
+        <TickBox :name="item.id.toString() + ':' + item.name" :ticked="shouldBeEnabled(item.id)" @item-changed="listBoxValueUpdated" />
         <span class="body" :title="item.title">{{ item.name }}</span>
       </div>
     </div>
@@ -12,11 +12,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import TickBox from "./../ui/TickBox.vue";
-
-export class ListBoxItem {
-  // eslint-disable-next-line no-unused-vars
-  constructor(private id: number, private name: string, private title: string) {}
-}
 
 @Component({
   components: {
@@ -29,9 +24,18 @@ export default class ListBox extends Vue {
   @Prop(Array) items!: Array<ListBoxItem>
   @Prop(Array) enabled!: Array<Number>
 
+  listBoxValueUpdated(toUpdate: string, newValue: any) {
+    this.$emit('item-changed', this.name, [toUpdate.split(":"), newValue]);
+  }
+
   shouldBeEnabled(id: Number): Boolean {
     return this.enabled.includes(id);
   }
+}
+
+export class ListBoxItem {
+  // eslint-disable-next-line no-unused-vars
+  constructor(private id: number, private name: string, private title: string) {}
 }
 </script>
 
