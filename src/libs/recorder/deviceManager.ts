@@ -46,8 +46,8 @@ export default class DeviceManager {
                 ID: sourceNumber,
                 name: l
                   .replace("alsa.card_name = ", "")
-                  .replace("\"", "")
-                  .replace("\t", ""),
+                  .replaceAll("\"", "")
+                  .replaceAll("\t", ""),
                 isInput: isInputDevice
               });
             }
