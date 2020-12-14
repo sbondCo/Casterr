@@ -1,7 +1,7 @@
 <template>
   <div id="recordings">
-    <!-- <button @click="startRecording">Start recording</button> -->
-    <!-- <button @click="stopRecording">Stop recording</button> -->
+    <button @click="startRecording">Start recording</button>
+    <button @click="stopRecording">Stop recording</button>
 
     <div class="thumbContainer" v-if="allRecordings.length > 0">
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
@@ -48,6 +48,7 @@ import Icon from "./../components/Icon.vue";
 import Recorder from "./../libs/recorder";
 import RecordingsManager from "./../libs/recorder/recordingsManager";
 import "./../libs/helpers/extensions";
+import Notifications from "./../libs/helpers/notifications";
 
 @Component({
   components: {
@@ -63,6 +64,18 @@ export default class extends Vue {
   }
 
   mounted() {
+    let i = 0;
+    let test = setInterval(() => {
+      Notifications.popup("ffmpegDownloadProgress", false, i * 10);
+
+      i++;
+
+      if (i == 11) {
+        Notifications.popup("ffmpegDownloadProgress", true);
+        clearInterval(test);
+      }
+    }, 500);
+
     // Load initial set of recordings
     this.loadMoreRecordings();
 

@@ -1,7 +1,7 @@
 <template>
-  <div ref="notifier" class="notifierContainer hidden">
+  <div ref="notifier" class="notifierContainer">
     <div class="notification">
-      <span class="title">{{ description }}</span>
+      <span class="title">{{ desc }} {{ percent }}</span>
 
       <!-- <ProgressBar Percentage=@percentage /> -->
     </div>
@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Prop, Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 
 @Component({
@@ -18,19 +18,13 @@ import Icon from "./Icon.vue";
   },
 })
 export default class Notifier extends Vue {
+  @Prop(String) description: string;
+  @Prop(Number) percentage: number;
+
   data() {
     return {
-      description: "",
-      percentage: 0
-    }
-  }
-
-  public notify(working: boolean, desc: string, percent: number) {
-    let notifier = this.$refs.notifier as HTMLElement;
-
-    if (working) {
-      notifier.classList.remove("hidden");
-      console.log(desc, percent)
+      desc: this.description,
+      percent: this.percentage
     }
   }
 }
@@ -57,7 +51,7 @@ export default class Notifier extends Vue {
     min-height: 150px;
     flex-flow: column;
     border-radius: 7px;
-    background-color: change-color($color: $darkAccentColor, $alpha: .85);
+    background-color: change-color($color: $darkAccentColor, $alpha: .99);
     box-shadow: 0 3px 2px rgba(0, 0, 0, .5);
 
     .title {
