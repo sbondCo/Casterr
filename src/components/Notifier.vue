@@ -66,7 +66,7 @@ export default class Notifier extends Vue {
     .title {
       font-size: 25px;
       padding: 5px;
-      // margin-bottom: 20px;
+      margin-bottom: 20px;
       text-transform: capitalize;
     }
   }
