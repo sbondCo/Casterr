@@ -1,9 +1,9 @@
 <template>
   <div ref="notifier" class="notifierContainer">
     <div class="notification">
-      <span class="title">{{ desc }} {{ percent }}</span>
+      <span class="title">{{ desc }}</span>
 
-      <!-- <ProgressBar Percentage=@percentage /> -->
+      <ProgressBar :percentage="percent" />
     </div>
   </div>
 </template>
@@ -11,10 +11,12 @@
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
+import ProgressBar from "./ui/ProgressBar.vue";
 
 @Component({
   components: {
     Icon,
+    ProgressBar,
   },
 })
 export default class Notifier extends Vue {

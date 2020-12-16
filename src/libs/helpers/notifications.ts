@@ -2,7 +2,7 @@ import Vue from "vue";
 import Notifier from "./../../components/Notifier.vue";
 
 export default class Notifications {
-  private static activeNotifs = new Map<string, Notifier>();
+  private static activePopups = new Map<string, Notifier>();
 
   /**
    * Create popup notification.
@@ -13,21 +13,21 @@ export default class Notifications {
   public static popup(name: string, done: boolean, percentage?: number) {
     if (done) {
       // Get Notifier from activeNotifs map
-      const i = this.activeNotifs.get(name);
+      const i = this.activePopups.get(name);
 
       // Cleanup component and remove from DOM
       i?.$destroy();
       i?.$el.remove();
 
       // Delete from activeNotifcs
-      this.activeNotifs.delete(name);
+      this.activePopups.delete(name);
 
       return;
     }
 
     // Update or create notification depending on if it is in activeNotifs
-    if (this.activeNotifs.has(name)) {
-      const i = this.activeNotifs.get(name);
+    if (this.activePopups.has(name)) {
+      const i = this.activePopups.get(name);
       if (i != undefined) i.$data.percent = percentage;
     } else {
       // Create Notifier instance
@@ -44,7 +44,7 @@ export default class Notifications {
       document.getElementById("notifications")?.appendChild(instance.$el);
 
       // Add to activeNotifs
-      this.activeNotifs.set(name, instance);
+      this.activePopups.set(name, instance);
     }
   }
 }
