@@ -1,8 +1,9 @@
 import Vue from "vue";
+import { CombinedVueInstance } from 'vue/types/vue';
 import Notifier from "./../../components/Notifier.vue";
 
 export default class Notifications {
-  private static activePopups = new Map<string, Notifier>();
+  private static activePopups = new Map<string, CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>>();
 
   /**
    * Create popup notification.
