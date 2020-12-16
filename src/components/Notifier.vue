@@ -3,12 +3,9 @@
     <div class="notification">
       <span class="title">{{ desc }}</span>
 
-      <div v-if="percentage != null">
-        <ProgressBar :percentage="percent" />
-      </div>
-      <div v-else>
-        <Loader />
-      </div>
+      <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->
+      <ProgressBar v-if="percentage != null" :percentage="percent" />
+      <Loader v-else />
     </div>
   </div>
 </template>
