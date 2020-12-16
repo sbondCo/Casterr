@@ -3,7 +3,12 @@
     <div class="notification">
       <span class="title">{{ desc }}</span>
 
-      <ProgressBar :percentage="percent" />
+      <div v-if="percentage != null">
+        <ProgressBar :percentage="percent" />
+      </div>
+      <div v-else>
+        <Loader />
+      </div>
     </div>
   </div>
 </template>
@@ -12,16 +17,18 @@
 import { Prop, Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import ProgressBar from "./ui/ProgressBar.vue";
+import Loader from "./ui/Loader.vue";
 
 @Component({
   components: {
     Icon,
     ProgressBar,
+    Loader
   },
 })
 export default class Notifier extends Vue {
-  @Prop(String) description: string;
-  @Prop(Number) percentage: number;
+  @Prop({ default: "Give us a second" }) description!: string;
+  @Prop() percentage?: number;
 
   data() {
     return {
@@ -59,7 +66,7 @@ export default class Notifier extends Vue {
     .title {
       font-size: 25px;
       padding: 5px;
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
       text-transform: capitalize;
     }
   }

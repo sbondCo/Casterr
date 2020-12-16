@@ -39,7 +39,7 @@ export default class Notifications {
           percentage: percentage
         }
       });
-  
+
       // Mount and append to DOM in notifications section
       instance.$mount();
       document.getElementById("notifications")?.appendChild(instance.$el);
