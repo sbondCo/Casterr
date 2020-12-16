@@ -9,7 +9,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class ProgressBar extends Vue {
-  @Prop(Number) percentage!: number;
+  @Prop({required: true}) percentage!: number;
 }
 </script>
 
