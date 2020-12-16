@@ -4,7 +4,7 @@
 
     <div class="setting">
       <span class="title">Startup Page:</span>
-      <DropDown name="startupPage" :placeholder="startupPage" :items="startupPageItems" @item-changed="updateSettings" />
+      <DropDown name="startupPage" :activeItem="startupPage" :items="startupPageItems" @item-changed="updateSettings" />
     </div>
   </div>
 </template>

@@ -13,11 +13,11 @@ import * as fs from "fs";
 
 @Component
 export default class TextBox extends Vue {
-  @Prop(String) name: string
-  @Prop(String) value: string
-  @Prop(String) placeholder?: string
-  @Prop(String) type?: string
-  @Prop(String) folderSelect?: boolean
+  @Prop({required: true}) name: string;
+  @Prop() value?: string;
+  @Prop() placeholder?: string;
+  @Prop({default: "text"}) type: string;
+  @Prop({default: false}) folderSelect: boolean;
 
   data() {
     return {

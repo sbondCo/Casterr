@@ -20,9 +20,9 @@ import TickBox from "./../ui/TickBox.vue";
 })
 
 export default class ListBox extends Vue {
-  @Prop(String) name!: string
-  @Prop(Array) items!: Array<ListBoxItem>
-  @Prop(Array) enabled!: Array<Number>
+  @Prop({required: true}) name: string;
+  @Prop({required: true}) items: Array<ListBoxItem>;
+  @Prop({required: true}) enabled: Array<Number>;
 
   listBoxValueUpdated(toUpdate: string, newValue: any) {
     this.$emit('item-changed', this.name, [toUpdate.split(":"), newValue]);

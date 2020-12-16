@@ -4,7 +4,7 @@
 
     <div class="setting">
       <span class="title">Video Device:</span>
-      <DropDown name="videoDevice" :placeholder="videoDevice" :items="videoDevices" @item-changed="updateSettings" />
+      <DropDown name="videoDevice" :activeItem="videoDevice" :items="videoDevices" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -14,12 +14,12 @@
 
     <div class="setting">
       <span class="title">Resolution:</span>
-      <DropDown name="resolution" :placeholder="resolution" :items="resolutions" @item-changed="updateSettings" />
+      <DropDown name="resolution" :activeItem="resolution" :items="resolutions" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Format:</span>
-      <DropDown name="format" :placeholder="format" :items="formats" @item-changed="updateSettings" />
+      <DropDown name="format" :activeItem="format" :items="formats" @item-changed="updateSettings" />
     </div>
 
     <div v-if="this.isWindows" class="setting">
@@ -39,17 +39,17 @@
 
     <div class="setting">
       <span class="title">Seperate Audio Tracks:</span>
-      <TickBox name="seperateAudioTracks" :ticked="seperateAudioTracks" @item-changed="updateSettings"/>
+      <TickBox name="seperateAudioTracks" :ticked="seperateAudioTracks" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
       <span class="title">Thumbnail Save Folder:</span>
-      <TextBox name="thumbSaveFolder" :value="thumbSaveFolder" @item-changed="updateSettings" folderSelect/>
+      <TextBox name="thumbSaveFolder" :value="thumbSaveFolder" @item-changed="updateSettings" :folderSelect="true" />
     </div>
 
     <div class="setting">
       <span class="title">Video Save Folder:</span>
-      <TextBox name="videoSaveFolder" :value="videoSaveFolder" @item-changed="updateSettings" folderSelect/>
+      <TextBox name="videoSaveFolder" :value="videoSaveFolder" @item-changed="updateSettings" :folderSelect="true" />
     </div>
 
     <div class="setting">
