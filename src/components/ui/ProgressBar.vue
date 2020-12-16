@@ -9,7 +9,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class ProgressBar extends Vue {
-  @Prop(Number) percentage: number;
+  @Prop(Number) percentage!: number;
 }
 </script>
 
@@ -19,15 +19,15 @@ export default class ProgressBar extends Vue {
   height: 20px;
   background-color: $darkAccentColor;
   border-radius: 4px;
-  box-shadow: 0 3px 2px rgba(0, 0, 0, .5) inset;
+  box-shadow: 0 1px 5px rgb(0, 0, 0, .7) inset;
 
   .inner {
     height: 100%;
     border-radius: 4px;
     background-color: $tertiaryColor;
     background:
-      -webkit-linear-gradient(-45deg, transparent 33%, #19181f 33%, #19181f 66%, transparent 66%),
-      -webkit-linear-gradient(#333440, #333440);
+      -webkit-linear-gradient(-45deg, transparent 33%, $darkAccentColor 33%, $darkAccentColor 66%, transparent 66%),
+      -webkit-linear-gradient($tertiaryColor, $tertiaryColor);
     background-size: 40px 20px, 100% 100%, 100% 100%;
     transition: width 150ms ease-in-out;
     animation: progressConveyor 50s linear infinite;
