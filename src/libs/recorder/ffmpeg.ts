@@ -2,6 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
+import Notifications from "./../helpers/notifications";
 
 export default class FFmpeg {
   constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {
@@ -102,11 +103,17 @@ export default class FFmpeg {
       else if (process.platform == 'linux') downloadURL = linuxDownloadURL;
       else throw new Error('Unsupported platform');
 
-      // Download and extract zip
-      await Downloader.get(downloadURL, downloadTo, (progress: Number) => {
-        console.log(progress + '%');
+      // Download zip
+      await Downloader.get(downloadURL, downloadTo, (progress: number) => {
+        Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
       });
+
+      // Extract zip
+      Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
       await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+
+      // Delete notification
+      Notifications.deletePopup("ffmpegDownloadProgress");
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise(resolve => setTimeout(resolve, 1000));

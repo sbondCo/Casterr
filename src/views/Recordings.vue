@@ -48,7 +48,6 @@ import Icon from "./../components/Icon.vue";
 import Recorder from "./../libs/recorder";
 import RecordingsManager from "./../libs/recorder/recordingsManager";
 import "./../libs/helpers/extensions";
-import Notifications from "./../libs/helpers/notifications";
 
 @Component({
   components: {
@@ -64,18 +63,6 @@ export default class extends Vue {
   }
 
   mounted() {
-    let i = 0;
-    let test = setInterval(() => {
-      Notifications.popup("ffmpegDownloadProgress", false, i * 10);
-
-      i++;
-
-      if (i == 11) {
-        Notifications.popup("ffmpegDownloadProgress", true);
-        clearInterval(test);
-      }
-    }, 500);
-
     // Load initial set of recordings
     this.loadMoreRecordings();
 

@@ -4,7 +4,7 @@
       <span class="title">{{ desc }}</span>
 
       <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->
-      <ProgressBar v-if="percentage != null" :percentage="percent" />
+      <ProgressBar v-if="percent != null" :percentage="percent" />
       <Loader v-else />
     </div>
   </div>
