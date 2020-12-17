@@ -1,6 +1,9 @@
 import Vue from "vue";
 import { CombinedVueInstance } from 'vue/types/vue';
+import electron from "electron";
 import Notifier from "./../../components/Notifier.vue";
+import path from "path";
+import process from "process";
 
 export default class Notifications {
   private static activePopups = new Map<string, CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>>();
@@ -52,5 +55,26 @@ export default class Notifications {
 
     // Delete from activeNotifcs
     this.activePopups.delete(name);
+  }
+
+  public static async desktop() {
+    const disp = electron.remote.screen.getPrimaryDisplay();
+
+    const notifWin = new electron.remote.BrowserWindow({
+      parent: electron.remote.getCurrentWindow(),
+      width: 400,
+      height: 80,
+      x: disp.size.width - 400,
+      y: 50,
+      frame: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      resizable: false,
+      hasShadow: false,
+      transparent: true,
+      movable: false,
+      focusable: false,
+      // show: false
+    });
   }
 }
