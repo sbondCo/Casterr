@@ -36,13 +36,6 @@ module.exports = {
         ],
         extraFiles: [
           {
-            from: "./bin/api",
-            to: "./",
-            filter: [
-              "**/*"
-            ]
-          },
-          {
             from: "./assets",
             to: "./assets",
             filter: [
