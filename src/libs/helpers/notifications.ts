@@ -74,7 +74,18 @@ export default class Notifications {
       transparent: true,
       movable: false,
       focusable: false,
-      // show: false
+      // show: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
     });
+
+    if (process.env.NODE_ENV === 'development') {
+      // Use dev server in developement
+      await notifWin.loadURL("http://localhost:8080/#/desktopNotification/play");
+    } else {
+      // Load the index.html when not in development
+      notifWin.loadURL(`file://${path.join(__dirname, "index.html/#/desktopNotification/play")}`);
+    }
   }
 }

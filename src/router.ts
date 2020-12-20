@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Recordings from "./views/Recordings.vue";
 import Settings from "./views/Settings.vue";
+import DesktopNotification from "./views/DesktopNotification.vue";
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,11 @@ const routes: Array<RouteConfig> = [
     path: "/settings",
     name: "settings",
     component: Settings
+  },
+  {
+    path: "/desktopNotification/:icon",
+    name: "desktopNotification",
+    component: DesktopNotification
   }
 ];
 

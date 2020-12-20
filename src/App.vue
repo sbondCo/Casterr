@@ -4,7 +4,7 @@
     </section>
 
     <section id="top">
-      <Dragger />
+      <!-- <Dragger /> -->
       <Nav />
     </section>
 
@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import Dragger from "./components/Dragger.vue";
+import { Vue, Component } from "vue-property-decorator";
+// import Dragger from "./components/Dragger.vue";
 import Nav from "./components/Nav.vue";
 
 @Component({
   components: {
-    Dragger,
+    // Dragger,
     Nav,
   }
 })
