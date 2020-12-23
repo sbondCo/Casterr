@@ -20,7 +20,10 @@ const routes: Array<RouteConfig> = [
   {
     path: "/desktopNotification/:icon",
     name: "desktopNotification",
-    component: DesktopNotification
+    component: DesktopNotification,
+    meta: {
+      layout: "BlankLayout"
+    }
   }
 ];
 

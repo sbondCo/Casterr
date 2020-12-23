@@ -1,28 +1,20 @@
 <template>
   <div id="app">
-    <section id="notifications">
-    </section>
-
-    <section id="top">
-      <!-- <Dragger /> -->
-      <Nav />
-    </section>
-
-    <section id="main">
-      <router-view />
-    </section>
+    <AppLayout>
+      <section id="main">
+        <router-view />
+      </section>
+    </AppLayout>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-// import Dragger from "./components/Dragger.vue";
-import Nav from "./components/Nav.vue";
+import AppLayout from "./layouts/AppLayout.vue";
 
 @Component({
   components: {
-    // Dragger,
-    Nav,
+    AppLayout
   }
 })
 

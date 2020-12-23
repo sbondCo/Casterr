@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import AppLayout from "./layouts/AppLayout.vue";
 import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./libs/settings";
 
 // Create promises to complete before rendering app
@@ -12,6 +13,8 @@ const promises = Object.values(SettingsFiles).map(s => {
 // After promises are all done, create app
 Promise.all(promises).then(result => {
   Vue.config.productionTip = false;
+
+  Vue.component("AppLayout", AppLayout);
 
   new Vue({
     router,
