@@ -8,7 +8,9 @@
       <Nav />
     </section>
 
-    <slot />
+    <section id="main">
+      <slot />
+    </section>
   </div>
 </template>
 
@@ -38,3 +40,16 @@ export default class DefaultLayout extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+section#top {
+  width: 100%;
+  z-index: 9999999;
+}
+
+section#main {
+  height: calc(100vh - 66px);
+  overflow-y: auto;
+  background-color: $primaryColor;
+}
+</style>

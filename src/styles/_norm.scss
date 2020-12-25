@@ -18,7 +18,7 @@
 
 body {
   color: $textPrimary;
-  font-family: sans-serif; // Alef
+  font-family: sans-serif;
   user-select: none;
   overflow: hidden;
 }
@@ -26,17 +26,6 @@ body {
 a {
   color: $textPrimary;
   text-decoration: none;
-}
-
-section#top {
-  width: 100%;
-  z-index: 9999999;
-}
-
-section#main {
-  height: calc(100vh - 66px);
-  overflow-y: auto;
-  background-color: $primaryColor;
 }
 
 .hidden {
