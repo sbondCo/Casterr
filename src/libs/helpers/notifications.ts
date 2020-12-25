@@ -57,9 +57,10 @@ export default class Notifications {
     this.activePopups.delete(name);
   }
 
-  public static async desktop() {
+  public static async desktop(desc: string, icon?: string) {
     const disp = electron.remote.screen.getPrimaryDisplay();
 
+    // Create new window for notification
     const notifWin = new electron.remote.BrowserWindow({
       parent: electron.remote.getCurrentWindow(),
       width: 400,
@@ -74,18 +75,23 @@ export default class Notifications {
       transparent: true,
       movable: false,
       focusable: false,
-      // show: false,
+      show: false,
       webPreferences: {
         nodeIntegration: true
       }
     });
 
+    // Show window when ready to show
+    notifWin.on("ready-to-show", notifWin.show);
+
+    const page = `desktopNotification/${desc}/${icon}`;
+
     if (process.env.NODE_ENV === 'development') {
       // Use dev server in developement
-      await notifWin.loadURL("http://localhost:8080/#/desktopNotification/play");
+      await notifWin.loadURL(`http://localhost:8080/#/${page}`);
     } else {
       // Load the index.html when not in development
-      notifWin.loadURL(`file://${path.join(__dirname, "index.html/#/desktopNotification/play")}`);
+      notifWin.loadURL(`file://${path.join(__dirname, `index.html/#/${page}`)}`);
     }
   }
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="notificationContainer">
     <div class="content">
-      <Icon :i="icon" wh="45" />
+      <!-- If icon is undefined, default to 'play' icon -->
+      <Icon :i="icon != 'undefined' ? icon : 'play'" wh="45" />
+      
       <span class="title">{{ desc }}</span>
     </div>
   </div>
