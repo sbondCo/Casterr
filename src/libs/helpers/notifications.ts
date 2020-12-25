@@ -65,7 +65,7 @@ export default class Notifications {
       parent: electron.remote.getCurrentWindow(),
       width: 400,
       height: 80,
-      x: disp.size.width - 400,
+      x: (screen.width / 2) - (400 / 2),
       y: 50,
       frame: false,
       skipTaskbar: true,
