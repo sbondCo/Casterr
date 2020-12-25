@@ -57,15 +57,19 @@ export default class Notifications {
     this.activePopups.delete(name);
   }
 
+  /**
+   * Create custom desktop notification.
+   * @param desc Text to display on notification.
+   * @param icon Icon to display alongside text on notification.
+   * @param duration How long the notification should stay open before closing.
+   */
   public static async desktop(desc: string, icon?: string, duration: number = 4000) {
-    const disp = electron.remote.screen.getPrimaryDisplay();
-
     // Create new window for notification
     const notifWin = new electron.remote.BrowserWindow({
       parent: electron.remote.getCurrentWindow(),
       width: 400,
       height: 80,
-      x: (screen.width / 2) - (400 / 2),
+      x: (screen.width / 2) - (400 / 2), // Middle of screen horizontally
       y: 50,
       frame: false,
       skipTaskbar: true,
@@ -95,7 +99,7 @@ export default class Notifications {
     }
 
     setTimeout(() => {
-      notifWin.destroy();
+      notifWin.close();
     }, duration)
   }
 }
