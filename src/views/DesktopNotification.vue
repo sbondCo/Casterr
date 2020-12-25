@@ -1,8 +1,8 @@
 <template>
   <div class="notificationContainer">
     <div class="content">
-        <Icon :i="icon" wh="45" />
-        <span class="title">@NotifyText</span>
+      <Icon :i="icon" wh="45" />
+      <span class="title">{{ desc }}</span>
     </div>
   </div>
 </template>
@@ -17,7 +17,8 @@ import Icon from "./../components/Icon.vue";
   },
 })
 export default class extends Vue {
-  @Prop() icon: string;
+  @Prop({default: "play"}) icon: string;
+  @Prop({required: true}) desc: string;
 }
 </script>
 
