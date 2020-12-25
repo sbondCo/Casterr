@@ -1,11 +1,9 @@
 <template>
   <div class="notificationContainer">
-    <div class="content">
-      <!-- If icon is undefined, default to 'play' icon -->
-      <Icon :i="icon != 'undefined' ? icon : 'play'" wh="45" />
-      
-      <span class="title">{{ desc }}</span>
-    </div>
+    <!-- If icon is undefined, default to 'play' icon -->
+    <Icon :i="icon != 'undefined' ? icon : 'play'" wh="35" />
+    
+    <span class="title">{{ desc }}</span>
   </div>
 </template>
 
@@ -26,36 +24,25 @@ export default class extends Vue {
 
 <style lang="scss">
 .notificationContainer {
-  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
   background-color: $primaryColor;
-  /*animation: slideIn 500ms ease-in forwards;*/
+  border-radius: 8px;
+  border: $secondaryColor 5px solid;
 
-  .content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-
-    svg {
-      width: 25%;
-      fill: $textPrimary;
-    }
-
-    .title {
-      width: 75%;
-      font-size: 25px;
-    }
+  * {
+    margin: 5px;
   }
 
-  /*@keyframes slideIn {
-        0% {
-            left: 100%;
-            
-        }
-        100% {
-            left: 0px;
-        }
-    }*/
+  svg {
+    fill: $textPrimary;
+  }
+
+  .title {
+    font-size: 25px;
+  }
 }
 </style>

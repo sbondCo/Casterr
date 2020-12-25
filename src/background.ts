@@ -46,6 +46,14 @@ async function createWindow() {
 }
 
 /**
+ * Make transparent windows work.
+ * 'disable-gpu' alone works for me, but going to keep 'enable-transparent-visuals'
+ * incase it works with other distros/hardware. Need to test later.
+ */
+app.commandLine.appendSwitch('enable-transparent-visuals');
+app.commandLine.appendSwitch('disable-gpu');
+
+/**
  * Quit when all windows are closed
  */
 app.on("window-all-closed", () => {
