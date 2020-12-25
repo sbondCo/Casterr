@@ -57,7 +57,7 @@ export default class Notifications {
     this.activePopups.delete(name);
   }
 
-  public static async desktop(desc: string, icon?: string) {
+  public static async desktop(desc: string, icon?: string, duration: number = 4000) {
     const disp = electron.remote.screen.getPrimaryDisplay();
 
     // Create new window for notification
@@ -93,5 +93,9 @@ export default class Notifications {
       // Load the index.html when not in development
       notifWin.loadURL(`file://${path.join(__dirname, `index.html/#/${page}`)}`);
     }
+
+    setTimeout(() => {
+      notifWin.destroy();
+    }, duration)
   }
 }
