@@ -53,24 +53,35 @@ export default class Downloader {
 
         const zip = new jsZip();
 
-        zip.loadAsync(data).then((contents: any) => {
-          Object.keys(contents.files).forEach((filename: string) => {
+        zip.loadAsync(data).then((contents: jsZip) => {
+          const files = JSON.parse(JSON.stringify(contents.files));
+
+          // Delete directories from object
+          for (const f in files) {
+            if (files[f].dir == true) delete files[f];
+          }
+
+          Object.keys(files).forEach(async (filename: string, i) => {
             const filenameWithoutFolder = path.basename(filename);
 
             // Write zip file to destination folder
             const unzip = () => {
-              zip.file(filename)!.async('nodebuffer').then((content: any) => {
-                fs.writeFileSync(path.join(destFolder, filenameWithoutFolder), content);
+              return new Promise((resolve) => {
+                zip.file(filename)!.async('nodebuffer').then((content: any) => {
+                  fs.writeFileSync(path.join(destFolder, filenameWithoutFolder), content);
+                  resolve("");
+                });
               });
             };
 
             // If filesToExtract is empty just unzip all files
             // If filesToExtract isn't empty, if it includes filename then unzip
-            if (filesToExtract.length == 0) unzip();
-            else if (filesToExtract.includes(filenameWithoutFolder)) unzip();
+            if (filesToExtract.length == 0) await unzip();
+            else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
+
+            // Resolve if index (+1) equals amount of files since this means all files have been processed
+            if ((i + 1) == Object.keys(files).length) resolve("");
           });
-        }).then(() => {
-          resolve("");
         });
       });
     });

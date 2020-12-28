@@ -43,9 +43,6 @@ export default class FFmpeg {
     // Get FFmpeg path
     const ffPath = await this.getPath();
 
-    // Get exec perms for ff binary
-    fs.chmodSync(ffPath, 0o111);
-
     // Create child process and send args to it
     this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
@@ -118,6 +115,12 @@ export default class FFmpeg {
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
+
+    // Get exec perms for ff binaries.
+    // Do this even if we didn't just download so there
+    // is no reason for it to fail with 'no perms' error.
+    fs.chmodSync(ffmpegPath, 0o111);
+    fs.chmodSync(ffprobePath, 0o111);
 
     // Return path to executable
     if (this.which == "ffprobe") {
