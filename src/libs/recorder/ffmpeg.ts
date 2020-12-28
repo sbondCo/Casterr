@@ -122,12 +122,8 @@ export default class FFmpeg {
     fs.chmodSync(ffmpegPath, 0o111);
     fs.chmodSync(ffprobePath, 0o111);
 
-    // Return path to executable
-    if (this.which == "ffprobe") {
-      return ffprobePath;
-    }
-
-    // Return ffmpegPath as default, anything else should be returned above
-    return ffmpegPath;
+    // Return path to correct executable depending on 'which' constructor arg
+    if (this.which == "ffprobe") return ffprobePath
+    else return ffmpegPath;
   }
 }
