@@ -67,71 +67,74 @@ export default class DeviceManager {
   }
 
   private static getWindowsDevices() {
-    const ffmpeg = new FFmpeg();
-    const audioDevices = new Array<AudioDevice>();
-    const videoDevices = new Array<string>();
+    return new Promise<{ audioDevices: AudioDevice[], videoDevices: Array<string>; }>((resolve) => {
+      const ffmpeg = new FFmpeg();
+      const audioDevices = new Array<AudioDevice>();
+      const videoDevices = new Array<string>();
 
-    const desktopVideoDevice = "screen-capture-recorder";
-    let isAudioDevice = false;
-    let currentIteration = 0;
+      const desktopVideoDevice = "screen-capture-recorder";
+      let isAudioDevice = false;
+      let currentIteration = 0;
 
-    ffmpeg.run("-list_devices true -f dshow -i dummy", {
-      stderrCallback: (out: string) => {
-        out.split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
-          const ll = l.toLowerCase();
+      ffmpeg.run("-list_devices true -f dshow -i dummy", {
+        stderrCallback: (out: string) => {
+          out.split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
+            const ll = l.toLowerCase();
 
-          // Check if next devices to be looked at will be audio or video
-          if (ll.includes("] directshow video devices")) {
-            isAudioDevice = false;
-            return;
-          }
-
-          if (ll.includes("] directshow audio devices")) {
-            isAudioDevice = true;
-            return;
-          }
-
-          // Skip line if it is a device alternate name
-          if (ll.includes("@device")) {
-            return;
-          }
-
-          // Check for matches to regex
-          const match = l.match(/(?!\[dshow @ \w+\]) {2}"(.+)"/g);
-
-          if (match) {
-            // Trim and remove all speech marks from the match
-            const val = match[0].trim().replaceAll(`"`, "");
-
-            // If Desktop Screen video device, then add to
-            // videoDevices under different name
-            if (val.includes(desktopVideoDevice)) {
-              videoDevices.push("Desktop Screen");
+            // Check if next devices to be looked at will be audio or video
+            if (ll.includes("] directshow video devices")) {
+              isAudioDevice = false;
               return;
             }
 
-            // Add devices to correct List, if they aren't skipped above
-            if (isAudioDevice) {
-              audioDevices.push({
-                // Use currentIteration as device ID for now
-                // ! This may cause a bug that requires users to re-apply all active devices if plugging in a new device.
-                ID: currentIteration,
-                name: val
-              });
+            if (ll.includes("] directshow audio devices")) {
+              isAudioDevice = true;
+              return;
             }
-            else {
-              videoDevices.push(val);
-            }
-          }
 
-          currentIteration++;
-        });
-      }
+            // Skip line if it is a device alternate name
+            if (ll.includes("@device")) {
+              return;
+            }
+
+            // Check for matches to regex
+            const match = l.match(/(?!\[dshow @ \w+\]) {2}"(.+)"/g);
+
+            if (match) {
+              // Trim and remove all speech marks from the match
+              const val = match[0].trim().replaceAll(`"`, "");
+
+              // If Desktop Screen video device, then add to
+              // videoDevices under different name
+              if (val.includes(desktopVideoDevice)) {
+                videoDevices.push("Desktop Screen");
+                return;
+              }
+
+              // Add devices to correct List, if they aren't skipped above
+              if (isAudioDevice) {
+                audioDevices.push({
+                  // Use currentIteration as device ID for now
+                  // ! This may cause a bug that requires users to re-apply all active devices if plugging in a new device.
+                  ID: currentIteration,
+                  name: val
+                });
+              }
+              else {
+                videoDevices.push(val);
+              }
+            }
+
+            currentIteration++;
+          });
+        },
+        onExitCallback: () => {
+          resolve({
+            audioDevices: audioDevices,
+            videoDevices: videoDevices
+          });
+        }
+      });
     });
-
-    return {
-      audioDevices: audioDevices,
-      videoDevices: videoDevices
-    };
   }
 }
