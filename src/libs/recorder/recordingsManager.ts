@@ -17,7 +17,7 @@ export default class RecordingsManager {
     const recordings = new Array<Recording>();
 
     // Get all pastRecordings from json file
-    const data = fs.readFileSync(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`), 'utf8');
+    const data = fs.readFileSync(PathHelper.ensureExists(path.join(PathHelper.settingsFolderPath, `PastRecordings.json`)), 'utf8');
 
     // Parse JSON from file and assign it to recordings variable.
     // Because it is stored in a way so that we don't have to read the file
