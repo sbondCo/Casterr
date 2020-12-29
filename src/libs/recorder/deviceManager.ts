@@ -76,7 +76,7 @@ export default class DeviceManager {
     let currentIteration = 0;
 
     ffmpeg.run("-list_devices true -f dshow -i dummy", {
-      stdoutCallback: (out: string) => {
+      stderrCallback: (out: string) => {
         out.split(/\r\n|\r|\n/g).filter(l => l !== "").forEach((l: string) => {
           const ll = l.toLowerCase();
 
@@ -97,13 +97,13 @@ export default class DeviceManager {
           }
 
           // Check for matches to regex
-          const match = ll.match(`[dshow @ w+]  ""(.+)""`);
+          const match = l.match(/(?!\[dshow @ \w+\]) {2}"(.+)"/g);
 
           if (match) {
-            // Remove all speech marks from line
-            const val = match[1];
+            // Trim and remove all speech marks from the match
+            const val = match[0].trim().replaceAll(`"`, "");
 
-            // If Desktop Screen Video Device, then add to
+            // If Desktop Screen video device, then add to
             // videoDevices under different name
             if (val.includes(desktopVideoDevice)) {
               videoDevices.push("Desktop Screen");
