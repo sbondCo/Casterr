@@ -6,12 +6,12 @@ import SettingsManager, { SettingsFiles } from "./libs/settings";
 
 // Create promises to complete before rendering app
 // Currently only for gettings all of the user's settings
-const promises = Object.values(SettingsFiles).map(s => {
+const promises = Object.values(SettingsFiles).map((s) => {
   return SettingsManager.getSettings(s);
 });
 
 // After promises are all done, create app
-Promise.all(promises).then(result => {
+Promise.all(promises).then((result) => {
   Vue.config.productionTip = false;
 
   // Register AppLayout component
@@ -19,6 +19,6 @@ Promise.all(promises).then(result => {
 
   new Vue({
     router,
-    render: h => h(App),
+    render: (h) => h(App)
   }).$mount("#app");
 });

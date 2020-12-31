@@ -8,7 +8,14 @@ export default class Pulse {
    * @param args args to send to pactl.
    * @param outputs Holds optional callback functions with outputs from pactl.
    */
-  public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction, onExitCallback?: CallableFunction; }) {
+  public async run(
+    args: string,
+    outputs?: {
+      stdoutCallback?: CallableFunction;
+      stderrCallback?: CallableFunction;
+      onExitCallback?: CallableFunction;
+    }
+  ) {
     // pactl path
     const pulsePath = "pactl";
 
@@ -18,18 +25,18 @@ export default class Pulse {
     this.pulseProcess = childProcess.exec(`${pulsePath} ${args}`);
 
     // Run stdoutCallback when recieving stdout
-    this.pulseProcess.stdout!.on('data', (data) => {
+    this.pulseProcess.stdout!.on("data", (data) => {
       // Collect all stdout and store in 'stdout' variable
       stdout += data;
     });
 
     // Run stderrCallback when recieving stderr
-    this.pulseProcess.stderr!.on('data', (data) => {
+    this.pulseProcess.stderr!.on("data", (data) => {
       if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
     });
 
     // When pulseProcess exits
-    this.pulseProcess.on('close', (code) => {
+    this.pulseProcess.on("close", (code) => {
       console.log(`pactl exited with code ${code}`);
 
       // After pulse exits, send all stdout as one string through callback function.

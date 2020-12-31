@@ -5,15 +5,18 @@ import * as path from "path";
 
 export default class ArgumentBuilder {
   public static createArgs(): {
-    args: string,
+    args: string;
     videoPath: string;
   } {
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
     // Build and return args differently depending on OS
-    if (process.platform == "win32") return ArgumentBuilder.buildWindowsArgs();
-    else if (process.platform == "linux") return ArgumentBuilder.buildLinuxArgs();
+    if (process.platform == "win32") {
+      return ArgumentBuilder.buildWindowsArgs();
+    } else if (process.platform == "linux") {
+      return ArgumentBuilder.buildLinuxArgs();
+    }
 
     throw new Error("Could not build args for current system. It isn't supported.");
   }
@@ -22,7 +25,7 @@ export default class ArgumentBuilder {
     const args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach(ad => {
+    RecordingSettings.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f pulse -i ${ad.sourceNumber}`);
     });
 
@@ -55,7 +58,7 @@ export default class ArgumentBuilder {
     const args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach(ad => {
+    RecordingSettings.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f dshow -i audio="${ad.name}"`);
     });
 
@@ -63,7 +66,9 @@ export default class ArgumentBuilder {
     args.push(`-f ${this.ffmpegDevice}`);
 
     // Video device
-    if (RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])) {
+    if (
+      RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])
+    ) {
       args.push("-i video=screen-capture-recorder");
     } else {
       args.push(`-i video=${RecordingSettings.videoDevice}`);

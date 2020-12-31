@@ -55,7 +55,7 @@ export default class Recorder {
   private static set isRecording(recording: boolean) {
     // Only emit event if isRecording value has actually changed
     if (this.isRecording != recording) {
-      this.recordingStatus.emit('changed', recording);
+      this.recordingStatus.emit("changed", recording);
     }
 
     this._isRecording = recording;

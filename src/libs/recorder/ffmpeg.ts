@@ -5,15 +5,13 @@ import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
 
 export default class FFmpeg {
-  constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {
-
-  }
+  constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
 
   /**
    * FFmpeg exe name which is dependent on the user's platform.
    */
   public static get ffmpegExeName() {
-    if (process.platform == 'win32') {
+    if (process.platform == "win32") {
       return "ffmpeg.exe";
     } else {
       return "ffmpeg";
@@ -24,7 +22,7 @@ export default class FFmpeg {
    * FFprobe exe name which is dependent on the user's platform.
    */
   public static get ffprobeExeName() {
-    if (process.platform == 'win32') {
+    if (process.platform == "win32") {
       return "ffprobe.exe";
     } else {
       return "ffprobe";
@@ -39,7 +37,14 @@ export default class FFmpeg {
    * @param args Args to send.
    * @param outputs Holds optional callback functions with outputs from FFmpeg/FFprobe.
    */
-  public async run(args: string, outputs?: { stdoutCallback?: CallableFunction, stderrCallback?: CallableFunction, onExitCallback?: CallableFunction; }) {
+  public async run(
+    args: string,
+    outputs?: {
+      stdoutCallback?: CallableFunction;
+      stderrCallback?: CallableFunction;
+      onExitCallback?: CallableFunction;
+    }
+  ) {
     // Get FFmpeg path
     const ffPath = await this.getPath();
 
@@ -47,17 +52,17 @@ export default class FFmpeg {
     this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
     // Run stdoutCallback when recieving stdout
-    this.ffProcess.stdout!.on('data', (data) => {
+    this.ffProcess.stdout!.on("data", (data) => {
       if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
     });
 
     // Run stderrCallback when recieving stderr
-    this.ffProcess.stderr!.on('data', (data) => {
+    this.ffProcess.stderr!.on("data", (data) => {
       if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
     });
 
     // When ffProcess exits
-    this.ffProcess.on('close', (code) => {
+    this.ffProcess.on("close", (code) => {
       console.log(`ffmpeg exited with code ${code}`);
 
       // Call onExitCallback is set to do so
@@ -93,30 +98,35 @@ export default class FFmpeg {
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
-      const winDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
-      const linuxDownloadURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
-      const downloadTo = ffmpegPath + '.zip';
-      let downloadURL: string;
+      const downloadTo = ffmpegPath + ".zip";
+      let dlURL: string;
 
       // Set downloadURL depending on users platform
-      if (process.platform == 'win32') downloadURL = winDownloadURL;
-      else if (process.platform == 'linux') downloadURL = linuxDownloadURL;
-      else throw new Error('Unsupported platform');
+      if (process.platform == "win32") {
+        dlURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
+      } else if (process.platform == "linux") {
+        dlURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
+      } else {
+        throw new Error("Unsupported platform");
+      }
 
       // Download zip
-      await Downloader.get(downloadURL, downloadTo, (progress: number) => {
+      await Downloader.get(dlURL, downloadTo, (progress: number) => {
+        // Keep updating popup with new progress %
         Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
       });
 
-      // Extract zip
+      // Update popup to extracting phase
       Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
+
+      // Extract zip
       await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
-      // Delete notification
+      // Delete popup
       Notifications.deletePopup("ffmpegDownloadProgress");
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     // Get exec perms for ff binaries.
@@ -126,7 +136,7 @@ export default class FFmpeg {
     fs.chmodSync(ffprobePath, 0o111);
 
     // Return path to correct executable depending on 'which' constructor arg
-    if (this.which == "ffprobe") return ffprobePath
+    if (this.which == "ffprobe") return ffprobePath;
     else return ffmpegPath;
   }
 }

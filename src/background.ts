@@ -7,15 +7,13 @@ import * as path from "path";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: "app", privileges: { secure: true, standard: true } }
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
 
 /**
  * Create app window
  */
 async function createWindow() {
-  let iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
+  const iconPath = path.join(__dirname.replace("app.asar", ""), "../", "assets", "icons", "512x512.png");
 
   // Create the browser window.
   const win = new BrowserWindow({
@@ -50,8 +48,8 @@ async function createWindow() {
  * 'disable-gpu' alone works for me, but going to keep 'enable-transparent-visuals'
  * incase it works with other distros/hardware. Need to test later.
  */
-app.commandLine.appendSwitch('enable-transparent-visuals');
-app.commandLine.appendSwitch('disable-gpu');
+app.commandLine.appendSwitch("enable-transparent-visuals");
+app.commandLine.appendSwitch("disable-gpu");
 
 /**
  * Quit when all windows are closed
@@ -75,9 +73,9 @@ app.on("activate", () => {
  */
 app.on("ready", async () => {
   // Create file protocol, so we can access users files
-  let protocolName = "secfile";
+  const protocolName = "secfile";
   protocol.registerFileProtocol(protocolName, (request, callback) => {
-    const url = request.url.replace(`${protocolName}://`, '');
+    const url = request.url.replace(`${protocolName}://`, "");
     try {
       return callback(decodeURIComponent(url));
     } catch (error) {

@@ -24,7 +24,7 @@ export default class SettingsManager {
     // Write settings in objects to correct file, format json with 2 spaces
     fs.writeFile(PathHelper.getFile(which), JSON.stringify(json, null, 2), (err: any) => {
       if (err) throw err;
-      console.log('Settings saved');
+      console.log("Settings saved");
     });
   }
 
@@ -35,7 +35,7 @@ export default class SettingsManager {
   public static getSettings(which: SettingsFiles) {
     return new Promise((resolve, reject) => {
       // Read settings file
-      fs.readFile(PathHelper.getFile(which), 'utf8', (err: any, data: string) => {
+      fs.readFile(PathHelper.getFile(which), "utf8", (err: any, data: string) => {
         if (err) reject(err);
 
         // If file isn't empty, cast json from setting file to correct object
@@ -120,7 +120,10 @@ export class RecordingSettings {
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
-  private static _audioDevicesToRecord: Array<{ sourceNumber: number, name: string }> = [];
+  private static _audioDevicesToRecord: Array<{
+    sourceNumber: number;
+    name: string;
+  }> = [];
   private static _seperateAudioTracks: boolean = false;
 
   /**
@@ -195,8 +198,8 @@ export class RecordingSettings {
   public static get format() {
     // If format equals a supported format, return it
     // If it doesn't return the default of `mp4`
-    if (this._format.equalsAnyOf(AppSettings.supportedRecordingFormats)) return this._format
-    else return "mp4"
+    if (this._format.equalsAnyOf(AppSettings.supportedRecordingFormats)) return this._format;
+    else return "mp4";
   }
 
   public static set format(format) {

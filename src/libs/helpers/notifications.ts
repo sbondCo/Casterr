@@ -1,12 +1,15 @@
 import Vue from "vue";
-import { CombinedVueInstance } from 'vue/types/vue';
+import { CombinedVueInstance } from "vue/types/vue";
 import electron from "electron";
 import Notifier from "./../../components/Notifier.vue";
 import path from "path";
 import process from "process";
 
 export default class Notifications {
-  private static activePopups = new Map<string, CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>>();
+  private static activePopups = new Map<
+    string,
+    CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>
+  >();
 
   /**
    * Create or modify an existing popup notification.
@@ -69,7 +72,7 @@ export default class Notifications {
       parent: electron.remote.getCurrentWindow(),
       width: 400,
       height: 80,
-      x: (screen.width / 2) - (400 / 2), // Middle of screen horizontally
+      x: screen.width / 2 - 400 / 2, // Middle of screen horizontally
       y: 50,
       frame: false,
       skipTaskbar: true,
@@ -90,7 +93,7 @@ export default class Notifications {
 
     const page = `desktopNotification/${desc}/${icon}`;
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       // Use dev server in developement
       await notifWin.loadURL(`http://localhost:8080/#/${page}`);
     } else {
@@ -100,6 +103,6 @@ export default class Notifications {
 
     setTimeout(() => {
       notifWin.close();
-    }, duration)
+    }, duration);
   }
 }

@@ -11,13 +11,13 @@ interface Array<T> {
   replace(toReplace: string, replaceWith: string): string[];
 }
 
-Array.prototype.remove = function (this, toRemove: string | object): any[] {
-  return this.filter(e => JSON.stringify(e) !== JSON.stringify(toRemove));
-}
+Array.prototype.remove = function(this, toRemove: string | object): any[] {
+  return this.filter((e) => JSON.stringify(e) !== JSON.stringify(toRemove));
+};
 
-Array.prototype.replace = function (this, toReplace: string, replaceWith: string): string[] {
+Array.prototype.replace = function(this, toReplace: string, replaceWith: string): string[] {
   // Get index of `toReplace` in array and set to `replaceWith`
   this[this.indexOf(toReplace)] = replaceWith;
 
   return this;
-}
+};

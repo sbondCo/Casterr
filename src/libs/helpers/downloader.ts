@@ -10,11 +10,7 @@ export default class Downloader {
    * @param uri URI to download file from
    * @param dest Destination path for downloaded file
    */
-  public static get(
-    uri: string,
-    dest: string,
-    reportPercentage?: CallableFunction
-  ) {
+  public static get(uri: string, dest: string, reportPercentage?: CallableFunction) {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
 
@@ -26,10 +22,7 @@ export default class Downloader {
           chunksCompleted += chunk.length;
 
           // Call callback function if its set and pass percentage to it
-          if (reportPercentage != undefined)
-            reportPercentage(
-              ((100.0 * chunksCompleted) / contentLength).toFixed(0)
-            );
+          if (reportPercentage != undefined) reportPercentage(((100.0 * chunksCompleted) / contentLength).toFixed(0));
         });
 
         // When connection is closed, resolve promise
@@ -53,11 +46,7 @@ export default class Downloader {
    * @param destFolder Path to destination folder for uncompressed files
    * @param filesToExtract String array of file names, only files included in this array will be extracted. Leave empty to extract all files.
    */
-  public static extract(
-    zipPath: string,
-    destFolder: string,
-    filesToExtract: Array<string> = []
-  ) {
+  public static extract(zipPath: string, destFolder: string, filesToExtract: Array<string> = []) {
     return new Promise((resolve, reject) => {
       fs.readFile(zipPath, (err, data) => {
         if (err) reject(err);
@@ -82,13 +71,9 @@ export default class Downloader {
                   .file(filename)!
                   .async("nodebuffer")
                   .then((content: any) => {
-                    fs.writeFile(
-                      path.join(destFolder, filenameWithoutFolder),
-                      content,
-                      () => {
-                        resolve("");
-                      }
-                    );
+                    fs.writeFile(path.join(destFolder, filenameWithoutFolder), content, () => {
+                      resolve("");
+                    });
                   });
               });
             };
@@ -96,8 +81,7 @@ export default class Downloader {
             // If filesToExtract is empty just unzip all files
             // If filesToExtract isn't empty, if it includes filename then unzip
             if (filesToExtract.length == 0) await unzip();
-            else if (filesToExtract.includes(filenameWithoutFolder))
-              await unzip();
+            else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
 
             // Resolve if index (+1) equals amount of files since this means all files have been processed
             if (i + 1 == Object.keys(files).length) resolve("");

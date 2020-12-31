@@ -9,7 +9,7 @@ interface String {
   equalsAnyOf(toCompareWith: Array<any>): boolean;
 }
 
-String.prototype.toReadableDateTime = function (this): string {
+String.prototype.toReadableDateTime = function(this): string {
   let rdt = this;
   const now = new Date();
 
@@ -63,7 +63,10 @@ String.prototype.toReadableDateTime = function (this): string {
   // Hour of the day (12-hour format), 01 to 12
   if (this.includes("%h")) {
     // Get hour of day in 12 hour format, removing 'am', 'pm' and any whitespace.
-    rdt = rdt.replace("%h", now.toLocaleString(undefined, { hour12: true, hour: "numeric" }).replace(new RegExp(/am|pm| /g), ""));
+    rdt = rdt.replace(
+      "%h",
+      now.toLocaleString(undefined, { hour12: true, hour: "numeric" }).replace(new RegExp(/am|pm| /g), "")
+    );
   }
 
   // Hour of the day (24-hour format), 00 to 23
@@ -83,12 +86,12 @@ String.prototype.toReadableDateTime = function (this): string {
 
   // Lowercase Ante Meridiem and Post Meridiem, am or pm
   if (this.includes("%a")) {
-    rdt = rdt.replace("%a", (now.getHours() < 12 ? "am" : "pm"));
+    rdt = rdt.replace("%a", now.getHours() < 12 ? "am" : "pm");
   }
 
   // Uppercase Ante Meridiem and Post Meridiem, AM or PM
   if (this.includes("%A")) {
-    rdt = rdt.replace("%A", (now.getHours() < 12 ? "AM" : "PM"));
+    rdt = rdt.replace("%A", now.getHours() < 12 ? "AM" : "PM");
   }
   //#endregion
 
@@ -96,15 +99,13 @@ String.prototype.toReadableDateTime = function (this): string {
   // Difference to Greenwich time, BST = +0100
   if (this.includes("%O")) {
     const tzoh = Math.abs(now.getTimezoneOffset() / 60);
-    rdt = rdt.replace("%O",
-      (-now.getTimezoneOffset() < 0 ? '-' : '+') + (tzoh < 10 ? '0' : '') + (tzoh) + '00'
-    );
+    rdt = rdt.replace("%O", (-now.getTimezoneOffset() < 0 ? "-" : "+") + (tzoh < 10 ? "0" : "") + tzoh + "00");
   }
   //#endregion
 
   return rdt.toString();
 };
 
-String.prototype.equalsAnyOf = function (this, toCompareWith: Array<any>): boolean {
+String.prototype.equalsAnyOf = function(this, toCompareWith: Array<any>): boolean {
   return toCompareWith.some((rdtw) => rdtw === this);
 };

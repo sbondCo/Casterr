@@ -3,65 +3,61 @@ import * as Path from "path";
 import * as fs from "fs";
 
 export default class PathHelper {
-	public static get mainFolderPath() {
-		return Path.join(os.homedir(), "Documents", "Casterr");
-	}
+  public static get mainFolderPath() {
+    return Path.join(os.homedir(), "Documents", "Casterr");
+  }
 
-	public static getFile(
-		name:
-			| "GeneralSettings.json"
-			| "RecordingSettings.json"
-			| "KeyBindingSettings.json"
-			| "PastRecordings.json"
-	) {
-		let path: string[];
+  public static getFile(
+    name: "GeneralSettings.json" | "RecordingSettings.json" | "KeyBindingSettings.json" | "PastRecordings.json"
+  ) {
+    let path: string[];
 
-		switch (name) {
-			case "GeneralSettings.json":
-				path = ["Settings", "GeneralSettings.json"];
-				break;
-			case "RecordingSettings.json":
-				path = ["Settings", "RecordingSettings.json"];
-				break;
-			case "KeyBindingSettings.json":
-				path = ["Settings", "KeyBindingSettings.json"];
-				break;
-			case "PastRecordings.json":
-				path = ["PastRecordings.json"];
-				break;
-		}
+    switch (name) {
+      case "GeneralSettings.json":
+        path = ["Settings", "GeneralSettings.json"];
+        break;
+      case "RecordingSettings.json":
+        path = ["Settings", "RecordingSettings.json"];
+        break;
+      case "KeyBindingSettings.json":
+        path = ["Settings", "KeyBindingSettings.json"];
+        break;
+      case "PastRecordings.json":
+        path = ["PastRecordings.json"];
+        break;
+    }
 
-		// Join `mainFolderPath` and `path` to create the
-		// full path that we should make sure exists then return
-		return this.ensureExists(Path.join(this.mainFolderPath, ...path));
-	}
+    // Join `mainFolderPath` and `path` to create the
+    // full path that we should make sure exists then return
+    return this.ensureExists(Path.join(this.mainFolderPath, ...path));
+  }
 
-	/**
-	 * Make sure files/dirs exist from path
-	 * @param path Path of file/folder
-	 * @param isDir Is `path` pointing to a directory?
-	 */
-	public static ensureExists(path: string, isDir: boolean = false): string {
-		let folders = path;
+  /**
+   * Make sure files/dirs exist from path
+   * @param path Path of file/folder
+   * @param isDir Is `path` pointing to a directory?
+   */
+  public static ensureExists(path: string, isDir: boolean = false): string {
+    let folders = path;
 
-		if (!isDir) {
-			folders = Path.dirname(path);
-		}
+    if (!isDir) {
+      folders = Path.dirname(path);
+    }
 
-		// Recursively create all folders
-		fs.mkdirSync(folders, { recursive: true });
+    // Recursively create all folders
+    fs.mkdirSync(folders, { recursive: true });
 
-		try {
-			// Create file if it doesn't exist
-			fs.writeFileSync(path, "", { flag: "wx" });
-		} catch (err) {
-			// If exception is caused by file already existing,
-			// don't throw it. Throw again if caused by something else.
-			if (err.code != "EEXIST") {
-				throw new Error(err);
-			}
-		}
+    try {
+      // Create file if it doesn't exist
+      fs.writeFileSync(path, "", { flag: "wx" });
+    } catch (err) {
+      // If exception is caused by file already existing,
+      // don't throw it. Throw again if caused by something else.
+      if (err.code != "EEXIST") {
+        throw new Error(err);
+      }
+    }
 
-		return path;
-	}
+    return path;
+  }
 }
