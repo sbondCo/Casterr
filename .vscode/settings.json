@@ -2,5 +2,10 @@
   "files.exclude": {
     ".github": true
   },
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "prettier.tabWidth": 2,
+  "prettier.semi": true,
+  "prettier.singleQuote": false,
+  "prettier.printWidth": 120,
+  "prettier.useTabs": false
 }
