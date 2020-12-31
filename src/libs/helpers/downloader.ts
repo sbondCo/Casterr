@@ -42,11 +42,17 @@ export default class Downloader {
 
   /**
    * Extract zip archive
-   * @param zipPath Path to zip file that should be uncompressed
-   * @param destFolder Path to destination folder for uncompressed files
+   * @param zipPath Path to zip file that should be uncompressed.
+   * @param destFolder Path to destination folder for uncompressed files.
    * @param filesToExtract String array of file names, only files included in this array will be extracted. Leave empty to extract all files.
+   * @param deleteAfter If should delete zip file once finished extracting files.
    */
-  public static extract(zipPath: string, destFolder: string, filesToExtract: Array<string> = []) {
+  public static extract(
+    zipPath: string,
+    destFolder: string,
+    filesToExtract: Array<string> = [],
+    deleteAfter: boolean = true
+  ) {
     return new Promise((resolve, reject) => {
       fs.readFile(zipPath, (err, data) => {
         if (err) reject(err);
@@ -84,7 +90,18 @@ export default class Downloader {
             else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
 
             // Resolve if index (+1) equals amount of files since this means all files have been processed
-            if (i + 1 == Object.keys(files).length) resolve("");
+            if (i + 1 == Object.keys(files).length) {
+              // Delete zip file if asked to.
+              // Don't wait for file to delete before resolving the promise,
+              // theres no reason to make the user wait for it to finish deleting the zip.
+              if (deleteAfter) {
+                fs.unlink(zipPath, (err) => {
+                  if (err) throw err;
+                });
+              }
+
+              resolve("");
+            }
           });
         });
       });
