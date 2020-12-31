@@ -72,6 +72,13 @@ app.on("activate", () => {
  * When Electron is finished initializing
  */
 app.on("ready", async () => {
+  // Install VUEJS devtools if in development mode
+  if (isDevelopment && !process.env.IS_TEST) {
+    await installExtension(VUEJS_DEVTOOLS, true)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log('An error occurred: ', err));
+  }
+
   // Create file protocol, so we can access users files
   const protocolName = "secfile";
   protocol.registerFileProtocol(protocolName, (request, callback) => {
