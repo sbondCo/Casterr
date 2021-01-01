@@ -30,7 +30,6 @@ export default class TickBox extends Vue {
 .checkBoxContainer {
   position: relative;
   padding-left: 35px;
-  margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
 
@@ -52,14 +51,16 @@ export default class TickBox extends Vue {
     height: 25px;
     width: 25px;
     background-color: $secondaryColor;
+    border: 2px dashed $quaternaryColor;
+    transition: border-color 250ms ease-in-out;
   }
 
   .checkmark:after {
     content: "";
     position: absolute;
     display: none;
-    left: 9px;
-    top: 5px;
+    left: 7px;
+    top: 2px;
     width: 5px;
     height: 10px;
     border: solid $textPrimary;
@@ -69,6 +70,7 @@ export default class TickBox extends Vue {
 
   &:hover input ~ .checkmark {
     background-color: $tertiaryColor;
+    border-color: $textPrimary;
   }
 }
 </style>
