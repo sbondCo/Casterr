@@ -1,4 +1,5 @@
 import PathHelper from "./helpers/pathHelper";
+import { AudioDevice } from "./recorder/deviceManager";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -120,10 +121,7 @@ export class RecordingSettings {
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
-  private static _audioDevicesToRecord: Array<{
-    sourceNumber: number;
-    name: string;
-  }> = [];
+  private static _audioDevicesToRecord: Array<AudioDevice> = [];
   private static _seperateAudioTracks: boolean = false;
 
   /**

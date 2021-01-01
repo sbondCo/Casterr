@@ -3,7 +3,9 @@ import FFmpeg from "./ffmpeg";
 
 export interface AudioDevice {
   // Source number
-  ID: number;
+  // On Linux used to store source number of audio device and as key for ListBox
+  // On Windows used only as a key for ListBox (currently set as the name as device name)
+  ID: number | string;
 
   // Name of device
   name: string;
@@ -70,17 +72,13 @@ export default class DeviceManager {
   }
 
   private static getWindowsDevices() {
-    return new Promise<{
-      audioDevices: AudioDevice[];
-      videoDevices: Array<string>;
-    }>((resolve) => {
+    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: Array<string> }>((resolve) => {
       const ffmpeg = new FFmpeg();
       const audioDevices = new Array<AudioDevice>();
       const videoDevices = new Array<string>();
 
       const desktopVideoDevice = "screen-capture-recorder";
       let isAudioDevice = false;
-      let currentIteration = 0;
 
       ffmpeg.run("-list_devices true -f dshow -i dummy", {
         stderrCallback: (out: string) => {
@@ -123,17 +121,14 @@ export default class DeviceManager {
                 // Add devices to correct List, if they aren't skipped above
                 if (isAudioDevice) {
                   audioDevices.push({
-                    // Use currentIteration as device ID for now
-                    // ! This may cause a bug that requires users to re-apply all active devices if plugging in a new device.
-                    ID: currentIteration,
+                    // Use device name as ID for windows
+                    ID: val,
                     name: val
                   });
                 } else {
                   videoDevices.push(val);
                 }
               }
-
-              currentIteration++;
             });
         },
         onExitCallback: () => {

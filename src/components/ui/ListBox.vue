@@ -2,8 +2,12 @@
   <div class="listBoxContainer">
     <div v-for="item in items" :key="item.id">
       <div class="listBoxItem">
-        <TickBox :name="item.id.toString() + ':' + item.name" :ticked="shouldBeEnabled(item.id)" @item-changed="listBoxValueUpdated" />
-        <span class="body" :title="item.title">{{ item.name }}</span>
+        <TickBox
+          :name="item.id.toString() + ':' + item.name"
+          :ticked="shouldBeEnabled(item.id)"
+          @item-changed="listBoxValueUpdated"
+        />
+        <span class="body" :title="item.title" :style="item.title == undefined ? '' : 'cursor: help;'">{{ item.name }}</span>
       </div>
     </div>
   </div>
@@ -16,16 +20,15 @@ import TickBox from "./../ui/TickBox.vue";
 @Component({
   components: {
     TickBox
-  },
+  }
 })
-
 export default class ListBox extends Vue {
-  @Prop({required: true}) name: string;
-  @Prop({required: true}) items: Array<ListBoxItem>;
-  @Prop({required: true}) enabled: Array<Number>;
+  @Prop({ required: true }) name: string;
+  @Prop({ required: true }) items: Array<ListBoxItem>;
+  @Prop({ required: true }) enabled: Array<Number>;
 
   listBoxValueUpdated(toUpdate: string, newValue: any) {
-    this.$emit('item-changed', this.name, [toUpdate.split(":"), newValue]);
+    this.$emit("item-changed", this.name, [toUpdate.split(":"), newValue]);
   }
 
   shouldBeEnabled(id: Number): Boolean {
@@ -35,7 +38,7 @@ export default class ListBox extends Vue {
 
 export class ListBoxItem {
   // eslint-disable-next-line no-unused-vars
-  constructor(private id: number, private name: string, private title: string) {}
+  constructor(private id: number | string, private name: string, private title?: string | undefined) {}
 }
 </script>
 
@@ -47,10 +50,6 @@ export class ListBoxItem {
 
   .listBoxItem {
     padding: 2px;
-
-    .body {
-      cursor: help;
-    }
   }
 }
 </style>

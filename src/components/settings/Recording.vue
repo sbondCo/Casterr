@@ -1,5 +1,5 @@
 <template>
-    <div class="settings">
+  <div class="settings">
     <span class="pageTitle">Recording Settings</span>
 
     <div class="setting">
@@ -34,7 +34,12 @@
 
     <div class="setting">
       <span class="title">Audio Devices To Record:</span>
-      <ListBox name="audioDevicesToRecord" :items="audioDevicesToRecord" :enabled="audioDevicesToRecordEnabled" @item-changed="updateSettings" />
+      <ListBox
+        name="audioDevicesToRecord"
+        :items="audioDevicesToRecord"
+        :enabled="audioDevicesToRecordEnabled"
+        @item-changed="updateSettings"
+      />
     </div>
 
     <div class="setting">
@@ -75,13 +80,12 @@ import "../../libs/helpers/extensions";
     TextBox,
     TickBox,
     ListBox
-  },
+  }
 })
-
 export default class RecordingSettingsComponent extends Vue {
   data() {
     return {
-      isWindows: (require("os").platform == 'win32'),
+      isWindows: require("os").platform == "win32",
       videoDevice: "Some Mic",
       videoDevices: ["Some Mic", "A TV?", "Is this a headset?", "G40${randNum}"],
       fps: RecordingSettings.fps,
@@ -97,24 +101,28 @@ export default class RecordingSettingsComponent extends Vue {
       thumbSaveFolder: RecordingSettings.thumbSaveFolder,
       videoSaveFolder: RecordingSettings.videoSaveFolder,
       videoSaveName: RecordingSettings.videoSaveName
-    }
+    };
   }
 
   async mounted() {
     let d = await DeviceManager.getDevices();
 
     // Add audio devices to audioDevicesToRecord
-    d.audioDevices.forEach((ad: AudioDevice) => { 
-      this.$data.audioDevicesToRecord.push(new ListBoxItem(
-        ad.ID,
-        ad.name,
-        (ad.isInput) ? "Input Device" : "Output Device"
-      ));
+    d.audioDevices.forEach((ad: AudioDevice) => {
+      // Whether device is an input device or not.
+      // Always going to be undefined on Windows
+      // because DirectShow doesn't give us that information.
+      let isInput: string | undefined;
+      if (ad.isInput !== undefined) {
+        isInput = ad.isInput ? "Input Device" : "Output Device";
+      }
+
+      this.$data.audioDevicesToRecord.push(new ListBoxItem(ad.ID, ad.name, isInput));
     });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
-      this.$data.audioDevicesToRecordEnabled.push(adtr.sourceNumber);
+      this.$data.audioDevicesToRecordEnabled.push(adtr.ID);
     });
   }
 
@@ -122,30 +130,33 @@ export default class RecordingSettingsComponent extends Vue {
     // Update settings in obj
     switch (toUpdate) {
       case "videoDevice":
-        RecordingSettings.videoDevice = newValue
+        RecordingSettings.videoDevice = newValue;
         break;
       case "fps":
-        RecordingSettings.fps = newValue
+        RecordingSettings.fps = newValue;
         break;
       case "resolution":
-        RecordingSettings.resolution = newValue
+        RecordingSettings.resolution = newValue;
         break;
       case "format":
-        RecordingSettings.format = newValue
+        RecordingSettings.format = newValue;
         break;
       case "zeroLatency":
-        RecordingSettings.zeroLatency = newValue
+        RecordingSettings.zeroLatency = newValue;
         break;
       case "ultraFast":
-        RecordingSettings.ultraFast = newValue
+        RecordingSettings.ultraFast = newValue;
         break;
       case "audioDevicesToRecord":
         if (newValue[1]) {
           // Add new audio device to audioDevicesToRecord
-          RecordingSettings.audioDevicesToRecord.push({ sourceNumber: parseInt(newValue[0][0], 10), name: newValue[0][1] });
+          RecordingSettings.audioDevicesToRecord.push({ ID: newValue[0][0], name: newValue[0][1] });
         } else {
           // Remove audio device from audioDevicesToRecord
-          RecordingSettings.audioDevicesToRecord = RecordingSettings.audioDevicesToRecord.remove({ sourceNumber: parseInt(newValue[0][0], 10), name: newValue[0][1] });
+          RecordingSettings.audioDevicesToRecord = RecordingSettings.audioDevicesToRecord.remove({
+            ID: newValue[0][0],
+            name: newValue[0][1]
+          });
         }
         break;
       case "seperateAudioTracks":
@@ -155,10 +166,10 @@ export default class RecordingSettingsComponent extends Vue {
         RecordingSettings.thumbSaveFolder = newValue;
         break;
       case "videoSaveFolder":
-        RecordingSettings.videoSaveFolder = newValue
+        RecordingSettings.videoSaveFolder = newValue;
         break;
       case "videoSaveName":
-        RecordingSettings.videoSaveName = newValue
+        RecordingSettings.videoSaveName = newValue;
         break;
     }
 
@@ -168,6 +179,4 @@ export default class RecordingSettingsComponent extends Vue {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
