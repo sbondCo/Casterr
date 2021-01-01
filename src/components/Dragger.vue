@@ -15,18 +15,17 @@
 </template>
 
 <script lang="ts">
-import { remote } from 'electron';
-import { Vue, Component } from 'vue-property-decorator';
+import { remote } from "electron";
+import { Vue, Component } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 
 var window = remote.getCurrentWindow();
 
 @Component({
   components: {
-    Icon,
-  },
+    Icon
+  }
 })
-
 export default class Dragger extends Vue {
   public close() {
     window.close();

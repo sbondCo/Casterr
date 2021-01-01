@@ -1,9 +1,9 @@
 <template>
   <div class="spinner">
-		<div class="item"></div>
-		<div class="item"></div>
-		<div class="item"></div>
-	</div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,7 +34,7 @@ export default class Loading extends Vue {}
     border-radius: 25%;
     border: 2px solid $textPrimary;
     animation: throwBalls $animationDuration ease-in-out infinite;
-    
+
     &:nth-child(1) {
       animation-delay: calc(#{$animationDuration} / 6 * -1);
     }

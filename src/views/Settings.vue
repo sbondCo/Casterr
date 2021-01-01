@@ -29,7 +29,7 @@ export default Vue.extend({
   data() {
     return {
       activeSubPage: "GeneralSettings"
-    }
+    };
   },
   components: {
     GeneralSettings: () => import("./../components/settings/General.vue"),
@@ -42,7 +42,7 @@ export default Vue.extend({
       console.log(this.activeSubPage);
     }
   }
-})
+});
 </script>
 
 <style lang="scss">

@@ -15,6 +15,5 @@ import AppLayout from "./layouts/AppLayout.vue";
     AppLayout
   }
 })
-
 export default class App extends Vue {}
 </script>

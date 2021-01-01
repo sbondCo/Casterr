@@ -2,7 +2,7 @@
   <div class="notificationContainer">
     <!-- If icon is undefined, default to 'play' icon -->
     <Icon :i="icon != 'undefined' ? icon : 'play'" wh="35" />
-    
+
     <span class="title">{{ desc }}</span>
   </div>
 </template>
@@ -13,12 +13,12 @@ import Icon from "./../components/Icon.vue";
 
 @Component({
   components: {
-    Icon,
-  },
+    Icon
+  }
 })
 export default class extends Vue {
-  @Prop({default: "play"}) icon: string;
-  @Prop({required: true}) desc: string;
+  @Prop({ default: "play" }) icon: string;
+  @Prop({ required: true }) desc: string;
 }
 </script>
 

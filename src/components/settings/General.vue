@@ -17,23 +17,22 @@ import "../../libs/helpers/extensions";
 
 @Component({
   components: {
-    DropDown,
-  },
+    DropDown
+  }
 })
-
 export default class GeneralSettingsComponent extends Vue {
   data() {
     return {
       startupPage: GeneralSettings.startupPage,
       startupPageItems: AppSettings.pages
-    }
+    };
   }
 
   updateSettings(toUpdate: string, newValue: string) {
     // Update settings in obj
     switch (toUpdate) {
       case "startupPage":
-        GeneralSettings.startupPage = newValue
+        GeneralSettings.startupPage = newValue;
         break;
     }
 
@@ -43,6 +42,4 @@ export default class GeneralSettingsComponent extends Vue {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

@@ -7,7 +7,11 @@
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
           <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-          <img v-if="require('fs').existsSync(vid.thumbPath)" :src="'secfile://' + vid.thumbPath" alt="Video Thumbnail" />
+          <img
+            v-if="require('fs').existsSync(vid.thumbPath)"
+            :src="'secfile://' + vid.thumbPath"
+            alt="Video Thumbnail"
+          />
           <span v-else class="noThumb">No Thumbnail Found</span>
 
           <div class="info">
@@ -51,14 +55,14 @@ import "./../libs/helpers/extensions";
 
 @Component({
   components: {
-    Icon,
-  },
+    Icon
+  }
 })
 export default class extends Vue {
   data() {
     return {
       allRecordings: RecordingsManager.get(),
-      loadedRecordings: new Array
+      loadedRecordings: new Array()
     };
   }
 
@@ -197,10 +201,7 @@ export default class extends Vue {
             height: 40px;
             padding: 0 10px;
             line-height: 40px;
-            background-color: change-color(
-              $color: $darkAccentColor,
-              $alpha: 0.5
-            );
+            background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
             transition: background-color 250ms ease-in-out;
 
             .title {

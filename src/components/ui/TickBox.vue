@@ -10,18 +10,18 @@ import { Prop, Component, Vue, Watch } from "vue-property-decorator";
 
 @Component
 export default class TickBox extends Vue {
-  @Prop({required: true}) name: string
-  @Prop({default: false}) ticked: boolean
+  @Prop({ required: true }) name: string;
+  @Prop({ default: false }) ticked: boolean;
 
   data() {
     return {
       isTicked: this.ticked
-    }
+    };
   }
 
-  @Watch('isTicked')
+  @Watch("isTicked")
   isTickedChanged(t: boolean) {
-    this.$emit('item-changed', this.name, t);
+    this.$emit("item-changed", this.name, t);
   }
 }
 </script>

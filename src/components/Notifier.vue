@@ -21,7 +21,7 @@ import Loader from "./ui/Loader.vue";
     Icon,
     ProgressBar,
     Loader
-  },
+  }
 })
 export default class Notifier extends Vue {
   @Prop({ default: "Give us a second" }) description!: string;
@@ -31,7 +31,7 @@ export default class Notifier extends Vue {
     return {
       desc: this.description,
       percent: this.percentage
-    }
+    };
   }
 }
 </script>
@@ -45,7 +45,7 @@ export default class Notifier extends Vue {
   position: absolute;
   height: 100vh;
   width: 100vw;
-  background-color: change-color($color: $quaternaryColor, $alpha: .5);
+  background-color: change-color($color: $quaternaryColor, $alpha: 0.5);
   z-index: 9999999999999;
 
   .notification {
@@ -57,8 +57,8 @@ export default class Notifier extends Vue {
     min-height: 150px;
     flex-flow: column;
     border-radius: 7px;
-    background-color: change-color($color: $darkAccentColor, $alpha: .99);
-    box-shadow: 0 3px 2px rgba(0, 0, 0, .5);
+    background-color: change-color($color: $darkAccentColor, $alpha: 0.99);
+    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.5);
 
     .title {
       font-size: 25px;

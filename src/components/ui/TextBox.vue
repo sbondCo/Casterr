@@ -1,6 +1,12 @@
 <template>
   <div class="textBox">
-    <input :type="type" v-model="textBoxValue" :placeholder="placeholder" spellcheck="false" @blur="textBoxValueUpdated" />
+    <input
+      :type="type"
+      v-model="textBoxValue"
+      :placeholder="placeholder"
+      spellcheck="false"
+      @blur="textBoxValueUpdated"
+    />
 
     <button v-if="folderSelect" @click="selectFolder">Change</button>
   </div>
@@ -13,42 +19,45 @@ import * as fs from "fs";
 
 @Component
 export default class TextBox extends Vue {
-  @Prop({required: true}) name: string;
+  @Prop({ required: true }) name: string;
   @Prop() value?: string;
   @Prop() placeholder?: string;
-  @Prop({default: "text"}) type: string;
-  @Prop({default: false}) folderSelect: boolean;
+  @Prop({ default: "text" }) type: string;
+  @Prop({ default: false }) folderSelect: boolean;
 
   data() {
     return {
       textBoxValue: this.value
-    }
+    };
   }
 
   textBoxValueUpdated() {
-    this.$emit('item-changed', this.name, this.$data.textBoxValue);
+    this.$emit("item-changed", this.name, this.$data.textBoxValue);
   }
 
   selectFolder() {
     let defaultFolder = this.$data.textBoxValue;
 
-    remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-      title: `Select save folder`,
+    remote.dialog
+      .showOpenDialog(remote.getCurrentWindow(), {
+        title: `Select save folder`,
 
-      // If path in textBox exists and is a directory, set it as defaultPath in dialog
-      defaultPath: (fs.existsSync(defaultFolder) && fs.lstatSync(defaultFolder).isDirectory()) ? defaultFolder : undefined,
+        // If path in textBox exists and is a directory, set it as defaultPath in dialog
+        defaultPath:
+          fs.existsSync(defaultFolder) && fs.lstatSync(defaultFolder).isDirectory() ? defaultFolder : undefined,
 
-      buttonLabel: "Select",
-      properties: ['openDirectory']
-    }).then((f) => {
-      let folder = f.filePaths[0];
+        buttonLabel: "Select",
+        properties: ["openDirectory"]
+      })
+      .then((f) => {
+        let folder = f.filePaths[0];
 
-      // If a folder was selected, set textBox value to it
-      if (folder != null) {
-        this.$set(this.$data, 'textBoxValue', folder);
-        this.textBoxValueUpdated();
-      }
-    });
+        // If a folder was selected, set textBox value to it
+        if (folder != null) {
+          this.$set(this.$data, "textBoxValue", folder);
+          this.textBoxValueUpdated();
+        }
+      });
   }
 }
 </script>
@@ -69,8 +78,8 @@ export default class TextBox extends Vue {
     border-radius: 4px;
     transition: background-color 250ms ease;
 
-    &[type=number]::-webkit-inner-spin-button,
-    &[type=number]::-webkit-outer-spin-button {
+    &[type="number"]::-webkit-inner-spin-button,
+    &[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
     }
 

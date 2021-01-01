@@ -5,9 +5,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-export default class KeyBindingSettingsComponent extends Vue{}
+export default class KeyBindingSettingsComponent extends Vue {}
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

@@ -52,13 +52,13 @@ import Recorder from "./../libs/recorder";
 
 @Component({
   components: {
-    Icon,
-  },
+    Icon
+  }
 })
 export default class Nav extends Vue {
   data() {
     return {
-      timeElapsed: "",
+      timeElapsed: ""
     };
   }
 
@@ -179,8 +179,7 @@ nav {
           height: 20px;
           padding: 0 !important;
           border-radius: 50%;
-          transition: background-color 250ms ease-in-out,
-            box-shadow 250ms ease-in-out;
+          transition: background-color 250ms ease-in-out, box-shadow 250ms ease-in-out;
           cursor: pointer;
           background-color: $textPrimary;
           box-shadow: 0 0 8px $textPrimary;

@@ -14,15 +14,15 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class DropDown extends Vue {
-  @Prop({required: true}) name: string;
-  @Prop({required: true}) activeItem: string;
-  @Prop({required: true}) items: Array<any>;
+  @Prop({ required: true }) name: string;
+  @Prop({ required: true }) activeItem: string;
+  @Prop({ required: true }) items: Array<any>;
 
   data() {
     return {
       itemActive: this.activeItem,
       dropDownItems: this.items.remove(this.activeItem)
-    }
+    };
   }
 
   private toggleDropDown() {
@@ -43,9 +43,9 @@ export default class DropDown extends Vue {
     this.$data.dropDownItems.replace(itemClicked, this.$data.itemActive);
 
     // Update itemActive prop with itemClicked on
-    this.$set(this.$data, 'itemActive', itemClicked);
+    this.$set(this.$data, "itemActive", itemClicked);
 
-    this.$emit('item-changed', this.name, this.$data.itemActive);
+    this.$emit("item-changed", this.name, this.$data.itemActive);
   }
 }
 </script>

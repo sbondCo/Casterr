@@ -7,8 +7,8 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class Icon extends Vue {
-  @Prop({required: true}) i: string
-  @Prop({default: 24}) wh: number
+  @Prop({ required: true }) i: string;
+  @Prop({ default: 24 }) wh: number;
 
   /**
    * Return html string for Icon
