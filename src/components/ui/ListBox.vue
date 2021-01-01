@@ -7,7 +7,10 @@
           :ticked="shouldBeEnabled(item.id)"
           @item-changed="listBoxValueUpdated"
         />
-        <span class="body" :title="item.title" :style="item.title == undefined ? '' : 'cursor: help;'">{{ item.name }}</span>
+
+        <span class="body" :title="item.title" :style="item.title == undefined ? '' : 'cursor: help;'">{{
+          item.name
+        }}</span>
       </div>
     </div>
   </div>
@@ -44,12 +47,28 @@ export class ListBoxItem {
 
 <style lang="scss" scoped>
 .listBoxContainer {
-  padding: 10px;
+  padding: 8px 3px;
   background-color: $secondaryColor;
   border-radius: 4px;
 
   .listBoxItem {
-    padding: 2px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 3px;
+
+    .body {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &:hover .body {
+      text-overflow: unset;
+      white-space: pre-wrap;
+      font-weight: bold;
+    }
   }
 }
 </style>
