@@ -20,9 +20,12 @@ export default class DropDown extends Vue {
 
   data() {
     return {
-      itemActive: this.activeItem,
-      dropDownItems: this.items.remove(this.activeItem)
+      itemActive: this.activeItem
     };
+  }
+
+  get dropDownItems() {
+    return this.items.remove(this.activeItem);
   }
 
   private toggleDropDown() {
@@ -40,7 +43,7 @@ export default class DropDown extends Vue {
 
   private switchItems(itemClicked: string) {
     // Replace itemClicked on with current activeItem
-    this.$data.dropDownItems.replace(itemClicked, this.$data.itemActive);
+    this.dropDownItems.replace(itemClicked, this.$data.itemActive);
 
     // Update itemActive prop with itemClicked on
     this.$set(this.$data, "itemActive", itemClicked);

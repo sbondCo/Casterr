@@ -86,8 +86,8 @@ export default class RecordingSettingsComponent extends Vue {
   data() {
     return {
       isWindows: require("os").platform == "win32",
-      videoDevice: "Some Mic",
-      videoDevices: ["Some Mic", "A TV?", "Is this a headset?", "G40${randNum}"],
+      videoDevice: RecordingSettings.videoDevice,
+      videoDevices: ["Default"],
       fps: RecordingSettings.fps,
       resolution: RecordingSettings.resolution,
       resolutions: ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"],
@@ -106,6 +106,11 @@ export default class RecordingSettingsComponent extends Vue {
 
   async mounted() {
     let d = await DeviceManager.getDevices();
+
+    // Add video devices to videoDevices
+    d.videoDevices.forEach((vd) => {
+      this.$data.videoDevices.push(vd);
+    });
 
     // Add audio devices to audioDevicesToRecord
     d.audioDevices.forEach((ad: AudioDevice) => {

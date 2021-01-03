@@ -23,7 +23,7 @@ export default class DeviceManager {
   }
 
   private static getLinuxDevices() {
-    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: string }>((resolve) => {
+    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: string[] }>((resolve) => {
       const pulse = new Pulse();
       const audioDevices = new Array<AudioDevice>();
 
@@ -64,7 +64,8 @@ export default class DeviceManager {
         onExitCallback: () => {
           resolve({
             audioDevices: audioDevices,
-            videoDevices: ""
+            // Currently getting over video devices is not supported on Linux.
+            videoDevices: []
           });
         }
       });
@@ -76,7 +77,6 @@ export default class DeviceManager {
       const ffmpeg = new FFmpeg();
       const audioDevices = new Array<AudioDevice>();
       const videoDevices = new Array<string>();
-
       const desktopVideoDevice = "screen-capture-recorder";
       let isAudioDevice = false;
 
@@ -113,7 +113,7 @@ export default class DeviceManager {
 
                 // If Desktop Screen video device, then add to
                 // videoDevices under different name
-                if (val.includes(desktopVideoDevice)) {
+                if (val == desktopVideoDevice) {
                   videoDevices.push("Desktop Screen");
                   return;
                 }
