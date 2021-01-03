@@ -15,6 +15,8 @@ export interface AudioDevice {
 }
 
 export default class DeviceManager {
+  public static readonly winDesktopVideoDevice = "screen-capture-recorder";
+
   public static getDevices() {
     if (process.platform == "win32") return this.getWindowsDevices();
     else if (process.platform == "linux") return this.getLinuxDevices();
@@ -77,7 +79,6 @@ export default class DeviceManager {
       const ffmpeg = new FFmpeg();
       const audioDevices = new Array<AudioDevice>();
       const videoDevices = new Array<string>();
-      const desktopVideoDevice = "screen-capture-recorder";
       let isAudioDevice = false;
 
       ffmpeg.run("-list_devices true -f dshow -i dummy", {
@@ -113,7 +114,7 @@ export default class DeviceManager {
 
                 // If Desktop Screen video device, then add to
                 // videoDevices under different name
-                if (val == desktopVideoDevice) {
+                if (val == this.winDesktopVideoDevice) {
                   videoDevices.push("Desktop Screen");
                   return;
                 }

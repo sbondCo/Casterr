@@ -1,3 +1,4 @@
+import DeviceManager from "./deviceManager";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
 import "../helpers/extensions";
@@ -67,9 +68,9 @@ export default class ArgumentBuilder {
 
     // Video device
     if (
-      RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", "screen-capture-recorder"])
+      RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
     ) {
-      args.push("-i video=screen-capture-recorder");
+      args.push(`-i video=${DeviceManager.winDesktopVideoDevice}`);
     } else {
       args.push(`-i video=${RecordingSettings.videoDevice}`);
     }
