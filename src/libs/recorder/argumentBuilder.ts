@@ -5,6 +5,10 @@ import "../helpers/extensions";
 import * as path from "path";
 
 export default class ArgumentBuilder {
+  /**
+   * Create FFmpeg arguments.
+   * Automatically builds the correct arguments depending on current OS.
+   */
   public static createArgs(): {
     args: string;
     videoPath: string;
@@ -22,6 +26,9 @@ export default class ArgumentBuilder {
     throw new Error("Could not build args for current system. It isn't supported.");
   }
 
+  /**
+   * Builds FFmpeg arguments for Linux.
+   */
   private static buildLinuxArgs() {
     const args = new Array<string>();
 
@@ -55,6 +62,9 @@ export default class ArgumentBuilder {
     };
   }
 
+  /**
+   * Builds FFmpeg arguments for Windows.
+   */
   private static buildWindowsArgs() {
     const args = new Array<string>();
 

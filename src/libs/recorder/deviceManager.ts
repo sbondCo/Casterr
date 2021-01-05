@@ -17,6 +17,10 @@ export interface AudioDevice {
 export default class DeviceManager {
   public static readonly winDesktopVideoDevice = "screen-capture-recorder";
 
+  /**
+   * Get audio and video devices that can be recorded with FFmpeg.
+   * Automatically gets correct devices depending on current OS.
+   */
   public static getDevices() {
     if (process.platform == "win32") return this.getWindowsDevices();
     else if (process.platform == "linux") return this.getLinuxDevices();
@@ -24,6 +28,9 @@ export default class DeviceManager {
     throw new Error("Could not get devices for current system. It isn't supported.");
   }
 
+  /**
+   * Get devices from Linux.
+   */
   private static getLinuxDevices() {
     return new Promise<{ audioDevices: AudioDevice[]; videoDevices: string[] }>((resolve) => {
       const pulse = new Pulse();
@@ -74,6 +81,9 @@ export default class DeviceManager {
     });
   }
 
+  /**
+   * Get devices from Windows.
+   */
   private static getWindowsDevices() {
     return new Promise<{ audioDevices: AudioDevice[]; videoDevices: Array<string> }>((resolve) => {
       const ffmpeg = new FFmpeg();

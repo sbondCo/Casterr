@@ -13,6 +13,9 @@ export interface Recording {
 }
 
 export default class RecordingsManager {
+  /**
+   * Get all user's past recordings.
+   */
   public static get(): Array<Recording> {
     const recordings = new Array<Recording>();
 

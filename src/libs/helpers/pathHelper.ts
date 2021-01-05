@@ -7,6 +7,11 @@ export default class PathHelper {
     return Path.join(os.homedir(), "Documents", "Casterr");
   }
 
+  /**
+   * Get the path to a file used by Casterr.
+   * Paths are hardcoded, only supported files that are listed here will work.
+   * @param name Name of file with extension
+   */
   public static getFile(
     name: "GeneralSettings.json" | "RecordingSettings.json" | "KeyBindingSettings.json" | "PastRecordings.json"
   ) {
