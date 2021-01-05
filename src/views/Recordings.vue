@@ -1,8 +1,5 @@
 <template>
   <div id="recordings">
-    <button @click="startRecording">Start recording</button>
-    <button @click="stopRecording">Stop recording</button>
-
     <div class="thumbContainer" v-if="allRecordings.length > 0">
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
