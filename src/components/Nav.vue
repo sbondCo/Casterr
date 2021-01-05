@@ -47,6 +47,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import Recorder from "./../libs/recorder";
+import { GeneralSettings } from "./../libs/settings";
 
 @Component({
   components: {
@@ -94,7 +95,10 @@ export default class Nav extends Vue {
   }
 
   startStopRecording() {
-    Recorder.auto();
+    // Only start/stop recording if setting is set to true
+    if (GeneralSettings.recordingStatusAlsoStopStartRecording) {
+      Recorder.auto();
+    }
   }
 }
 </script>

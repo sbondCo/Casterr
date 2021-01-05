@@ -95,6 +95,7 @@ export class AppSettings {
  */
 export class GeneralSettings {
   private static _startupPage: string = "Recordings";
+  private static _recordingStatusAlsoStopStartRecording: boolean = true;
 
   /**
    * startupPage
@@ -105,6 +106,18 @@ export class GeneralSettings {
 
   public static set startupPage(page) {
     this._startupPage = page;
+  }
+
+  /**
+   * recordingStatusAlsoStopStartRecording
+   * If recording status indicator should also act as a button to start/stop recording.
+   */
+  public static get recordingStatusAlsoStopStartRecording() {
+    return this._recordingStatusAlsoStopStartRecording;
+  }
+
+  public static set recordingStatusAlsoStopStartRecording(should) {
+    this._recordingStatusAlsoStopStartRecording = should;
   }
 }
 
