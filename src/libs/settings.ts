@@ -25,7 +25,6 @@ export default class SettingsManager {
     // Write settings in objects to correct file, format json with 2 spaces
     fs.writeFile(PathHelper.getFile(which), JSON.stringify(json, null, 2), (err: any) => {
       if (err) throw err;
-      console.log("Settings saved");
     });
   }
 

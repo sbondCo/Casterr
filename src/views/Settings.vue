@@ -39,7 +39,6 @@ export default Vue.extend({
   methods: {
     swapComponent: function(component: any) {
       this.activeSubPage = component;
-      console.log(this.activeSubPage);
     }
   }
 });

@@ -18,11 +18,7 @@ export default class Recorder {
 
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
-      this.ffmpeg.run(this.args.args.toString(), {
-        stderrCallback: (err: string) => {
-          console.log(err);
-        }
-      });
+      this.ffmpeg.run(this.args.args.toString());
 
       this.isRecording = true;
     }

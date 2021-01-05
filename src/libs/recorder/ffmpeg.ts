@@ -63,8 +63,6 @@ export default class FFmpeg {
 
     // When ffProcess exits
     this.ffProcess.on("close", (code) => {
-      console.log(`ffmpeg exited with code ${code}`);
-
       // Call onExitCallback is set to do so
       if (outputs?.onExitCallback != undefined) outputs?.onExitCallback();
     });

@@ -37,8 +37,6 @@ export default class Pulse {
 
     // When pulseProcess exits
     this.pulseProcess.on("close", (code) => {
-      console.log(`pactl exited with code ${code}`);
-
       // After pulse exits, send all stdout as one string through callback function.
       // This ensures that the stdout isn't sent back as multiple strings, which
       // could result in not being able to find what you need.
