@@ -30,7 +30,7 @@ export default class FFmpeg {
   }
 
   // FFmpeg/probe process
-  private ffProcess: childProcess.ChildProcess;
+  private ffProcess: childProcess.ChildProcess | undefined;
 
   /**
    * Run FF process and send args to it.
@@ -76,9 +76,11 @@ export default class FFmpeg {
   public async kill() {
     return new Promise<void>((resolve, reject) => {
       if (this.ffProcess != undefined) {
-        this.ffProcess.kill();
+        // FFmpeg gracefully stops recording when you press q
+        this.ffProcess.stdin?.write("q");
 
         this.ffProcess.on("exit", () => {
+          this.ffProcess = undefined;
           resolve();
         });
       } else {
