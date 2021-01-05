@@ -98,7 +98,7 @@ export default class RecordingsManager {
   public static createThumbnail(videoPath: string): string {
     const ffmpeg = new FFmpeg();
     const thumbPath = path.join(
-      PathHelper.ensureExists(RecordingSettings.thumbSaveFolder),
+      PathHelper.ensureExists(RecordingSettings.thumbSaveFolder, true),
       path.basename(videoPath) + ".png"
     );
 
