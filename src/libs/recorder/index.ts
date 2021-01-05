@@ -42,6 +42,18 @@ export default class Recorder {
   }
 
   /**
+   * Automatically decide whether to start or stop
+   * recording depending on if currently recording or not.
+   */
+  public static async auto() {
+    if (!this.isRecording) {
+      this.start();
+    } else {
+      await this.stop();
+    }
+  }
+
+  /**
    * isRecording getter.
    */
   private static get isRecording() {

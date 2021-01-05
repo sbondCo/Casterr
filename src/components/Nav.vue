@@ -35,10 +35,8 @@
         <div
           ref="recordingStatus"
           class="circle idle"
-          title="
-          Start/Stop Recording
-          White => Idle
-          Red => Recording"
+          :title="`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
+          @click="startStopRecording()"
         ></div>
       </li>
     </ul>
@@ -93,6 +91,10 @@ export default class Nav extends Vue {
         this.$data.timeElapsed = ``;
       }
     });
+  }
+
+  startStopRecording() {
+    Recorder.auto();
   }
 }
 </script>
