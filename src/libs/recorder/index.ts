@@ -1,6 +1,7 @@
 import FFmpeg from "./ffmpeg";
 import ArgumentBuilder from "./argumentBuilder";
 import RecordingsManager from "./recordingsManager";
+import Notifications from "./../helpers/notifications";
 import * as events from "events";
 
 export default class Recorder {
@@ -19,8 +20,9 @@ export default class Recorder {
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
       this.ffmpeg.run(this.args.args.toString());
-
       this.isRecording = true;
+
+      Notifications.desktop("Started Recording", "play");
     }
   }
 
