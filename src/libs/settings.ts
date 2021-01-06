@@ -125,7 +125,7 @@ export class GeneralSettings {
  */
 export class RecordingSettings {
   private static _thumbSaveFolder: string = path.join(PathHelper.mainFolderPath, "Thumbs");
-  private static _videoSaveFolder: string = path.join(PathHelper.mainFolderPath, "Videos");
+  private static _videoSaveFolder: string = path.join(PathHelper.homeFolderPath, "Videos", "Casterr");
   private static _videoSaveName: string = "%d.%m.%Y - %H.%i.%s";
   private static _videoDevice: string = "Default";
   private static _fps: string = "60";

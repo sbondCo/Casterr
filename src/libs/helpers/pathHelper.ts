@@ -7,6 +7,10 @@ export default class PathHelper {
     return Path.join(os.homedir(), "Documents", "Casterr");
   }
 
+  public static get homeFolderPath() {
+    return os.homedir();
+  }
+
   /**
    * Get the path to a file used by Casterr.
    * Paths are hardcoded, only supported files that are listed here will work.
