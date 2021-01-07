@@ -2,17 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build and run",
-      "command": "electronize",
-      "type": "shell",
-      "args": [
-        "start"
+      "label": "Run",
+      "dependsOn": [
+        "Run Client App"
       ],
-      "problemMatcher": "$msCompile",
+      "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
-      }
+      },
+      "problemMatcher": "$msCompile",
+      "isBackground": true
+    },
+    {
+      "label": "Run Client App",
+      "command": "npm run electron:serve",
+      "type": "shell",
+      "problemMatcher": "$msCompile"
     }
   ]
 }
