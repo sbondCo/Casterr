@@ -7,8 +7,8 @@
   <br />
   <br />
   
-  <a href="https://www.codefactor.io/repository/github/casterrtv/casterr">
-    <img src="https://www.codefactor.io/repository/github/casterrtv/casterr/badge" alt="CodeFactor" />
+  <a href="https://www.codefactor.io/repository/github/sbondco/casterr">
+    <img src="https://www.codefactor.io/repository/github/sbondco/casterr/badge" alt="CodeFactor" />
   </a>
   
   <a href="LICENSE">
