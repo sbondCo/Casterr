@@ -11,6 +11,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import fs from "fs";
+import path from "path";
 
 @Component({
   components: {
@@ -20,8 +21,15 @@ import fs from "fs";
 export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
+  /**
+   * Check if videoPath exists and has a supported extension (mp4, mkv, etc)
+   */
   get videoExists() {
-    return fs.existsSync(this.videoPath)
+    if (fs.existsSync(this.videoPath)) {
+      return path.extname(this.videoPath).equalsAnyOf([".mp4", ".mkv", ".webm"]);
+    }
+
+    return false;
   }
 }
 </script>
