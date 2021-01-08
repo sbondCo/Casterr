@@ -1,8 +1,19 @@
 <template>
   <div class="videoPlayerContainer">
-    {{ videoPath }}
+    <div v-if="videoExists">
+      <video
+        ref="videoPlayer"
+        id="video"
+        :src="'secfile://' + videoPath"
+        @loadedmetadata="videoLoaded"
+        width="450"
+        controls
+      ></video>
 
-    <video v-if="videoExists" id="video" :src="'secfile://' + videoPath" width="450" controls></video>
+      <div>
+        <input ref="progressBar" type="range" value="0" min="0" />
+      </div>
+    </div>
     <span v-else>Video doesn't exist</span>
   </div>
 </template>
@@ -20,6 +31,21 @@ import path from "path";
 })
 export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
+
+  videoLoaded() {
+    const video = this.$refs.videoPlayer as HTMLVideoElement;
+    const progress = this.$refs.progressBar as HTMLInputElement;
+
+    // Set max for progress bar to videos duration
+    progress.max = video.duration.toString();
+
+    /**
+     * Update progress bar with video progress.
+     */
+    video.addEventListener("timeupdate", () => {
+      progress.value = video.currentTime.toString();
+    });
+  }
 
   /**
    * Check if videoPath exists and has a supported extension (mp4, mkv, etc)
