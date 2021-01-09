@@ -6,12 +6,15 @@
         id="video"
         :src="'secfile://' + videoPath"
         @loadedmetadata="videoLoaded"
-        width="450"
         controls
       ></video>
 
-      <div>
+      <!-- <div>
         <input ref="progressBar" type="range" value="0" min="0" />
+      </div> -->
+
+      <div ref="progressBar" class="progressBar">
+        <div ref="scrubber" class="scrubber"></div>
       </div>
     </div>
     <span v-else>Video doesn't exist</span>
@@ -34,16 +37,25 @@ export default class VideoPlayer extends Vue {
 
   videoLoaded() {
     const video = this.$refs.videoPlayer as HTMLVideoElement;
-    const progress = this.$refs.progressBar as HTMLInputElement;
-
-    // Set max for progress bar to videos duration
-    progress.max = video.duration.toString();
-
+    const progress = this.$refs.progressBar as HTMLElement;
+    const scrubber = this.$refs.scrubber as HTMLElement;
+    
     /**
      * Update progress bar with video progress.
      */
     video.addEventListener("timeupdate", () => {
-      progress.value = video.currentTime.toString();
+      const percentageWatched = (video.currentTime / video.duration) * 100;
+      // scrubber.style.left = `${percentageWatched.toString()}%`;
+
+      console.log('percentageWatched: ' + percentageWatched)
+    });
+
+    progress.addEventListener('click', (e) => {
+      const timeClickedTo = (e.clientX / progress.clientWidth) * 25;
+      scrubber.style.left = `${e.offsetX}px`;
+      video.currentTime = timeClickedTo;
+
+      console.log('timeClickedTo: ' + timeClickedTo);
     });
   }
 
@@ -62,5 +74,24 @@ export default class VideoPlayer extends Vue {
 
 <style lang="scss" scoped>
 .videoPlayerContainer {
+  video {
+    width: 100%;
+    outline: none;
+  }
+
+  .progressBar {
+    height: 30px;
+    width: 90%;
+    background-color: $secondaryColor;
+
+    .scrubber {
+      position: relative;
+      width: 1px;
+      height: 100%;
+      padding: 5px;
+      background-color: $darkAccentColor;
+      border-radius: 4px;
+    }
+  }
 }
 </style>

@@ -41,9 +41,9 @@
       </div>
     </div>
 
-    <!-- <div ref="videoPlayerWrapper" class="videoPlayerWrapper hidden"> -->
+    <div ref="videoPlayerWrapper" class="videoPlayerWrapper hidden">
       <VideoPlayer :videoPath="loadedVideoPath"/>
-    <!-- </div> -->
+    </div>
   </div>
 </template>
 
@@ -101,6 +101,7 @@ export default class extends Vue {
   }
 
   openVideoPlayer(videoPath: string) {
+    (this.$refs.videoPlayerWrapper as HTMLElement).classList.remove("hidden");
     this.$data.loadedVideoPath = videoPath;
   }
 
