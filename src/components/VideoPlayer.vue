@@ -88,7 +88,7 @@ export default class VideoPlayer extends Vue {
   }
 
   .progressBar {
-    height: 30px;
+    height: 40px;
     width: 90%;
     background-color: $secondaryColor;
 
