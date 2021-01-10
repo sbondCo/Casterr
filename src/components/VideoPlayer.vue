@@ -9,10 +9,6 @@
         controls
       ></video>
 
-      <!-- <div>
-        <input ref="progressBar" type="range" value="0" min="0" />
-      </div> -->
-
       <div ref="progressBar" class="progressBar">
         <div ref="scrubber" class="scrubber"></div>
       </div>
@@ -35,28 +31,40 @@ import path from "path";
 export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
+  private video: HTMLVideoElement;
+  private progress: HTMLElement;
+  private scrubber: HTMLElement;
+  private isScrubbing: boolean = false;
+
   videoLoaded() {
-    const video = this.$refs.videoPlayer as HTMLVideoElement;
-    const progress = this.$refs.progressBar as HTMLElement;
-    const scrubber = this.$refs.scrubber as HTMLElement;
-    
-    /**
-     * Update progress bar with video progress.
-     */
-    video.addEventListener("timeupdate", () => {
-      const percentageWatched = (video.currentTime / video.duration) * 100;
-      // scrubber.style.left = `${percentageWatched.toString()}%`;
+    this.video = this.$refs.videoPlayer as HTMLVideoElement;
+    this.progress = this.$refs.progressBar as HTMLElement;
+    this.scrubber = this.$refs.scrubber as HTMLElement;
 
-      console.log('percentageWatched: ' + percentageWatched)
-    });
+    this.progress.addEventListener("mousedown", this.scrub);
+    this.progress.addEventListener("mousemove", this.scrub);
+    this.progress.addEventListener("mouseup", this.scrub);
+  }
 
-    progress.addEventListener('click', (e) => {
-      const timeClickedTo = (e.clientX / progress.clientWidth) * 25;
-      scrubber.style.left = `${e.offsetX}px`;
-      video.currentTime = timeClickedTo;
+  scrub(e: MouseEvent) {
+    const scrub = () => {
+      const timeClickedTo = (e.clientX / this.progress.clientWidth) * 25;
+      this.scrubber.style.left = `${e.offsetX}px`;
+      this.video.currentTime = timeClickedTo;
+    };
 
-      console.log('timeClickedTo: ' + timeClickedTo);
-    });
+    switch (e.type) {
+      case "mousedown":
+        scrub();
+        this.isScrubbing = true;
+        break;
+      case "mousemove":
+        if (this.isScrubbing) scrub();
+        break;
+      case "mouseup":
+        if (this.isScrubbing) this.isScrubbing = false;
+        break;
+    }
   }
 
   /**
@@ -85,6 +93,7 @@ export default class VideoPlayer extends Vue {
     background-color: $secondaryColor;
 
     .scrubber {
+      pointer-events: none;
       position: relative;
       width: 1px;
       height: 100%;
