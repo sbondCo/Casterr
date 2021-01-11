@@ -45,12 +45,12 @@ export default class VideoPlayer extends Vue {
 
     this.progress.addEventListener("mousedown", this.scrub);
     this.progress.addEventListener("mousemove", this.scrub);
-    this.progress.addEventListener("mouseup", this.scrub);
+    document.addEventListener("mouseup", this.scrub);
   }
 
   scrub(e: MouseEvent) {
     const scrub = () => {
-      const timeClickedTo = (e.clientX / this.progress.clientWidth) * 25;
+      const timeClickedTo = (e.clientX / this.progress.clientWidth) * this.video.duration;
       this.scrubber.style.transform = `translateX(${e.offsetX}px)`;
       this.video.currentTime = timeClickedTo;
 
