@@ -10,7 +10,9 @@
       ></video>
 
       <div ref="progressBar" class="progressBar">
-        <div ref="scrubber" class="scrubber"></div>
+        <div ref="scrubber" class="scrubberContainer">
+          <div class="scrubber"></div>
+        </div>
       </div>
     </div>
     <span v-else>Video doesn't exist</span>
@@ -49,8 +51,10 @@ export default class VideoPlayer extends Vue {
   scrub(e: MouseEvent) {
     const scrub = () => {
       const timeClickedTo = (e.clientX / this.progress.clientWidth) * 25;
-      this.scrubber.style.left = `${e.offsetX}px`;
+      this.scrubber.style.transform = `translateX(${e.offsetX}px)`;
       this.video.currentTime = timeClickedTo;
+
+      console.log(timeClickedTo);
     };
 
     switch (e.type) {
@@ -92,14 +96,24 @@ export default class VideoPlayer extends Vue {
     width: 90%;
     background-color: $secondaryColor;
 
-    .scrubber {
+    .scrubberContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: -6.5px;
+      height: 40px;
       pointer-events: none;
-      position: relative;
-      width: 1px;
-      height: 100%;
-      padding: 5px;
-      background-color: $darkAccentColor;
-      border-radius: 4px;
+
+      .scrubber {
+        position: relative;
+        width: 1px;
+        height: 30px;
+        padding: 5px;
+        background-color: $darkAccentColor;
+        border: 1px solid $textPrimary;
+        border-radius: 4px;
+      }
     }
   }
 }
