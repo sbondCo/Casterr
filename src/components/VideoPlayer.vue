@@ -43,6 +43,11 @@ export default class VideoPlayer extends Vue {
     this.progress = this.$refs.progressBar as HTMLElement;
     this.scrubber = this.$refs.scrubber as HTMLElement;
 
+    this.video.addEventListener("timeupdate", () => {
+      const percentageWatched = (this.video.currentTime / this.video.duration) * 100;
+      const pixelsToTranslateX = (this.progress.clientWidth * (percentageWatched / 100)).toFixed(0);
+      this.scrubber.style.transform = `translateX(${pixelsToTranslateX}px)`;
+    });
     this.progress.addEventListener("mousedown", this.scrub);
     this.progress.addEventListener("mousemove", this.scrub);
     document.addEventListener("mouseup", this.scrub);
@@ -53,8 +58,6 @@ export default class VideoPlayer extends Vue {
       const timeClickedTo = (e.clientX / this.progress.clientWidth) * this.video.duration;
       this.scrubber.style.transform = `translateX(${e.offsetX}px)`;
       this.video.currentTime = timeClickedTo;
-
-      console.log(timeClickedTo);
     };
 
     switch (e.type) {
