@@ -1,22 +1,16 @@
 <template>
-  <div class="videoPlayerContainer">
-    <div v-if="videoExists">
-      <video
-        ref="videoPlayer"
-        id="video"
-        :src="'secfile://' + videoPath"
-        @loadedmetadata="videoLoaded"
-        controls
-      ></video>
+  <div v-if="videoExists" class="videoPlayerContainer">
+    <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded" controls></video>
 
+    <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar">
         <div ref="scrubber" class="scrubberContainer">
           <div class="scrubber"></div>
         </div>
       </div>
     </div>
-    <span v-else>Video doesn't exist</span>
   </div>
+  <span v-else>Video doesn't exist</span>
 </template>
 
 <script lang="ts">
@@ -44,9 +38,9 @@ export default class VideoPlayer extends Vue {
     this.scrubber = this.$refs.scrubber as HTMLElement;
 
     this.video.addEventListener("timeupdate", () => {
-      const percentageWatched = (this.video.currentTime / this.video.duration) * 100;
-      const pixelsToTranslateX = (this.progress.clientWidth * (percentageWatched / 100)).toFixed(0);
-      this.scrubber.style.transform = `translateX(${pixelsToTranslateX}px)`;
+      // const percentageWatched = (this.video.currentTime / this.video.duration) * 100;
+      // const pixelsToTranslateX = (this.progress.clientWidth * (percentageWatched / 100)).toFixed(0);
+      // this.scrubber.style.transform = `translateX(${pixelsToTranslateX}px)`;
     });
     this.progress.addEventListener("mousedown", this.scrub);
     this.progress.addEventListener("mousemove", this.scrub);
@@ -55,9 +49,11 @@ export default class VideoPlayer extends Vue {
 
   scrub(e: MouseEvent) {
     const scrub = () => {
-      const timeClickedTo = (e.clientX / this.progress.clientWidth) * this.video.duration;
-      this.scrubber.style.transform = `translateX(${e.offsetX}px)`;
+      const timeClickedTo = (e.offsetX / this.progress.clientWidth) * this.video.duration;
+      this.scrubber.style.left = `${e.offsetX}px`;
       this.video.currentTime = timeClickedTo;
+
+      // console.log(e.offsetX, this.progress.clientWidth);
     };
 
     switch (e.type) {
@@ -89,6 +85,8 @@ export default class VideoPlayer extends Vue {
 
 <style lang="scss" scoped>
 .videoPlayerContainer {
+  width: 100%;
+
   video {
     width: 100%;
     height: 400px;
@@ -96,25 +94,31 @@ export default class VideoPlayer extends Vue {
     background-color: black;
   }
 
+  .progressBarContainer {
+    width: 100%;
+
+    padding: 0 10px;
+    background-color: $secondaryColor;
+
+  }
+
   .progressBar {
     height: 40px;
-    width: 90%;
-    background-color: $secondaryColor;
+    // width: 90%;
+    // background-color: $secondaryColor;
 
     .scrubberContainer {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: absolute;
-      left: -6.5px;
-      height: 40px;
+      position: relative;
+      height: 100%;
       pointer-events: none;
 
       .scrubber {
-        position: relative;
-        width: 1px;
+        position: absolute;
+        left: -7px;
+        width: 12px;
         height: 30px;
-        padding: 5px;
         background-color: $darkAccentColor;
         border: 1px solid $textPrimary;
         border-radius: 4px;
