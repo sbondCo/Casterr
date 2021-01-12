@@ -91,7 +91,9 @@ export default class VideoPlayer extends Vue {
 .videoPlayerContainer {
   video {
     width: 100%;
+    height: 400px;
     outline: none;
+    background-color: black;
   }
 
   .progressBar {
