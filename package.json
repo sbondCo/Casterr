@@ -19,7 +19,7 @@
   "main": "background.js",
   "dependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
-    "@types/node": "^14.14.20",
+    "@types/node": "^14.14.21",
     "core-js": "^3.8.2",
     "jszip": "^3.5.0",
     "vue": "^2.6.12",
