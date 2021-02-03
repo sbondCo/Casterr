@@ -71,7 +71,6 @@ export default class VideoPlayer extends Vue {
 
   .progressBarContainer {
     width: 100%;
-
     padding: 0 10px;
     background-color: $secondaryColor;
 
@@ -93,7 +92,7 @@ export default class VideoPlayer extends Vue {
         display: flex;
         align-items: center;
         justify-content: center;
-        top: 0;
+        top: 5px;
         right: -6px;
         width: 12px;
         height: 30px;
