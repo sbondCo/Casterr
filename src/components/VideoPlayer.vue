@@ -3,11 +3,7 @@
     <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded" controls></video>
 
     <div class="progressBarContainer">
-      <div ref="progressBar" class="progressBar">
-        <div ref="scrubber" class="scrubberContainer">
-          <div class="scrubber"></div>
-        </div>
-      </div>
+      <div ref="progressBar" class="progressBar"></div>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -18,6 +14,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import fs from "fs";
 import path from "path";
+import noUiSlider from "nouislider";
 
 @Component({
   components: {
@@ -28,46 +25,18 @@ export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
-  private progress: HTMLElement;
-  private scrubber: HTMLElement;
-  private isScrubbing: boolean = false;
-
+  private progressBar: noUiSlider.Instance;
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
-    this.progress = this.$refs.progressBar as HTMLElement;
-    this.scrubber = this.$refs.scrubber as HTMLElement;
+    this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
 
-    this.video.addEventListener("timeupdate", () => {
-      // const percentageWatched = (this.video.currentTime / this.video.duration) * 100;
-      // const pixelsToTranslateX = (this.progress.clientWidth * (percentageWatched / 100)).toFixed(0);
-      // this.scrubber.style.transform = `translateX(${pixelsToTranslateX}px)`;
+    noUiSlider.create(this.progressBar, {
+      start: [0],
+      range: {
+        min: 0,
+        max: this.video.duration
+      }
     });
-    this.progress.addEventListener("mousedown", this.scrub);
-    this.progress.addEventListener("mousemove", this.scrub);
-    document.addEventListener("mouseup", this.scrub);
-  }
-
-  scrub(e: MouseEvent) {
-    const scrub = () => {
-      const timeClickedTo = (e.offsetX / this.progress.clientWidth) * this.video.duration;
-      this.scrubber.style.left = `${e.offsetX}px`;
-      this.video.currentTime = timeClickedTo;
-
-      // console.log(e.offsetX, this.progress.clientWidth);
-    };
-
-    switch (e.type) {
-      case "mousedown":
-        scrub();
-        this.isScrubbing = true;
-        break;
-      case "mousemove":
-        if (this.isScrubbing) scrub();
-        break;
-      case "mouseup":
-        if (this.isScrubbing) this.isScrubbing = false;
-        break;
-    }
   }
 
   /**
@@ -83,7 +52,9 @@ export default class VideoPlayer extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+@import "./../../node_modules/nouislider/distribute/nouislider.css";
+
 .videoPlayerContainer {
   width: 100%;
 
@@ -100,28 +71,36 @@ export default class VideoPlayer extends Vue {
     padding: 0 10px;
     background-color: $secondaryColor;
 
-  }
+    .progressBar {
+      * {
+        box-shadow: unset;
+        outline: unset;
+      }
 
-  .progressBar {
-    height: 40px;
-    // width: 90%;
-    // background-color: $secondaryColor;
+      &.noUi-target {
+        background-color: $secondaryColor;
+        border-radius: unset;
+        border: unset;
+        box-shadow: unset;
+        height: 40px;
+      }
 
-    .scrubberContainer {
-      display: flex;
-      align-items: center;
-      position: relative;
-      height: 100%;
-      pointer-events: none;
-
-      .scrubber {
-        position: absolute;
-        left: -7px;
+      .noUi-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        right: -6px;
         width: 12px;
         height: 30px;
         background-color: $darkAccentColor;
         border: 1px solid $textPrimary;
         border-radius: 4px;
+
+        &::before,
+        &::after {
+          display: none;
+        }
       }
     }
   }
