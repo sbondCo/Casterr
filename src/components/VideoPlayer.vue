@@ -37,6 +37,10 @@ export default class VideoPlayer extends Vue {
         max: this.video.duration
       }
     });
+
+    this.progressBar.noUiSlider.on("update", (values: any) => {
+      this.video.currentTime = values[0];
+    });
   }
 
   /**
