@@ -29,41 +29,47 @@ Automatically start recording your game when it is opened. When the game closes,
 ## Current Features
 
 - **Works on Windows & Linux**
-- **Built with Electron for a great UI experience**
-- **Recording**
-  - Start / Stop
-  - Status indicator
-- **Show recordings**
-  - Name
-  - Length
-  - Size
-  - FPS
-  - Thumbnail
-- **Settings**
-  - ***General***
-    - Startup Page
-  - ***Recording***
-    - ThumbSaveFolder
-    - VideoSaveFolder
-    - VideoSaveName
-    
-        Can use date/time formatting (eg. %Y will print 2020)
-    
-    - VideoDevice
-    - FPS
-    - Resolution
-    - Format
-    - ZeroLatency (Windows Only)
-    - UltraFast (Windows Only)
-    - AudioDevicesToRecord
-      
-        Can select as many audio devices as you want!
-      
-    - SeperateAudioTracks
-  - ***KeyBinding***
-    
-    Not fully implemented yet.
-- **Show progress of task (if performing one)**
+
+- <details open>
+  <summary><b>Recording</b></summary>
+  <ul>
+    <li>Start / Stop</li>
+    <li>Status indicator</li>
+  </ul>
+</details>
+
+- <details open>
+  <summary><b>Recordings browser</b></summary>
+  <ul>
+    <li>Name</li>
+    <li>Length</li>
+    <li>Size</li>
+    <li>FPS</li>
+    <li>Thumbnail</li>
+  </ul>
+</details>
+
+- <details>
+  <summary><b>Settings</b></summary>
+  <ul>
+    <li><b>General</b></li>
+      <ul>
+        <li>Startup Page</li>
+      </ul>
+    <li><b>Recording</b></li>
+      <ul>
+        <li>Thumb Save Folder</li>
+        <li>Video Save Folder</li>
+        <li>Video Save Name (With custom date/time formatting)</li>
+        <li>Video Device</li>
+        <li>FPS</li>
+        <li>Resolution</li>
+        <li>Format</li>
+        <li>Audio Devices To Record (Select as many as you want!)</li>
+        <li>Seperate Audio Tracks</li>
+      </ul>
+  </ul>
+</details>
 
 ## Contributing
 
