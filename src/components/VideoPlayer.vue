@@ -35,10 +35,15 @@ export default class VideoPlayer extends Vue {
       range: {
         min: 0,
         max: this.video.duration
+      },
+      pips: {
+        mode: "count",
+        values: 10
       }
     });
 
     this.progressBar.noUiSlider.on("update", (values: any) => {
+      console.log(values[0]);
       this.video.currentTime = values[0];
     });
   }
@@ -103,6 +108,19 @@ export default class VideoPlayer extends Vue {
         &::before,
         &::after {
           display: none;
+        }
+      }
+
+      .noUi-pips {
+        top: 11px;
+        height: unset;
+        padding: unset;
+
+        .noUi-marker {
+          display: none;
+        }
+
+        .noUi-value {
         }
       }
     }
