@@ -43,7 +43,6 @@ export default class VideoPlayer extends Vue {
     });
 
     this.progressBar.noUiSlider.on("update", (values: any) => {
-      console.log(values[0]);
       this.video.currentTime = values[0];
     });
   }
@@ -112,7 +111,7 @@ export default class VideoPlayer extends Vue {
       }
 
       .noUi-pips {
-        top: 11px;
+        top: 12px;
         height: unset;
         padding: unset;
 
@@ -121,6 +120,7 @@ export default class VideoPlayer extends Vue {
         }
 
         .noUi-value {
+          transform: translateX(-50%);
         }
       }
     }
