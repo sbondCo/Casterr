@@ -4,7 +4,7 @@
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
-      <div ref="clipsBar" class=""></div>
+      <!-- <div ref="clipsBar" class="clipsBar"></div> -->
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -36,10 +36,12 @@ export default class VideoPlayer extends Vue {
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
 
     noUiSlider.create(this.progressBar, {
-      start: [0],
+      start: [0, 10, 20, 40, 50, 70, 80],
+      connect: [false, false, true, false, true, false, true, false],
+      behaviour: "unconstrained-drag",
       range: {
         min: 0,
-        max: this.video.duration
+        max: 100 //this.video.duration
       },
       pips: {
         mode: "count",
@@ -57,15 +59,15 @@ export default class VideoPlayer extends Vue {
       this.video.currentTime = values[0];
     });
 
-    noUiSlider.create(this.clipsBar, {
-      start: [10, 20, 40, 50, 70, 80],
-      behaviour: "drag",
-      connect: [false, true, false, true, false, true, false],
-      range: {
-        min: 0,
-        max: 100
-      }
-    });
+    // noUiSlider.create(this.clipsBar, {
+    //   start: [10, 20, 40, 50, 70, 80],
+    //   behaviour: "drag",
+    //   connect: [false, true, false, true, false, true, false],
+    //   range: {
+    //     min: 0,
+    //     max: 100 //this.video.duration
+    //   }
+    // });
 
     this.progressBar.addEventListener("dblclick", () => {
       let pb = this.progressBar.noUiSlider;
@@ -101,22 +103,19 @@ export default class VideoPlayer extends Vue {
 
   .progressBarContainer {
     width: 100%;
+    height: 40px;
     padding: 0 10px;
     background-color: $secondaryColor;
 
-    .progressBar {
-      * {
-        box-shadow: unset;
-        outline: unset;
-      }
+    * {
+      box-shadow: unset;
+      outline: unset;
+      border: unset;
+    }
 
-      &.noUi-target {
-        background-color: $secondaryColor;
-        border-radius: unset;
-        border: unset;
-        box-shadow: unset;
-        height: 40px;
-      }
+    .progressBar {
+      height: 100%;
+      background-color: $secondaryColor;
 
       .noUi-handle {
         display: flex;
@@ -151,6 +150,42 @@ export default class VideoPlayer extends Vue {
 
         .noUi-value {
           transform: translateX(-50%);
+        }
+      }
+    }
+
+    .clipsBar {
+      position: relative;
+      top: -100%;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+
+      .noUi-draggable {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid $textPrimary;
+        // border-radius: 4px;
+      }
+
+      .noUi-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 0px;
+        right: -6px;
+        width: 12px;
+        height: 40px;
+        background-color: $darkAccentColor;
+        border: 1px solid $textPrimary;
+        border-radius: 0px;
+
+        &::before,
+        &::after {
+          display: none;
+        }
+
+        &:active {
+          cursor: grabbing;
         }
       }
     }
