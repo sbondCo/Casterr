@@ -108,6 +108,10 @@ export default class VideoPlayer extends Vue {
         &::after {
           display: none;
         }
+
+        &:active {
+          cursor: grabbing;
+        }
       }
 
       .noUi-pips {
