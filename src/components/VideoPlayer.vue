@@ -42,6 +42,7 @@ export default class VideoPlayer extends Vue {
         values: 10,
         format: {
           to: (value: number) => {
+            // Show readable time on pip values
             return value.toReadableTimeFromSeconds();
           }
         }
