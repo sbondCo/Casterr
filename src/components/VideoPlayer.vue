@@ -12,6 +12,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "./Icon.vue";
+import "./../libs/helpers/extensions";
 import fs from "fs";
 import path from "path";
 import noUiSlider from "nouislider";
@@ -38,7 +39,12 @@ export default class VideoPlayer extends Vue {
       },
       pips: {
         mode: "count",
-        values: 10
+        values: 10,
+        format: {
+          to: (value: number) => {
+            return value.toReadableTimeFromSeconds();
+          }
+        }
       }
     });
 
