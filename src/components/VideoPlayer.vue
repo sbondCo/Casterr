@@ -4,6 +4,7 @@
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
+      <div ref="clipsBar" class=""></div>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -27,9 +28,12 @@ export default class VideoPlayer extends Vue {
 
   private video: HTMLVideoElement;
   private progressBar: noUiSlider.Instance;
+  private clipsBar: noUiSlider.Instance;
+
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
+    this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
 
     noUiSlider.create(this.progressBar, {
       start: [0],
@@ -51,6 +55,21 @@ export default class VideoPlayer extends Vue {
 
     this.progressBar.noUiSlider.on("update", (values: any) => {
       this.video.currentTime = values[0];
+    });
+
+    noUiSlider.create(this.clipsBar, {
+      start: [10, 20, 40, 50, 70, 80],
+      behaviour: "drag",
+      connect: [false, true, false, true, false, true, false],
+      range: {
+        min: 0,
+        max: 100
+      }
+    });
+
+    this.progressBar.addEventListener("dblclick", () => {
+      let pb = this.progressBar.noUiSlider;
+      console.log(pb.options);
     });
   }
 
