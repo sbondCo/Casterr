@@ -4,7 +4,7 @@
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
-      <!-- <div ref="clipsBar" class="clipsBar"></div> -->
+      <div ref="clipsBar" class="clipsBar"></div>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -36,12 +36,10 @@ export default class VideoPlayer extends Vue {
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
 
     noUiSlider.create(this.progressBar, {
-      start: [0, 10, 20, 40, 50, 70, 80],
-      connect: [false, false, true, false, true, false, true, false],
-      behaviour: "unconstrained-drag",
+      start: [0],
       range: {
         min: 0,
-        max: 100 //this.video.duration
+        max: this.video.duration
       },
       pips: {
         mode: "count",
@@ -59,15 +57,15 @@ export default class VideoPlayer extends Vue {
       this.video.currentTime = values[0];
     });
 
-    // noUiSlider.create(this.clipsBar, {
-    //   start: [10, 20, 40, 50, 70, 80],
-    //   behaviour: "drag",
-    //   connect: [false, true, false, true, false, true, false],
-    //   range: {
-    //     min: 0,
-    //     max: 100 //this.video.duration
-    //   }
-    // });
+    noUiSlider.create(this.clipsBar, {
+      start: [10, 20, 40, 50, 70, 80],
+      behaviour: "drag",
+      connect: [false, true, false, true, false, true, false],
+      range: {
+        min: 0,
+        max: 100 //this.video.duration
+      }
+    });
 
     this.progressBar.addEventListener("dblclick", () => {
       let pb = this.progressBar.noUiSlider;
@@ -121,10 +119,10 @@ export default class VideoPlayer extends Vue {
         display: flex;
         align-items: center;
         justify-content: center;
-        top: 5px;
+        top: 0;
         right: -6px;
         width: 12px;
-        height: 30px;
+        height: 40px;
         background-color: $darkAccentColor;
         border: 1px solid $textPrimary;
         border-radius: 4px;
@@ -161,23 +159,31 @@ export default class VideoPlayer extends Vue {
       height: 100%;
       background-color: transparent;
 
+      .noUi-base {
+        pointer-events: none;
+      }
+
       .noUi-draggable {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px solid $textPrimary;
-        // border-radius: 4px;
+        border-radius: 4px;
+        top: 7px;
+        height: 25px;
+        pointer-events: all;
       }
 
       .noUi-handle {
         display: flex;
         align-items: center;
         justify-content: center;
-        top: 0px;
+        top: 7px;
         right: -6px;
         width: 12px;
-        height: 40px;
+        height: 25px;
         background-color: $darkAccentColor;
         border: 1px solid $textPrimary;
         border-radius: 0px;
+        pointer-events: all;
 
         &::before,
         &::after {
