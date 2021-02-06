@@ -58,19 +58,43 @@ export default class VideoPlayer extends Vue {
     });
 
     noUiSlider.create(this.clipsBar, {
-      start: [10, 20, 40, 50, 70, 80],
+      start: [1200, 1550, 2500, 3069, 4040, 4500],
       behaviour: "drag",
       connect: [false, true, false, true, false, true, false],
+      tooltips: [true, false, true, false, true, false],
       range: {
         min: 0,
-        max: 100 //this.video.duration
+        max: this.video.duration
       }
+    });
+
+    this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
+      this.updateTooltip(values, handle);
     });
 
     this.progressBar.addEventListener("dblclick", () => {
       let pb = this.progressBar.noUiSlider;
       console.log(pb.options);
     });
+  }
+
+  updateTooltip(values: any, handle: any) {
+    let tooltips = this.clipsBar.noUiSlider.getTooltips();
+    let tooltip = tooltips[handle];
+
+    if (tooltips[handle] == false) {
+      handle = handle - 1;
+      tooltip = tooltips[handle];
+    }
+
+    let connects = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-connect");
+    let connect = connects.item(tooltips.filter((e: any) => e != false).indexOf(tooltip));
+
+    // Set tooltip position
+    tooltip.style.left = `${(connect.getBoundingClientRect().width + 8) / 2}px`;
+
+    // Set tooltip value to clip length
+    tooltip.innerHTML = (parseFloat(values[handle + 1]) - parseFloat(values[handle])).toReadableTimeFromSeconds();
   }
 
   /**
