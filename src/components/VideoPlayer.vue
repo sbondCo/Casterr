@@ -76,25 +76,47 @@ export default class VideoPlayer extends Vue {
       let pb = this.progressBar.noUiSlider;
       console.log(pb.options);
     });
+
+    // Show/Hide tooltip on drag
+    this.clipsBar.noUiSlider.on("start", (_, handle: any) => {
+      this.getPairFromHandle(handle).tooltip.style.display = "block";
+    });
+    this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
+      this.getPairFromHandle(handle).tooltip.style.display = "none";
+    });
   }
 
   updateTooltip(values: any, handle: any) {
-    let tooltips = this.clipsBar.noUiSlider.getTooltips();
-    let tooltip = tooltips[handle];
+    let pair = this.getPairFromHandle(handle);
 
-    if (tooltips[handle] == false) {
+    // Set tooltip position
+    pair.tooltip.style.left = `${(pair.connect.getBoundingClientRect().width + 8) / 2}px`;
+
+    // Set tooltip value to clip length
+    pair.tooltip.innerHTML = (
+      parseFloat(values[pair.handle + 1]) - parseFloat(values[pair.handle])
+    ).toReadableTimeFromSeconds();
+  }
+
+  getPairFromHandle(handle: number) {
+    let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider.getTooltips();
+    let tooltip: HTMLElement;
+
+    if (tooltips[handle] instanceof HTMLElement) {
+      tooltip = tooltips[handle] as HTMLElement;
+    } else {
       handle = handle - 1;
-      tooltip = tooltips[handle];
+      tooltip = tooltips[handle] as HTMLElement;
     }
 
     let connects = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-connect");
     let connect = connects.item(tooltips.filter((e: any) => e != false).indexOf(tooltip));
 
-    // Set tooltip position
-    tooltip.style.left = `${(connect.getBoundingClientRect().width + 8) / 2}px`;
-
-    // Set tooltip value to clip length
-    tooltip.innerHTML = (parseFloat(values[handle + 1]) - parseFloat(values[handle])).toReadableTimeFromSeconds();
+    return {
+      tooltip: tooltip,
+      connect: connect,
+      handle: handle
+    };
   }
 
   /**
@@ -217,6 +239,10 @@ export default class VideoPlayer extends Vue {
         &:active {
           cursor: grabbing;
         }
+      }
+
+      .noUi-tooltip {
+        display: none;
       }
     }
   }
