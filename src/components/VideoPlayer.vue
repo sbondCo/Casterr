@@ -1,5 +1,7 @@
 <template>
   <div v-if="videoExists" class="videoPlayerContainer">
+    <div class="top"></div>
+
     <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded" controls></video>
 
     <div class="progressBarContainer">
@@ -39,8 +41,9 @@ export default class VideoPlayer extends Vue {
       start: [0],
       range: {
         min: 0,
-        max: this.video.duration
+        max: this.video.duration // + 99999
       },
+      tooltips: true,
       pips: {
         mode: "count",
         values: 10,
@@ -55,6 +58,29 @@ export default class VideoPlayer extends Vue {
 
     this.progressBar.noUiSlider.on("update", (values: any) => {
       this.video.currentTime = values[0];
+
+      let tooltip: HTMLElement = this.progressBar.noUiSlider.getTooltips()[0] as HTMLElement;
+      let rect = tooltip.getBoundingClientRect();
+
+      console.log(rect.x, rect.width);
+      console.log(window.innerWidth);
+
+      console.log(rect.x, window.innerWidth - rect.width);
+
+      // if (rect.x > rect.width / 2 && rect.x < window.innerWidth - rect.width) {
+      //   console.log("safe");
+      //   tooltip.style.left = "50%";
+      // }
+
+      if (rect.x < 0) {
+        console.log("off left", Math.abs(rect.x));
+        tooltip.style.left = `${Math.abs(rect.x) + rect.width / 3}px`;
+      }
+
+      if (rect.x + rect.width > window.innerWidth) {
+        console.log("off right", tooltip.clientLeft - rect.width / 3);
+        tooltip.style.left = `${tooltip.clientLeft - rect.width / 3}px`;
+      }
     });
 
     noUiSlider.create(this.clipsBar, {
@@ -182,6 +208,10 @@ export default class VideoPlayer extends Vue {
           cursor: grabbing;
         }
       }
+
+      // .noUi-tooltip {
+      //   transition: left 100ms ease-in;
+      // }
 
       .noUi-pips {
         top: 12px;
