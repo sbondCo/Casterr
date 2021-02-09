@@ -62,14 +62,17 @@ export default class VideoPlayer extends Vue {
       let tooltip: HTMLElement = this.progressBar.noUiSlider.getTooltips()[0] as HTMLElement;
       let rect = tooltip.getBoundingClientRect();
 
+      // SAFE: If tooltip can move back to center
       if (rect.x > rect.width / 2 && rect.right < window.innerWidth - rect.width / 2) {
         tooltip.style.left = "50%";
       }
 
+      // OFF LEFT: If tooltip should move to right
       if (rect.x < 0) {
         tooltip.style.left = `${Math.abs(rect.x) + rect.width / 3}px`;
       }
 
+      // OFF RIGHT: If tooltip should move to left
       if (rect.x + rect.width > window.innerWidth) {
         tooltip.style.left = `${tooltip.clientLeft - rect.width / 3}px`;
       }
