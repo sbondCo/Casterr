@@ -201,9 +201,9 @@ export default class VideoPlayer extends Vue {
         }
       }
 
-      // .noUi-tooltip {
-      //   transition: left 100ms ease-in;
-      // }
+      .noUi-tooltip {
+        transition: left 100ms ease-in;
+      }
 
       .noUi-pips {
         top: 12px;
