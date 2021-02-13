@@ -89,7 +89,11 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.progressBar.noUiSlider.on("update", (values: any) => {
+    this.video.addEventListener("timeupdate", () => {
+      this.progressBar.noUiSlider.set(this.video.currentTime);
+    });
+
+    this.progressBar.noUiSlider.on("slide", (values: any) => {
       this.video.currentTime = values[0];
 
       let tooltip: HTMLElement = this.progressBar.noUiSlider.getTooltips()[0] as HTMLElement;
