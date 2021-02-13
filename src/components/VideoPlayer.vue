@@ -38,16 +38,22 @@ export default class VideoPlayer extends Vue {
 
   data() {
     return {
-      playPauseBtnIcon: "pause"
+      playPauseBtnIcon: "play"
     };
   }
 
-  playPause() {
+  /**
+   * Play/Pause the video.
+   * @param fromButton If function is being called by playPauseBtn.
+   *                   If not it won't play/pause the video, but instead
+   *                   just update the playPauseBtns icon to reflect the change.
+   */
+  playPause(fromButton: boolean = true) {
     if (this.video.paused) {
-      this.video.play();
+      if (fromButton) this.video.play();
       this.$data.playPauseBtnIcon = "play";
     } else {
-      this.video.pause();
+      if (fromButton) this.video.pause();
       this.$data.playPauseBtnIcon = "pause";
     }
   }
@@ -56,6 +62,13 @@ export default class VideoPlayer extends Vue {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
+
+    this.video.addEventListener("play", () => {
+      this.playPause(false);
+    });
+    this.video.addEventListener("pause", () => {
+      this.playPause(false);
+    });
 
     noUiSlider.create(this.progressBar, {
       start: [0],
