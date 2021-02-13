@@ -14,12 +14,18 @@ export default class Icon extends Vue {
    * Return html string for Icon
    * requested with correct width and height
    */
-  get Icon(): string {
+  public get Icon(): string {
     switch (this.i) {
       case "play":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 7L0.5 14V0L11.5 7ZM7.77002 7L2.5 3.64V10.36L7.77002 7Z" />
+          </svg>
+        `;
+      case "pause":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 35 41" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 41H11.6667V0H0V41ZM23.3333 0V41H35V0H23.3333Z"/>
           </svg>
         `;
       case "upload":

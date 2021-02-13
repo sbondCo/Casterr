@@ -8,7 +8,9 @@
     </div>
 
     <div class="controls">
-      <button class="btn" @click="playPause">Play</button>
+      <button class="btn" @click="playPause">
+        <Icon :i="playPauseBtnIcon" />
+      </button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -34,11 +36,19 @@ export default class VideoPlayer extends Vue {
   private progressBar: noUiSlider.Instance;
   private clipsBar: noUiSlider.Instance;
 
+  data() {
+    return {
+      playPauseBtnIcon: "pause"
+    };
+  }
+
   playPause() {
     if (this.video.paused) {
       this.video.play();
+      this.$data.playPauseBtnIcon = "play";
     } else {
       this.video.pause();
+      this.$data.playPauseBtnIcon = "pause";
     }
   }
 
