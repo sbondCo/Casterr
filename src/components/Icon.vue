@@ -92,3 +92,10 @@ export default class Icon extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+div {
+  // Fix div around SVG being too tall
+  display: flex;
+}
+</style>

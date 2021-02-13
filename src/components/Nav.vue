@@ -106,7 +106,7 @@ export default class Nav extends Vue {
 <style lang="scss">
 nav {
   display: flex;
-  min-height: 48px;
+  min-height: 50px;
   background-color: $secondaryColor;
 
   ul {
