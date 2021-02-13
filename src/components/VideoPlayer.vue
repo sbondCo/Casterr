@@ -8,7 +8,7 @@
     </div>
 
     <div class="controls">
-      <button class="btn" @click="playPause">
+      <button @click="playPause">
         <Icon :i="playPauseBtnIcon" />
       </button>
     </div>
@@ -184,6 +184,22 @@ export default class VideoPlayer extends Vue {
     height: 400px;
     outline: none;
     background-color: black;
+  }
+
+  .controls {
+    margin-top: 5px;
+
+    button {
+      padding: 5px;
+      border: unset;
+      border-radius: 3px;
+      outline: unset;
+      background-color: $secondaryColor;
+
+      svg {
+        fill: $textPrimary;
+      }
+    }
   }
 
   .progressBarContainer {
