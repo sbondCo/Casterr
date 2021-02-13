@@ -13,11 +13,7 @@ export default class TickBox extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ default: false }) ticked: boolean;
 
-  data() {
-    return {
-      isTicked: this.ticked
-    };
-  }
+  isTicked = this.$props.ticked;
 
   @Watch("isTicked")
   isTickedChanged(t: boolean) {

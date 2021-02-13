@@ -23,25 +23,22 @@
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 
-export default Vue.extend({
-  data() {
-    return {
-      activeSubPage: "GeneralSettings"
-    };
-  },
+@Component({
   components: {
     GeneralSettings: () => import("./../components/settings/General.vue"),
     RecordingSettings: () => import("./../components/settings/Recording.vue"),
     KeyBindingSettings: () => import("./../components/settings/KeyBinding.vue")
-  },
-  methods: {
-    swapComponent: function(component: any) {
-      this.activeSubPage = component;
-    }
   }
-});
+})
+export default class extends Vue {
+  activeSubPage = "GeneralSettings";
+
+  swapComponent(component: any) {
+    this.activeSubPage = component;
+  }
+}
 </script>
 
 <style lang="scss">

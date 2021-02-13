@@ -25,11 +25,7 @@ export default class TextBox extends Vue {
   @Prop({ default: "text" }) type: string;
   @Prop({ default: false }) folderSelect: boolean;
 
-  data() {
-    return {
-      textBoxValue: this.value
-    };
-  }
+  textBoxValue = this.$props.value;
 
   textBoxValueUpdated() {
     this.$emit("item-changed", this.name, this.$data.textBoxValue);

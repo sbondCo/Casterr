@@ -42,7 +42,7 @@
     </div>
 
     <div ref="videoPlayerWrapper" class="videoPlayerWrapper hidden">
-      <VideoPlayer :videoPath="loadedVideoPath"/>
+      <VideoPlayer :videoPath="loadedVideoPath" />
     </div>
   </div>
 </template>
@@ -62,13 +62,9 @@ import "./../libs/helpers/extensions";
   }
 })
 export default class extends Vue {
-  data() {
-    return {
-      allRecordings: RecordingsManager.get(),
-      loadedRecordings: new Array(),
-      loadedVideoPath: ""
-    };
-  }
+  allRecordings = RecordingsManager.get();
+  loadedRecordings = new Array();
+  loadedVideoPath = "";
 
   mounted() {
     // Load initial set of recordings

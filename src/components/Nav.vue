@@ -55,11 +55,7 @@ import { GeneralSettings } from "./../libs/settings";
   }
 })
 export default class Nav extends Vue {
-  data() {
-    return {
-      timeElapsed: ""
-    };
-  }
+  timeElapsed = "";
 
   mounted() {
     let timer: any;
