@@ -77,6 +77,14 @@ export default class VideoPlayer extends Vue {
         max: this.video.duration // + 99999
       },
       tooltips: true,
+      format: {
+        to: (value: number) => {
+          return value.toReadableTimeFromSeconds();
+        },
+        from: (value: string) => {
+          return Number(value);
+        }
+      },
       pips: {
         mode: "count",
         values: 10,
@@ -95,8 +103,8 @@ export default class VideoPlayer extends Vue {
 
     this.video.addEventListener("timeupdate", updateProgressBarTime);
 
-    this.progressBar.noUiSlider.on("slide", (values: any) => {
-      this.video.currentTime = values[0];
+    this.progressBar.noUiSlider.on("slide", (_v, _h, unencodedValues: number[]) => {
+      this.video.currentTime = unencodedValues[0];
 
       let tooltip: HTMLElement = this.progressBar.noUiSlider.getTooltips()[0] as HTMLElement;
       let rect = tooltip.getBoundingClientRect();
