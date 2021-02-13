@@ -11,6 +11,8 @@
       <button @click="playPause">
         <Icon :i="playPauseBtnIcon" />
       </button>
+
+      <button class="outlined">{{ currentVideoTime }} / 1:35:17</button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -38,6 +40,7 @@ export default class VideoPlayer extends Vue {
 
   data() {
     return {
+      currentVideoTime: "",
       playPauseBtnIcon: "play"
     };
   }
@@ -76,15 +79,7 @@ export default class VideoPlayer extends Vue {
         min: 0,
         max: this.video.duration // + 99999
       },
-      tooltips: true,
-      format: {
-        to: (value: number) => {
-          return value.toReadableTimeFromSeconds();
-        },
-        from: (value: string) => {
-          return Number(value);
-        }
-      },
+      // tooltips: true,
       pips: {
         mode: "count",
         values: 10,
@@ -99,30 +94,13 @@ export default class VideoPlayer extends Vue {
 
     const updateProgressBarTime = () => {
       this.progressBar.noUiSlider.set(this.video.currentTime);
+      this.$data.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
     };
 
     this.video.addEventListener("timeupdate", updateProgressBarTime);
 
-    this.progressBar.noUiSlider.on("slide", (_v, _h, unencodedValues: number[]) => {
-      this.video.currentTime = unencodedValues[0];
-
-      let tooltip: HTMLElement = this.progressBar.noUiSlider.getTooltips()[0] as HTMLElement;
-      let rect = tooltip.getBoundingClientRect();
-
-      // SAFE: If tooltip can move back to center
-      if (rect.x > rect.width / 2 && rect.right < window.innerWidth - rect.width / 2) {
-        tooltip.style.left = "50%";
-      }
-
-      // OFF LEFT: If tooltip should move to right
-      if (rect.x < 0) {
-        tooltip.style.left = `${Math.abs(rect.x) + rect.width / 3}px`;
-      }
-
-      // OFF RIGHT: If tooltip should move to left
-      if (rect.x + rect.width > window.innerWidth) {
-        tooltip.style.left = `${tooltip.clientLeft - rect.width / 3}px`;
-      }
+    this.progressBar.noUiSlider.on("slide", (values: any[]) => {
+      this.video.currentTime = values[0];
     });
 
     this.progressBar.noUiSlider.on("start", () => {
@@ -222,14 +200,25 @@ export default class VideoPlayer extends Vue {
   }
 
   .controls {
+    display: flex;
+    align-items: center;
     margin-top: 5px;
+    height: 34px;
 
     button {
+      height: 100%;
       padding: 5px;
+      margin-left: 5px;
       border: unset;
       border-radius: 3px;
       outline: unset;
+      color: $textPrimary;
       background-color: $secondaryColor;
+
+      &.outlined {
+        border: 2px solid $secondaryColor;
+        background-color: transparent;
+      }
 
       svg {
         fill: $textPrimary;
