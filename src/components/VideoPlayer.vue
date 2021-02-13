@@ -89,9 +89,11 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.video.addEventListener("timeupdate", () => {
+    const updateProgressBarTime = () => {
       this.progressBar.noUiSlider.set(this.video.currentTime);
-    });
+    };
+
+    this.video.addEventListener("timeupdate", updateProgressBarTime);
 
     this.progressBar.noUiSlider.on("slide", (values: any) => {
       this.video.currentTime = values[0];
@@ -113,6 +115,14 @@ export default class VideoPlayer extends Vue {
       if (rect.x + rect.width > window.innerWidth) {
         tooltip.style.left = `${tooltip.clientLeft - rect.width / 3}px`;
       }
+    });
+
+    this.progressBar.noUiSlider.on("start", () => {
+      this.video.removeEventListener("timeupdate", updateProgressBarTime);
+    });
+
+    this.progressBar.noUiSlider.on("end", () => {
+      this.video.addEventListener("timeupdate", updateProgressBarTime);
     });
 
     noUiSlider.create(this.clipsBar, {
