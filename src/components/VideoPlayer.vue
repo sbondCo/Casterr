@@ -12,7 +12,7 @@
         <Icon :i="playPauseBtnIcon" />
       </button>
 
-      <button class="outlined">{{ currentVideoTime }} / 1:35:17</button>
+      <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -38,12 +38,9 @@ export default class VideoPlayer extends Vue {
   private progressBar: noUiSlider.Instance;
   private clipsBar: noUiSlider.Instance;
 
-  data() {
-    return {
-      currentVideoTime: "",
-      playPauseBtnIcon: "play"
-    };
-  }
+  currentVideoTime = "00:00";
+  maxVideoTime = "00:00";
+  playPauseBtnIcon = "play";
 
   /**
    * Play/Pause the video.
@@ -54,10 +51,10 @@ export default class VideoPlayer extends Vue {
   playPause(fromButton: boolean = true) {
     if (this.video.paused) {
       if (fromButton) this.video.play();
-      this.$data.playPauseBtnIcon = "play";
+      this.playPauseBtnIcon = "play";
     } else {
       if (fromButton) this.video.pause();
-      this.$data.playPauseBtnIcon = "pause";
+      this.playPauseBtnIcon = "pause";
     }
   }
 
@@ -65,6 +62,8 @@ export default class VideoPlayer extends Vue {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
+
+    this.maxVideoTime = this.video.duration.toReadableTimeFromSeconds();
 
     this.video.addEventListener("play", () => {
       this.playPause(false);
@@ -79,7 +78,6 @@ export default class VideoPlayer extends Vue {
         min: 0,
         max: this.video.duration // + 99999
       },
-      // tooltips: true,
       pips: {
         mode: "count",
         values: 10,
@@ -94,13 +92,14 @@ export default class VideoPlayer extends Vue {
 
     const updateProgressBarTime = () => {
       this.progressBar.noUiSlider.set(this.video.currentTime);
-      this.$data.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
     };
 
     this.video.addEventListener("timeupdate", updateProgressBarTime);
 
     this.progressBar.noUiSlider.on("slide", (values: any[]) => {
       this.video.currentTime = values[0];
+      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
     });
 
     this.progressBar.noUiSlider.on("start", () => {
