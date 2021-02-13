@@ -1,12 +1,14 @@
 <template>
   <div v-if="videoExists" class="videoPlayerContainer">
-    <div class="top"></div>
-
     <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded" controls></video>
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" @click="playPause">Play</button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -31,6 +33,14 @@ export default class VideoPlayer extends Vue {
   private video: HTMLVideoElement;
   private progressBar: noUiSlider.Instance;
   private clipsBar: noUiSlider.Instance;
+
+  playPause() {
+    if (this.video.paused) {
+      this.video.play();
+    } else {
+      this.video.pause();
+    }
+  }
 
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
