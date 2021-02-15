@@ -34,6 +34,12 @@ export default class Icon extends Vue {
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0 2V0H16V2H0ZM7 8H4L8 4L12 8H9V18H7V8Z" />
           </svg>
         `;
+      case "volume":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 6v6h4l5 5V1L4 6H0zm7-.17v6.34L4.83 10H2V8h2.83L7 5.83zM13.5 9A4.5 4.5 0 0011 4.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM11 .23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z"/>
+          </svg>
+        `;
       case "settings":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

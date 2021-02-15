@@ -12,6 +12,10 @@
         <Icon :i="playPauseBtnIcon" />
       </button>
 
+      <button>
+        <Icon i="volume" />
+      </button>
+
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
     </div>
   </div>
