@@ -80,7 +80,17 @@ export default class Icon extends Vue {
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 12">
             <polygon fill-rule="evenodd" 
               points="11 1.576 6.583 6 11 10.424 10.424 11 6 6.583
-              1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1"></polygon>
+              1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1">
+            </polygon>
+          </svg>
+        `;
+      // Arrow points right by default, plan is to just rotate it when needed instead of having arrows for each direction
+      case "arrow":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" 
+              d="M28.5.167L23.506 5.16 43.27 24.957H.167v7.084h43.102L23.506 51.84l4.994 4.993L56.833 28.5 28.5.167z"
+            />
           </svg>
         `;
       case "edit":

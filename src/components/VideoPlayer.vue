@@ -18,6 +18,10 @@
       </button>
 
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
+
+      <button class="rightFromHere">
+        <Icon i="arrow" />
+      </button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -268,6 +272,11 @@ export default class VideoPlayer extends Vue {
       outline: unset;
       color: $textPrimary;
       background-color: $secondaryColor;
+
+      // From which div to move items to right of container
+      &.rightFromHere {
+        margin-left: auto;
+      }
 
       &.volumeContainer {
         flex-flow: row;
