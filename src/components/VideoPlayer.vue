@@ -12,8 +12,9 @@
         <Icon :i="playPauseBtnIcon" />
       </button>
 
-      <button>
+      <button class="volumeContainer">
         <Icon i="volume" />
+        <div ref="volumeBar" class="volumeBar"></div>
       </button>
 
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
@@ -41,6 +42,7 @@ export default class VideoPlayer extends Vue {
   private video: HTMLVideoElement;
   private progressBar: noUiSlider.Instance;
   private clipsBar: noUiSlider.Instance;
+  private volumeBar: noUiSlider.Instance;
 
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
@@ -66,6 +68,7 @@ export default class VideoPlayer extends Vue {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
+    this.volumeBar = this.$refs.volumeBar as noUiSlider.Instance;
 
     this.maxVideoTime = this.video.duration.toReadableTimeFromSeconds();
 
@@ -141,6 +144,15 @@ export default class VideoPlayer extends Vue {
     this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
+
+    // Make volumeBar
+    noUiSlider.create(this.volumeBar, {
+      start: [80],
+      range: {
+        min: 0,
+        max: 100
+      }
+    });
   }
 
   updateTooltip(values: any, handle: any) {
@@ -202,6 +214,33 @@ export default class VideoPlayer extends Vue {
     background-color: black;
   }
 
+  // # Default slider styling
+  * {
+    box-shadow: unset;
+    outline: unset;
+    border: unset;
+  }
+
+  .noUi-handle {
+    top: -3px;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: $darkAccentColor;
+    border: 1px solid $textPrimary;
+    border-radius: 4px;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+  // ^ Default slider styling
+
   .controls {
     display: flex;
     align-items: center;
@@ -217,6 +256,24 @@ export default class VideoPlayer extends Vue {
       outline: unset;
       color: $textPrimary;
       background-color: $secondaryColor;
+
+      &.volumeContainer {
+        display: flex;
+        align-items: center;
+
+        .volumeBar {
+          width: 100px;
+          height: 5px;
+          margin: 0 5px 0 10px;
+
+          .noUi-handle {
+            top: -3px;
+            right: -6px;
+            height: 12px;
+            width: 12px;
+          }
+        }
+      }
 
       &.outlined {
         border: 2px solid $secondaryColor;
@@ -235,36 +292,13 @@ export default class VideoPlayer extends Vue {
     padding: 0 10px;
     background-color: $secondaryColor;
 
-    * {
-      box-shadow: unset;
-      outline: unset;
-      border: unset;
-    }
-
     .progressBar {
       height: 100%;
       background-color: $secondaryColor;
 
       .noUi-handle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         top: 0;
-        right: -6px;
-        width: 12px;
         height: 40px;
-        background-color: $darkAccentColor;
-        border: 1px solid $textPrimary;
-        border-radius: 4px;
-
-        &::before,
-        &::after {
-          display: none;
-        }
-
-        &:active {
-          cursor: grabbing;
-        }
       }
 
       .noUi-tooltip {
@@ -307,26 +341,10 @@ export default class VideoPlayer extends Vue {
       }
 
       .noUi-handle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         top: 7px;
-        right: -6px;
-        width: 12px;
         height: 25px;
-        background-color: $darkAccentColor;
-        border: 1px solid $textPrimary;
         border-radius: 0px;
         pointer-events: all;
-
-        &::before,
-        &::after {
-          display: none;
-        }
-
-        &:active {
-          cursor: grabbing;
-        }
       }
 
       .noUi-tooltip {
