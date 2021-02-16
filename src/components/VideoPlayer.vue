@@ -154,13 +154,14 @@ export default class VideoPlayer extends Vue {
       start: [80],
       range: {
         min: 0,
-        max: 100
+        max: 1
       }
     });
 
     // Update video volume on update
     this.volumeBar.noUiSlider.on("update", (values: any) => {
-      this.video.volume = Number(values[0]) / 100;
+      console.log(values[0]);
+      this.video.volume = values[0];
     });
   }
 
