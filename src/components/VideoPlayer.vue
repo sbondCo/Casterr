@@ -145,6 +145,10 @@ export default class VideoPlayer extends Vue {
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
 
+    this.createVolumeBar();
+  }
+
+  createVolumeBar() {
     // Make volumeBar
     noUiSlider.create(this.volumeBar, {
       start: [80],
@@ -152,6 +156,11 @@ export default class VideoPlayer extends Vue {
         min: 0,
         max: 100
       }
+    });
+
+    // Update video volume on update
+    this.volumeBar.noUiSlider.on("update", (values: any) => {
+      this.video.volume = Number(values[0]) / 100;
     });
   }
 
