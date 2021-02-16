@@ -263,15 +263,30 @@ export default class VideoPlayer extends Vue {
         align-items: center;
 
         .volumeBar {
-          width: 100px;
+          width: 0;
+          margin: 0;
+
           height: 5px;
-          margin: 0 5px 0 10px;
+          transition: width 150ms ease-in-out;
 
           .noUi-handle {
+            visibility: hidden;
             top: -3px;
             right: -6px;
             height: 12px;
             width: 12px;
+          }
+        }
+
+        // Show volumeBar on hover
+        &:hover {
+          .volumeBar {
+            width: 100px;
+            margin: 0 5px 0 10px;
+
+            .noUi-handle {
+              visibility: visible;
+            }
           }
         }
       }
