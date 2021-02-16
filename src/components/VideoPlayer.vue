@@ -160,7 +160,6 @@ export default class VideoPlayer extends Vue {
 
     // Update video volume on update
     this.volumeBar.noUiSlider.on("update", (values: any) => {
-      console.log(values[0]);
       this.video.volume = values[0];
     });
   }
