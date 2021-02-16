@@ -19,8 +19,8 @@
 
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
 
-      <div class="combinedInfoButton rightFromHere">
-        <button class="outlined">
+      <div class="continue combinedInfoButton rightFromHere">
+        <button class="clipInfo outlined">
           <span>{{ numberOfClips }}</span>
           <span>{{ lengthOfClips }}</span>
         </button>
@@ -293,6 +293,14 @@ export default class VideoPlayer extends Vue {
         margin-left: 0;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+      }
+    }
+
+    .continue {
+      .clipInfo {
+        span:not(:first-child) {
+          margin-left: 5px;
+        }
       }
     }
 
