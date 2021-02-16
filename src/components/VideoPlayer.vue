@@ -291,7 +291,7 @@ export default class VideoPlayer extends Vue {
         &:hover {
           .volumeBar {
             width: 100px;
-            margin: 0 5px 0 10px;
+            margin: 0 7px 0 12px;
 
             .noUi-handle {
               visibility: visible;
