@@ -12,16 +12,23 @@
         <Icon :i="playPauseBtnIcon" />
       </button>
 
-      <button class="volumeContainer">
+      <button class="volume">
         <Icon i="volumeMax" />
         <div ref="volumeBar" class="volumeBar"></div>
       </button>
 
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
 
-      <button class="rightFromHere">
-        <Icon i="arrow" />
-      </button>
+      <div class="combinedInfoButton rightFromHere">
+        <button class="outlined">
+          <span>{{ numberOfClips }}</span>
+          <span>{{ lengthOfClips }}</span>
+        </button>
+
+        <button>
+          <Icon i="arrow" />
+        </button>
+      </div>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -48,6 +55,8 @@ export default class VideoPlayer extends Vue {
   private clipsBar: noUiSlider.Instance;
   private volumeBar: noUiSlider.Instance;
 
+  numberOfClips = 13;
+  lengthOfClips = "15:32";
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
@@ -260,6 +269,33 @@ export default class VideoPlayer extends Vue {
     margin: 5px;
     height: 34px;
 
+    // From which div to move items to right of container
+    .rightFromHere {
+      margin-left: auto;
+    }
+
+    .outlined {
+      border: 2px solid $secondaryColor;
+      background-color: transparent;
+    }
+
+    .combinedInfoButton {
+      display: flex;
+      flex-flow: row;
+      height: 100%;
+
+      :first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      :last-child {
+        margin-left: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+
     button {
       display: flex;
       flex-flow: row;
@@ -276,12 +312,7 @@ export default class VideoPlayer extends Vue {
         margin-left: 5px;
       }
 
-      // From which div to move items to right of container
-      &.rightFromHere {
-        margin-left: auto;
-      }
-
-      &.volumeContainer {
+      &.volume {
         flex-flow: row;
 
         .volumeBar {
@@ -314,11 +345,6 @@ export default class VideoPlayer extends Vue {
             }
           }
         }
-      }
-
-      &.outlined {
-        border: 2px solid $secondaryColor;
-        background-color: transparent;
       }
 
       svg {
