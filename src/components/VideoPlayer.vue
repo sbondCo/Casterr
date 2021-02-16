@@ -257,7 +257,7 @@ export default class VideoPlayer extends Vue {
   .controls {
     display: flex;
     align-items: center;
-    margin-top: 5px;
+    margin: 5px;
     height: 34px;
 
     button {
@@ -266,12 +266,15 @@ export default class VideoPlayer extends Vue {
       align-items: center;
       height: 100%;
       padding: 5px;
-      margin-left: 5px;
       border: unset;
       border-radius: 3px;
       outline: unset;
       color: $textPrimary;
       background-color: $secondaryColor;
+
+      &:not(:first-child) {
+        margin-left: 5px;
+      }
 
       // From which div to move items to right of container
       &.rightFromHere {
