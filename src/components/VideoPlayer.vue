@@ -267,7 +267,7 @@ export default class VideoPlayer extends Vue {
           margin: 0;
 
           height: 5px;
-          transition: width 150ms ease-in-out;
+          transition: width 150ms ease-in-out, margin 150ms ease-in-out;
 
           .noUi-handle {
             visibility: hidden;
