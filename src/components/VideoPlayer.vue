@@ -310,6 +310,7 @@ export default class VideoPlayer extends Vue {
       }
 
       svg {
+        padding: 2px;
         fill: $textPrimary;
       }
     }
