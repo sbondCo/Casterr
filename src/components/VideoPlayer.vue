@@ -288,7 +288,9 @@ export default class VideoPlayer extends Vue {
           }
         }
 
-        // Show volumeBar on hover
+        // Show volumeBar on hover.
+        // Don't hide on hover so if user is a maniac when
+        // changing the volume we won't ruin their experience
         &:hover,
         &:active {
           .volumeBar {
