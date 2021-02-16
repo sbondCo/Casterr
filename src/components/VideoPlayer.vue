@@ -257,6 +257,9 @@ export default class VideoPlayer extends Vue {
     height: 34px;
 
     button {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
       height: 100%;
       padding: 5px;
       margin-left: 5px;
@@ -267,9 +270,7 @@ export default class VideoPlayer extends Vue {
       background-color: $secondaryColor;
 
       &.volumeContainer {
-        display: flex;
         flex-flow: row;
-        align-items: center;
 
         .volumeBar {
           width: 0;
@@ -288,7 +289,8 @@ export default class VideoPlayer extends Vue {
         }
 
         // Show volumeBar on hover
-        &:hover {
+        &:hover,
+        &:active {
           .volumeBar {
             width: 100px;
             margin: 0 7px 0 12px;
