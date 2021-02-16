@@ -222,7 +222,7 @@ export default class VideoPlayer extends Vue {
   }
 
   .noUi-handle {
-    top: -3px;
+    top: 0;
     right: -6px;
     width: 12px;
     height: 12px;
@@ -259,6 +259,7 @@ export default class VideoPlayer extends Vue {
 
       &.volumeContainer {
         display: flex;
+        flex-flow: row;
         align-items: center;
 
         .volumeBar {
