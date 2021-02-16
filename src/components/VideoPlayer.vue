@@ -13,7 +13,7 @@
       </button>
 
       <button class="volumeContainer">
-        <Icon i="volume" />
+        <Icon i="volumeMax" />
         <div ref="volumeBar" class="volumeBar"></div>
       </button>
 
