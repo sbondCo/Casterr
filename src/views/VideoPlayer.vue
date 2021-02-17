@@ -234,6 +234,7 @@ export default class VideoPlayer extends Vue {
 
 .videoPlayerContainer {
   width: 100%;
+  overflow-x: hidden;
 
   video {
     width: 100%;
