@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import Icon from "./Icon.vue";
+import Icon from "./../components/Icon.vue";
 import "./../libs/helpers/extensions";
 import fs from "fs";
 import path from "path";

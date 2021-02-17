@@ -18,9 +18,9 @@
                 <p>FPS</p>
               </span>
 
-              <span class="edit" @click="openVideoPlayer(vid.videoPath)">
+              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
                 <Icon i="edit" :wh="25" />
-              </span>
+              </router-link>
 
               <div class="bar">
                 <span class="title">
@@ -40,31 +40,24 @@
         <span class="noRecordings">You Have No Recordings!</span>
       </div>
     </div>
-
-    <div ref="videoPlayerWrapper" class="videoPlayerWrapper hidden">
-      <VideoPlayer :videoPath="loadedVideoPath" />
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Icon from "./../components/Icon.vue";
-import VideoPlayer from "./../components/VideoPlayer.vue";
 import Recorder from "./../libs/recorder";
 import RecordingsManager from "./../libs/recorder/recordingsManager";
 import "./../libs/helpers/extensions";
 
 @Component({
   components: {
-    Icon,
-    VideoPlayer
+    Icon
   }
 })
 export default class extends Vue {
   allRecordings = RecordingsManager.get();
   loadedRecordings = new Array();
-  loadedVideoPath = "";
 
   mounted() {
     // Load initial set of recordings
@@ -94,11 +87,6 @@ export default class extends Vue {
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
     }
-  }
-
-  openVideoPlayer(videoPath: string) {
-    (this.$refs.videoPlayerWrapper as HTMLElement).classList.remove("hidden");
-    this.$data.loadedVideoPath = videoPath;
   }
 
   startRecording() {
