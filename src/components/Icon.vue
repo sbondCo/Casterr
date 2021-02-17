@@ -93,7 +93,6 @@ export default class Icon extends Vue {
             />
           </svg>
         `;
-
       case "clips":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
