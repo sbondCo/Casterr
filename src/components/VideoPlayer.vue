@@ -21,8 +21,14 @@
 
       <div class="continue combinedInfoButton rightFromHere">
         <button class="clipInfo outlined">
-          <span>{{ numberOfClips }}</span>
-          <span>{{ lengthOfClips }}</span>
+          <div>
+            <Icon i="clips" wh="18" />
+            <span>{{ numberOfClips }}</span>
+          </div>
+          <div>
+            <Icon i="time" wh="18" />
+            <span>{{ lengthOfClips }}</span>
+          </div>
         </button>
 
         <button>
@@ -298,8 +304,17 @@ export default class VideoPlayer extends Vue {
 
     .continue {
       .clipInfo {
-        span:not(:first-child) {
-          margin-left: 5px;
+        div {
+          display: flex;
+          align-items: center;
+
+          &:not(:first-child) {
+            margin-left: 5px;
+          }
+
+          svg {
+            margin-right: 3px;
+          }
         }
       }
     }
