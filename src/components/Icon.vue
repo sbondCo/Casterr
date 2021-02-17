@@ -93,6 +93,32 @@ export default class Icon extends Vue {
             />
           </svg>
         `;
+
+      case "clips":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <path 
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M3 15C3 8.385 8.385 3 15 3s12 5.385 12 12-5.385 12-12 12S3
+              21.615 3 15zm-3 0c0 8.28 6.72 15 15 15 8.28 0 15-6.72 15-15 
+              0-8.28-6.72-15-15-15C6.72 0 0 6.72 0 15zm19.5 0l-6 6V9l6 6z"
+            />
+          </svg>
+        `;
+      case "time":
+        return `
+        <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+          <path 
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M14.985 0C6.705 0 0 6.72 0 15c0 8.28 6.705 15 14.985 15C23.28 30 30 
+            23.28 30 15c0-8.28-6.72-15-15.015-15zM15 27C8.37 27 3 21.63 3 15S8.37 3 
+            15 3s12 5.37 12 12-5.37 12-12 12zm.75-19.5H13.5v9l7.875 4.725L22.5 19.38l-6.75-4.005V7.5z" 
+          />
+        </svg>
+        `;
+
       case "edit":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 512 512">
