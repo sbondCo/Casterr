@@ -46,7 +46,6 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Icon from "./../components/Icon.vue";
-import Recorder from "./../libs/recorder";
 import RecordingsManager from "./../libs/recorder/recordingsManager";
 import "./../libs/helpers/extensions";
 
@@ -87,14 +86,6 @@ export default class extends Vue {
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
     }
-  }
-
-  startRecording() {
-    Recorder.start();
-  }
-
-  stopRecording() {
-    Recorder.stop();
   }
 }
 </script>
