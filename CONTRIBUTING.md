@@ -1,21 +1,17 @@
 # Contributing
 
-If you're stumped, you can look at a related [project](https://github.com/orgs/CasterrTV/projects) to find something to do.
+### :tada: Thanks for looking into Casterr and contributing!
 
-We have some general guidelines that you should try to follow as much as possible:
+## Finding things to do
 
-## Issues
+- Looking at a related [project](https://github.com/orgs/sbondCo/projects) in the 'To do' column.
+- Directly browsing through [issues](https://github.com/sbondCo/Casterr/issues) to find ideas/bugs.
+- Searching for creativity! Create your own issue to discuss a feature or, if it's small, just create a pull request.
 
-- Try not to open duplicate issues
-- Apply a relevant label to your issue
-- Follow the issue template
+## The Code
 
-## Pull requests
+All code is formatted with [Prettier](https://prettier.io).
 
-- Include a reference of the issue that the pull request is referring to
-- Name your commits clearly (Bad commit message: 'Update File' or 'Fixed a boog')
-- Try to keep pull requests small and related to only one issue if possible
-- Comment your code so that it can be better understood by everyone
-- If you are making visual changes, add screenshots
+##
 
-Do (not) have fun!
+Don't have too much fun now, we know Casterr is an amazing project.
