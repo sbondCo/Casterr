@@ -19,6 +19,8 @@
 
       <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
 
+      <button @click="addClip">ADD CLIP</button>
+
       <div class="continue combinedInfoButton rightFromHere">
         <button class="clipInfo outlined">
           <div>
@@ -61,7 +63,7 @@ export default class VideoPlayer extends Vue {
   private clipsBar: noUiSlider.Instance;
   private volumeBar: noUiSlider.Instance;
 
-  numberOfClips = 13;
+  numberOfClips = 0;
   lengthOfClips = "15:32";
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
@@ -81,6 +83,38 @@ export default class VideoPlayer extends Vue {
       if (fromButton) this.video.pause();
       this.playPauseBtnIcon = "pause";
     }
+  }
+
+  addClip() {
+    let start = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let connect = this.clipsBar.noUiSlider.options.connect! as boolean[];
+
+    start.push(0, 500);
+    start.sort((a, b) => a - b);
+
+    connect.pop();
+    connect.push(false, true, false);
+
+    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    tooltips.push(true, false);
+
+    this.clipsBar.noUiSlider.destroy();
+    noUiSlider.create(this.clipsBar, {
+      start: start,
+      behaviour: "drag",
+      connect: connect,
+      tooltips: tooltips,
+      range: {
+        min: 0,
+        max: this.video.duration
+      }
+    });
+
+    // Add all events back to new clipBar
+    this.addClipsBarEventListeners();
+
+    // Update numberOfClips
+    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
   }
 
   videoLoaded() {
@@ -147,13 +181,22 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
-      this.updateTooltip(values, handle);
-    });
-
     this.progressBar.addEventListener("dblclick", () => {
       let pb = this.progressBar.noUiSlider;
       console.log(pb.options);
+    });
+
+    this.addClipsBarEventListeners();
+
+    this.createVolumeBar();
+  }
+
+  addClipsBarEventListeners() {
+    // First remove all events
+    this.clipsBar.noUiSlider.off();
+
+    this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
+      this.updateTooltip(values, handle);
     });
 
     // Show/Hide tooltip on drag
@@ -163,8 +206,6 @@ export default class VideoPlayer extends Vue {
     this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
-
-    this.createVolumeBar();
   }
 
   createVolumeBar() {
