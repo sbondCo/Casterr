@@ -191,6 +191,9 @@ export default class VideoPlayer extends Vue {
     this.createVolumeBar();
   }
 
+  /**
+   * Re-add all events to Clips bar
+   */
   addClipsBarEventListeners() {
     // First remove all events
     this.clipsBar.noUiSlider.off();
@@ -208,6 +211,9 @@ export default class VideoPlayer extends Vue {
     });
   }
 
+  /**
+   * Create volume bar
+   */
   createVolumeBar() {
     // Make volumeBar
     noUiSlider.create(this.volumeBar, {
@@ -224,6 +230,11 @@ export default class VideoPlayer extends Vue {
     });
   }
 
+  /**
+   * Update tooltip to show time in readable format.
+   * Changes tooltips text by using .innerHTML so that the tooltips
+   * values returned by are not altered by using the formatter.
+   */
   updateTooltip(values: any, handle: any) {
     let pair = this.getPairFromHandle(handle);
 
@@ -236,6 +247,10 @@ export default class VideoPlayer extends Vue {
     ).toReadableTimeFromSeconds();
   }
 
+  /**
+   * Get tooltip and connect pair from the handle.
+   * @param handle Handle that is connected to pair
+   */
   getPairFromHandle(handle: number) {
     let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider.getTooltips();
     let tooltip: HTMLElement;
