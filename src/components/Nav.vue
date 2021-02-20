@@ -65,7 +65,7 @@ export default class Nav extends Vue {
     let timer: any;
 
     // Change recordingStatus circle depending on whether isRecording
-    Recorder.recordingStatus.on("changed", (isRecording) => {
+    Recorder.recordingStatus.on("changed", isRecording => {
       let rs = this.$refs.recordingStatus as HTMLElement;
       const timeoutScheduled = Date.now();
 
@@ -117,22 +117,20 @@ nav {
     list-style: none;
 
     li {
-      display: inline-block;
       color: $textPrimary;
-      font-size: 26px;
-      height: 100%;
+      font-size: 24px;
+
+      a,
+      &#status {
+        padding: 10px 15px;
+        margin: 0 5px;
+      }
 
       a {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
-        padding: 10px 15px;
-        margin: 0 5px;
         transition: color 250ms ease;
-        cursor: pointer;
-      
 
         svg {
           fill: $textPrimary;
@@ -147,9 +145,9 @@ nav {
         }
       }
 
-        @media (max-width: 600px) {
-          width: 20px;
-        }
+      @media (max-width: 600px) {
+        width: 20px;
+      }
 
       span:not(.timeElapsed) {
         @media (max-width: 910px) {
