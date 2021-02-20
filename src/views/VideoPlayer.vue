@@ -123,20 +123,14 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    noUiSlider.create(this.clipsBar, {
-      start: [1200, 1550, 2500, 3069, 4040, 4500],
-      behaviour: "drag",
-      connect: [false, true, false, true, false, true, false],
-      tooltips: [true, false, true, false, true, false],
-      range: {
-        min: 0,
-        max: this.video.duration
-      }
-    });
+    this.createClipsBar(
+      [1200, 1550, 2500, 3069, 4040, 4500],
+      [false, true, false, true, false, true, false],
+      [true, false, true, false, true, false]
+    );
 
     this.createVolumeBar();
     this.addProgressBarEvents();
-    this.addClipsBarEvents();
   }
 
   updateProgressBarTime() {
@@ -167,6 +161,32 @@ export default class VideoPlayer extends Vue {
     this.progressBar.addEventListener("dblclick", () => {
       this.addClip();
     });
+  }
+
+  /**
+   * (Re)create clips bar with events.
+   */
+  createClipsBar(starts: number[], connects: boolean[], tooltips: boolean[]) {
+    // If exists, destroy old clipsBar first
+    if (this.clipsBar.noUiSlider) this.clipsBar.noUiSlider.destroy();
+
+    // Create new clipsBar with passed args
+    noUiSlider.create(this.clipsBar, {
+      start: starts,
+      behaviour: "drag",
+      connect: connects,
+      tooltips: tooltips,
+      range: {
+        min: 0,
+        max: this.video.duration
+      }
+    });
+
+    // Add all events to new clipBar
+    this.addClipsBarEvents();
+
+    // Update numberOfClips
+    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
   }
 
   /**
@@ -221,7 +241,7 @@ export default class VideoPlayer extends Vue {
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips.push(true, false);
 
-    this.reCreateClipsBar(starts, connects, tooltips);
+    this.createClipsBar(starts, connects, tooltips);
   }
 
   /**
@@ -248,31 +268,7 @@ export default class VideoPlayer extends Vue {
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips = tooltips.slice(0, tooltips.length - 2);
 
-    this.reCreateClipsBar(starts, connects, tooltips);
-  }
-
-  /**
-   * Re-create clips bar with events.
-   */
-  reCreateClipsBar(starts: number[], connects: boolean[], tooltips: boolean[]) {
-    // Destroy old clipsBar and create new one with new clip
-    this.clipsBar.noUiSlider.destroy();
-    noUiSlider.create(this.clipsBar, {
-      start: starts,
-      behaviour: "drag",
-      connect: connects,
-      tooltips: tooltips,
-      range: {
-        min: 0,
-        max: this.video.duration
-      }
-    });
-
-    // Add all events back to new clipBar
-    this.addClipsBarEvents();
-
-    // Update numberOfClips
-    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
+    this.createClipsBar(starts, connects, tooltips);
   }
 
   /**
