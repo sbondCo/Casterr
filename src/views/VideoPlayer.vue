@@ -302,8 +302,8 @@ export default class VideoPlayer extends Vue {
     pair.tooltip.style.left = `${(pair.connect.getBoundingClientRect().width + 8) / 2}px`;
 
     // Set tooltip value to clip length
-    pair.tooltip.innerHTML = (
-      parseFloat(values[pair.handle + 1]) - parseFloat(values[pair.handle])
+    pair.tooltip.innerHTML = Number(
+      (parseFloat(values[pair.handle + 1]) - parseFloat(values[pair.handle])).toFixed(0)
     ).toReadableTimeFromSeconds();
   }
 
