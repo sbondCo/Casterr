@@ -133,6 +133,17 @@ export default class VideoPlayer extends Vue {
     this.addProgressBarEvents();
   }
 
+  /**
+   * Update time on video element
+   */
+  updateVideoTime(newTime: number) {
+    this.video.currentTime = newTime;
+    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+  }
+
+  /**
+   * Update time on progress bar
+   */
   updateProgressBarTime() {
     this.progressBar.noUiSlider.set(this.video.currentTime);
     this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
@@ -146,8 +157,7 @@ export default class VideoPlayer extends Vue {
     this.progressBar.noUiSlider.off();
 
     this.progressBar.noUiSlider.on("slide", (values: any[]) => {
-      this.video.currentTime = values[0];
-      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+      this.updateVideoTime(values[0]);
     });
 
     this.progressBar.noUiSlider.on("start", () => {
