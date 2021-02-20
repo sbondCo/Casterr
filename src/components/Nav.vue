@@ -48,7 +48,6 @@ import { Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import Recorder from "./../libs/recorder";
 import { GeneralSettings } from "./../libs/settings";
-import electron from "electron";
 
 @Component({
   components: {
@@ -63,8 +62,6 @@ export default class Nav extends Vue {
   }
 
   mounted() {
-    console.log(electron.remote.screen.getAllDisplays());
-    
     let timer: any;
 
     // Change recordingStatus circle depending on whether isRecording
@@ -109,7 +106,7 @@ export default class Nav extends Vue {
 <style lang="scss">
 nav {
   display: flex;
-  min-height: 64px;
+  min-height: 48px;
   background-color: $secondaryColor;
 
   ul {
