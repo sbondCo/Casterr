@@ -99,6 +99,7 @@ export default class VideoPlayer extends Vue {
     this.video.addEventListener("pause", () => {
       this.playPause(false);
     });
+    this.video.addEventListener("timeupdate", this.updateProgressBarTime);
 
     noUiSlider.create(this.progressBar, {
       start: [0],
@@ -118,26 +119,6 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    const updateProgressBarTime = () => {
-      this.progressBar.noUiSlider.set(this.video.currentTime);
-      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
-    };
-
-    this.video.addEventListener("timeupdate", updateProgressBarTime);
-
-    this.progressBar.noUiSlider.on("slide", (values: any[]) => {
-      this.video.currentTime = values[0];
-      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
-    });
-
-    this.progressBar.noUiSlider.on("start", () => {
-      this.video.removeEventListener("timeupdate", updateProgressBarTime);
-    });
-
-    this.progressBar.noUiSlider.on("end", () => {
-      this.video.addEventListener("timeupdate", updateProgressBarTime);
-    });
-
     noUiSlider.create(this.clipsBar, {
       start: [1200, 1550, 2500, 3069, 4040, 4500],
       behaviour: "drag",
@@ -149,20 +130,42 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.progressBar.addEventListener("dblclick", () => {
-      let pb = this.progressBar.noUiSlider;
-      console.log(pb.options);
+    this.createVolumeBar();
+    this.addProgressBarEvents();
+    this.addClipsBarEvents();
+  }
+
+  updateProgressBarTime() {
+    this.progressBar.noUiSlider.set(this.video.currentTime);
+    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+  }
+
+  addProgressBarEvents() {
+    // First remove all events
+    this.progressBar.noUiSlider.off();
+
+    this.progressBar.noUiSlider.on("slide", (values: any[]) => {
+      this.video.currentTime = values[0];
+      this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
     });
 
-    this.addClipsBarEventListeners();
+    this.progressBar.noUiSlider.on("start", () => {
+      this.video.removeEventListener("timeupdate", this.updateProgressBarTime);
+    });
 
-    this.createVolumeBar();
+    this.progressBar.noUiSlider.on("end", () => {
+      this.video.addEventListener("timeupdate", this.updateProgressBarTime);
+    });
+
+    this.progressBar.addEventListener("dblclick", () => {
+      this.addClip();
+    });
   }
 
   /**
    * Re-add all events to Clips bar
    */
-  addClipsBarEventListeners() {
+  addClipsBarEvents() {
     // First remove all events
     this.clipsBar.noUiSlider.off();
 
@@ -179,6 +182,9 @@ export default class VideoPlayer extends Vue {
     });
   }
 
+  /**
+   * Add clip at currentProgress/current position of progressBar handle
+   */
   addClip() {
     let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
