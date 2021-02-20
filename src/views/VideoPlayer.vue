@@ -89,15 +89,21 @@ export default class VideoPlayer extends Vue {
     let start = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connect = this.clipsBar.noUiSlider.options.connect! as boolean[];
 
+    // Add new starts and then sort the array.
+    // CANT have array as [100, 200, 50, 80]
     start.push(0, 500);
     start.sort((a, b) => a - b);
 
+    // Remove last connect, then add connects
+    // for new starts and add 'false' back to end.
     connect.pop();
     connect.push(false, true, false);
 
+    // Add tooltips to new connects
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips.push(true, false);
 
+    // Destroy old clipsBar and create new one with new clip
     this.clipsBar.noUiSlider.destroy();
     noUiSlider.create(this.clipsBar, {
       start: start,
