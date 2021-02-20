@@ -182,10 +182,11 @@ export default class VideoPlayer extends Vue {
   addClip() {
     let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
+    let currentProgress = Number(this.progressBar.noUiSlider.get());
 
     // Add new starts and then sort the array.
     // CANT have array as [100, 200, 50, 80]
-    starts.push(0, 500);
+    starts.push(currentProgress, currentProgress + 5);
     starts.sort((a, b) => a - b);
 
     // Remove last connect, then add connects
