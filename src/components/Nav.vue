@@ -3,28 +3,28 @@
     <ul>
       <li>
         <router-link to="/recordings">
-          <Icon i="play" :wh="24" />
+          <Icon i="play" />
           <span>Recordings</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/uploads">
-          <Icon i="upload" :wh="24" />
+          <Icon i="upload" />
           <span>Uploads</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/settings">
-          <Icon i="settings" :wh="24" />
+          <Icon i="settings" />
           <span>Settings</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/profile">
-          <Icon i="play" :wh="24" />
+          <Icon i="play" />
           <span>Profile</span>
         </router-link>
       </li>
@@ -119,33 +119,37 @@ nav {
     li {
       display: inline-block;
       color: $textPrimary;
-      font-size: 24px;
-      padding: 10px 15px;
-      margin: 0 5px;
-      cursor: pointer;
+      font-size: 26px;
+      height: 100%;
 
       a {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 10px 15px;
+        margin: 0 5px;
         transition: color 250ms ease;
-      }
+        cursor: pointer;
+      
 
-      svg {
-        fill: $textPrimary;
-        margin: 0 8px 0 0;
-        transition: fill 250ms ease;
+        svg {
+          fill: $textPrimary;
+          margin: 0 8px 0 0;
+          transition: fill 250ms ease;
 
-        @media (max-width: 910px) {
-          transition: width 250ms ease;
-          margin: 0;
-          width: 80px;
+          @media (max-width: 910px) {
+            transition: width 250ms ease;
+            margin: 0;
+            width: 80px;
+          }
         }
+      }
 
         @media (max-width: 600px) {
           width: 20px;
         }
-      }
 
       span:not(.timeElapsed) {
         @media (max-width: 910px) {
