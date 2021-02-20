@@ -8,20 +8,20 @@
     </div>
 
     <div class="controls">
-      <button @click="playPause">
+      <Button @click="playPause">
         <Icon :i="playPauseBtnIcon" />
-      </button>
+      </Button>
 
-      <button class="volume">
+      <Button class="volume">
         <Icon i="volumeMax" />
         <div ref="volumeBar" class="volumeBar"></div>
-      </button>
+      </Button>
 
-      <button class="outlined">{{ currentVideoTime }} / {{ maxVideoTime }}</button>
+      <Button :outlined="true">{{ currentVideoTime }} / {{ maxVideoTime }}</Button>
 
-      <button @click="addClip">ADD CLIP</button>
+      <Button @click="addClip">ADD CLIP</Button>
 
-      <div class="continue combinedInfoButton rightFromHere">
+      <!-- <Button combinedInfo>
         <button class="clipInfo outlined">
           <div>
             <Icon i="clips" wh="18" />
@@ -37,7 +37,25 @@
         <button>
           <Icon i="arrow" />
         </button>
-      </div>
+      </Button> -->
+
+      <!-- <div class="continue combinedInfoButton rightFromHere">
+        <button class="clipInfo outlined">
+          <div>
+            <Icon i="clips" wh="18" />
+            <span>{{ numberOfClips }}</span>
+          </div>
+
+          <div>
+            <Icon i="time" wh="18" />
+            <span>{{ lengthOfClips }}</span>
+          </div>
+        </button>
+
+        <button>
+          <Icon i="arrow" />
+        </button>
+      </div> -->
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -46,6 +64,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "./../components/Icon.vue";
+import Button from "./../components/ui/Button.vue";
 import "./../libs/helpers/extensions";
 import fs from "fs";
 import path from "path";
@@ -53,7 +72,8 @@ import noUiSlider from "nouislider";
 
 @Component({
   components: {
-    Icon
+    Icon,
+    Button
   }
 })
 export default class VideoPlayer extends Vue {
@@ -407,101 +427,39 @@ export default class VideoPlayer extends Vue {
       margin-left: auto;
     }
 
-    .outlined {
-      border: 2px solid $secondaryColor;
-      background-color: transparent;
-    }
+    // .combinedInfoButton {
+    //   display: flex;
+    //   flex-flow: row;
+    //   height: 100%;
 
-    .combinedInfoButton {
-      display: flex;
-      flex-flow: row;
-      height: 100%;
+    //   :first-child {
+    //     border-top-right-radius: 0;
+    //     border-bottom-right-radius: 0;
+    //   }
 
-      :first-child {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
+    //   :last-child {
+    //     margin-left: 0;
+    //     border-top-left-radius: 0;
+    //     border-bottom-left-radius: 0;
+    //   }
+    // }
 
-      :last-child {
-        margin-left: 0;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-    }
+    // .continue {
+    //   .clipInfo {
+    //     div {
+    //       display: flex;
+    //       align-items: center;
 
-    .continue {
-      .clipInfo {
-        div {
-          display: flex;
-          align-items: center;
+    //       &:not(:first-child) {
+    //         margin-left: 5px;
+    //       }
 
-          &:not(:first-child) {
-            margin-left: 5px;
-          }
-
-          svg {
-            margin-right: 3px;
-          }
-        }
-      }
-    }
-
-    button {
-      display: flex;
-      flex-flow: row;
-      align-items: center;
-      height: 100%;
-      padding: 5px;
-      border: unset;
-      border-radius: 3px;
-      outline: unset;
-      color: $textPrimary;
-      background-color: $secondaryColor;
-
-      &:not(:first-child) {
-        margin-left: 5px;
-      }
-
-      &.volume {
-        flex-flow: row;
-
-        .volumeBar {
-          width: 0;
-          margin: 0;
-
-          height: 5px;
-          transition: width 150ms ease-in-out, margin 150ms ease-in-out;
-
-          .noUi-handle {
-            visibility: hidden;
-            top: -3px;
-            right: -6px;
-            height: 12px;
-            width: 12px;
-          }
-        }
-
-        // Show volumeBar on hover.
-        // Don't hide on hover so if user is a maniac when
-        // changing the volume we won't ruin their experience
-        &:hover,
-        &:active {
-          .volumeBar {
-            width: 100px;
-            margin: 0 7px 0 12px;
-
-            .noUi-handle {
-              visibility: visible;
-            }
-          }
-        }
-      }
-
-      svg {
-        padding: 2px;
-        fill: $textPrimary;
-      }
-    }
+    //       svg {
+    //         margin-right: 3px;
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   .progressBarContainer {
