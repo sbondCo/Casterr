@@ -179,10 +179,12 @@ export default class VideoPlayer extends Vue {
       this.updateTooltip(values, handle);
     });
 
-    // Show/Hide tooltip on drag
+    // Show tooltip on drag
     this.clipsBar.noUiSlider.on("start", (_, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "block";
     });
+
+    // Hide tooltip on finish drag
     this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
