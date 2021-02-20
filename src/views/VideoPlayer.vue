@@ -496,14 +496,27 @@ export default class VideoPlayer extends Vue {
       height: 100%;
       background-color: transparent;
 
+      .noUi-origin {
+        &:nth-child(even) .noUi-handle {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-right: unset;
+        }
+
+        &:nth-child(odd) .noUi-handle {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-left: unset;
+        }
+      }
+
       .noUi-base {
         pointer-events: none;
       }
 
       .noUi-draggable {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid $textPrimary;
-        border-radius: 4px;
+        background-color: transparent;
+        border-top: 1px solid $textPrimary;
+        border-bottom: 1px solid $textPrimary;
+        border-radius: unset;
         top: 7px;
         height: 25px;
         pointer-events: all;
