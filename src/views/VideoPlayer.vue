@@ -85,44 +85,6 @@ export default class VideoPlayer extends Vue {
     }
   }
 
-  addClip() {
-    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
-    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
-
-    // Add new starts and then sort the array.
-    // CANT have array as [100, 200, 50, 80]
-    starts.push(0, 500);
-    starts.sort((a, b) => a - b);
-
-    // Remove last connect, then add connects
-    // for new starts and add 'false' back to end.
-    connects.pop();
-    connects.push(false, true, false);
-
-    // Add tooltips to new connects
-    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
-    tooltips.push(true, false);
-
-    // Destroy old clipsBar and create new one with new clip
-    this.clipsBar.noUiSlider.destroy();
-    noUiSlider.create(this.clipsBar, {
-      start: starts,
-      behaviour: "drag",
-      connect: connects,
-      tooltips: tooltips,
-      range: {
-        min: 0,
-        max: this.video.duration
-      }
-    });
-
-    // Add all events back to new clipBar
-    this.addClipsBarEventListeners();
-
-    // Update numberOfClips
-    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
-  }
-
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
@@ -215,6 +177,44 @@ export default class VideoPlayer extends Vue {
     this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
+  }
+
+  addClip() {
+    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
+
+    // Add new starts and then sort the array.
+    // CANT have array as [100, 200, 50, 80]
+    starts.push(0, 500);
+    starts.sort((a, b) => a - b);
+
+    // Remove last connect, then add connects
+    // for new starts and add 'false' back to end.
+    connects.pop();
+    connects.push(false, true, false);
+
+    // Add tooltips to new connects
+    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    tooltips.push(true, false);
+
+    // Destroy old clipsBar and create new one with new clip
+    this.clipsBar.noUiSlider.destroy();
+    noUiSlider.create(this.clipsBar, {
+      start: starts,
+      behaviour: "drag",
+      connect: connects,
+      tooltips: tooltips,
+      range: {
+        min: 0,
+        max: this.video.duration
+      }
+    });
+
+    // Add all events back to new clipBar
+    this.addClipsBarEventListeners();
+
+    // Update numberOfClips
+    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
   }
 
   /**
