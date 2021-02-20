@@ -221,24 +221,7 @@ export default class VideoPlayer extends Vue {
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips.push(true, false);
 
-    // Destroy old clipsBar and create new one with new clip
-    this.clipsBar.noUiSlider.destroy();
-    noUiSlider.create(this.clipsBar, {
-      start: starts,
-      behaviour: "drag",
-      connect: connects,
-      tooltips: tooltips,
-      range: {
-        min: 0,
-        max: this.video.duration
-      }
-    });
-
-    // Add all events back to new clipBar
-    this.addClipsBarEvents();
-
-    // Update numberOfClips
-    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
+    this.reCreateClipsBar(starts, connects, tooltips);
   }
 
   /**
@@ -265,6 +248,13 @@ export default class VideoPlayer extends Vue {
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips = tooltips.slice(0, tooltips.length - 2);
 
+    this.reCreateClipsBar(starts, connects, tooltips);
+  }
+
+  /**
+   * Re-create clips bar with events.
+   */
+  reCreateClipsBar(starts: number[], connects: boolean[], tooltips: boolean[]) {
     // Destroy old clipsBar and create new one with new clip
     this.clipsBar.noUiSlider.destroy();
     noUiSlider.create(this.clipsBar, {
