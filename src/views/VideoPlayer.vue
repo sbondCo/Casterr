@@ -85,6 +85,9 @@ export default class VideoPlayer extends Vue {
     }
   }
 
+  /**
+   * Initialize all components after video had loaded.
+   */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
@@ -140,6 +143,9 @@ export default class VideoPlayer extends Vue {
     this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
   }
 
+  /**
+   * Re-add all events to Progress bar
+   */
   addProgressBarEvents() {
     // First remove all events
     this.progressBar.noUiSlider.off();
