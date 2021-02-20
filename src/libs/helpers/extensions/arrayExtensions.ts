@@ -3,15 +3,15 @@ interface Array<T> {
    * Remove an item from an array, identified with its value
    * @param toRemove Item to remove from the array
    */
-  remove(toRemove: string | object): any[];
+  remove(toRemove: string | number | object): any[];
   /**
-   * Remove an item from an array, identified with its value
+   * Replace an item in an array, identified with its value
    * @param toRemove Item to remove from the array
    */
   replace(toReplace: string, replaceWith: string): string[];
 }
 
-Array.prototype.remove = function(this, toRemove: string | object): any[] {
+Array.prototype.remove = function(this, toRemove: string | number | object): any[] {
   return this.filter((e) => JSON.stringify(e) !== JSON.stringify(toRemove));
 };
 

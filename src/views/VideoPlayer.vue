@@ -27,6 +27,7 @@
             <Icon i="clips" wh="18" />
             <span>{{ numberOfClips }}</span>
           </div>
+
           <div>
             <Icon i="time" wh="18" />
             <span>{{ lengthOfClips }}</span>
@@ -175,6 +176,14 @@ export default class VideoPlayer extends Vue {
     // First remove all events
     this.clipsBar.noUiSlider.off();
 
+    let connectElements = document.querySelectorAll(".clipsBar .noUi-connect");
+
+    for (let i = 0, ii = 0; i < connectElements.length; ++i, ii += 2) {
+      connectElements[i].addEventListener("dblclick", () => {
+        this.removeClip(ii);
+      });
+    }
+
     this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
       this.updateTooltip(values, handle);
     });
@@ -230,6 +239,42 @@ export default class VideoPlayer extends Vue {
 
     // Update numberOfClips
     this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
+  }
+
+  /**
+   * Remove clip with connectIndex
+   * @param connectIndex
+   */
+  removeClip(connectIndex: number) {
+    let allHandleValues = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let handleValues = [allHandleValues[connectIndex], allHandleValues[connectIndex + 1]];
+
+    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
+
+    starts = starts.remove(handleValues[0]);
+    starts = starts.remove(handleValues[1]);
+
+    connects = connects.slice(0, connects.length - 3);
+    connects.push(false);
+
+    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    tooltips = tooltips.slice(0, tooltips.length - 2);
+
+    // Destroy old clipsBar and create new one with new clip
+    this.clipsBar.noUiSlider.destroy();
+    noUiSlider.create(this.clipsBar, {
+      start: starts,
+      behaviour: "drag",
+      connect: connects,
+      tooltips: tooltips,
+      range: {
+        min: 0,
+        max: this.video.duration
+      }
+    });
+
+    this.addClipsBarEvents();
   }
 
   /**
