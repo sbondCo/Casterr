@@ -242,8 +242,9 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Remove clip with connectIndex
-   * @param connectIndex
+   * Remove clip
+   * @param connectIndex Index from 'clipsBar.noUiSlider.get()' array that relates
+   *                     to the first handle bars value on the clip being removed.
    */
   removeClip(connectIndex: number) {
     let allHandleValues = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
@@ -252,12 +253,15 @@ export default class VideoPlayer extends Vue {
     let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
 
+    // Remove starts from clip being removes
     starts = starts.remove(handleValues[0]);
     starts = starts.remove(handleValues[1]);
 
+    // Remove last 3 connects then add false
     connects = connects.slice(0, connects.length - 3);
     connects.push(false);
 
+    // Remove unneeded tooltips
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     tooltips = tooltips.slice(0, tooltips.length - 2);
 
@@ -274,7 +278,11 @@ export default class VideoPlayer extends Vue {
       }
     });
 
+    // Add all events back to new clipBar
     this.addClipsBarEvents();
+
+    // Update numberOfClips
+    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
   }
 
   /**
