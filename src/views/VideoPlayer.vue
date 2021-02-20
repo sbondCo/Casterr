@@ -224,7 +224,7 @@ export default class VideoPlayer extends Vue {
     });
 
     // Add all events back to new clipBar
-    this.addClipsBarEventListeners();
+    this.addClipsBarEvents();
 
     // Update numberOfClips
     this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
