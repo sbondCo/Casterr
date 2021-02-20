@@ -17,3 +17,9 @@ import AppLayout from "./layouts/AppLayout.vue";
 })
 export default class App extends Vue {}
 </script>
+
+<style lang="scss">
+* {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+</style>

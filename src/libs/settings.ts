@@ -139,6 +139,7 @@ export class RecordingSettings {
   /**
    * thumbSaveFolder
    */
+
   public static get thumbSaveFolder() {
     return this._thumbSaveFolder;
   }

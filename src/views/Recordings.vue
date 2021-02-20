@@ -27,8 +27,12 @@
               </span>
 
               <div class="videoInfo">
-                <span v-if="vid.duration">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                <span v-if="vid.fileSize">{{ vid.fileSize.toReadableFileSize() }}</span>
+                <span v-if="vid.duration">{{
+                  vid.duration.toReadableTimeFromSeconds()
+                }}</span>
+                <span v-if="vid.fileSize">{{
+                  vid.fileSize.toReadableFileSize()
+                }}</span>
               </div>
             </div>
           </div>
@@ -52,14 +56,14 @@ import "./../libs/helpers/extensions";
 
 @Component({
   components: {
-    Icon
-  }
+    Icon,
+  },
 })
 export default class extends Vue {
   data() {
     return {
       allRecordings: RecordingsManager.get(),
-      loadedRecordings: new Array()
+      loadedRecordings: new Array(),
     };
   }
 
@@ -84,7 +88,9 @@ export default class extends Vue {
     let videosToLoad = 8;
 
     // Loop over allRecordings after removing currently loaded recordings adding to loadedRecordings
-    for (let [i, v] of this.$data.allRecordings.slice(this.$data.loadedRecordings.length).entries()) {
+    for (let [i, v] of this.$data.allRecordings
+      .slice(this.$data.loadedRecordings.length)
+      .entries()) {
       // Add to loadedRecordings
       this.$data.loadedRecordings.push(v);
 
@@ -198,7 +204,10 @@ export default class extends Vue {
             height: 40px;
             padding: 0 10px;
             line-height: 40px;
-            background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
+            background-color: change-color(
+              $color: $darkAccentColor,
+              $alpha: 0.5
+            );
             transition: background-color 250ms ease-in-out;
 
             .title {

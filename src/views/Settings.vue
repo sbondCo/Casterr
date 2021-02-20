@@ -50,9 +50,9 @@ export default Vue.extend({
     position: absolute;
     height: 100%;
     width: 200px;
-    top: 68px;
+    top: (64 + 32)px;
     left: 0;
-    background-color: $secondaryColor;
+    background-color: $secondaryLightColor;
 
     ul {
       display: flex;

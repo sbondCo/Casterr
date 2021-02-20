@@ -13,8 +13,8 @@ import Icon from "./../components/Icon.vue";
 
 @Component({
   components: {
-    Icon
-  }
+    Icon,
+  },
 })
 export default class extends Vue {
   @Prop({ default: "play" }) icon: string;
