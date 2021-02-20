@@ -86,18 +86,18 @@ export default class VideoPlayer extends Vue {
   }
 
   addClip() {
-    let start = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
-    let connect = this.clipsBar.noUiSlider.options.connect! as boolean[];
+    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
 
     // Add new starts and then sort the array.
     // CANT have array as [100, 200, 50, 80]
-    start.push(0, 500);
-    start.sort((a, b) => a - b);
+    starts.push(0, 500);
+    starts.sort((a, b) => a - b);
 
     // Remove last connect, then add connects
     // for new starts and add 'false' back to end.
-    connect.pop();
-    connect.push(false, true, false);
+    connects.pop();
+    connects.push(false, true, false);
 
     // Add tooltips to new connects
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
@@ -106,9 +106,9 @@ export default class VideoPlayer extends Vue {
     // Destroy old clipsBar and create new one with new clip
     this.clipsBar.noUiSlider.destroy();
     noUiSlider.create(this.clipsBar, {
-      start: start,
+      start: starts,
       behaviour: "drag",
-      connect: connect,
+      connect: connects,
       tooltips: tooltips,
       range: {
         min: 0,
