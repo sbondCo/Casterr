@@ -1,16 +1,28 @@
 <template>
   <button ref="button" class="btn" @click="$emit('click')">
-    <slot></slot>
+    <Icon v-if="icon" :i="icon" />
+
+    <span>{{ text }}</span>
+
+    <!-- <slot></slot> -->
   </button>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
+import Icon from "./../Icon.vue";
 
-@Component
+@Component({
+  components: {
+    Icon
+  }
+})
 export default class Button extends Vue {
+  @Prop() icon: string;
+  @Prop() text: string;
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
+  @Prop() slider: boolean;
 
   mounted() {
     let button = this.$refs.button as HTMLButtonElement;

@@ -8,36 +8,16 @@
     </div>
 
     <div class="controls">
-      <Button @click="playPause">
-        <Icon :i="playPauseBtnIcon" />
-      </Button>
+      <Button @click="playPause" :icon="playPauseBtnIcon"></Button>
 
       <Button class="volume">
-        <Icon i="volumeMax" />
-        <div ref="volumeBar" class="volumeBar"></div>
+        <!-- <Icon i="volumeMax" />
+        <div ref="volumeBar" class="volumeBar"></div> -->
       </Button>
 
-      <Button :outlined="true">{{ currentVideoTime }} / {{ maxVideoTime }}</Button>
+      <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true"></Button>
 
-      <Button @click="addClip">ADD CLIP</Button>
-
-      <!-- <Button combinedInfo>
-        <button class="clipInfo outlined">
-          <div>
-            <Icon i="clips" wh="18" />
-            <span>{{ numberOfClips }}</span>
-          </div>
-
-          <div>
-            <Icon i="time" wh="18" />
-            <span>{{ lengthOfClips }}</span>
-          </div>
-        </button>
-
-        <button>
-          <Icon i="arrow" />
-        </button>
-      </Button> -->
+      <Button text="ADD CLIP" @click="addClip"></Button>
 
       <!-- <div class="continue combinedInfoButton rightFromHere">
         <button class="clipInfo outlined">
