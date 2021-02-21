@@ -86,10 +86,18 @@ export default class VideoPlayer extends Vue {
    * Update the volume for video.
    * @param volume Volume to set video to.
    */
-  updateVolume(volume: number) {
-    // Only change volume if video element is NOT undefined
-    if (this.video != undefined) {
-      this.video.volume = volume;
+  async updateVolume(volume: number) {
+    // Try 3 times to update volume
+    // First time volume is updated, the video element
+    // hasn't loaded fully so we need to keep trying until it has.
+    for (let i = 0; i < 3; ++i) {
+      // Update volume if video element is defined
+      if (this.video != undefined) {
+        this.video.volume = volume;
+        break;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 250));
     }
   }
 
@@ -100,7 +108,6 @@ export default class VideoPlayer extends Vue {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
-    this.volumeBar = this.$refs.volumeBar as noUiSlider.Instance;
 
     this.maxVideoTime = this.video.duration.toReadableTimeFromSeconds();
 
