@@ -43,6 +43,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "./../components/Icon.vue";
 import Button from "./../components/ui/Button.vue";
 import "./../libs/helpers/extensions";
+import Helpers from "./../libs/helpers";
 import fs from "fs";
 import path from "path";
 import noUiSlider from "nouislider";
@@ -97,7 +98,7 @@ export default class VideoPlayer extends Vue {
         break;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 250));
+      await Helpers.sleep(250);
     }
   }
 
