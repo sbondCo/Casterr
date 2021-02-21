@@ -126,6 +126,7 @@ div {
     outline: unset;
     color: $textPrimary;
     background-color: $secondaryColor;
+    cursor: pointer;
 
     &.slider {
       flex-flow: row;
