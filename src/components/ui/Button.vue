@@ -51,7 +51,7 @@ export default class Button extends Vue {
     });
 
     slider.noUiSlider.on("update", (value) => {
-      this.$emit("update", value);
+      this.$emit("update", Number(value[0]));
     });
   }
 }
