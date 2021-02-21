@@ -10,10 +10,7 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon"></Button>
 
-      <Button class="volume">
-        <!-- <Icon i="volumeMax" />
-        <div ref="volumeBar" class="volumeBar"></div> -->
-      </Button>
+      <Button icon="volumeMax" :slider="true" @update="updateVolume"></Button>
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true"></Button>
 
@@ -87,6 +84,14 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
+   * Update the volume for video.
+   * @param volume Volume to set video to.
+   */
+  updateVolume(volume: number) {
+    this.video.volume = volume;
+  }
+
+  /**
    * Initialize all components after video had loaded.
    */
   videoLoaded() {
@@ -129,7 +134,6 @@ export default class VideoPlayer extends Vue {
       [true, false, true, false, true, false]
     );
 
-    this.createVolumeBar();
     this.addProgressBarEvents();
   }
 
@@ -279,25 +283,6 @@ export default class VideoPlayer extends Vue {
     tooltips = tooltips.slice(0, tooltips.length - 2);
 
     this.createClipsBar(starts, connects, tooltips);
-  }
-
-  /**
-   * Create volume bar
-   */
-  createVolumeBar() {
-    // Make volumeBar
-    noUiSlider.create(this.volumeBar, {
-      start: [80],
-      range: {
-        min: 0,
-        max: 1
-      }
-    });
-
-    // Update video volume on update
-    this.volumeBar.noUiSlider.on("update", (values: any) => {
-      this.video.volume = values[0];
-    });
   }
 
   /**

@@ -2,14 +2,15 @@
   <button ref="button" class="btn" @click="$emit('click')">
     <Icon v-if="icon" :i="icon" />
 
-    <span>{{ text }}</span>
+    <span v-if="text">{{ text }}</span>
 
-    <!-- <slot></slot> -->
+    <div v-if="slider" ref="sliderBar" class="sliderBar"></div>
   </button>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
+import noUiSlider from "nouislider";
 import Icon from "./../Icon.vue";
 
 @Component({
@@ -20,14 +21,38 @@ import Icon from "./../Icon.vue";
 export default class Button extends Vue {
   @Prop() icon: string;
   @Prop() text: string;
+
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
-  @Prop() slider: boolean;
+  @Prop({ default: false }) slider: boolean;
 
   mounted() {
+    if (this.outlined) this.addClassToButton("outlined");
+    if (this.slider) this.createSlider();
+  }
+
+  addClassToButton(classToAdd: string) {
     let button = this.$refs.button as HTMLButtonElement;
 
-    if (this.outlined) button.classList.add("outlined");
+    button.classList.add(classToAdd);
+  }
+
+  createSlider() {
+    this.addClassToButton("slider");
+
+    let slider = this.$refs.sliderBar as noUiSlider.Instance;
+
+    noUiSlider.create(slider, {
+      start: [0.8],
+      range: {
+        min: 0,
+        max: 1
+      }
+    });
+
+    slider.noUiSlider.on("update", (value) => {
+      this.$emit("update", value);
+    });
   }
 }
 </script>
@@ -59,10 +84,10 @@ export default class Button extends Vue {
     margin-left: 5px;
   }
 
-  &.volume {
+  &.slider {
     flex-flow: row;
 
-    .volumeBar {
+    .sliderBar {
       width: 0;
       margin: 0;
 
@@ -78,12 +103,12 @@ export default class Button extends Vue {
       }
     }
 
-    // Show volumeBar on hover.
-    // Don't hide on hover so if user is a maniac when
-    // changing the volume we won't ruin their experience
+    // Show sliderBar on hover.
+    // Don't hide if active so if user is a maniac
+    // when sliding we won't ruin their experience
     &:hover,
     &:active {
-      .volumeBar {
+      .sliderBar {
         width: 100px;
         margin: 0 7px 0 12px;
 
