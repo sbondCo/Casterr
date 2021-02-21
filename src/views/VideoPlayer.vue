@@ -59,7 +59,6 @@ export default class VideoPlayer extends Vue {
   private video: HTMLVideoElement;
   private progressBar: noUiSlider.Instance;
   private clipsBar: noUiSlider.Instance;
-  private volumeBar: noUiSlider.Instance;
 
   numberOfClips = 0;
   lengthOfClips = "15:32";
