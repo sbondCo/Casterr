@@ -1,11 +1,17 @@
 <template>
-  <button ref="button" class="btn" @click="$emit('click')">
-    <Icon v-if="icon" :i="icon" />
+  <div>
+    <button v-if="combinedInfo" class="infoBtn outlined">
+      <slot></slot>
+    </button>
 
-    <span v-if="text">{{ text }}</span>
+    <button ref="button" class="mainBtn" @click="$emit('click')">
+      <Icon v-if="icon" :i="icon" />
 
-    <div v-if="slider" ref="sliderBar" class="sliderBar"></div>
-  </button>
+      <span v-if="text">{{ text }}</span>
+
+      <div v-if="slider" ref="sliderBar" class="sliderBar"></div>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,62 +64,98 @@ export default class Button extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.btn {
+div {
   display: flex;
   flex-flow: row;
   align-items: center;
   height: 100%;
-  padding: 5px;
-  border: unset;
-  border-radius: 3px;
-  outline: unset;
-  color: $textPrimary;
-  background-color: $secondaryColor;
+
+  // Add margin between buttons
+  &:not(:first-child) {
+    margin-left: 5px;
+  }
+
+  .outlined {
+    border: 2px solid $secondaryColor !important;
+    background-color: transparent !important;
+  }
 
   ::v-deep svg {
     padding: 2px;
     fill: $textPrimary;
   }
 
-  &.outlined {
-    border: 2px solid $secondaryColor;
-    background-color: transparent;
-  }
-
-  &:not(:first-child) {
-    margin-left: 5px;
-  }
-
-  &.slider {
+  .infoBtn {
+    display: flex;
     flex-flow: row;
+    align-items: center;
+    height: 100%;
+    padding: 4px;
+    color: $textPrimary;
 
-    .sliderBar {
-      width: 0;
-      margin: 0;
+    ::v-deep div {
+      display: flex;
+      align-items: center;
 
-      height: 5px;
-      transition: width 150ms ease-in-out, margin 150ms ease-in-out;
+      &:not(:first-child) {
+        margin-left: 5px;
+      }
 
-      ::v-deep .noUi-handle {
-        visibility: hidden;
-        top: -3px;
-        right: -6px;
-        height: 12px;
-        width: 12px;
+      svg {
+        margin-right: 3px;
       }
     }
 
-    // Show sliderBar on hover.
-    // Don't hide if active so if user is a maniac
-    // when sliding we won't ruin their experience
-    &:hover,
-    &:active {
+    // Remove left border radius from mainBtn so both connect properly
+    + .mainBtn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  .mainBtn {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    height: 100%;
+    padding: 5px;
+    border: unset;
+    border-radius: 3px;
+    outline: unset;
+    color: $textPrimary;
+    background-color: $secondaryColor;
+
+    &.slider {
+      flex-flow: row;
+
       .sliderBar {
-        width: 100px;
-        margin: 0 7px 0 12px;
+        width: 0;
+        margin: 0;
+
+        height: 5px;
+        transition: width 150ms ease-in-out, margin 150ms ease-in-out;
 
         ::v-deep .noUi-handle {
-          visibility: visible;
+          visibility: hidden;
+          top: -3px;
+          right: -6px;
+          height: 12px;
+          width: 12px;
+        }
+      }
+
+      // Show sliderBar on hover.
+      // Don't hide if active so if user is a maniac
+      // when sliding we won't ruin their experience
+      &:hover,
+      &:active {
+        .sliderBar {
+          width: 100px;
+          margin: 0 7px 0 12px;
+
+          ::v-deep .noUi-handle {
+            visibility: visible;
+          }
         }
       }
     }

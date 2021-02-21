@@ -8,31 +8,25 @@
     </div>
 
     <div class="controls">
-      <Button @click="playPause" :icon="playPauseBtnIcon"></Button>
+      <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button icon="volumeMax" :slider="true" @update="updateVolume"></Button>
+      <Button icon="volumeMax" :slider="true" @update="updateVolume" />
 
-      <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true"></Button>
+      <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
 
-      <Button text="ADD CLIP" @click="addClip"></Button>
+      <Button text="ADD CLIP" @click="addClip" />
 
-      <!-- <div class="continue combinedInfoButton rightFromHere">
-        <button class="clipInfo outlined">
-          <div>
-            <Icon i="clips" wh="18" />
-            <span>{{ numberOfClips }}</span>
-          </div>
+      <Button class="rightFromHere" icon="arrow" :combinedInfo="true">
+        <div>
+          <Icon i="clips" wh="18" />
+          <span>{{ numberOfClips }}</span>
+        </div>
 
-          <div>
-            <Icon i="time" wh="18" />
-            <span>{{ lengthOfClips }}</span>
-          </div>
-        </button>
-
-        <button>
-          <Icon i="arrow" />
-        </button>
-      </div> -->
+        <div>
+          <Icon i="time" wh="18" />
+          <span>{{ lengthOfClips }}</span>
+        </div>
+      </Button>
     </div>
   </div>
   <span v-else>Video doesn't exist</span>
@@ -401,40 +395,6 @@ export default class VideoPlayer extends Vue {
     .rightFromHere {
       margin-left: auto;
     }
-
-    // .combinedInfoButton {
-    //   display: flex;
-    //   flex-flow: row;
-    //   height: 100%;
-
-    //   :first-child {
-    //     border-top-right-radius: 0;
-    //     border-bottom-right-radius: 0;
-    //   }
-
-    //   :last-child {
-    //     margin-left: 0;
-    //     border-top-left-radius: 0;
-    //     border-bottom-left-radius: 0;
-    //   }
-    // }
-
-    // .continue {
-    //   .clipInfo {
-    //     div {
-    //       display: flex;
-    //       align-items: center;
-
-    //       &:not(:first-child) {
-    //         margin-left: 5px;
-    //       }
-
-    //       svg {
-    //         margin-right: 3px;
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   .progressBarContainer {
