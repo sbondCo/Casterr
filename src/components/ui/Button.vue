@@ -92,6 +92,8 @@ div {
     height: 100%;
     padding: 4px;
     color: $textPrimary;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 
     ::v-deep div {
       display: flex;
