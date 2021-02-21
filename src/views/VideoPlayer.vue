@@ -88,7 +88,10 @@ export default class VideoPlayer extends Vue {
    * @param volume Volume to set video to.
    */
   updateVolume(volume: number) {
-    this.video.volume = volume;
+    // Only change volume if video element is NOT undefined
+    if (this.video != undefined) {
+      this.video.volume = volume;
+    }
   }
 
   /**
