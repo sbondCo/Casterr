@@ -4,7 +4,7 @@
       <slot></slot>
     </button>
 
-    <button ref="button" class="mainBtn" @click="$emit('click')">
+    <button ref="mainBtn" class="mainBtn" @click="$emit('click')">
       <Icon v-if="icon" :i="icon" />
 
       <span v-if="text">{{ text }}</span>
@@ -38,9 +38,9 @@ export default class Button extends Vue {
   }
 
   addClassToButton(classToAdd: string) {
-    let button = this.$refs.button as HTMLButtonElement;
+    let mainBtn = this.$refs.mainBtn as HTMLButtonElement;
 
-    button.classList.add(classToAdd);
+    mainBtn.classList.add(classToAdd);
   }
 
   createSlider() {
