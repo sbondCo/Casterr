@@ -32,15 +32,17 @@ export default class Button extends Vue {
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
 
+  mainBtn: HTMLButtonElement;
+
   mounted() {
+    this.mainBtn = this.$refs.mainBtn as HTMLButtonElement;
+
     if (this.outlined) this.addClassToButton("outlined");
     if (this.slider) this.createSlider();
   }
 
   addClassToButton(classToAdd: string) {
-    let mainBtn = this.$refs.mainBtn as HTMLButtonElement;
-
-    mainBtn.classList.add(classToAdd);
+    this.mainBtn.classList.add(classToAdd);
   }
 
   createSlider() {
@@ -58,6 +60,17 @@ export default class Button extends Vue {
 
     slider.noUiSlider.on("update", (value) => {
       this.$emit("update", Number(value[0]));
+    });
+
+    this.mainBtn.addEventListener("wheel", (e) => {
+      let noSlider = slider.noUiSlider;
+      let sliderVal = Number(noSlider.get());
+
+      if (e.deltaY < 0) {
+        noSlider.set(sliderVal + 0.1);
+      } else {
+        noSlider.set(sliderVal - 0.1);
+      }
     });
   }
 }
