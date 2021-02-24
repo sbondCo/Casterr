@@ -373,6 +373,7 @@ export default class VideoPlayer extends Vue {
     background-color: $darkAccentColor;
     border: 1px solid $textPrimary;
     border-radius: 4px;
+    cursor: grab;
 
     &::before,
     &::after {
