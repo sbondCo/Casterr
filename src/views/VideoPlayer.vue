@@ -345,8 +345,6 @@ export default class VideoPlayer extends Vue {
 </script>
 
 <style lang="scss">
-@import "./../../node_modules/nouislider/distribute/nouislider.css";
-
 .videoPlayerContainer {
   width: 100%;
   overflow-x: hidden;

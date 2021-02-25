@@ -4,6 +4,7 @@ module.exports = {
     loaderOptions: {
       sass: {
         additionalData: `
+          @use "./node_modules/nouislider/distribute/nouislider.css";
           @import "./src/styles/_vars.scss";
           @import "./src/styles/_norm.scss";
         `
@@ -16,7 +17,7 @@ module.exports = {
       builderOptions: {
         appId: "sbondCo.Casterr",
         productName: "Casterr",
-        copyright: "Copyright © 2020 CasterrTV",
+        copyright: "Copyright © 2021 sbondCo",
         compression: "maximum",
         linux: {
           target: ["AppImage"],
@@ -30,20 +31,15 @@ module.exports = {
           artifactName: "${productName} ${version} Setup.${ext}",
           icon: "./assets/icons/256x256.ico"
         },
-        files: [
-          "**/*",
-          "assets/icons/*"
-        ],
+        files: ["**/*", "assets/icons/*"],
         extraFiles: [
           {
             from: "./assets",
             to: "./assets",
-            filter: [
-              "**/*"
-            ]
+            filter: ["**/*"]
           }
         ]
       }
     }
   }
-}
+};
