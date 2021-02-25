@@ -358,34 +358,6 @@ export default class VideoPlayer extends Vue {
     background-color: black;
   }
 
-  // # Default slider styling
-  * {
-    box-shadow: unset;
-    outline: unset;
-    border: unset;
-  }
-
-  .noUi-handle {
-    top: 0;
-    right: -6px;
-    width: 12px;
-    height: 12px;
-    background-color: $darkAccentColor;
-    border: 1px solid $textPrimary;
-    border-radius: 4px;
-    cursor: grab;
-
-    &::before,
-    &::after {
-      display: none;
-    }
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
-  // ^ Default slider styling
-
   .controls {
     display: flex;
     align-items: center;
