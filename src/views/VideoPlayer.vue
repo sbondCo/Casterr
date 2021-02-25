@@ -224,6 +224,7 @@ export default class VideoPlayer extends Vue {
 
     this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
       this.updateTooltip(values, handle);
+      this.updateTotalLengthOfClips(values);
     });
 
     // Show tooltip on drag
@@ -287,6 +288,24 @@ export default class VideoPlayer extends Vue {
     tooltips = tooltips.slice(0, tooltips.length - 2);
 
     this.createClipsBar(starts, connects, tooltips);
+  }
+
+  /**
+   * Update total length of clips.
+   * @param values String array of values from slider.
+   */
+  updateTotalLengthOfClips(values: string[]) {
+    let totalLength = 0;
+    let v = values.map(Number);
+
+    // Loop over values in pairs
+    for (let i = 0, n = v.length; i < n; i += 2) {
+      // Update totalLength after calculating current pairs length
+      totalLength += Number((v[i + 1] - v[i]).toFixed(0));
+    }
+
+    // Finally, update actual lengthOfClips variable
+    this.lengthOfClips = totalLength.toReadableTimeFromSeconds();
   }
 
   /**
