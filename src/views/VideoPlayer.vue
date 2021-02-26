@@ -188,8 +188,6 @@ export default class VideoPlayer extends Vue {
     // If exists, destroy old clipsBar first
     if (this.clipsBar.noUiSlider) this.clipsBar.noUiSlider.destroy();
 
-    console.log(starts, connects, tooltips);
-
     // Create new clipsBar with passed args
     noUiSlider.create(this.clipsBar, {
       start: starts,
@@ -249,13 +247,11 @@ export default class VideoPlayer extends Vue {
     let currentProgress = Number(this.progressBar.noUiSlider.get());
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
 
-    console.log(this.clipsBar.style.visibility);
-
     // Update connects/tooltips only if:
     //  - There isn't only one clip (if connects length is 3 then there is only 1 clip)
-    //  - The clips bar is visible
+    //  - The clips bar is visible (if clipsBar visibility == "" then assume it is visible)
     // This is because we are going to reuse the old connects/tooltips when adding 1st clip again.
-    if (connects.length != 3 || this.clipsBar.style.visibility == "visible") {
+    if (connects.length != 3 || this.clipsBar.style.visibility == "visible" || this.clipsBar.style.visibility == "") {
       // Remove last connect, then add connects
       // for new starts and add 'false' back to end.
       connects.pop();
