@@ -251,12 +251,11 @@ export default class VideoPlayer extends Vue {
 
     console.log(this.clipsBar.style.visibility);
 
+    // Update connects/tooltips only if:
+    //  - There isn't only one clip (if connects length is 3 then there is only 1 clip)
+    //  - The clips bar is visible
+    // This is because we are going to reuse the old connects/tooltips when adding 1st clip again.
     if (connects.length != 3 || this.clipsBar.style.visibility == "visible") {
-      // Add new starts and then sort the array.
-      // CANT have array as [100, 200, 50, 80]
-      starts.push(currentProgress, currentProgress + 5);
-      starts.sort((a, b) => a - b);
-
       // Remove last connect, then add connects
       // for new starts and add 'false' back to end.
       connects.pop();
@@ -265,8 +264,17 @@ export default class VideoPlayer extends Vue {
       // Add tooltips to new connects
       tooltips.push(true, false);
     } else {
+      // Empty starts to remove last clip that is hidden
+      starts = [];
+
+      // Show clips bar
       this.clipsBar.style.visibility = "visible";
     }
+
+    // Add new starts and then sort the array.
+    // CANT have array as [100, 200, 50, 80]
+    starts.push(currentProgress, currentProgress + 5);
+    starts.sort((a, b) => a - b);
 
     this.createClipsBar(starts, connects, tooltips);
   }
@@ -284,8 +292,8 @@ export default class VideoPlayer extends Vue {
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
 
-    console.log(connects.length);
-
+    // Remove all clips normally unless there is
+    // only one left, in that case, just hide the clips bar.
     if (connects.length != 3) {
       // Remove starts from clip being removes
       starts = starts.remove(handleValues[0]);
@@ -298,6 +306,7 @@ export default class VideoPlayer extends Vue {
       // Remove unneeded tooltips
       tooltips = tooltips.slice(0, tooltips.length - 2);
     } else {
+      // Hide clips bar
       this.clipsBar.style.visibility = "hidden";
     }
 
