@@ -52,6 +52,7 @@ export default class Button extends Vue {
 
     noUiSlider.create(slider, {
       start: [0.8],
+      behaviour: "snap",
       range: {
         min: 0,
         max: 1
@@ -157,6 +158,13 @@ div {
           right: -6px;
           height: 12px;
           width: 12px;
+        }
+
+        // Set transition for slider handle to 0ms.
+        // For some reason 'snap' behaviour doesn't
+        // work when moving handle by using mouse wheel.
+        ::v-deep .noUi-origin {
+          transition: transform 0ms ease-in;
         }
       }
 

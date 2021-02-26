@@ -116,6 +116,7 @@ export default class VideoPlayer extends Vue {
 
     noUiSlider.create(this.progressBar, {
       start: [0],
+      behaviour: "snap",
       range: {
         min: 0,
         max: this.video.duration // + 99999
@@ -413,6 +414,10 @@ export default class VideoPlayer extends Vue {
     .progressBar {
       height: 100%;
       background-color: $secondaryColor;
+
+      .noUi-origin {
+        transition: transform 80ms ease-in;
+      }
 
       .noUi-handle {
         top: 0;
