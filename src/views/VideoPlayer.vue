@@ -188,6 +188,8 @@ export default class VideoPlayer extends Vue {
     // If exists, destroy old clipsBar first
     if (this.clipsBar.noUiSlider) this.clipsBar.noUiSlider.destroy();
 
+    console.log(starts, connects, tooltips);
+
     // Create new clipsBar with passed args
     noUiSlider.create(this.clipsBar, {
       start: starts,
@@ -245,20 +247,26 @@ export default class VideoPlayer extends Vue {
     let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
     let currentProgress = Number(this.progressBar.noUiSlider.get());
-
-    // Add new starts and then sort the array.
-    // CANT have array as [100, 200, 50, 80]
-    starts.push(currentProgress, currentProgress + 5);
-    starts.sort((a, b) => a - b);
-
-    // Remove last connect, then add connects
-    // for new starts and add 'false' back to end.
-    connects.pop();
-    connects.push(false, true, false);
-
-    // Add tooltips to new connects
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
-    tooltips.push(true, false);
+
+    console.log(this.clipsBar.style.visibility);
+
+    if (connects.length != 3 || this.clipsBar.style.visibility == "visible") {
+      // Add new starts and then sort the array.
+      // CANT have array as [100, 200, 50, 80]
+      starts.push(currentProgress, currentProgress + 5);
+      starts.sort((a, b) => a - b);
+
+      // Remove last connect, then add connects
+      // for new starts and add 'false' back to end.
+      connects.pop();
+      connects.push(false, true, false);
+
+      // Add tooltips to new connects
+      tooltips.push(true, false);
+    } else {
+      this.clipsBar.style.visibility = "visible";
+    }
 
     this.createClipsBar(starts, connects, tooltips);
   }
@@ -274,18 +282,24 @@ export default class VideoPlayer extends Vue {
 
     let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
     let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
-
-    // Remove starts from clip being removes
-    starts = starts.remove(handleValues[0]);
-    starts = starts.remove(handleValues[1]);
-
-    // Remove last 3 connects then add false
-    connects = connects.slice(0, connects.length - 3);
-    connects.push(false);
-
-    // Remove unneeded tooltips
     let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
-    tooltips = tooltips.slice(0, tooltips.length - 2);
+
+    console.log(connects.length);
+
+    if (connects.length != 3) {
+      // Remove starts from clip being removes
+      starts = starts.remove(handleValues[0]);
+      starts = starts.remove(handleValues[1]);
+
+      // Remove last 3 connects then add false
+      connects = connects.slice(0, connects.length - 3);
+      connects.push(false);
+
+      // Remove unneeded tooltips
+      tooltips = tooltips.slice(0, tooltips.length - 2);
+    } else {
+      this.clipsBar.style.visibility = "hidden";
+    }
 
     this.createClipsBar(starts, connects, tooltips);
   }
@@ -297,13 +311,11 @@ export default class VideoPlayer extends Vue {
   updateTotalLengthOfClips(values: string[]) {
     let totalLength = 0;
     let v = values.map(Number);
-
     // Loop over values in pairs
     for (let i = 0, n = v.length; i < n; i += 2) {
       // Update totalLength after calculating current pairs length
       totalLength += Number((v[i + 1] - v[i]).toFixed(0));
     }
-
     // Finally, update actual lengthOfClips variable
     this.lengthOfClips = totalLength.toReadableTimeFromSeconds();
   }
