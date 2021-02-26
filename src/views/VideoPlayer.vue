@@ -29,7 +29,9 @@
       </Button>
     </div>
   </div>
-  <span v-else>Video doesn't exist</span>
+  <div v-else>
+    <span>Video doesn't exist</span>
+  </div>
 </template>
 
 <script lang="ts">
