@@ -417,6 +417,10 @@ export default class VideoPlayer extends Vue {
 
       .noUi-origin {
         transition: transform 80ms ease-in;
+
+        &:active {
+          transition: transform 0ms;
+        }
       }
 
       .noUi-handle {
