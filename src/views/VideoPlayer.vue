@@ -298,8 +298,8 @@ export default class VideoPlayer extends Vue {
     // only one left, in that case, just hide the clips bar.
     if (connects.length != 3) {
       // Remove starts from clip being removes
-      starts = starts.remove(handleValues[0]);
-      starts = starts.remove(handleValues[1]);
+      starts = starts.removeFirst(handleValues[0]);
+      starts = starts.removeFirst(handleValues[1]);
 
       // Remove last 3 connects then add false
       connects = connects.slice(0, connects.length - 3);
