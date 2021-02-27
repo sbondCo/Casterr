@@ -16,7 +16,13 @@
 
       <Button text="ADD CLIP" @click="addClip" />
 
-      <Button class="rightFromHere" icon="arrow" :combinedInfo="continueBtnCI">
+      <Button
+        class="rightFromHere"
+        icon="arrow"
+        :combinedInfo="continueBtnCI"
+        :disabled="!continueBtnCI"
+        @click="saveClips"
+      >
         <div>
           <Icon i="clips" wh="18" />
           <span>{{ numberOfClips }}</span>
@@ -136,11 +142,7 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.createClipsBar(
-      [1200, 1550, 2500, 3069, 4040, 4500],
-      [false, true, false, true, false, true, false],
-      [true, false, true, false, true, false]
-    );
+    this.createClipsBar([4, 5, 9, 11], [false, true, false, true, false], [true, false, true, false]);
 
     this.addProgressBarEvents();
   }
@@ -315,6 +317,10 @@ export default class VideoPlayer extends Vue {
     }
 
     this.createClipsBar(starts, connects, tooltips);
+  }
+
+  saveClips() {
+    console.log("click");
   }
 
   /**
