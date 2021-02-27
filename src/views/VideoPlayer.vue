@@ -16,7 +16,7 @@
 
       <Button text="ADD CLIP" @click="addClip" />
 
-      <Button class="rightFromHere" icon="arrow" :combinedInfo="true">
+      <Button class="rightFromHere" icon="arrow" :combinedInfo="continueBtnCI">
         <div>
           <Icon i="clips" wh="18" />
           <span>{{ numberOfClips }}</span>
@@ -62,6 +62,7 @@ export default class VideoPlayer extends Vue {
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
+  continueBtnCI = true;
 
   /**
    * Play/Pause the video.
@@ -268,6 +269,8 @@ export default class VideoPlayer extends Vue {
 
       // Show clips bar
       this.clipsBar.style.visibility = "visible";
+
+      this.continueBtnCI = true;
     }
 
     // Add new starts and then sort the array.
@@ -305,6 +308,8 @@ export default class VideoPlayer extends Vue {
       // Remove unneeded tooltips
       tooltips = tooltips.slice(0, tooltips.length - 2);
     } else {
+      this.continueBtnCI = false;
+
       // Hide clips bar
       this.clipsBar.style.visibility = "hidden";
     }
