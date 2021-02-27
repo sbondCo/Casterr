@@ -1,5 +1,5 @@
 <template>
-  <div @[clickEvent]="$emit('click')">
+  <div class="btnWrapper" @[clickEvent]="$emit('click')">
     <button v-if="combinedInfo" class="infoBtn outlined">
       <slot></slot>
     </button>
@@ -95,7 +95,7 @@ export default class Button extends Vue {
 </script>
 
 <style lang="scss" scoped>
-div {
+.btnWrapper {
   display: flex;
   flex-flow: row;
   align-items: center;
@@ -107,6 +107,7 @@ div {
   }
 
   .outlined {
+    padding: 5px !important;
     border: 2px solid $secondaryColor !important;
     background-color: transparent !important;
   }
@@ -114,6 +115,18 @@ div {
   ::v-deep svg {
     padding: 2px;
     fill: $textPrimary;
+  }
+
+  &:hover {
+    .infoBtn {
+      + .mainBtn {
+        border-left: 2px solid transparent;
+      }
+    }
+
+    .mainBtn {
+      background-color: transparent;
+    }
   }
 
   .infoBtn {
@@ -125,6 +138,7 @@ div {
     color: $textPrimary;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
+    cursor: pointer;
 
     ::v-deep div {
       display: flex;
@@ -151,12 +165,14 @@ div {
     flex-flow: row;
     align-items: center;
     height: 100%;
-    padding: 5px;
+    padding: 3px;
     border: unset;
+    border: 2px solid $secondaryColor;
     border-radius: 3px;
     outline: unset;
     color: $textPrimary;
     background-color: $secondaryColor;
+    transition: background-color 150ms ease, border 150ms ease;
     cursor: pointer;
 
     &.slider {
