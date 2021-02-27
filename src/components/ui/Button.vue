@@ -75,16 +75,20 @@ export default class Button extends Vue {
       this.$emit("update", Number(value[0]));
     });
 
-    this.mainBtn.addEventListener("wheel", (e) => {
-      let noSlider = slider.noUiSlider;
-      let sliderVal = Number(noSlider.get());
+    this.mainBtn.addEventListener(
+      "wheel",
+      (e) => {
+        let noSlider = slider.noUiSlider;
+        let sliderVal = Number(noSlider.get());
 
-      if (e.deltaY < 0) {
-        noSlider.set(sliderVal + 0.1);
-      } else {
-        noSlider.set(sliderVal - 0.1);
-      }
-    });
+        if (e.deltaY < 0) {
+          noSlider.set(sliderVal + 0.1);
+        } else {
+          noSlider.set(sliderVal - 0.1);
+        }
+      },
+      { passive: true }
+    );
   }
 }
 </script>
