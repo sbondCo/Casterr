@@ -1,6 +1,6 @@
 <template>
   <div class="btnWrapper" @[clickEvent]="$emit('click')">
-    <button v-if="combinedInfo" class="infoBtn outlined">
+    <button v-if="combinedInfo" id="outlined" class="infoBtn">
       <slot></slot>
     </button>
 
@@ -39,7 +39,7 @@ export default class Button extends Vue {
   mounted() {
     this.mainBtn = this.$refs.mainBtn as HTMLButtonElement;
 
-    if (this.outlined) this.addClassToButton("outlined");
+    if (this.outlined) this.mainBtn.id += "outlined";
     if (this.slider) this.createSlider();
   }
 
@@ -106,10 +106,10 @@ export default class Button extends Vue {
     margin-left: 5px;
   }
 
-  .outlined {
-    padding: 5px !important;
-    border: 2px solid $secondaryColor !important;
-    background-color: transparent !important;
+  #outlined {
+    padding: 5px;
+    border: 2px solid $secondaryColor;
+    background-color: transparent;
   }
 
   ::v-deep svg {
