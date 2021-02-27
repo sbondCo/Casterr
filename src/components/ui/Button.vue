@@ -126,6 +126,11 @@ export default class Button extends Vue {
 
     .mainBtn {
       background-color: transparent;
+
+      // Only change outlined on hover if on mainBtn
+      &#outlined {
+        background-color: $secondaryColor;
+      }
     }
   }
 
@@ -135,6 +140,7 @@ export default class Button extends Vue {
     align-items: center;
     height: 100%;
     padding: 4px;
+    outline: unset;
     color: $textPrimary;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
