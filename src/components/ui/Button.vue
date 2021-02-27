@@ -181,6 +181,10 @@ export default class Button extends Vue {
     transition: background-color 150ms ease, border 150ms ease;
     cursor: pointer;
 
+    &.disabled {
+      cursor: not-allowed;
+    }
+
     &.slider {
       flex-flow: row;
 
