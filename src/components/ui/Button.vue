@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div @[clickEvent]="$emit('click')">
     <button v-if="combinedInfo" class="infoBtn outlined">
       <slot></slot>
     </button>
 
-    <button ref="mainBtn" class="mainBtn" @[mainBtnClickEvent]="$emit('click')">
+    <button ref="mainBtn" class="mainBtn">
       <Icon v-if="icon" :i="icon" />
 
       <span v-if="text">{{ text }}</span>
@@ -34,7 +34,7 @@ export default class Button extends Vue {
   @Prop({ default: false }) slider: boolean;
 
   mainBtn: HTMLButtonElement;
-  mainBtnClickEvent = "click";
+  clickEvent = "click";
 
   mounted() {
     this.mainBtn = this.$refs.mainBtn as HTMLButtonElement;
@@ -44,12 +44,13 @@ export default class Button extends Vue {
   }
 
   updated() {
+    // Enable/disable button click event
     if (this.disabled) {
-      console.log("disabled");
-      this.mainBtnClickEvent = "null";
+      this.clickEvent = "null";
+      this.mainBtn.classList.add("disabled");
     } else {
-      console.log("enabled");
-      this.mainBtnClickEvent = "click";
+      this.clickEvent = "click";
+      this.mainBtn.classList.remove("disabled");
     }
   }
 
