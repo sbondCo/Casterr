@@ -4,7 +4,7 @@
       <slot></slot>
     </button>
 
-    <button ref="mainBtn" class="mainBtn" @click="$emit('click')">
+    <button ref="mainBtn" class="mainBtn" @[mainBtnClickEvent]="$emit('click')">
       <Icon v-if="icon" :i="icon" />
 
       <span v-if="text">{{ text }}</span>
@@ -28,17 +28,29 @@ export default class Button extends Vue {
   @Prop() icon: string;
   @Prop() text: string;
 
+  @Prop({ default: false }) disabled: boolean;
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
 
   mainBtn: HTMLButtonElement;
+  mainBtnClickEvent = "click";
 
   mounted() {
     this.mainBtn = this.$refs.mainBtn as HTMLButtonElement;
 
     if (this.outlined) this.addClassToButton("outlined");
     if (this.slider) this.createSlider();
+  }
+
+  updated() {
+    if (this.disabled) {
+      console.log("disabled");
+      this.mainBtnClickEvent = "null";
+    } else {
+      console.log("enabled");
+      this.mainBtnClickEvent = "click";
+    }
   }
 
   addClassToButton(classToAdd: string) {
