@@ -117,7 +117,7 @@ export default class RecordingsManager {
       true
     );
     const files = [];
-    const clipsFileStream = fs.createWriteStream(outFolder + "/clips.txt", { flags: "a" });
+    const manifestStream = fs.createWriteStream(outFolder + "/manifest.txt", { flags: "a" });
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
@@ -126,7 +126,7 @@ export default class RecordingsManager {
 
       files.push(curFile);
 
-      clipsFileStream.write(`file '${curFile}'\n`);
+      manifestStream.write(`file '${curFile}'\n`);
 
       await ffmpeg.run(`-ss ${timestamps[ii]} -to ${timestamps[ii + 1]} -i "${videoPath}" -c copy "${curFile}"`, {
         stdoutCallback: (m: any) => {
@@ -141,6 +141,6 @@ export default class RecordingsManager {
       });
     }
 
-    clipsFileStream.end();
+    manifestStream.end();
   }
 }
