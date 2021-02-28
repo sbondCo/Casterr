@@ -48,23 +48,27 @@ export default class FFmpeg {
     // Get FFmpeg path
     const ffPath = await this.getPath();
 
-    // Create child process and send args to it
-    this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
+    return new Promise((resolve) => {
+      // Create child process and send args to it
+      this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
-    // Run stdoutCallback when recieving stdout
-    this.ffProcess.stdout!.on("data", (data) => {
-      if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
-    });
+      // Run stdoutCallback when recieving stdout
+      this.ffProcess.stdout!.on("data", (data) => {
+        if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
+      });
 
-    // Run stderrCallback when recieving stderr
-    this.ffProcess.stderr!.on("data", (data) => {
-      if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
-    });
+      // Run stderrCallback when recieving stderr
+      this.ffProcess.stderr!.on("data", (data) => {
+        if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
+      });
 
-    // When ffProcess exits
-    this.ffProcess.on("close", (code) => {
-      // Call onExitCallback is set to do so
-      if (outputs?.onExitCallback != undefined) outputs?.onExitCallback();
+      // When ffProcess exits
+      this.ffProcess.on("close", (code) => {
+        resolve(code);
+
+        // Call onExitCallback is set to do so
+        if (outputs?.onExitCallback != undefined) outputs?.onExitCallback(code);
+      });
     });
   }
 
