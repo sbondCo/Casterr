@@ -117,26 +117,30 @@ export default class RecordingsManager {
       true
     );
     const files = [];
+    const clipsFileStream = fs.createWriteStream(outFolder + "/clips.txt", { flags: "a" });
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
-      files.push(outFolder + `/${i}.mp4`);
+      const curFile = outFolder + `/${i}.mp4`;
 
-      await ffmpeg.run(
-        `-ss ${timestamps[ii]} -to ${timestamps[ii + 1]} -i "${videoPath}" -c copy "${files[files.length - 1]}"`,
-        {
-          stdoutCallback: (m: any) => {
-            // console.log(m);
-          },
-          stderrCallback: (m: any) => {
-            // console.log(m);
-          },
-          onExitCallback: (m: any) => {
-            console.log("EXITED " + m);
-          }
+      files.push(curFile);
+
+      clipsFileStream.write(`file '${curFile}'\n`);
+
+      await ffmpeg.run(`-ss ${timestamps[ii]} -to ${timestamps[ii + 1]} -i "${videoPath}" -c copy "${curFile}"`, {
+        stdoutCallback: (m: any) => {
+          // console.log(m);
+        },
+        stderrCallback: (m: any) => {
+          // console.log(m);
+        },
+        onExitCallback: (m: any) => {
+          console.log("EXITED " + m);
         }
-      );
+      });
     }
+
+    clipsFileStream.end();
   }
 }
