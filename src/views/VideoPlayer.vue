@@ -46,6 +46,7 @@ import Icon from "./../components/Icon.vue";
 import Button from "./../components/ui/Button.vue";
 import "./../libs/helpers/extensions";
 import Helpers from "./../libs/helpers";
+import RecordingsManager from "./../libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
 import noUiSlider from "nouislider";
@@ -320,7 +321,7 @@ export default class VideoPlayer extends Vue {
   }
 
   saveClips() {
-    console.log("click");
+    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider.get() as string[]).map(Number));
   }
 
   /**
