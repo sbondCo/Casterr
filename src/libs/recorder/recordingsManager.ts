@@ -116,15 +116,12 @@ export default class RecordingsManager {
       `${RecordingSettings.videoSaveFolder}/clips/.processing/${PathHelper.fileNameNoExt(videoPath)}`,
       true
     );
-    const files = [];
     const manifestStream = fs.createWriteStream(outFolder + "/manifest.txt", { flags: "a" });
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
       const curFile = outFolder + `/${i}.mp4`;
-
-      files.push(curFile);
 
       manifestStream.write(`file '${curFile}'\n`);
 
@@ -142,5 +139,20 @@ export default class RecordingsManager {
     }
 
     manifestStream.end();
+
+    ffmpeg.run(
+      `-f concat -safe 0 -i "${outFolder}/manifest.txt" -c copy ${RecordingSettings.videoSaveFolder}/clips/clip.mp4`,
+      {
+        stdoutCallback: (m: any) => {
+          console.log(m);
+        },
+        stderrCallback: (m: any) => {
+          console.log(m);
+        },
+        onExitCallback: (m: any) => {
+          console.log(m);
+        }
+      }
+    );
   }
 }
