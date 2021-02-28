@@ -69,4 +69,12 @@ export default class PathHelper {
 
     return path;
   }
+
+  /**
+   * Returns name of file without it's extension.
+   * @param path Full path of file.
+   */
+  public static fileNameNoExt(path: string) {
+    return Path.basename(path).replace(Path.extname(path), "");
+  }
 }
