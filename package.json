@@ -20,7 +20,7 @@
   "dependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/node": "^14.14.31",
-    "core-js": "^3.9.0",
+    "core-js": "^3.9.1",
     "jszip": "^3.6.0",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.6",
