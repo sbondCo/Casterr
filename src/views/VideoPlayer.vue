@@ -65,7 +65,7 @@ export default class VideoPlayer extends Vue {
   private clipsBar: noUiSlider.Instance;
 
   numberOfClips = 0;
-  lengthOfClips = "15:32";
+  lengthOfClips = "00:00";
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
