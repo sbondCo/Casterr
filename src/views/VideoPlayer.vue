@@ -1,6 +1,6 @@
 <template>
   <div v-if="videoExists" class="videoPlayerContainer">
-    <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded" controls></video>
+    <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded"></video>
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
@@ -424,8 +424,19 @@ export default class VideoPlayer extends Vue {
     height: 40px;
     padding: 0 10px;
     background-color: $secondaryColor;
+    // overflow-y: hidden;
+    // overflow-x: auto;
+
+    // &::-webkit-scrollbar {
+    //   height: 5px;
+    // }
+
+    // &::-webkit-scrollbar-track {
+    //   background-color: $secondaryColor;
+    // }
 
     .progressBar {
+      // width: 200%;
       height: 100%;
       background-color: $secondaryColor;
 
