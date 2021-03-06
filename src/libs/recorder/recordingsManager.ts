@@ -113,16 +113,19 @@ export default class RecordingsManager {
 
   public static async clip(videoPath: string, timestamps: number[]) {
     const ffmpeg = new FFmpeg();
-    const outFolder = PathHelper.ensureExists(
-      `${RecordingSettings.videoSaveFolder}/clips/.processing/${PathHelper.fileNameNoExt(videoPath)}`,
+    const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
+    const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
+    const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
+    const tmpOutFolder = PathHelper.ensureExists(
+      `${RecordingSettings.videoSaveFolder}/clips/.processing/${clipOutName}`,
       true
     );
-    const manifestStream = fs.createWriteStream(outFolder + "/manifest.txt", { flags: "a" });
+    const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
-      const curFile = outFolder + `/${i}.mp4`;
+      const curFile = tmpOutFolder + `/${i}.mp4`;
 
       manifestStream.write(`file '${curFile}'\n`);
 
@@ -145,11 +148,7 @@ export default class RecordingsManager {
 
     manifestStream.end();
 
-    const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
-    const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
-    const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
-
-    ffmpeg.run(`-f concat -safe 0 -i "${outFolder}/manifest.txt" -c copy "${clipOutPath}"`, {
+    ffmpeg.run(`-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -c copy "${clipOutPath}"`, {
       stdoutCallback: (m: any) => {
         console.log(m);
       },
