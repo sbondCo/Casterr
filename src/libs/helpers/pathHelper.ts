@@ -77,4 +77,18 @@ export default class PathHelper {
   public static fileNameNoExt(path: string) {
     return Path.basename(path).replace(Path.extname(path), "");
   }
+
+  /**
+   * Recursively remove everything inside a directory and then remove the directory itself.
+   * @param path
+   */
+  public static removeDir(path: string) {
+    fs.readdir(path, (_, files) => {
+      files.forEach((file) => {
+        fs.unlinkSync(Path.join(path, file));
+      });
+
+      fs.rmdirSync(path);
+    });
+  }
 }

@@ -121,13 +121,11 @@ export default class RecordingsManager {
       true
     );
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
-    const files: Array<string> = [];
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
       const curFile = tmpOutFolder + `/${i}.mp4`;
-      files.push(curFile);
 
       manifestStream.write(`file '${curFile}'\n`);
 
@@ -143,16 +141,8 @@ export default class RecordingsManager {
     ffmpeg.run(`-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -c copy "${clipOutPath}"`, {
       // After creating final clip, delete all temp files
       onExitCallback: () => {
-        // Delete each temp clip
-        files.forEach((file) => {
-          fs.unlinkSync(file);
-        });
-
-        // Delete manifest file
-        fs.unlinkSync(manifestStream.path);
-
         // Remove temp dir
-        fs.rmdirSync(tmpOutFolder);
+        PathHelper.removeDir(tmpOutFolder);
       }
     });
   }
