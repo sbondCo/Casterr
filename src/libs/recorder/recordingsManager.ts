@@ -125,11 +125,9 @@ export default class RecordingsManager {
 
       manifestStream.write(`file '${curFile}'\n`);
 
-      console.log(`-ss ${timestamps[ii]} -to ${timestamps[ii + 1] - timestamps[ii]} ${i}.mp4`);
-
       await ffmpeg.run(
         `-ss ${timestamps[ii]} -i "${videoPath}" -to ${timestamps[ii + 1] -
-          timestamps[ii]} -map 0 -c copy -avoid_negative_ts 1 "${curFile}"`,
+          timestamps[ii]} -map 0 -avoid_negative_ts 1 "${curFile}"`,
         {
           stdoutCallback: (m: any) => {
             // console.log(m);
