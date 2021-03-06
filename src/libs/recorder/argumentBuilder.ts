@@ -78,7 +78,9 @@ export default class ArgumentBuilder {
 
     // Video device
     if (
-      RecordingSettings.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
+      RecordingSettings.videoDevice
+        .toLowerCase()
+        .equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
     ) {
       args.push(`-i video=${DeviceManager.winDesktopVideoDevice}`);
     } else {
@@ -197,10 +199,11 @@ export default class ArgumentBuilder {
     return maps.join(" ").toString();
   }
 
+  public static get videoOutputName(): string {
+    return `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`;
+  }
+
   private static get videoOutputPath(): string {
-    return path.join(
-      PathHelper.ensureExists(RecordingSettings.videoSaveFolder, true),
-      `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`
-    );
+    return path.join(PathHelper.ensureExists(RecordingSettings.videoSaveFolder, true), this.videoOutputName);
   }
 }

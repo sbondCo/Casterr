@@ -3,6 +3,7 @@ import PathHelper from "./../helpers/pathHelper";
 import { RecordingSettings } from "./../settings";
 import * as fs from "fs";
 import * as path from "path";
+import ArgumentBuilder from "./argumentBuilder";
 
 export interface Recording {
   videoPath: string;
@@ -144,19 +145,20 @@ export default class RecordingsManager {
 
     manifestStream.end();
 
-    ffmpeg.run(
-      `-f concat -safe 0 -i "${outFolder}/manifest.txt" -c copy ${RecordingSettings.videoSaveFolder}/clips/clip.mp4`,
-      {
-        stdoutCallback: (m: any) => {
-          console.log(m);
-        },
-        stderrCallback: (m: any) => {
-          console.log(m);
-        },
-        onExitCallback: (m: any) => {
-          console.log(m);
-        }
+    const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
+    const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
+    const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
+
+    ffmpeg.run(`-f concat -safe 0 -i "${outFolder}/manifest.txt" -c copy "${clipOutPath}"`, {
+      stdoutCallback: (m: any) => {
+        console.log(m);
+      },
+      stderrCallback: (m: any) => {
+        console.log(m);
+      },
+      onExitCallback: (m: any) => {
+        console.log(m);
       }
-    );
+    });
   }
 }
