@@ -404,11 +404,12 @@ export default class VideoPlayer extends Vue {
 <style lang="scss">
 .videoPlayerContainer {
   width: 100%;
+  height: 100%;
   overflow-x: hidden;
 
   video {
     width: 100%;
-    height: 400px;
+    height: calc(100% - 90px); // Make height of video all take up all blank space on page
     outline: none;
     background-color: black;
   }
