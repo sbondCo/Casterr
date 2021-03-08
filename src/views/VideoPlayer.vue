@@ -1,6 +1,12 @@
 <template>
   <div v-if="videoExists" class="videoPlayerContainer">
-    <video ref="videoPlayer" id="video" :src="'secfile://' + videoPath" @loadedmetadata="videoLoaded"></video>
+    <video
+      ref="videoPlayer"
+      id="video"
+      :src="'secfile://' + videoPath"
+      @loadedmetadata="videoLoaded"
+      @click="playPause"
+    ></video>
 
     <div class="progressBarContainer">
       <div ref="progressBar" class="progressBar"></div>
