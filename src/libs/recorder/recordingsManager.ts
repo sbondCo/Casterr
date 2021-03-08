@@ -138,12 +138,15 @@ export default class RecordingsManager {
     manifestStream.end();
 
     // Concatenate all seperate clips into one video
-    ffmpeg.run(`-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -c copy "${clipOutPath}"`, {
-      // After creating final clip, delete all temp files
-      onExitCallback: () => {
-        // Remove temp dir
-        PathHelper.removeDir(tmpOutFolder);
+    ffmpeg.run(
+      `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
+      {
+        // After creating final clip, delete all temp files
+        onExitCallback: () => {
+          // Remove temp dir
+          PathHelper.removeDir(tmpOutFolder);
+        }
       }
-    });
+    );
   }
 }
