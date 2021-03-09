@@ -46,7 +46,14 @@ async function createWindow() {
   }
 }
 
+/**
+ * Register and handle all ipc channels.
+ * @param win Main window.
+ */
 function registerChannels(win: BrowserWindow) {
+  /**
+   * Manage current state of window.
+   */
   ipcMain.on("manage-window", (_, args) => {
     switch (args) {
       case "maximize":
@@ -65,6 +72,9 @@ function registerChannels(win: BrowserWindow) {
     }
   });
 
+  /**
+   * Create desktop notification window and display correct message to user.
+   */
   ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
     const notifWin = new BrowserWindow({
       parent: win,
@@ -106,6 +116,9 @@ function registerChannels(win: BrowserWindow) {
     }, args.duration);
   });
 
+  /**
+   * Show open dialog with args passed through.
+   */
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
     return dialog.showOpenDialog(win, args);
   });
