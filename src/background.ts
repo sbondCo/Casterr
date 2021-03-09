@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain, screen } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as path from "path";
@@ -104,6 +104,10 @@ function registerChannels(win: BrowserWindow) {
     setTimeout(() => {
       notifWin.close();
     }, args.duration);
+  });
+
+  ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
+    return dialog.showOpenDialog(win, args);
   });
 }
 

@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
-import { remote } from "electron";
+import { ipcRenderer } from "electron";
 import * as fs from "fs";
 
 @Component
@@ -34,19 +34,19 @@ export default class TextBox extends Vue {
   selectFolder() {
     let defaultFolder = this.$data.textBoxValue;
 
-    remote.dialog
-      .showOpenDialog(remote.getCurrentWindow(), {
+    ipcRenderer
+      .invoke("show-open-dialog", {
         title: `Select save folder`,
-
         // If path in textBox exists and is a directory, set it as defaultPath in dialog
         defaultPath:
           fs.existsSync(defaultFolder) && fs.lstatSync(defaultFolder).isDirectory() ? defaultFolder : undefined,
-
         buttonLabel: "Select",
         properties: ["openDirectory"]
       })
-      .then((f) => {
-        let folder = f.filePaths[0];
+      .then((reply) => {
+        console.log("reply", reply);
+
+        let folder = reply.filePaths[0];
 
         // If a folder was selected, set textBox value to it
         if (folder != null) {
