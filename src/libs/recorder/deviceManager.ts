@@ -136,7 +136,7 @@ export default class DeviceManager {
                   audioDevices.push({
                     // Use device name as ID for windows
                     ID: val,
-                    name: val
+                    name: name
                   });
                 } else {
                   // If Desktop Screen video device, then add under different name
