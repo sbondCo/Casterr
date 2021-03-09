@@ -1,13 +1,13 @@
 <template>
   <div class="dragger">
     <div class="minMaxClose">
-      <div class="close" @click="close">
+      <div class="close" @click="manageWindow('close')">
         <Icon i="close" :wh="12" />
       </div>
-      <div class="max" @click="maximize">
+      <div class="max" @click="manageWindow('maximize')">
         <Icon i="max" :wh="12" />
       </div>
-      <div class="min" @click="minimize">
+      <div class="min" @click="manageWindow('minimize')">
         <Icon i="min" :wh="12" />
       </div>
     </div>
@@ -15,11 +15,9 @@
 </template>
 
 <script lang="ts">
-import { remote } from "electron";
 import { Vue, Component } from "vue-property-decorator";
 import Icon from "./Icon.vue";
-
-var window = remote.getCurrentWindow();
+import { ipcRenderer } from "electron";
 
 @Component({
   components: {
@@ -27,20 +25,8 @@ var window = remote.getCurrentWindow();
   }
 })
 export default class Dragger extends Vue {
-  public close() {
-    window.close();
-  }
-
-  public maximize() {
-    if (window.isMaximized()) {
-      window.unmaximize();
-    } else {
-      window.maximize();
-    }
-  }
-
-  public minimize() {
-    window.minimize();
+  public manageWindow(msg: string) {
+    ipcRenderer.send("manage-window", msg);
   }
 }
 </script>

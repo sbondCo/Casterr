@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as path from "path";
@@ -25,8 +25,26 @@ async function createWindow() {
     minHeight: 500,
     frame: false,
     webPreferences: {
-      enableRemoteModule: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  ipcMain.on("manage-window", (_, args) => {
+    switch (args) {
+      case "maximize":
+        if (win.isMaximized()) {
+          win.unmaximize();
+        } else {
+          win.maximize();
+        }
+        break;
+      case "minimize":
+        win.minimize();
+        break;
+      case "close":
+        win.close();
+        break;
     }
   });
 
@@ -75,7 +93,7 @@ app.on("ready", async () => {
   // Install VUEJS devtools if in development mode
   if (isDevelopment && !process.env.IS_TEST) {
     await installExtension(VUEJS_DEVTOOLS, true)
-      .then((name) => console.log(`Added Extension:  ${name}`))
+      .then((name) => console.log(`Added Extension: ${name}`))
       .catch((err) => console.log("An error occurred: ", err));
   }
 
