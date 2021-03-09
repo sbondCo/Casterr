@@ -7,7 +7,9 @@ export interface AudioDevice {
   // On Windows used only as a key for ListBox (currently set as the name as device name)
   ID: number | string;
 
-  // Name of device
+  // Name of device.
+  // Usually the same as ID, but in certain cases will
+  // contain a more reader friendly version of the devices name.
   name: string;
 
   // Is an input device
@@ -16,6 +18,7 @@ export interface AudioDevice {
 
 export default class DeviceManager {
   public static readonly winDesktopVideoDevice = "screen-capture-recorder";
+  public static readonly winDesktopAudioDevice = "virtual-audio-capturer";
 
   /**
    * Get audio and video devices that can be recorded with FFmpeg.
@@ -120,23 +123,27 @@ export default class DeviceManager {
 
               if (match) {
                 // Trim and remove all speech marks from the match
-                const val = match[0].trim().replaceAll(`"`, "");
-
-                // If Desktop Screen video device, then add to
-                // videoDevices under different name
-                if (val == this.winDesktopVideoDevice) {
-                  videoDevices.push("Desktop Screen");
-                  return;
-                }
+                let val = match[0].trim().replaceAll(`"`, "");
+                let name = val; // By default name will be same as `val`
 
                 // Add devices to correct List, if they aren't skipped above
                 if (isAudioDevice) {
+                  // If Desktop Audio device, then change name to an understandable one
+                  if (val == this.winDesktopAudioDevice) {
+                    name = "Desktop Audio";
+                  }
+
                   audioDevices.push({
                     // Use device name as ID for windows
                     ID: val,
                     name: val
                   });
                 } else {
+                  // If Desktop Screen video device, then add under different name
+                  if (val == this.winDesktopVideoDevice) {
+                    val = "Desktop Screen";
+                  }
+
                   videoDevices.push(val);
                 }
               }
