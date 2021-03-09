@@ -2,17 +2,24 @@ import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
 
 export interface AudioDevice {
-  // Source number
-  // On Linux used to store source number of audio device and as key for ListBox
-  // On Windows used only as a key for ListBox (currently set as the name as device name)
+
+  /**
+   * Source number
+   *  - On  **Linux** used to store source number of audio device and as key for ListBox
+   *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
+   */
   ID: number | string;
 
-  // Name of device.
-  // Usually the same as ID, but in certain cases will
-  // contain a more reader friendly version of the devices name.
+  /**
+   * Name of device.
+   * Usually the same as ID, but in certain cases will
+   * contain a more reader friendly version of the devices name.
+   */
   name: string;
 
-  // Is an input device
+  /**
+   * If device is an input
+   */
   isInput?: boolean;
 }
 
