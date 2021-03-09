@@ -3,28 +3,28 @@
     <ul>
       <li>
         <router-link to="/recordings">
-          <Icon i="play" :wh="24" />
+          <Icon i="play" />
           <span>Recordings</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/uploads">
-          <Icon i="upload" :wh="24" />
+          <Icon i="upload" />
           <span>Uploads</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/settings">
-          <Icon i="settings" :wh="24" />
+          <Icon i="settings" />
           <span>Settings</span>
         </router-link>
       </li>
 
       <li>
         <router-link to="/profile">
-          <Icon i="play" :wh="24" />
+          <Icon i="play" />
           <span>Profile</span>
         </router-link>
       </li>
@@ -61,7 +61,7 @@ export default class Nav extends Vue {
     let timer: any;
 
     // Change recordingStatus circle depending on whether isRecording
-    Recorder.recordingStatus.on("changed", (isRecording) => {
+    Recorder.recordingStatus.on("changed", isRecording => {
       let rs = this.$refs.recordingStatus as HTMLElement;
       const timeoutScheduled = Date.now();
 
@@ -113,34 +113,36 @@ nav {
     list-style: none;
 
     li {
-      display: inline-block;
       color: $textPrimary;
       font-size: 24px;
-      padding: 10px 15px;
-      margin: 0 5px;
-      cursor: pointer;
+
+      a,
+      &#status {
+        padding: 10px 15px;
+        margin: 0 5px;
+      }
 
       a {
         display: flex;
         align-items: center;
         justify-content: center;
         transition: color 250ms ease;
+
+        svg {
+          fill: $textPrimary;
+          margin: 0 8px 0 0;
+          transition: fill 250ms ease;
+
+          @media (max-width: 910px) {
+            transition: width 250ms ease;
+            margin: 0;
+            width: 80px;
+          }
+        }
       }
 
-      svg {
-        fill: $textPrimary;
-        margin: 0 8px 0 0;
-        transition: fill 250ms ease;
-
-        @media (max-width: 910px) {
-          transition: width 250ms ease;
-          margin: 0;
-          width: 80px;
-        }
-
-        @media (max-width: 600px) {
-          width: 20px;
-        }
+      @media (max-width: 600px) {
+        width: 20px;
       }
 
       span:not(.timeElapsed) {
