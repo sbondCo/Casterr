@@ -1,9 +1,10 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, screen } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import * as path from "path";
+import { electron } from "process";
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
@@ -30,6 +31,22 @@ async function createWindow() {
     }
   });
 
+  registerChannels(win);
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+
+    if (!process.env.IS_TEST) win.webContents.openDevTools();
+  } else {
+    createProtocol("app");
+
+    // Load the index.html when not in development
+    win.loadURL(`file://${path.join(__dirname, "index.html")}`);
+  }
+}
+
+function registerChannels(win: BrowserWindow) {
   ipcMain.on("manage-window", (_, args) => {
     switch (args) {
       case "maximize":
@@ -48,17 +65,46 @@ async function createWindow() {
     }
   });
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+  ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
+    const notifWin = new BrowserWindow({
+      parent: win,
+      width: 400,
+      height: 80,
+      x: screen.getPrimaryDisplay().bounds.width / 2 - 400 / 2, // Middle of screen horizontally
+      y: 50,
+      frame: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      resizable: false,
+      hasShadow: false,
+      transparent: true,
+      movable: false,
+      focusable: false,
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    });
 
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
-  } else {
-    createProtocol("app");
+    // Show window when ready to show
+    notifWin.once("ready-to-show", notifWin.show);
 
-    // Load the index.html when not in development
-    win.loadURL(`file://${path.join(__dirname, "index.html")}`);
-  }
+    // Load desktopNotification view
+    const page = `desktopNotification/${args.desc}/${args.icon}`;
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Use dev server in development
+      await notifWin.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/${page}`);
+    } else {
+      // Load the index.html when not in development
+      notifWin.loadURL(`file://${path.join(__dirname, `index.html/#/${page}`)}`);
+    }
+
+    // Close window after defined duration
+    setTimeout(() => {
+      notifWin.close();
+    }, args.duration);
+  });
 }
 
 /**
