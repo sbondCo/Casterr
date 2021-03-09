@@ -70,7 +70,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f dshow -i audio="${ad.name}"`);
+      args.push(`-f dshow -i audio="${ad.ID}"`);
     });
 
     // FFmpeg video device
