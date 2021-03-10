@@ -149,8 +149,6 @@ export default class VideoPlayer extends Vue {
       }
     });
 
-    this.createClipsBar([4, 5, 9, 11], [false, true, false, true, false], [true, false, true, false]);
-
     this.addProgressBarEvents();
   }
 
@@ -255,10 +253,17 @@ export default class VideoPlayer extends Vue {
    * Add clip at currentProgress/current position of progressBar handle
    */
   addClip() {
-    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
-    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
+    let starts = new Array<number>();
+    let connects = new Array<boolean>();
+    let tooltips = new Array<boolean>();
     let currentProgress = Number(this.progressBar.noUiSlider.get());
-    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+
+    // If noUiSlider exists on clipsBar then update vars with actual values
+    if (this.clipsBar.noUiSlider != undefined) {
+      starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+      connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
+      tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    }
 
     // Update connects/tooltips only if:
     //  - There isn't only one clip (if connects length is 3 then there is only 1 clip)
