@@ -3,6 +3,7 @@ import PathHelper from "./../helpers/pathHelper";
 import { RecordingSettings } from "./../settings";
 import * as fs from "fs";
 import * as path from "path";
+import ArgumentBuilder from "./argumentBuilder";
 
 export interface Recording {
   videoPath: string;
@@ -108,5 +109,44 @@ export default class RecordingsManager {
     ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
 
     return thumbPath;
+  }
+
+  public static async clip(videoPath: string, timestamps: number[]) {
+    const ffmpeg = new FFmpeg();
+    const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
+    const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
+    const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
+    const tmpOutFolder = PathHelper.ensureExists(
+      `${RecordingSettings.videoSaveFolder}/clips/.processing/${clipOutName}`,
+      true
+    );
+    const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
+
+    // Create clips from video.
+    // Clips are stored in a temporary folder for now until they are merged into one video.
+    for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
+      const curFile = tmpOutFolder + `/${i}.mp4`;
+
+      manifestStream.write(`file '${curFile}'\n`);
+
+      await ffmpeg.run(
+        `-ss ${timestamps[ii]} -i "${videoPath}" -to ${timestamps[ii + 1] -
+          timestamps[ii]} -map 0 -avoid_negative_ts 1 "${curFile}"`
+      );
+    }
+
+    manifestStream.end();
+
+    // Concatenate all seperate clips into one video
+    ffmpeg.run(
+      `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
+      {
+        // After creating final clip, delete all temp files
+        onExitCallback: () => {
+          // Remove temp dir
+          PathHelper.removeDir(tmpOutFolder);
+        }
+      }
+    );
   }
 }

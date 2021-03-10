@@ -27,12 +27,8 @@ export default class Notifier extends Vue {
   @Prop({ default: "Give us a second" }) description!: string;
   @Prop() percentage?: number;
 
-  data() {
-    return {
-      desc: this.description,
-      percent: this.percentage
-    };
-  }
+  desc = this.$props.description;
+  percent = this.$props.percentage;
 }
 </script>
 

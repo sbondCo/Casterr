@@ -14,7 +14,7 @@ export default class Icon extends Vue {
    * Return html string for Icon
    * requested with correct width and height
    */
-  get Icon(): string {
+  public get Icon(): string {
     switch (this.i) {
       case "play":
         return `
@@ -22,10 +22,26 @@ export default class Icon extends Vue {
             <path fill-rule="evenodd" clip-rule="evenodd" d="M11.5 7L0.5 14V0L11.5 7ZM7.77002 7L2.5 3.64V10.36L7.77002 7Z" />
           </svg>
         `;
+      case "pause":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 35 41" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M0 41H11.6667V0H0V41ZM23.3333 0V41H35V0H23.3333Z"/>
+          </svg>
+        `;
       case "upload":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 16 18" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M0 2V0H16V2H0ZM7 8H4L8 4L12 8H9V18H7V8Z" />
+          </svg>
+        `;
+      case "volumeMax":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" 
+              d="M0 6v6h4l5 5V1L4 6H0zm7-.17v6.34L4.83 10H2V8h2.83L7 5.83zM13.5 9A4.5 4.5 0 0011 
+              4.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM11 .23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 
+              6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z"
+            />
           </svg>
         `;
       case "settings":
@@ -64,9 +80,44 @@ export default class Icon extends Vue {
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 12 12">
             <polygon fill-rule="evenodd" 
               points="11 1.576 6.583 6 11 10.424 10.424 11 6 6.583
-              1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1"></polygon>
+              1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1">
+            </polygon>
           </svg>
         `;
+      // Arrow points right by default, plan is to just rotate it when needed instead of having arrows for each direction
+      case "arrow":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" 
+              d="M28.5.167L23.506 5.16 43.27 24.957H.167v7.084h43.102L23.506 51.84l4.994 4.993L56.833 28.5 28.5.167z"
+            />
+          </svg>
+        `;
+      case "clips":
+        return `
+          <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+            <path 
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M3 15C3 8.385 8.385 3 15 3s12 5.385 12 12-5.385 12-12 12S3
+              21.615 3 15zm-3 0c0 8.28 6.72 15 15 15 8.28 0 15-6.72 15-15 
+              0-8.28-6.72-15-15-15C6.72 0 0 6.72 0 15zm19.5 0l-6 6V9l6 6z"
+            />
+          </svg>
+        `;
+      case "time":
+        return `
+        <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+          <path 
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M14.985 0C6.705 0 0 6.72 0 15c0 8.28 6.705 15 14.985 15C23.28 30 30 
+            23.28 30 15c0-8.28-6.72-15-15.015-15zM15 27C8.37 27 3 21.63 3 15S8.37 3 
+            15 3s12 5.37 12 12-5.37 12-12 12zm.75-19.5H13.5v9l7.875 4.725L22.5 19.38l-6.75-4.005V7.5z" 
+          />
+        </svg>
+        `;
+
       case "edit":
         return `
           <svg width="${this.wh}" height="${this.wh}" viewBox="0 0 512 512">
@@ -86,3 +137,10 @@ export default class Icon extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+div {
+  // Fix div around SVG being too tall
+  display: flex;
+}
+</style>

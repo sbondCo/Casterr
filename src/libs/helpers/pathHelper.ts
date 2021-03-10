@@ -69,4 +69,31 @@ export default class PathHelper {
 
     return path;
   }
+
+  /**
+   * Returns name of file without it's extension.
+   * @param path Full path of file.
+   */
+  public static fileNameNoExt(path: string) {
+    return Path.basename(path).replace(Path.extname(path), "");
+  }
+
+  /**
+   * Recursively remove everything inside a
+   * directory and then remove the directory itself.
+   * @param path
+   */
+  public static removeDir(path: string) {
+    if (fs.existsSync(path)) {
+      fs.readdir(path, (_, files) => {
+        if (files) {
+          files.forEach((file) => {
+            fs.unlinkSync(Path.join(path, file));
+          });
+        }
+
+        fs.rmdirSync(path);
+      });
+    }
+  }
 }

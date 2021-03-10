@@ -55,11 +55,7 @@ import { GeneralSettings } from "./../libs/settings";
   }
 })
 export default class Nav extends Vue {
-  data() {
-    return {
-      timeElapsed: ""
-    };
-  }
+  timeElapsed = "";
 
   mounted() {
     let timer: any;
@@ -106,7 +102,7 @@ export default class Nav extends Vue {
 <style lang="scss">
 nav {
   display: flex;
-  min-height: 48px;
+  min-height: 50px;
   background-color: $secondaryColor;
 
   ul {

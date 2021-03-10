@@ -1,52 +1,51 @@
 <template>
-  <div id="recordings">
-    <div class="thumbContainer" v-if="allRecordings.length > 0">
-      <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
-        <div class="inner">
-          <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-          <img
-            v-if="require('fs').existsSync(vid.thumbPath)"
-            :src="'secfile://' + vid.thumbPath"
-            alt="Video Thumbnail"
-          />
-          <span v-else class="noThumb">No Thumbnail Found</span>
+  <div>
+    <div id="recordings">
+      <div class="thumbContainer" v-if="allRecordings.length > 0">
+        <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
+          <div class="inner">
+            <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
+            <img
+              v-if="require('fs').existsSync(vid.thumbPath)"
+              :src="'secfile://' + vid.thumbPath"
+              alt="Video Thumbnail"
+            />
+            <span v-else class="noThumb">No Thumbnail Found</span>
 
-          <div class="info">
-            <span class="fps">
-              {{ vid.fps }}
-              <p>FPS</p>
-            </span>
-
-            <span class="edit">
-              <Icon i="edit" :wh="25" />
-            </span>
-
-            <div class="bar">
-              <span class="title">
-                <p>{{ vid.videoPath }}</p>
+            <div class="info">
+              <span class="fps">
+                {{ vid.fps }}
+                <p>FPS</p>
               </span>
 
-              <div class="videoInfo">
-                <span v-if="vid.duration">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                <span v-if="vid.fileSize">{{ vid.fileSize.toReadableFileSize() }}</span>
+              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
+                <Icon i="edit" :wh="25" />
+              </router-link>
+
+              <div class="bar">
+                <span class="title">
+                  <p>{{ vid.videoPath }}</p>
+                </span>
+
+                <div class="videoInfo">
+                  <span v-if="vid.duration">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                  <span v-if="vid.fileSize">{{ vid.fileSize.toReadableFileSize() }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div v-else>
+        <span class="noRecordings">You Have No Recordings!</span>
+      </div>
     </div>
-    <div v-else>
-      <span class="noRecordings">You Have No Recordings!</span>
-    </div>
-
-    <!-- <video id="video" src="" width="450" controls></video> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Icon from "./../components/Icon.vue";
-import Recorder from "./../libs/recorder";
 import RecordingsManager from "./../libs/recorder/recordingsManager";
 import "./../libs/helpers/extensions";
 
@@ -56,12 +55,8 @@ import "./../libs/helpers/extensions";
   }
 })
 export default class extends Vue {
-  data() {
-    return {
-      allRecordings: RecordingsManager.get(),
-      loadedRecordings: new Array()
-    };
-  }
+  allRecordings = RecordingsManager.get();
+  loadedRecordings = new Array();
 
   mounted() {
     // Load initial set of recordings
@@ -91,14 +86,6 @@ export default class extends Vue {
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
     }
-  }
-
-  startRecording() {
-    Recorder.start();
-  }
-
-  stopRecording() {
-    Recorder.stop();
   }
 }
 </script>
@@ -263,5 +250,14 @@ export default class extends Vue {
       }
     }
   }
+}
+
+.videoPlayerWrapper {
+  position: absolute;
+  top: 68px;
+  height: 100vh;
+  width: 100vw;
+  background-color: $quaternaryColor;
+  z-index: 999999999999;
 }
 </style>

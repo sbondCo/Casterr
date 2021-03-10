@@ -18,11 +18,7 @@ export default class DropDown extends Vue {
   @Prop({ required: true }) activeItem: string;
   @Prop({ required: true }) items: Array<any>;
 
-  data() {
-    return {
-      itemActive: this.activeItem
-    };
-  }
+  itemActive = this.$props.activeItem;
 
   get dropDownItems() {
     return this.items.remove(this.activeItem);

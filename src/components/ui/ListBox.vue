@@ -8,9 +8,9 @@
           @item-changed="listBoxValueUpdated"
         />
 
-        <span class="body" :title="item.title" :style="item.title == undefined ? '' : 'cursor: help;'">{{
-          item.name
-        }}</span>
+        <span class="body" :title="item.title" :style="item.title == undefined ? '' : 'cursor: help;'">
+          {{ item.name }}
+        </span>
       </div>
     </div>
   </div>

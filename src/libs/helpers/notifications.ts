@@ -1,9 +1,7 @@
 import Vue from "vue";
 import { CombinedVueInstance } from "vue/types/vue";
-import electron from "electron";
+import { ipcRenderer } from "electron";
 import Notifier from "./../../components/Notifier.vue";
-import path from "path";
-import process from "process";
 
 export default class Notifications {
   private static activePopups = new Map<
@@ -68,41 +66,6 @@ export default class Notifications {
    */
   public static async desktop(desc: string, icon?: string, duration: number = 4000) {
     // Create new window for notification
-    const notifWin = new electron.remote.BrowserWindow({
-      parent: electron.remote.getCurrentWindow(),
-      width: 400,
-      height: 80,
-      x: screen.width / 2 - 400 / 2, // Middle of screen horizontally
-      y: 50,
-      frame: false,
-      skipTaskbar: true,
-      alwaysOnTop: true,
-      resizable: false,
-      hasShadow: false,
-      transparent: true,
-      movable: false,
-      focusable: false,
-      show: false,
-      webPreferences: {
-        nodeIntegration: true
-      }
-    });
-
-    // Show window when ready to show
-    notifWin.on("ready-to-show", notifWin.show);
-
-    const page = `desktopNotification/${desc}/${icon}`;
-
-    if (process.env.NODE_ENV === "development") {
-      // Use dev server in developement
-      await notifWin.loadURL(`http://localhost:8080/#/${page}`);
-    } else {
-      // Load the index.html when not in development
-      notifWin.loadURL(`file://${path.join(__dirname, `index.html/#/${page}`)}`);
-    }
-
-    setTimeout(() => {
-      notifWin.close();
-    }, duration);
+    ipcRenderer.send("create-desktop-notification", { desc, icon, duration });
   }
 }
