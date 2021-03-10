@@ -35,8 +35,8 @@
         <div
           ref="recordingStatus"
           class="circle idle"
-          :title="`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
-          @click="startStopRecording()"
+          :title="`Double Click To Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
+          @[recordingStatusClickEvent]="startStopRecording()"
         ></div>
       </li>
     </ul>
@@ -57,11 +57,13 @@ import { GeneralSettings } from "./../libs/settings";
 export default class Nav extends Vue {
   timeElapsed = "";
 
+  recordingStatusClickEvent = GeneralSettings.recordingStatusDblClkToRecord == true ? "dblclick" : "click";
+
   mounted() {
     let timer: any;
 
     // Change recordingStatus circle depending on whether isRecording
-    Recorder.recordingStatus.on("changed", isRecording => {
+    Recorder.recordingStatus.on("changed", (isRecording) => {
       let rs = this.$refs.recordingStatus as HTMLElement;
       const timeoutScheduled = Date.now();
 
