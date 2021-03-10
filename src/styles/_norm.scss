@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 0.8rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $primaryColor;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $darkAccentColor;
+  }
+}
+
+body {
+  color: $textPrimary;
+  font-family: sans-serif;
+  user-select: none;
+  overflow: hidden;
+}
+
+a {
+  color: $textPrimary;
+  text-decoration: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+// Default slider styling
+.noUi-target {
+  &,
+  * {
+    box-shadow: unset;
+    outline: unset;
+    border: unset;
+  }
+
+  .noUi-handle {
+    top: 0;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: $darkAccentColor;
+    border: 1px solid $textPrimary;
+    border-radius: 4px;
+    cursor: grab;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}

@@ -1,14 +1,5 @@
 {
-  "liveSassCompile.settings.formats": [
-    {
-      "format": "compressed",
-      "extensionName": ".min.css",
-      "savePath": "/Casterr/wwwroot/css/"
-    }
-  ],
   "files.exclude": {
-    "**/obj": true,
-    "**/bin": true,
     ".github": true
   },
   "editor.tabSize": 2
