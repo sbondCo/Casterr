@@ -34,18 +34,19 @@ Automatically start recording your game when it is opened. When the game closes,
   <summary><b>Recording</b></summary>
   <ul>
     <li>Start / Stop</li>
+    <li>Clip recordings</li>
+      <ul>
+        Clip the best parts from your recording into their own video.
+      </ul>
+    <li>Recordings browser</li> 
+      <ul>
+        <li>Name</li>
+        <li>Length</li>
+        <li>Size</li>
+        <li>FPS</li>
+        <li>Thumbnail</li>
+      </ul>
     <li>Status indicator</li>
-  </ul>
-</details>
-
-- <details open>
-  <summary><b>Recordings browser</b></summary>
-  <ul>
-    <li>Name</li>
-    <li>Length</li>
-    <li>Size</li>
-    <li>FPS</li>
-    <li>Thumbnail</li>
   </ul>
 </details>
 
