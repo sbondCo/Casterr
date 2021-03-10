@@ -35,7 +35,7 @@
         <div
           ref="recordingStatus"
           class="circle idle"
-          :title="`Double Click To Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
+          :title="`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
           @click="startStopRecording"
         ></div>
       </li>
