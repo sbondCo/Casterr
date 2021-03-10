@@ -2,7 +2,6 @@ import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
 
 export interface AudioDevice {
-
   /**
    * Source number
    *  - On  **Linux** used to store source number of audio device and as key for ListBox
