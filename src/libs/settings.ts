@@ -95,7 +95,7 @@ export class AppSettings {
 export class GeneralSettings {
   private static _startupPage: string = "Recordings";
   private static _recordingStatusAlsoStopStartRecording: boolean = true;
-  private static _recordingStatusDblClkToRecord: boolean = true;
+  private static _recordingStatusDblClkToRecord: boolean = false;
 
   /**
    * startupPage
