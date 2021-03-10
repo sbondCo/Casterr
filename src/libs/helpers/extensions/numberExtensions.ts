@@ -27,6 +27,9 @@ Number.prototype.toReadableTimeFromSeconds = function(this: number): string {
 };
 
 Number.prototype.toReadableFileSize = function(this: number): string {
+  // If file size is 0 then return "0 B", otherwise math below will return `undefined`
+  if (this == 0) return "0 B";
+
   const i = Math.floor(Math.log(this) / Math.log(1024));
 
   // Tell me who else supports yottabytes

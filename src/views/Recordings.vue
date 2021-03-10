@@ -28,8 +28,8 @@
                 </span>
 
                 <div class="videoInfo">
-                  <span v-if="vid.duration">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                  <span v-if="vid.fileSize">{{ vid.fileSize.toReadableFileSize() }}</span>
+                  <span v-if="vid.duration >= 0">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                  <span v-if="vid.fileSize >= 0">{{ vid.fileSize.toReadableFileSize() }}</span>
                 </div>
               </div>
             </div>
