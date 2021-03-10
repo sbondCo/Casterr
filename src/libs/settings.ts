@@ -95,6 +95,7 @@ export class AppSettings {
 export class GeneralSettings {
   private static _startupPage: string = "Recordings";
   private static _recordingStatusAlsoStopStartRecording: boolean = true;
+  private static _recordingStatusDblClkToRecord: boolean = false;
 
   /**
    * startupPage
@@ -117,6 +118,18 @@ export class GeneralSettings {
 
   public static set recordingStatusAlsoStopStartRecording(should) {
     this._recordingStatusAlsoStopStartRecording = should;
+  }
+
+  /**
+   * recordingStatusDblClkToRecord
+   * If user should have to double click or not to start/stop recording with status indicator.
+   */
+  public static get recordingStatusDblClkToRecord() {
+    return this._recordingStatusDblClkToRecord;
+  }
+
+  public static set recordingStatusDblClkToRecord(should) {
+    this._recordingStatusDblClkToRecord = should;
   }
 }
 

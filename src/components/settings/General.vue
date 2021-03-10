@@ -8,8 +8,21 @@
     </div>
 
     <div class="setting">
-      <span class="title">Recording status also start/stop recording:</span>
-      <TickBox name="recordingStatusAlsoStopStartRecording" :ticked="recordingStatusAlsoStopStartRecording" @item-changed="updateSettings" />
+      <span class="title">Recording status also start/stops recording:</span>
+      <TickBox
+        name="recordingStatusAlsoStopStartRecording"
+        :ticked="recordingStatusAlsoStopStartRecording"
+        @item-changed="updateSettings"
+      />
+    </div>
+
+    <div class="setting">
+      <span class="title">Recording status double click to record:</span>
+      <TickBox
+        name="recordingStatusDblClkToRecord"
+        :ticked="recordingStatusDblClkToRecord"
+        @item-changed="updateSettings"
+      />
     </div>
   </div>
 </template>
@@ -32,7 +45,8 @@ export default class GeneralSettingsComponent extends Vue {
     return {
       startupPage: GeneralSettings.startupPage,
       startupPageItems: AppSettings.pages,
-      recordingStatusAlsoStopStartRecording: GeneralSettings.recordingStatusAlsoStopStartRecording
+      recordingStatusAlsoStopStartRecording: GeneralSettings.recordingStatusAlsoStopStartRecording,
+      recordingStatusDblClkToRecord: GeneralSettings.recordingStatusDblClkToRecord
     };
   }
 
@@ -44,6 +58,9 @@ export default class GeneralSettingsComponent extends Vue {
         break;
       case "recordingStatusAlsoStopStartRecording":
         GeneralSettings.recordingStatusAlsoStopStartRecording = newValue;
+        break;
+      case "recordingStatusDblClkToRecord":
+        GeneralSettings.recordingStatusDblClkToRecord = newValue;
         break;
     }
 
