@@ -36,7 +36,7 @@
           ref="recordingStatus"
           class="circle idle"
           :title="`Double Click To Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
-          @[recordingStatusClickEvent]="startStopRecording()"
+          @click="startStopRecording"
         ></div>
       </li>
     </ul>
@@ -56,8 +56,6 @@ import { GeneralSettings } from "./../libs/settings";
 })
 export default class Nav extends Vue {
   timeElapsed = "";
-
-  recordingStatusClickEvent = GeneralSettings.recordingStatusDblClkToRecord == true ? "dblclick" : "click";
 
   mounted() {
     let timer: any;
@@ -92,7 +90,14 @@ export default class Nav extends Vue {
     });
   }
 
-  startStopRecording() {
+  startStopRecording(e: MouseEvent) {
+    // Don't record if click wasn't a double click.
+    // If e.detail == 2 then the click was a double click, so
+    // don't start/stop recording if it doesn't equal it.
+    if (GeneralSettings.recordingStatusDblClkToRecord == true && e.detail != 2) {
+      return;
+    }
+
     // Only start/stop recording if setting is set to true
     if (GeneralSettings.recordingStatusAlsoStopStartRecording) {
       Recorder.auto();
