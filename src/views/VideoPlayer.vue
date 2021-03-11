@@ -75,7 +75,7 @@ export default class VideoPlayer extends Vue {
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
-  continueBtnCI = true;
+  continueBtnCI = false;
 
   /**
    * Play/Pause the video.
@@ -283,8 +283,6 @@ export default class VideoPlayer extends Vue {
 
       // Show clips bar
       this.clipsBar.style.visibility = "visible";
-
-      this.continueBtnCI = true;
     }
 
     // Add new starts and then sort the array.
@@ -293,6 +291,9 @@ export default class VideoPlayer extends Vue {
     starts.sort((a, b) => a - b);
 
     this.createClipsBar(starts, connects, tooltips);
+
+    // Show continue button clip info
+    this.continueBtnCI = true;
   }
 
   /**
