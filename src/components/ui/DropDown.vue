@@ -94,7 +94,7 @@ export default class DropDown extends Vue {
       }
 
       &:hover {
-        background-color: $tertiaryColor;
+        background-color: $quaternaryColor;
       }
     }
 
@@ -114,7 +114,8 @@ export default class DropDown extends Vue {
   }
 
   &:hover {
-    background-color: $tertiaryColor;
+    // background-color: $tertiaryColor;
+    background-color: $quaternaryColor;
   }
 }
 </style>
