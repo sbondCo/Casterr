@@ -2,19 +2,18 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run",
-      "dependsOn": ["Run Client App"],
-      "dependsOrder": "sequence",
+      "label": "Serve app",
+      "command": "npm run electron:serve",
+      "type": "shell",
+      "problemMatcher": "$msCompile",
       "group": {
         "kind": "build",
         "isDefault": true
-      },
-      "problemMatcher": "$msCompile",
-      "isBackground": true
+      }
     },
     {
-      "label": "Run Client App",
-      "command": "npm run electron:serve",
+      "label": "Format all",
+      "command": "npm run prettier:formatall",
       "type": "shell",
       "problemMatcher": "$msCompile"
     }
