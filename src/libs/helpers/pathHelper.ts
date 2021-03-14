@@ -7,6 +7,10 @@ export default class PathHelper {
     return Path.join(os.homedir(), "Documents", "Casterr");
   }
 
+  public static get toolsPath() {
+    return Path.join(this.mainFolderPath, "Tools");
+  }
+
   public static get homeFolderPath() {
     return os.homedir();
   }
