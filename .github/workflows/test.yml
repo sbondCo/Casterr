@@ -72,5 +72,5 @@ jobs:
 
             Make sure all files are formatted with `npm run prettier:formatall`.
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: "sbond[bot]"
+          repo-token-user-login: "github-actions[bot]"
           allow-repeats: false
