@@ -64,13 +64,24 @@ jobs:
         run: npm run prettier:check
 
       - name: Add comment if prettier fails
-        uses: mshick/add-pr-comment@v1
         if: ${{ always() && steps.prettier.outcome == 'failure' }}
+        uses: actions/github-script@v2
         with:
-          message: |
-            **The 'is_formatted' check failed!**
-
-            Make sure all files are formatted with `npm run prettier:formatall`.
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: "github-actions[bot]"
-          allow-repeats: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: ${{ github.event.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**The 'is_formatted' check failed!**`
+            })
+      # - name: Add comment if prettier fails
+      #   uses: mshick/add-pr-comment@v1
+      #   if: ${{ always() && steps.prettier.outcome == 'failure' }}
+      #   with:
+      #     message: |
+      #       **The 'is_formatted' check failed!**
+      #       Make sure all files are formatted with `npm run prettier:formatall`.
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: "github-actions[bot]"
+      #     allow-repeats: false
