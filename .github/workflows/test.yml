@@ -62,19 +62,10 @@ jobs:
       - name: Check if files are formatted
         id: prettier
         run: npm run prettier:check
-
-      - name: Add comment if prettier fails
-        if: ${{ always() && steps.prettier.outcome == 'failure' }}
-        uses: actions/github-script@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.createComment({
-              issue_number: ${{ github.event.number }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `**The 'is_formatted' check failed!**`
-            })
+      #
+      # Commenting currently disabled because it doesn't work on prs from forks
+      # and the effort required to fix it has been deemed "too much" by my superiors.
+      #
       # - name: Add comment if prettier fails
       #   uses: mshick/add-pr-comment@v1
       #   if: ${{ always() && steps.prettier.outcome == 'failure' }}

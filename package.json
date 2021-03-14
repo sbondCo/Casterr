@@ -16,7 +16,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "prettier:formatall": "prettier --write '**/*.{ts,js,vue,json}'",
-    "prettier:check": "prettier --list-different '**/*.{ts,js,vue,json}'"
+    "prettier:check": "prettier --check '**/*.{ts,js,vue,json}'"
   },
   "main": "background.js",
   "dependencies": {
