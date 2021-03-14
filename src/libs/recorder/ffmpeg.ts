@@ -3,6 +3,7 @@ import * as fs from "fs";
 import * as childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
+import PathHelper from "../helpers/pathHelper";
 
 export default class FFmpeg {
   constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
@@ -96,9 +97,9 @@ export default class FFmpeg {
    * If FFmpeg/probe doesn't exist, download it first then return its path.
    */
   public async getPath() {
-    const execPath = path.dirname(process.execPath);
-    const ffmpegPath = path.join(execPath, FFmpeg.ffmpegExeName);
-    const ffprobePath = path.join(execPath, FFmpeg.ffprobeExeName);
+    const ffDir = PathHelper.ensureExists(PathHelper.toolsPath, true);
+    const ffmpegPath = path.join(ffDir, FFmpeg.ffmpegExeName);
+    const ffprobePath = path.join(ffDir, FFmpeg.ffprobeExeName);
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
@@ -124,7 +125,7 @@ export default class FFmpeg {
       Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
 
       // Extract zip
-      await Downloader.extract(downloadTo, execPath, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+      await Downloader.extract(downloadTo, ffDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
       Notifications.deletePopup("ffmpegDownloadProgress");
