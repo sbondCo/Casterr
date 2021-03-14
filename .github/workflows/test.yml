@@ -1,0 +1,76 @@
+name: Test changes
+
+on:
+  pull_request:
+    branches:
+      - "**"
+    tags-ignore:
+      - v*
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 15
+
+      - name: Build app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: false
+          use_vue_cli: true
+
+  is_formatted:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 15
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - uses: actions/cache@v2
+        id: npm-cache # Check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-c1-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-c1
+
+      - name: Get dependencies
+        run: npm install
+
+      - name: Check if files are formatted
+        id: prettier
+        run: npm run prettier:check
+
+      - name: Add comment if prettier fails
+        uses: mshick/add-pr-comment@v1
+        if: ${{ always() && steps.prettier.outcome == 'failure' }}
+        with:
+          message: |
+            **The 'is_formatted' check failed!**
+
+            Make sure all files are formatted with `npm run prettier:formatall`.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: "sbond[bot]"
+          allow-repeats: false
