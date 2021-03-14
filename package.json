@@ -14,7 +14,9 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "prettier:formatall": "prettier --write '**/*.{ts,js,vue,json}'",
+    "prettier:check": "prettier --check '**/*.{ts,js,vue,json}'"
   },
   "main": "background.js",
   "dependencies": {
