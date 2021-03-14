@@ -1,4 +1,7 @@
-<!-- Make sure your code is formatted using the prettier config in the projects root folder! -->
+<!--
+  Make sure your code is formatted by running `npm run prettier:formatall`.
+-->
 
 ### Changes made
+
 <!-- Describe changes made here. Use screenshots if changes are visual! -->

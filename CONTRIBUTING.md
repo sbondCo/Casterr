@@ -10,7 +10,7 @@
 
 ## The Code
 
-All code is formatted with [Prettier](https://prettier.io).
+All code is formatted with [Prettier](https://prettier.io). You can format your code by running `npm run prettier:formatall`.
 
 ##
 
