@@ -122,6 +122,13 @@ function registerChannels(win: BrowserWindow) {
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
     return dialog.showOpenDialog(win, args);
   });
+
+  /**
+   *
+   */
+  ipcMain.handle("get-screens", async () => {
+    return screen.getAllDisplays();
+  });
 }
 
 /**
