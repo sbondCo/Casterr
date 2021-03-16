@@ -130,7 +130,6 @@ export default class RecordingSettingsComponent extends Vue {
 
     // Add displays
     d.display.forEach((screen) => {
-      console.log(screen);
       this.monitors.push(screen.id.toString());
     });
 

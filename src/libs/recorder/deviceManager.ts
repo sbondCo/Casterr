@@ -107,7 +107,7 @@ export default class DeviceManager {
             audio: audioDevices,
             // Currently getting over video devices is not supported on Linux.
             video: [],
-            display: await ipcRenderer.invoke("get-screens")
+            display: await this.getMonitors()
           });
         }
       });
@@ -183,10 +183,17 @@ export default class DeviceManager {
           resolve({
             audio: audioDevices,
             video: videoDevices,
-            display: await ipcRenderer.invoke("get-screens")
+            display: await this.getMonitors()
           });
         }
       });
     });
+  }
+
+  /**
+   * Get all user's monitors.
+   */
+  public static async getMonitors(): Promise<Display[]> {
+    return await ipcRenderer.invoke("get-screens");
   }
 }
