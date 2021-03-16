@@ -3,7 +3,6 @@ import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
 import "../helpers/extensions";
 import * as path from "path";
-import { Display } from "electron";
 
 export default class ArgumentBuilder {
   /**
