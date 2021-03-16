@@ -24,8 +24,24 @@ export interface AudioDevice {
 }
 
 export interface Devices {
+  /**
+   * Audio devices.
+   * Microphones, headsets, etc.
+   */
   audio: AudioDevice[];
+
+  /**
+   * Video devices.
+   * Used to store video devices such as for example a webcam.
+   * Also stores device that ffmpeg uses to record desktop on windows.
+   * Currently not in use on Linux.
+   */
   video: string[];
+
+  /**
+   * Displays.
+   * All of user's displays (monitors).
+   */
   display: Display[];
 }
 
