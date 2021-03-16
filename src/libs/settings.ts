@@ -195,7 +195,7 @@ export class RecordingSettings {
   }
 
   /**
-   * videoDevice
+   * monitorToRecord
    */
   public static get monitorToRecord() {
     return this._monitorToRecord;

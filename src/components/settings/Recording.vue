@@ -128,7 +128,7 @@ export default class RecordingSettingsComponent extends Vue {
       this.$data.audioDevicesToRecord.push(new ListBoxItem(ad.ID, ad.name, isInput));
     });
 
-    //
+    // Add displays
     d.display.forEach((screen) => {
       console.log(screen);
       this.monitors.push(screen.id.toString());
