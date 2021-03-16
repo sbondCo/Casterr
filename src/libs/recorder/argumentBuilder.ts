@@ -9,18 +9,18 @@ export default class ArgumentBuilder {
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
-  public static createArgs(): {
+  public static async createArgs(): Promise<{
     args: string;
     videoPath: string;
-  } {
+  }> {
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
     // Build and return args differently depending on OS
     if (process.platform == "win32") {
-      return ArgumentBuilder.buildWindowsArgs();
+      return await ArgumentBuilder.buildWindowsArgs();
     } else if (process.platform == "linux") {
-      return ArgumentBuilder.buildLinuxArgs();
+      return await ArgumentBuilder.buildLinuxArgs();
     }
 
     throw new Error("Could not build args for current system. It isn't supported.");
@@ -29,7 +29,7 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Linux.
    */
-  private static buildLinuxArgs() {
+  private static async buildLinuxArgs() {
     const args = new Array<string>();
 
     // Audio devices
@@ -47,7 +47,7 @@ export default class ArgumentBuilder {
     args.push(`-f ${this.ffmpegDevice}`);
 
     // Recording region
-    args.push(`-i ${this.recordingRegion()}`);
+    args.push(`-i ${await this.recordingRegion()}`);
 
     // Audio maps
     args.push(`${this.audioMaps}`);
@@ -65,7 +65,7 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Windows.
    */
-  private static buildWindowsArgs() {
+  private static async buildWindowsArgs() {
     const args = new Array<string>();
 
     // Audio devices
@@ -97,7 +97,7 @@ export default class ArgumentBuilder {
     args.push(`-video_size ${this.resolution}`);
 
     // Recording region
-    args.push(`-i ${this.recordingRegion()}`);
+    args.push(`-i ${await this.recordingRegion()}`);
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
