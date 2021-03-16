@@ -141,6 +141,7 @@ export class RecordingSettings {
   private static _videoSaveFolder: string = path.join(PathHelper.homeFolderPath, "Videos", "Casterr");
   private static _videoSaveName: string = "%d.%m.%Y - %H.%i.%s";
   private static _videoDevice: string = "Default";
+  private static _monitorToRecord: string = "Primary";
   private static _fps: string = "60";
   private static _resolution: string = "In-Game";
   private static _format: string = "mp4";
@@ -191,6 +192,17 @@ export class RecordingSettings {
 
   public static set videoDevice(device) {
     this._videoDevice = device;
+  }
+
+  /**
+   * videoDevice
+   */
+  public static get monitorToRecord() {
+    return this._monitorToRecord;
+  }
+
+  public static set monitorToRecord(monitor) {
+    this._monitorToRecord = monitor;
   }
 
   /**

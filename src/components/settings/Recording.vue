@@ -91,8 +91,8 @@ export default class RecordingSettingsComponent extends Vue {
   isWindows = require("os").platform == "win32";
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
-  monitorToRecord = "Default";
-  monitors = ["Default"];
+  monitorToRecord = RecordingSettings.monitorToRecord;
+  monitors = new Array<string>();
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
   resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
@@ -130,6 +130,7 @@ export default class RecordingSettingsComponent extends Vue {
 
     //
     d.display.forEach((screen) => {
+      console.log(screen);
       this.monitors.push(screen.id.toString());
     });
 
@@ -144,6 +145,9 @@ export default class RecordingSettingsComponent extends Vue {
     switch (toUpdate) {
       case "videoDevice":
         RecordingSettings.videoDevice = newValue;
+        break;
+      case "monitorToRecord":
+        RecordingSettings.monitorToRecord = newValue;
         break;
       case "fps":
         RecordingSettings.fps = newValue;
