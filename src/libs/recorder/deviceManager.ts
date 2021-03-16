@@ -1,5 +1,6 @@
 import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
+import { ipcRenderer, Display } from "electron";
 
 export interface AudioDevice {
   /**
@@ -22,6 +23,12 @@ export interface AudioDevice {
   isInput?: boolean;
 }
 
+export interface Devices {
+  audio: AudioDevice[];
+  video: string[];
+  display: Display[];
+}
+
 export default class DeviceManager {
   public static readonly winDesktopVideoDevice = "screen-capture-recorder";
   public static readonly winDesktopAudioDevice = "virtual-audio-capturer";
@@ -41,7 +48,7 @@ export default class DeviceManager {
    * Get devices from Linux.
    */
   private static getLinuxDevices() {
-    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: string[] }>((resolve) => {
+    return new Promise<Devices>((resolve) => {
       const pulse = new Pulse();
       const audioDevices = new Array<AudioDevice>();
 
@@ -79,11 +86,12 @@ export default class DeviceManager {
               }
             });
         },
-        onExitCallback: () => {
+        onExitCallback: async () => {
           resolve({
-            audioDevices: audioDevices,
+            audio: audioDevices,
             // Currently getting over video devices is not supported on Linux.
-            videoDevices: []
+            video: [],
+            display: await ipcRenderer.invoke("get-screens")
           });
         }
       });
@@ -94,7 +102,7 @@ export default class DeviceManager {
    * Get devices from Windows.
    */
   private static getWindowsDevices() {
-    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: Array<string> }>((resolve) => {
+    return new Promise<Devices>((resolve) => {
       const ffmpeg = new FFmpeg();
       const audioDevices = new Array<AudioDevice>();
       const videoDevices = new Array<string>();
@@ -155,10 +163,11 @@ export default class DeviceManager {
               }
             });
         },
-        onExitCallback: () => {
+        onExitCallback: async () => {
           resolve({
-            audioDevices: audioDevices,
-            videoDevices: videoDevices
+            audio: audioDevices,
+            video: videoDevices,
+            display: await ipcRenderer.invoke("get-screens")
           });
         }
       });

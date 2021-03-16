@@ -77,7 +77,6 @@ import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
 import DeviceManager, { AudioDevice } from "./../../libs/recorder/deviceManager";
-import Screens from "./../../libs/recorder/screens";
 import "../../libs/helpers/extensions";
 
 @Component({
@@ -112,12 +111,12 @@ export default class RecordingSettingsComponent extends Vue {
     let d = await DeviceManager.getDevices();
 
     // Add video devices to videoDevices
-    d.videoDevices.forEach((vd) => {
+    d.video.forEach((vd) => {
       this.$data.videoDevices.push(vd);
     });
 
     // Add audio devices to audioDevicesToRecord
-    d.audioDevices.forEach((ad: AudioDevice) => {
+    d.audio.forEach((ad: AudioDevice) => {
       // Whether device is an input device or not.
       // Always going to be undefined on Windows
       // because DirectShow doesn't give us that information.
@@ -129,17 +128,14 @@ export default class RecordingSettingsComponent extends Vue {
       this.$data.audioDevicesToRecord.push(new ListBoxItem(ad.ID, ad.name, isInput));
     });
 
+    //
+    d.display.forEach((screen) => {
+      this.monitors.push(screen.id.toString());
+    });
+
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
       this.$data.audioDevicesToRecordEnabled.push(adtr.ID);
-    });
-
-    //
-    Screens.getAll().then((screens) => {
-      console.log(screens);
-      screens.forEach((screen) => {
-        this.monitors.push(screen.id.toString());
-      });
     });
   }
 
