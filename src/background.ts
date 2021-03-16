@@ -124,10 +124,17 @@ function registerChannels(win: BrowserWindow) {
   });
 
   /**
-   *
+   * Get all of user's monitors.
    */
   ipcMain.handle("get-screens", async () => {
     return screen.getAllDisplays();
+  });
+
+  /**
+   * Get all of user's monitors.
+   */
+  ipcMain.handle("get-primary-screen", async () => {
+    return screen.getPrimaryDisplay();
   });
 }
 

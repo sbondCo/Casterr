@@ -3,6 +3,7 @@ import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
 import "../helpers/extensions";
 import * as path from "path";
+import { Display } from "electron";
 
 export default class ArgumentBuilder {
   /**
@@ -47,7 +48,7 @@ export default class ArgumentBuilder {
     args.push(`-f ${this.ffmpegDevice}`);
 
     // Recording region
-    args.push(`-i ${this.recordingRegion}`);
+    args.push(`-i ${this.recordingRegion()}`);
 
     // Audio maps
     args.push(`${this.audioMaps}`);
@@ -95,6 +96,9 @@ export default class ArgumentBuilder {
 
     // Recording resolution
     args.push(`-video_size ${this.resolution}`);
+
+    // Recording region
+    args.push(`-i ${this.recordingRegion()}`);
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
@@ -166,8 +170,25 @@ export default class ArgumentBuilder {
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
-  private static get recordingRegion(): String {
-    return ":0.0+0,0";
+  private static async recordingRegion(): Promise<string> {
+    let monitor;
+    const monitorToRecord = RecordingSettings.monitorToRecord.toLowerCase();
+
+    // Get monitor
+    if (monitorToRecord == "primary") {
+      monitor = await DeviceManager.getPrimaryMonitor();
+    } else {
+      monitor = await DeviceManager.findMonitor(monitorToRecord);
+    }
+
+    // Return different format depending on OS
+    if (process.platform == "win32") {
+      return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
+    } else if (process.platform == "linux") {
+      return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
+    } else {
+      throw new Error("Can't get recording region for unsupported platform.");
+    }
   }
 
   private static get audioMaps(): string {
