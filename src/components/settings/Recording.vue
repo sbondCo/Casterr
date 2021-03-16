@@ -76,7 +76,7 @@ import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
-import DeviceManager, { AudioDevice } from "./../../libs/recorder/deviceManager";
+import DeviceManager from "./../../libs/recorder/deviceManager";
 import "../../libs/helpers/extensions";
 
 @Component({
@@ -116,7 +116,7 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add audio devices to audioDevicesToRecord
-    d.audio.forEach((ad: AudioDevice) => {
+    d.audio.forEach((ad) => {
       // Whether device is an input device or not.
       // Always going to be undefined on Windows
       // because DirectShow doesn't give us that information.

@@ -2,27 +2,6 @@ import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
 import { ipcRenderer, Display } from "electron";
 
-export interface AudioDevice {
-  /**
-   * Source number
-   *  - On  **Linux** used to store source number of audio device and as key for ListBox
-   *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
-   */
-  ID: number | string;
-
-  /**
-   * Name of device.
-   * Usually the same as ID, but in certain cases will
-   * contain a more reader friendly version of the devices name.
-   */
-  name: string;
-
-  /**
-   * If device is an input
-   */
-  isInput?: boolean;
-}
-
 export interface Devices {
   /**
    * Audio devices.
@@ -43,6 +22,27 @@ export interface Devices {
    * All of user's displays (monitors).
    */
   display: Display[];
+}
+
+export interface AudioDevice {
+  /**
+   * Source number
+   *  - On  **Linux** used to store source number of audio device and as key for ListBox
+   *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
+   */
+  ID: number | string;
+
+  /**
+   * Name of device.
+   * Usually the same as ID, but in certain cases will
+   * contain a more reader friendly version of the devices name.
+   */
+  name: string;
+
+  /**
+   * If device is an input
+   */
+  isInput?: boolean;
 }
 
 export default class DeviceManager {
