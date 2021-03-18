@@ -16,7 +16,7 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 export default class DropDown extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ required: true }) activeItem: string;
-  @Prop({ required: true }) items: Array<any>;
+  @Prop({ required: true }) items: any[];
 
   itemActive = this.$props.activeItem;
 
