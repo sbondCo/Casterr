@@ -34,7 +34,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f pulse -i ${ad.ID}`);
+      args.push(`-f pulse -i ${ad.id}`);
     });
 
     // Recording FPS
@@ -70,7 +70,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f dshow -i audio="${ad.ID}"`);
+      args.push(`-f dshow -i audio="${ad.id}"`);
     });
 
     // FFmpeg video device
@@ -171,7 +171,9 @@ export default class ArgumentBuilder {
 
   private static async recordingRegion(): Promise<string> {
     let monitor;
-    const monitorToRecord = RecordingSettings.monitorToRecord.toLowerCase();
+    const monitorToRecord = RecordingSettings.monitorsToRecord[0].id.toLowerCase();
+
+    console.log(monitorToRecord);
 
     // Get monitor
     if (monitorToRecord == "primary") {

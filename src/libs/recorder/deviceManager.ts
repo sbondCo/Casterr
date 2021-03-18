@@ -24,7 +24,7 @@ export interface AudioDevice {
    *  - On  **Linux** used to store source number of audio device and as key for ListBox
    *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
    */
-  ID: number | string;
+  id: number | string;
 
   /**
    * Name of device.
@@ -86,7 +86,7 @@ export default class DeviceManager {
               if (ll.includes("alsa.card_name")) {
                 // Add input devices to audioDevices array
                 audioDevices.push({
-                  ID: sourceNumber,
+                  id: sourceNumber,
                   name: l
                     .replace("alsa.card_name = ", "")
                     .replaceAll('"', "")
@@ -158,7 +158,7 @@ export default class DeviceManager {
 
                   audioDevices.push({
                     // Use device name as ID for windows
-                    ID: val,
+                    id: val,
                     name: name
                   });
                 } else {

@@ -8,8 +8,8 @@
     </div>
 
     <div class="setting">
-      <span class="title">Monitor To Record:</span>
-      <DropDown name="monitorToRecord" :activeItem="monitorToRecord" :items="monitors" @item-changed="updateSettings" />
+      <span class="title">Monitors To Record:</span>
+      <ListBox name="monitorToRecord" :items="monitors" :enabled="monitorsToRecord" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -91,8 +91,8 @@ export default class RecordingSettingsComponent extends Vue {
   isWindows = require("os").platform == "win32";
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
-  monitorToRecord = RecordingSettings.monitorToRecord;
-  monitors = ["Primary"];
+  monitors: ListBoxItem[] = [{ id: "primary", name: "Primary Monitor" }];
+  monitorsToRecord = new Array<string>();
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
   resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
@@ -126,17 +126,26 @@ export default class RecordingSettingsComponent extends Vue {
         isInput = ad.isInput ? "Input Device" : "Output Device";
       }
 
-      this.audioDevicesToRecord.push({ id: ad.ID.toString(), name: ad.name, title: isInput });
+      this.audioDevicesToRecord.push({ id: ad.id.toString(), name: ad.name, title: isInput });
     });
 
     // Add displays
     monitors.forEach((screen) => {
-      this.monitors.push(`${screen.id} ${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`);
+      this.monitors.push({
+        id: screen.id.toString(),
+        name: `${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`
+      });
+    });
+
+    // Add enabled monitor ids
+    RecordingSettings.monitorsToRecord.forEach((monitor) => {
+      console.log(monitor);
+      this.monitorsToRecord.push(monitor.id.toString());
     });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
-      this.audioDevicesToRecordEnabled.push(adtr.ID.toString());
+      this.audioDevicesToRecordEnabled.push(adtr.id.toString());
     });
   }
 
@@ -147,7 +156,16 @@ export default class RecordingSettingsComponent extends Vue {
         RecordingSettings.videoDevice = newValue;
         break;
       case "monitorToRecord":
-        RecordingSettings.monitorToRecord = newValue;
+        if (newValue[1]) {
+          // Add new monitor
+          RecordingSettings.monitorsToRecord.push({ id: newValue[0][0], name: newValue[0][1] });
+        } else {
+          // Remove monitor
+          RecordingSettings.monitorsToRecord = RecordingSettings.monitorsToRecord.remove({
+            id: newValue[0][0],
+            name: newValue[0][1]
+          });
+        }
         break;
       case "fps":
         RecordingSettings.fps = newValue;
@@ -167,11 +185,11 @@ export default class RecordingSettingsComponent extends Vue {
       case "audioDevicesToRecord":
         if (newValue[1]) {
           // Add new audio device to audioDevicesToRecord
-          RecordingSettings.audioDevicesToRecord.push({ ID: newValue[0][0], name: newValue[0][1] });
+          RecordingSettings.audioDevicesToRecord.push({ id: newValue[0][0], name: newValue[0][1] });
         } else {
           // Remove audio device from audioDevicesToRecord
           RecordingSettings.audioDevicesToRecord = RecordingSettings.audioDevicesToRecord.remove({
-            ID: newValue[0][0],
+            id: newValue[0][0],
             name: newValue[0][1]
           });
         }
