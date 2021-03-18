@@ -109,6 +109,7 @@ export default class RecordingSettingsComponent extends Vue {
 
   async mounted() {
     let d = await DeviceManager.getDevices();
+    let monitors = await DeviceManager.getMonitors();
 
     // Add video devices to videoDevices
     d.video.forEach((vd) => {
@@ -129,7 +130,7 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add displays
-    d.display.forEach((screen) => {
+    monitors.forEach((screen) => {
       this.monitors.push(screen.id.toString());
     });
 

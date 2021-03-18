@@ -16,12 +16,6 @@ export interface Devices {
    * Currently not in use on Linux.
    */
   video: string[];
-
-  /**
-   * Displays.
-   * All of user's displays (monitors).
-   */
-  display: Display[];
 }
 
 export interface AudioDevice {
@@ -106,8 +100,7 @@ export default class DeviceManager {
           resolve({
             audio: audioDevices,
             // Currently getting over video devices is not supported on Linux.
-            video: [],
-            display: await this.getMonitors()
+            video: []
           });
         }
       });
@@ -182,8 +175,7 @@ export default class DeviceManager {
         onExitCallback: async () => {
           resolve({
             audio: audioDevices,
-            video: videoDevices,
-            display: await this.getMonitors()
+            video: videoDevices
           });
         }
       });
