@@ -34,7 +34,7 @@ export default class ListBox extends Vue {
     this.$emit("item-changed", this.name, [toUpdate.split(":"), newValue]);
   }
 
-  shouldBeEnabled(id: string): Boolean {
+  shouldBeEnabled(id: string): boolean {
     return this.enabled.includes(id);
   }
 }

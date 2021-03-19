@@ -26,8 +26,8 @@ export default class TickBox extends Vue {
 .checkBoxContainer {
   position: relative;
   padding-left: 35px;
-  cursor: pointer;
   font-size: 22px;
+  cursor: pointer;
 
   input {
     opacity: 0;

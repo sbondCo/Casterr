@@ -91,7 +91,7 @@ export default class RecordingSettingsComponent extends Vue {
   isWindows = require("os").platform == "win32";
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
-  monitors: ListBoxItem[] = [{ id: "primary", name: "Primary Monitor" }];
+  monitors: ListBoxItem[] = [];
   monitorsToRecord = new Array<string>();
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
@@ -130,6 +130,7 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add displays
+    this.monitors.push({ id: "primary", name: "Primary Monitor" });
     monitors.forEach((screen) => {
       this.monitors.push({
         id: screen.id.toString(),
@@ -139,7 +140,6 @@ export default class RecordingSettingsComponent extends Vue {
 
     // Add enabled monitor ids
     RecordingSettings.monitorsToRecord.forEach((monitor) => {
-      console.log(monitor);
       this.monitorsToRecord.push(monitor.id.toString());
     });
 
