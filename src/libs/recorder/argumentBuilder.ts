@@ -1,6 +1,7 @@
 import DeviceManager from "./deviceManager";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
+import Registry from "../helpers/registry";
 import "../helpers/extensions";
 import * as path from "path";
 
@@ -97,7 +98,7 @@ export default class ArgumentBuilder {
     args.push(`-video_size ${this.resolution}`);
 
     // Recording region
-    args.push(`-i ${await this.recordingRegion()}`);
+    await this.recordingRegion();
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
@@ -173,8 +174,6 @@ export default class ArgumentBuilder {
     let monitor;
     const monitorToRecord = RecordingSettings.monitorsToRecord[0].id.toLowerCase();
 
-    console.log(monitorToRecord);
-
     // Get monitor
     if (monitorToRecord == "primary") {
       monitor = await DeviceManager.getPrimaryMonitor();
@@ -184,6 +183,13 @@ export default class ArgumentBuilder {
 
     // Return different format depending on OS
     if (process.platform == "win32") {
+      const reg = new Registry("HKCU\\Software\\screen-capture-recorder");
+      reg.addReg("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
+      reg.addReg("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
+
+      console.log(`-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`);
+
+      // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
     } else if (process.platform == "linux") {
       return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
