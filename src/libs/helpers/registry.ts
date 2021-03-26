@@ -7,9 +7,8 @@ import * as childProcess from "child_process";
 export default class Registry {
   constructor(private path: string) {}
 
-  public addReg(name: string, value: string | number, type: keyof RegistryTypes) {
-    console.log(`add ${this.path} /v ${name} /t ${type} /d ${value}`);
-    this.run(`add ${this.path} /v ${name} /t ${type} /d ${value} /f`);
+  public addReg(name: string, value: string | number, type: keyof RegistryTypes, overwrite: boolean = true) {
+    this.run(`add ${this.path} /v ${name} /t ${type} /d ${value} ${overwrite ? "/f" : ""}`);
   }
 
   private run(cmd: string) {
