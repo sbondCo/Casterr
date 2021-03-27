@@ -8,8 +8,8 @@
     </div>
 
     <div class="setting">
-      <span class="title">Monitors To Record:</span>
-      <ListBox name="monitorToRecord" :items="monitors" :enabled="monitorsToRecord" @item-changed="updateSettings" />
+      <span class="title">Monitor To Record:</span>
+      <DropDown name="monitorToRecord" :activeItem="monitorToRecord" :items="monitors" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -71,7 +71,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import DropDown from "./../ui/DropDown.vue";
+import DropDown, { DropDownItem } from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
@@ -91,8 +91,8 @@ export default class RecordingSettingsComponent extends Vue {
   isWindows = require("os").platform == "win32";
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
-  monitors: ListBoxItem[] = [];
-  monitorsToRecord = new Array<string>();
+  monitors: DropDownItem[] = [];
+  monitorToRecord = RecordingSettings.monitorToRecord.name;
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
   resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
@@ -139,9 +139,9 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add enabled monitor ids
-    RecordingSettings.monitorsToRecord.forEach((monitor) => {
-      this.monitorsToRecord.push(monitor.id.toString());
-    });
+    // RecordingSettings.monitorToRecord.forEach((monitor) => {
+    //   this.monitorsToRecord.push(monitor.id.toString());
+    // });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
@@ -156,16 +156,7 @@ export default class RecordingSettingsComponent extends Vue {
         RecordingSettings.videoDevice = newValue;
         break;
       case "monitorToRecord":
-        if (newValue[1]) {
-          // Add new monitor
-          RecordingSettings.monitorsToRecord.push({ id: newValue[0][0], name: newValue[0][1] });
-        } else {
-          // Remove monitor
-          RecordingSettings.monitorsToRecord = RecordingSettings.monitorsToRecord.remove({
-            id: newValue[0][0],
-            name: newValue[0][1]
-          });
-        }
+        RecordingSettings.monitorToRecord = newValue;
         break;
       case "fps":
         RecordingSettings.fps = newValue;

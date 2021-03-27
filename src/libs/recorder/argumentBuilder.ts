@@ -172,7 +172,7 @@ export default class ArgumentBuilder {
 
   private static async recordingRegion(): Promise<string> {
     let monitor;
-    const monitorToRecord = RecordingSettings.monitorsToRecord[0].id.toLowerCase();
+    const monitorToRecord = RecordingSettings.monitorToRecord.id.toLowerCase();
 
     // Get monitor
     if (monitorToRecord == "primary") {
@@ -186,8 +186,6 @@ export default class ArgumentBuilder {
       const reg = new Registry("HKCU\\Software\\screen-capture-recorder");
       reg.addReg("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
       reg.addReg("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
-
-      console.log(`-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`);
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
