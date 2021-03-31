@@ -186,7 +186,7 @@ export default class DeviceManager {
    * Get all monitors.
    */
   public static async getMonitors(): Promise<Display[]> {
-    return await ipcRenderer.invoke("get-screens");
+    return ipcRenderer.invoke("get-screens");
   }
 
   /**
@@ -201,6 +201,6 @@ export default class DeviceManager {
    * Get primary monitor.
    */
   public static async getPrimaryMonitor(): Promise<Display> {
-    return await ipcRenderer.invoke("get-primary-screen");
+    return ipcRenderer.invoke("get-primary-screen");
   }
 }

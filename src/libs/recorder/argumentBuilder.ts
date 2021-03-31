@@ -21,9 +21,9 @@ export default class ArgumentBuilder {
 
     // Build and return args differently depending on OS
     if (process.platform == "win32") {
-      return await ArgumentBuilder.buildWindowsArgs();
+      return ArgumentBuilder.buildWindowsArgs();
     } else if (process.platform == "linux") {
-      return await ArgumentBuilder.buildLinuxArgs();
+      return ArgumentBuilder.buildLinuxArgs();
     }
 
     throw new Error("Could not build args for current system. It isn't supported.");
