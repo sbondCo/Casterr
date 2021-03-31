@@ -1,4 +1,4 @@
-name: Test changes
+name: Test PR changes
 
 on:
   pull_request:
