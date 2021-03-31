@@ -29,8 +29,8 @@ jobs:
       - name: Get dependencies
         run: npm install
 
-      - name: Build app
-        run: npm run build
+      - name: Lint app
+        run: npm run lint
 
   is_formatted:
     runs-on: ubuntu-latest
