@@ -7,15 +7,24 @@ import * as childProcess from "child_process";
 export default class Registry {
   constructor(private path: string) {}
 
-  public add(name: string, value: string | number, type: keyof RegistryTypes, overwrite: boolean = true) {
-    this.run(`add ${this.path} /v ${name} /t ${type} /d ${value} ${overwrite ? "/f" : ""}`);
+  public async add(name: string, value: string | number, type: keyof RegistryTypes, overwrite: boolean = true) {
+    await this.run(`add ${this.path} /v ${name} /t ${type} /d ${value} ${overwrite ? "/f" : ""}`);
   }
 
-  private run(cmd: string) {
-    const cp = childProcess.exec(`reg ${cmd}`);
+  private async run(cmd: string) {
+    return new Promise((resolve, reject) => {
+      const cp = childProcess.exec(`reg ${cmd}`);
 
-    cp.stdout!.on("data", (data) => console.log(data));
-    cp.stderr!.on("data", (data) => console.log(data));
+      cp.on("exit", (code) => {
+        if (code == 0) {
+          resolve(code);
+          console.log("resolving", code);
+        } else {
+          reject(code);
+          console.log("rejecting", code);
+        }
+      });
+    });
   }
 }
 

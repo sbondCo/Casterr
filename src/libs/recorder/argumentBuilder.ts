@@ -171,8 +171,8 @@ export default class ArgumentBuilder {
     }
 
     if (process.platform == "win32") {
-      this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
-      this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
+      await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
+      await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
     }
 
     return `${res.width}x${res.height}`;
@@ -197,8 +197,8 @@ export default class ArgumentBuilder {
 
     // Return different format depending on OS
     if (process.platform == "win32") {
-      this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
-      this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
+      await this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
+      await this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
