@@ -146,7 +146,7 @@ export class RecordingSettings {
     name: "Primary Monitor"
   };
   private static _fps: string = "60";
-  private static _resolution: string = "In-Game";
+  private static _resolution: string = "1080p";
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
