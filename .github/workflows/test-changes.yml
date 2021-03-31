@@ -30,11 +30,7 @@ jobs:
         run: npm install
 
       - name: Build app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          release: false
-          use_vue_cli: true
+        run: npm run build
 
   is_formatted:
     runs-on: ubuntu-latest

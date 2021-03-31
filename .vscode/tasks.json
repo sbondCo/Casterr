@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "Serve app",
-      "command": "npm run electron:serve",
+      "command": "npm run serve",
       "type": "shell",
       "problemMatcher": "$msCompile",
       "group": {
