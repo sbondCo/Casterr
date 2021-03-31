@@ -133,7 +133,7 @@ export default class RecordingSettingsComponent extends Vue {
     monitors.forEach((screen) => {
       this.monitors.push({
         id: screen.id.toString(),
-        name: `${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`
+        name: `${screen.id}: ${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`
       });
     });
 
