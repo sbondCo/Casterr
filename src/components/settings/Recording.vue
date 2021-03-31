@@ -91,7 +91,7 @@ export default class RecordingSettingsComponent extends Vue {
   isWindows = require("os").platform == "win32";
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
-  monitors: DropDownItem[] = [];
+  monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
   monitorToRecord = RecordingSettings.monitorToRecord.name;
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
@@ -130,18 +130,12 @@ export default class RecordingSettingsComponent extends Vue {
     });
 
     // Add displays
-    this.monitors.push({ id: "primary", name: "Primary Monitor" });
     monitors.forEach((screen) => {
       this.monitors.push({
         id: screen.id.toString(),
         name: `${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`
       });
     });
-
-    // Add enabled monitor ids
-    // RecordingSettings.monitorToRecord.forEach((monitor) => {
-    //   this.monitorsToRecord.push(monitor.id.toString());
-    // });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
