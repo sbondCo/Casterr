@@ -6,6 +6,8 @@ import "../helpers/extensions";
 import * as path from "path";
 
 export default class ArgumentBuilder {
+  private static scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
+
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
@@ -42,7 +44,7 @@ export default class ArgumentBuilder {
     args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.push(`-video_size ${this.resolution}`);
+    args.push(`-video_size ${await this.resolution()}`);
 
     // FFmpeg video device
     args.push(`-f ${this.ffmpegDevice}`);
@@ -95,7 +97,7 @@ export default class ArgumentBuilder {
     args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.push(`-video_size ${this.resolution}`);
+    await this.resolution();
 
     // Recording region
     await this.recordingRegion();
@@ -132,36 +134,48 @@ export default class ArgumentBuilder {
     }
   }
 
-  private static get resolution(): string {
-    let res;
+  private static async resolution(): Promise<string> {
+    // Initialise res and set 1920x1080 as default
+    const res = {
+      width: 1920,
+      height: 1080
+    };
 
     switch (RecordingSettings.resolution) {
       case "In-Game":
         throw new Error("In-Game directive not currently supported.");
       case "2160p":
-        res = "3840x2160";
+        res.width = 3840;
+        res.height = 2160;
         break;
       case "1440p":
-        res = "2560x1440";
+        res.width = 2560;
+        res.height = 1440;
         break;
       case "1080p":
-        res = "1920x1080";
+        res.width = 1920;
+        res.height = 1080;
         break;
       case "720p":
-        res = "1280x720";
+        res.width = 1280;
+        res.height = 720;
         break;
       case "480p":
-        res = "640x480";
+        res.width = 640;
+        res.height = 480;
         break;
       case "360p":
-        res = "480x360";
-        break;
-      default:
-        res = "1920x1080";
+        res.width = 480;
+        res.height = 360;
         break;
     }
 
-    return res;
+    if (process.platform == "win32") {
+      this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
+      this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
+    }
+
+    return `${res.width}x${res.height}`;
   }
 
   private static get ffmpegDevice(): string {
@@ -183,9 +197,8 @@ export default class ArgumentBuilder {
 
     // Return different format depending on OS
     if (process.platform == "win32") {
-      const reg = new Registry("HKCU\\Software\\screen-capture-recorder");
-      reg.addReg("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
-      reg.addReg("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
+      this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
+      this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
