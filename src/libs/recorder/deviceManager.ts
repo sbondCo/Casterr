@@ -1,5 +1,22 @@
 import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
+import { ipcRenderer, Display } from "electron";
+
+export interface Devices {
+  /**
+   * Audio devices.
+   * Microphones, headsets, etc.
+   */
+  audio: AudioDevice[];
+
+  /**
+   * Video devices.
+   * Used to store video devices such as for example a webcam.
+   * Also stores device that ffmpeg uses to record desktop on windows.
+   * Currently not in use on Linux.
+   */
+  video: string[];
+}
 
 export interface AudioDevice {
   /**
@@ -7,7 +24,7 @@ export interface AudioDevice {
    *  - On  **Linux** used to store source number of audio device and as key for ListBox
    *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
    */
-  ID: number | string;
+  id: number | string;
 
   /**
    * Name of device.
@@ -41,7 +58,7 @@ export default class DeviceManager {
    * Get devices from Linux.
    */
   private static getLinuxDevices() {
-    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: string[] }>((resolve) => {
+    return new Promise<Devices>((resolve) => {
       const pulse = new Pulse();
       const audioDevices = new Array<AudioDevice>();
 
@@ -69,7 +86,7 @@ export default class DeviceManager {
               if (ll.includes("alsa.card_name")) {
                 // Add input devices to audioDevices array
                 audioDevices.push({
-                  ID: sourceNumber,
+                  id: sourceNumber,
                   name: l
                     .replace("alsa.card_name = ", "")
                     .replaceAll('"', "")
@@ -79,11 +96,11 @@ export default class DeviceManager {
               }
             });
         },
-        onExitCallback: () => {
+        onExitCallback: async () => {
           resolve({
-            audioDevices: audioDevices,
+            audio: audioDevices,
             // Currently getting over video devices is not supported on Linux.
-            videoDevices: []
+            video: []
           });
         }
       });
@@ -94,7 +111,7 @@ export default class DeviceManager {
    * Get devices from Windows.
    */
   private static getWindowsDevices() {
-    return new Promise<{ audioDevices: AudioDevice[]; videoDevices: Array<string> }>((resolve) => {
+    return new Promise<Devices>((resolve) => {
       const ffmpeg = new FFmpeg();
       const audioDevices = new Array<AudioDevice>();
       const videoDevices = new Array<string>();
@@ -141,7 +158,7 @@ export default class DeviceManager {
 
                   audioDevices.push({
                     // Use device name as ID for windows
-                    ID: val,
+                    id: val,
                     name: name
                   });
                 } else {
@@ -155,13 +172,35 @@ export default class DeviceManager {
               }
             });
         },
-        onExitCallback: () => {
+        onExitCallback: async () => {
           resolve({
-            audioDevices: audioDevices,
-            videoDevices: videoDevices
+            audio: audioDevices,
+            video: videoDevices
           });
         }
       });
     });
+  }
+
+  /**
+   * Get all monitors.
+   */
+  public static async getMonitors(): Promise<Display[]> {
+    return ipcRenderer.invoke("get-screens");
+  }
+
+  /**
+   * Get specific monitor.
+   * @param id id of wanted monitor.
+   */
+  public static async findMonitor(id: string): Promise<Display> {
+    return (await this.getMonitors()).filter((e) => e.id.toString() == id)[0];
+  }
+
+  /**
+   * Get primary monitor.
+   */
+  public static async getPrimaryMonitor(): Promise<Display> {
+    return ipcRenderer.invoke("get-primary-screen");
   }
 }

@@ -28,20 +28,21 @@ import TickBox from "./../ui/TickBox.vue";
 export default class ListBox extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ required: true }) items: Array<ListBoxItem>;
-  @Prop({ required: true }) enabled: Array<Number>;
+  @Prop({ required: true }) enabled: Array<string>;
 
   listBoxValueUpdated(toUpdate: string, newValue: any) {
     this.$emit("item-changed", this.name, [toUpdate.split(":"), newValue]);
   }
 
-  shouldBeEnabled(id: Number): Boolean {
+  shouldBeEnabled(id: string): boolean {
     return this.enabled.includes(id);
   }
 }
 
-export class ListBoxItem {
-  // eslint-disable-next-line no-unused-vars
-  constructor(private id: number | string, private name: string, private title?: string | undefined) {}
+export interface ListBoxItem {
+  id: string;
+  name: string;
+  title?: string | undefined;
 }
 </script>
 

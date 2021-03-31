@@ -1,9 +1,10 @@
 <template>
   <div id="dropDown" @click="toggleDropDown()">
-    <label>{{ itemActive }}</label>
+    <label>{{ itemActive.name != undefined ? itemActive.name : itemActive }}</label>
+
     <ul ref="dropDownItems" id="dropDownItems">
-      <li v-for="item in dropDownItems" :key="item" @click="switchItems(item)">
-        {{ item }}
+      <li v-for="item in dropDownItems" :key="item.id" @click="switchItems(item)">
+        {{ item.name != undefined ? item.name : item }}
       </li>
     </ul>
   </div>
@@ -16,11 +17,11 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 export default class DropDown extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ required: true }) activeItem: string;
-  @Prop({ required: true }) items: Array<any>;
+  @Prop({ required: true }) items: string[] | number[] | DropDownItem[];
 
   itemActive = this.$props.activeItem;
 
-  get dropDownItems() {
+  get dropDownItems(): DropDownItem[] {
     return this.items.remove(this.activeItem);
   }
 
@@ -37,15 +38,24 @@ export default class DropDown extends Vue {
     }
   }
 
-  private switchItems(itemClicked: string) {
+  private switchItems(itemClicked: string | DropDownItem) {
     // Replace itemClicked on with current activeItem
-    this.dropDownItems.replace(itemClicked, this.$data.itemActive);
+    if (typeof itemClicked == "string") {
+      this.dropDownItems.replace(itemClicked, this.$data.itemActive);
+    } else {
+      this.dropDownItems.replace(itemClicked.name, this.$data.itemActive);
+    }
 
     // Update itemActive prop with itemClicked on
     this.$set(this.$data, "itemActive", itemClicked);
 
     this.$emit("item-changed", this.name, this.$data.itemActive);
   }
+}
+
+export interface DropDownItem {
+  id: string;
+  name: string;
 }
 </script>
 

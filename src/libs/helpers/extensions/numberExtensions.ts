@@ -7,6 +7,10 @@ interface Number {
    * Convert bytes to readable file size string.
    */
   toReadableFileSize(): string;
+  /**
+   * Convert signed decimal to hex twos complement.
+   */
+  toHexTwosComplement(): string;
 }
 
 Number.prototype.toReadableTimeFromSeconds = function(this: number): string {
@@ -34,4 +38,28 @@ Number.prototype.toReadableFileSize = function(this: number): string {
 
   // Tell me who else supports yottabytes
   return Math.round(this / Math.pow(1024, i)) * 1 + " " + ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][i];
+};
+
+Number.prototype.toHexTwosComplement = function(this: number, size: number = 8): string {
+  if (this >= 0) {
+    let hex = this.toString(16);
+
+    while (hex.length % size != 0) {
+      hex = "" + 0 + hex;
+    }
+
+    return hex;
+  } else {
+    let hex = Math.abs(this).toString(16);
+    while (hex.length % size != 0) {
+      hex = "" + 0 + hex;
+    }
+
+    let output = "";
+    for (let i = 0; i < hex.length; i++) {
+      output += (0x0f - parseInt(hex[i], 16)).toString(16);
+    }
+
+    return (0x01 + parseInt(output, 16)).toString(16);
+  }
 };
