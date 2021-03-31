@@ -18,10 +18,8 @@ export default class Registry {
       cp.on("exit", (code) => {
         if (code == 0) {
           resolve(code);
-          console.log("resolving", code);
         } else {
           reject(code);
-          console.log("rejecting", code);
         }
       });
     });
