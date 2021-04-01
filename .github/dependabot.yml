@@ -4,5 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      time: "12:00"
-    open-pull-requests-limit: 10
+      time: "08:00"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 5
