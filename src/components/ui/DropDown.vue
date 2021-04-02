@@ -45,11 +45,7 @@ export default class DropDown extends Vue {
 
   private switchItems(itemClicked: string | DropDownItem) {
     // Replace itemClicked on with current activeItem
-    if (typeof itemClicked == "string") {
-      this.dropDownItems.replace(itemClicked, this.$data.itemActive);
-    } else {
-      this.dropDownItems.replace(itemClicked.name, this.$data.itemActive);
-    }
+    this.dropDownItems.replace(itemClicked, this.$data.itemActive);
 
     // Update itemActive prop with itemClicked on
     this.$set(this.$data, "itemActive", itemClicked);
