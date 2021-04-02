@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="recordings">
+    <div id="recordings" @drop="addDroppedRecordings" @dragover="enableFileDropScreen">
       <div class="thumbContainer" v-if="allRecordings.length > 0">
         <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
           <div class="inner">
@@ -85,6 +85,24 @@ export default class extends Vue {
 
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
+    }
+  }
+
+  enableFileDropScreen(event: DragEvent) {
+    // Prevent default behavior so out drop event will work
+    event.preventDefault();
+  }
+
+  addDroppedRecordings(event: DragEvent) {
+    if (event.dataTransfer != null) {
+      for (var i = 0; i < event.dataTransfer.items.length; i++) {
+        const item = event.dataTransfer.items[i];
+        const video = item.getAsFile();
+
+        if (item.kind === "file" && item.type.includes("video") && video) {
+          RecordingsManager.add(video.path);
+        }
+      }
     }
   }
 }
