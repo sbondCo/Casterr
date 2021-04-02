@@ -92,7 +92,7 @@ export default class RecordingSettingsComponent extends Vue {
   videoDevice = RecordingSettings.videoDevice;
   videoDevices = ["Default"];
   monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
-  monitorToRecord = RecordingSettings.monitorToRecord.name;
+  monitorToRecord = RecordingSettings.monitorToRecord;
   fps = RecordingSettings.fps;
   resolution = RecordingSettings.resolution;
   resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
