@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div id="recordings" @drop="addDroppedRecordings" @dragover="enableFileDropScreen">
+  <div @drop="addDroppedRecordings" @dragover="handleDragOver" @dragleave="handleDragEnd">
+    <div id="recordings">
       <div class="thumbContainer" v-if="allRecordings.length > 0">
         <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
           <div class="inner">
@@ -39,6 +39,12 @@
       <div v-else>
         <span class="noRecordings">You Have No Recordings!</span>
       </div>
+
+      <!-- Overlay for when user drags a video over the page -->
+      <div :class="{ dropZone: true, hidden: dropZoneHidden }">
+        <Icon i="add" wh="36" />
+        <span>Add Files</span>
+      </div>
     </div>
   </div>
 </template>
@@ -57,6 +63,7 @@ import "@/libs/helpers/extensions";
 export default class extends Vue {
   allRecordings = RecordingsManager.get();
   loadedRecordings = new Array();
+  dropZoneHidden = true;
 
   mounted() {
     // Load initial set of recordings
@@ -88,17 +95,24 @@ export default class extends Vue {
     }
   }
 
-  enableFileDropScreen(event: DragEvent) {
+  handleDragOver(event: DragEvent) {
     // Prevent default behavior so out drop event will work
     event.preventDefault();
+
+    this.dropZoneHidden = false;
+  }
+
+  handleDragEnd() {
+    this.dropZoneHidden = true;
   }
 
   addDroppedRecordings(event: DragEvent) {
+    this.dropZoneHidden = true;
+
     if (event.dataTransfer != null) {
       for (var i = 0; i < event.dataTransfer.items.length; i++) {
         const item = event.dataTransfer.items[i];
         const video = item.getAsFile();
-
         if (item.kind === "file" && item.type.includes("video") && video) {
           RecordingsManager.add(video.path);
         }
@@ -266,6 +280,24 @@ export default class extends Vue {
       @media (min-width: 1200px) {
         width: 25%;
       }
+    }
+  }
+
+  .dropZone {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    padding: 15px;
+    border-radius: 4px;
+    border: dashed 2px $textPrimaryHover;
+    background-color: rgba($darkAccentColor, 0.8);
+    font-size: 36px;
+
+    svg {
+      margin-right: 15px;
+      fill: $textPrimary;
     }
   }
 }
