@@ -48,11 +48,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import Icon from "./../components/Icon.vue";
-import Button from "./../components/ui/Button.vue";
-import "./../libs/helpers/extensions";
-import Helpers from "./../libs/helpers";
-import RecordingsManager from "./../libs/recorder/recordingsManager";
+import Icon from "@/components/Icon.vue";
+import Button from "@/components/ui/Button.vue";
+import "@/libs/helpers/extensions";
+import Helpers from "@/libs/helpers";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
 import noUiSlider from "nouislider";

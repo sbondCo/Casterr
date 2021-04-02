@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { CombinedVueInstance } from "vue/types/vue";
 import { ipcRenderer } from "electron";
-import Notifier from "./../../components/Notifier.vue";
+import Notifier from "@/components/Notifier.vue";
 
 export default class Notifications {
   private static activePopups = new Map<

@@ -39,8 +39,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
-import Recorder from "./../libs/recorder";
-import { GeneralSettings } from "./../libs/settings";
+import Recorder from "@/libs/recorder";
+import { GeneralSettings } from "@/libs/settings";
 
 @Component({
   components: {
