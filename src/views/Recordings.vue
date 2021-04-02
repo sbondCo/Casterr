@@ -45,9 +45,9 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Icon from "./../components/Icon.vue";
-import RecordingsManager from "./../libs/recorder/recordingsManager";
-import "./../libs/helpers/extensions";
+import Icon from "@/components/Icon.vue";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {

@@ -31,8 +31,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import DropDown from "./../ui/DropDown.vue";
 import TickBox from "./../ui/TickBox.vue";
-import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "./../../libs/settings";
-import "../../libs/helpers/extensions";
+import SettingsManager, { SettingsFiles, AppSettings, GeneralSettings } from "@/libs/settings";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {

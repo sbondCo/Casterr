@@ -75,9 +75,9 @@ import DropDown, { DropDownItem } from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
-import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
-import DeviceManager from "./../../libs/recorder/deviceManager";
-import "../../libs/helpers/extensions";
+import SettingsManager, { SettingsFiles, RecordingSettings } from "@/libs/settings";
+import DeviceManager from "@/libs/recorder/deviceManager";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {
