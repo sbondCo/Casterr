@@ -6,7 +6,12 @@
     </label>
 
     <ul ref="dropDownItems" id="dropDownItems">
-      <li v-for="item in dropDownItems" :key="item.id" @click="switchItems(item)">
+      <li
+        v-for="item in items"
+        :key="item.id"
+        :class="JSON.stringify(item) == JSON.stringify(itemActive) ? 'active' : ''"
+        @click="switchItems(item)"
+      >
         {{ item.name != undefined ? item.name : item }}
       </li>
     </ul>
@@ -29,10 +34,6 @@ export default class DropDown extends Vue {
 
   itemActive = this.$props.activeItem;
 
-  get dropDownItems(): DropDownItem[] {
-    return this.items.remove(this.activeItem);
-  }
-
   private toggleDropDown() {
     let dd = this.$el as HTMLElement;
 
@@ -44,9 +45,6 @@ export default class DropDown extends Vue {
   }
 
   private switchItems(itemClicked: string | DropDownItem) {
-    // Replace itemClicked on with current activeItem
-    this.dropDownItems.replace(itemClicked, this.$data.itemActive);
-
     // Update itemActive prop with itemClicked on
     this.$set(this.$data, "itemActive", itemClicked);
 
@@ -106,6 +104,11 @@ export interface DropDownItem {
       list-style: none;
       background-color: $secondaryColor;
       cursor: pointer;
+
+      &.active {
+        font-weight: bold;
+        font-style: italic;
+      }
 
       &:hover {
         background-color: $tertiaryColor;
