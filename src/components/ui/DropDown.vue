@@ -1,6 +1,9 @@
 <template>
-  <div id="dropDown" @click="toggleDropDown()">
-    <label>{{ itemActive.name != undefined ? itemActive.name : itemActive }}</label>
+  <div id="dropDown" class="border-med" @click="toggleDropDown()">
+    <label>
+      <span>{{ itemActive.name != undefined ? itemActive.name : itemActive }}</span>
+      <Icon i="chevron" wh="16" />
+    </label>
 
     <ul ref="dropDownItems" id="dropDownItems">
       <li v-for="item in dropDownItems" :key="item.id" @click="switchItems(item)">
@@ -12,8 +15,13 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
+import Icon from "./../Icon.vue";
 
-@Component
+@Component({
+  components: {
+    Icon
+  }
+})
 export default class DropDown extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ required: true }) activeItem: string;
@@ -26,12 +34,12 @@ export default class DropDown extends Vue {
   }
 
   private toggleDropDown() {
-    let items = this.$refs.dropDownItems as HTMLElement;
+    let dd = this.$el as HTMLElement;
 
-    if (items.classList.contains("opened")) {
-      items.classList.remove("opened");
+    if (dd.classList.contains("opened")) {
+      dd.classList.remove("opened");
     } else {
-      items.classList.add("opened");
+      dd.classList.add("opened");
     }
   }
 
@@ -61,17 +69,32 @@ export interface DropDownItem {
   min-width: 160px;
   width: 100%;
   background-color: $secondaryColor;
-  border: 2px dashed $quaternaryColor;
   border-radius: 4px;
-  transition: border-color 250ms ease-in-out;
+  transition: background-color 250ms ease;
   cursor: pointer;
 
+  &.opened {
+    ul {
+      max-height: 160px;
+    }
+
+    label svg {
+      transform: rotate(270deg);
+    }
+  }
+
   label {
-    display: block;
+    display: flex;
+    align-items: center;
     padding: 8px;
-    border-radius: 4px 4px 0 0;
-    transition: background-color 250ms ease;
     cursor: pointer;
+
+    svg {
+      margin-left: auto;
+      fill: $textPrimary;
+      transform: rotate(90deg);
+      transition: transform 250ms ease;
+    }
   }
 
   ul {
@@ -79,7 +102,7 @@ export interface DropDownItem {
     overflow-y: auto;
     border-radius: 0 0 4px 4px;
     cursor: pointer;
-    transition: max-height 150ms ease-in-out, margin 150ms ease-in-out;
+    transition: max-height 150ms ease, margin 150ms ease;
 
     li {
       width: 100%;
@@ -88,17 +111,9 @@ export interface DropDownItem {
       background-color: $secondaryColor;
       cursor: pointer;
 
-      &.active {
-        background-color: $quaternaryColor !important;
-      }
-
       &:hover {
         background-color: $tertiaryColor;
       }
-    }
-
-    &.opened {
-      max-height: 160px;
     }
 
     &:hover {
@@ -119,11 +134,7 @@ export interface DropDownItem {
   }
 
   &:hover {
-    border-color: $textPrimary;
-
-    label {
-      background-color: $tertiaryColor;
-    }
+    background-color: $tertiaryColor;
   }
 }
 </style>

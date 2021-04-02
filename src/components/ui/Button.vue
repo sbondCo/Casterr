@@ -112,7 +112,7 @@ export default class Button extends Vue {
     background-color: transparent;
   }
 
-  ::v-deep svg {
+  svg {
     padding: 2px;
     fill: $textPrimary;
   }
