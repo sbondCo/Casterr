@@ -9,9 +9,9 @@
       </li>
 
       <li>
-        <router-link to="/uploads">
+        <router-link to="/clips">
           <Icon i="upload" />
-          <span>Uploads</span>
+          <span>Clips</span>
         </router-link>
       </li>
 
@@ -19,13 +19,6 @@
         <router-link to="/settings">
           <Icon i="settings" />
           <span>Settings</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/profile">
-          <Icon i="play" />
-          <span>Profile</span>
         </router-link>
       </li>
 
@@ -137,7 +130,7 @@ nav {
 
         svg {
           fill: $textPrimary;
-          margin: 0 8px 0 0;
+          margin: 0 8px 0 0 !important;
           transition: fill 250ms ease;
 
           @media (max-width: 910px) {
