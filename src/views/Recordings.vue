@@ -337,6 +337,7 @@ export default class extends Vue {
     border: dashed 2px $textPrimaryHover;
     background-color: rgba($darkAccentColor, 0.8);
     font-size: 36px;
+    font-weight: bold;
 
     svg {
       margin-right: 15px;
