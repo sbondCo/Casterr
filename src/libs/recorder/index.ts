@@ -19,7 +19,7 @@ export default class Recorder {
 
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
-      this.ffmpeg.run((await this.args).args.toString());
+      await this.ffmpeg.run((await this.args).args.toString(), "onOpen");
       this.isRecording = true;
 
       Notifications.desktop("Started Recording", "play");
