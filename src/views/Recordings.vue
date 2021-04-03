@@ -99,12 +99,21 @@ export default class extends Vue {
     }
   }
 
+  /**
+   * Handles DragOver event.
+   * Just prevents the default browser action
+   * currently so that the custom drag handling works.
+   */
   handleDragOver(event: DragEvent) {
     // Prevent default behavior so out drop event will work.
     event.preventDefault();
     event.stopPropagation();
   }
 
+  /**
+   * Handles DragEnter event.
+   * Shows dropZone to user when they drag files to recordings view.
+   */
   handleDragEnter(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -115,6 +124,10 @@ export default class extends Vue {
     this.dropZoneHidden = false;
   }
 
+  /**
+   * Handles DragEnd event.
+   * Hides dropZone when user ends drag.
+   */
   handleDragEnd(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -126,6 +139,10 @@ export default class extends Vue {
     }
   }
 
+  /**
+   * Handles Drop event.
+   * Add files that user drops to their recordings.
+   */
   addDroppedRecordings(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
