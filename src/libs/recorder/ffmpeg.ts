@@ -116,7 +116,7 @@ export default class FFmpeg {
       }
 
       // Download zip
-      await Downloader.get(dlURL, downloadTo, (progress: number) => {
+      await Downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
         Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
       });

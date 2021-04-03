@@ -10,7 +10,7 @@ export default class Downloader {
    * @param uri URI to download file from
    * @param dest Destination path for downloaded file
    */
-  public static get(uri: string, dest: string, reportPercentage?: CallableFunction) {
+  public static get(uri: string, dest: string, reportPercentage?: (percentage: string) => void) {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
 
