@@ -36,10 +36,12 @@ export default class FFmpeg {
   /**
    * Run FF process and send args to it.
    * @param args Args to send.
+   * @param whenToResolve On what event of the ffmpeg process to resolve promise.
    * @param outputs Holds optional callback functions with outputs from FFmpeg/FFprobe.
    */
   public async run(
     args: string,
+    whenToResolve: "onExit" | "onOpen" = "onExit",
     outputs?: {
       stdoutCallback?: CallableFunction;
       stderrCallback?: CallableFunction;
@@ -53,6 +55,8 @@ export default class FFmpeg {
       // Create child process and send args to it
       this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
+      if (whenToResolve == "onOpen") resolve("started");
+
       // Run stdoutCallback when recieving stdout
       this.ffProcess.stdout!.on("data", (data) => {
         if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
@@ -65,10 +69,10 @@ export default class FFmpeg {
 
       // When ffProcess exits
       this.ffProcess.on("close", (code) => {
-        resolve(code);
-
-        // Call onExitCallback is set to do so
+        // Call onExitCallback if set to do so
         if (outputs?.onExitCallback != undefined) outputs?.onExitCallback(code);
+
+        if (whenToResolve == "onExit") resolve(code);
       });
     });
   }

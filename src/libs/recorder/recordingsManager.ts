@@ -51,6 +51,7 @@ export default class RecordingsManager {
     // Get video info from ffprobe
     ffprobe.run(
       `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
+      "onExit",
       {
         stdoutCallback: (out: string) => {
           // Loop over each line in response from ffprobe, removing empty lines
@@ -140,6 +141,7 @@ export default class RecordingsManager {
     // Concatenate all seperate clips into one video
     ffmpeg.run(
       `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
+      "onExit",
       {
         // After creating final clip, delete all temp files
         onExitCallback: () => {
