@@ -141,7 +141,7 @@ export default class FFmpeg {
       Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
 
       // Extract zip
-      await Downloader.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+      await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
       Notifications.deletePopup("ffmpegDownloadProgress");
