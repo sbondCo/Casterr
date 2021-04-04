@@ -97,9 +97,24 @@ export default class FFmpeg {
    * If FFmpeg/probe doesn't exist, download it first then return its path.
    */
   public async getPath() {
-    const ffDir = PathHelper.ensureExists(PathHelper.toolsPath, true);
-    const ffmpegPath = path.join(ffDir, FFmpeg.ffmpegExeName);
-    const ffprobePath = path.join(ffDir, FFmpeg.ffprobeExeName);
+    const toolsDir = PathHelper.ensureExists(PathHelper.toolsPath, true);
+
+    const { ffmpegPath, ffprobePath } = await this.getFFmpeg(toolsDir);
+
+    // Return path to correct executable depending on 'which' constructor arg
+    if (this.which == "ffprobe") return ffprobePath;
+    else return ffmpegPath;
+  }
+
+  /**
+   * Get FFmpeg/FFprobe paths. If they don't exist, download them first.
+   * @param installDir Directory to install FFmpeg/probe.
+   * @returns FFmpeg and FFprobe paths.
+   */
+  private async getFFmpeg(installDir: string): Promise<{ ffmpegPath: string; ffprobePath: string }> {
+    const downloader = new Downloader();
+    const ffmpegPath = path.join(installDir, FFmpeg.ffmpegExeName);
+    const ffprobePath = path.join(installDir, FFmpeg.ffprobeExeName);
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
@@ -108,15 +123,16 @@ export default class FFmpeg {
 
       // Set downloadURL depending on users platform
       if (process.platform == "win32") {
-        dlURL = "https://ul.sbond.co/ffmpeg/ffmpeg-latest-win-amd64.zip";
+        dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421932";
       } else if (process.platform == "linux") {
-        dlURL = "https://ul.sbond.co/ffmpeg/ffmpeg-release-linux-amd64.zip";
+        dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421938";
       } else {
         throw new Error("Unsupported platform");
       }
 
       // Download zip
-      await Downloader.get(dlURL, downloadTo, (progress) => {
+      downloader.accept = "application/octet-stream";
+      await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
         Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
       });
@@ -125,7 +141,7 @@ export default class FFmpeg {
       Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
 
       // Extract zip
-      await Downloader.extract(downloadTo, ffDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+      await Downloader.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
       Notifications.deletePopup("ffmpegDownloadProgress");
@@ -140,8 +156,6 @@ export default class FFmpeg {
     fs.chmodSync(ffmpegPath, 0o111);
     fs.chmodSync(ffprobePath, 0o111);
 
-    // Return path to correct executable depending on 'which' constructor arg
-    if (this.which == "ffprobe") return ffprobePath;
-    else return ffmpegPath;
+    return { ffmpegPath: ffmpegPath, ffprobePath: ffprobePath };
   }
 }
