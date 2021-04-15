@@ -23,7 +23,7 @@ jobs:
           node-version: 15
 
       - name: Get dependencies
-        run: npm install
+        run: yarn
 
       - name: Build app
         uses: samuelmeuli/action-electron-builder@v1
