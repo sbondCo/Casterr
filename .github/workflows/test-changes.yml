@@ -24,10 +24,10 @@ jobs:
         with:
           node-version: 15
 
-      - uses: c-hive/gha-npm-cache@v1
+      - uses: c-hive/gha-yarn-cache@v1
 
       - name: Get dependencies
-        run: npm install
+        run: yarn install
 
       - name: Build app
         uses: samuelmeuli/action-electron-builder@v1
@@ -48,14 +48,14 @@ jobs:
         with:
           node-version: 15
 
-      - uses: c-hive/gha-npm-cache@v1
+      - uses: c-hive/gha-yarn-cache@v1
 
       - name: Get dependencies
-        run: npm install
+        run: yarn install
 
       - name: Check if files are formatted
         id: prettier
-        run: npm run prettier:check
+        run: yarn run prettier:check
       #
       # Commenting currently disabled because it doesn't work on prs from forks
       # and the effort required to fix it has been deemed "too much" by my superiors.
@@ -66,7 +66,7 @@ jobs:
       #   with:
       #     message: |
       #       **The 'is_formatted' check failed!**
-      #       Make sure all files are formatted with `npm run prettier:formatall`.
+      #       Make sure all files are formatted with `yarn run prettier:formatall`.
       #     repo-token: ${{ secrets.GITHUB_TOKEN }}
       #     repo-token-user-login: "github-actions[bot]"
       #     allow-repeats: false
