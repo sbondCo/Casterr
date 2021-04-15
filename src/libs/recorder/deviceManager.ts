@@ -117,7 +117,7 @@ export default class DeviceManager {
       const videoDevices = new Array<string>();
       let isAudioDevice = false;
 
-      ffmpeg.run("-list_devices true -f dshow -i dummy", {
+      ffmpeg.run("-list_devices true -f dshow -i dummy", "onExit", {
         stderrCallback: (out: string) => {
           out
             .split(/\r\n|\r|\n/g)
