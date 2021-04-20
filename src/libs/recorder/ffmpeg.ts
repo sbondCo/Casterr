@@ -64,6 +64,8 @@ export default class FFmpeg {
 
       // Run stderrCallback when recieving stderr
       this.ffProcess.stderr!.on("data", (data) => {
+        console.log(data);
+
         if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
       });
 
@@ -154,6 +156,9 @@ export default class FFmpeg {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
+    // Make sure screen-capture-recorder is installed, for windows machines.
+    if (process.platform == "win32") this.getSCR(installDir);
+
     // Get exec perms for ff binaries.
     // Do this even if we didn't just download so there
     // is no reason for it to fail with 'no perms' error.
@@ -161,5 +166,57 @@ export default class FFmpeg {
     fs.chmodSync(ffprobePath, 0o111);
 
     return { ffmpegPath: ffmpegPath, ffprobePath: ffprobePath };
+  }
+
+  /**
+   * Make sure screen-capture-recorder and virtual-audio-capturer are installed.
+   */
+  private async getSCR(installDir: string) {
+    const dlls = ["screen-capture-recorder-x64.dll", "virtual-audio-capturer-x64.dll"];
+    let bothDLLsExist = true;
+
+    // If one file in `dlls` does not exist, set `bothDLLsExist` to false and break loop.
+    for (let i = 0; i < dlls.length; ++i) {
+      if (!fs.existsSync(path.join(installDir, dlls[i]))) {
+        bothDLLsExist = false;
+        break;
+      }
+    }
+
+    if (bothDLLsExist) return;
+
+    const downloader = new Downloader();
+    const dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421931";
+    const dlTo = path.join(installDir, "scr-vac.zip");
+    const popupName = "scrDownloadProgress";
+
+    // Download zip
+    downloader.accept = "application/octet-stream";
+    await downloader.get(dlURL, dlTo, (progress) => {
+      // Keep updating popup with new progress %
+      Notifications.popup(popupName, "Fetching Recording Devices", progress);
+    });
+
+    // Extract
+    Notifications.popup(popupName, "Extracting Recording Devices", undefined);
+    await PathHelper.extract(dlTo, installDir, dlls);
+
+    // Register as service
+    const registerProcess = childProcess.exec(
+      `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList 'regsvr32 "${path.join(
+        installDir,
+        dlls[0]
+      )}'"`
+    );
+
+    registerProcess.stdout!.on("data", (data) => {
+      console.log(data);
+    });
+
+    registerProcess.stderr!.on("data", (data) => {
+      console.log(data);
+    });
+
+    Notifications.deletePopup(popupName);
   }
 }
