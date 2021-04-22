@@ -64,8 +64,6 @@ export default class FFmpeg {
 
       // Run stderrCallback when recieving stderr
       this.ffProcess.stderr!.on("data", (data) => {
-        console.log(data);
-
         if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
       });
 
@@ -157,7 +155,7 @@ export default class FFmpeg {
     }
 
     // Make sure screen-capture-recorder is installed, for windows machines.
-    if (process.platform == "win32") this.getSCR(installDir);
+    if (process.platform == "win32") await this.getSCR(installDir);
 
     // Get exec perms for ff binaries.
     // Do this even if we didn't just download so there
@@ -175,8 +173,7 @@ export default class FFmpeg {
     const dlls = ["screen-capture-recorder-x64.dll", "virtual-audio-capturer-x64.dll"];
 
     // Don't run if dlls already installed.
-    // Currently this isn't actually checking if they
-    // are installed, just that they exist in tools folder.
+    // Currently this is only checking if the dll exists in the tools folder.
     if (fs.existsSync(path.join(installDir, dlls[0])) && fs.existsSync(path.join(installDir, dlls[1]))) {
       console.log("Both scr and vac are installed, not installing again.");
       return;
@@ -199,17 +196,19 @@ export default class FFmpeg {
     await PathHelper.extract(dlTo, installDir, dlls);
 
     // Register as service
-    const cmd = `regsvr32 /s "${path.join(installDir, dlls[0])}" "${path.join(installDir, dlls[1])}"`;
-    const registerProcess = childProcess.exec(
-      `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList '${cmd}'"`
-    );
+    await new Promise((resolve, reject) => {
+      const cmd = `regsvr32 /s "${path.join(installDir, dlls[0])}" "${path.join(installDir, dlls[1])}"`;
+      const registerProcess = childProcess.exec(
+        `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList '${cmd}'"`
+      );
 
-    registerProcess.stdout!.on("data", (data) => {
-      console.log(data);
-    });
-
-    registerProcess.stderr!.on("data", (data) => {
-      console.log(data);
+      registerProcess.on("exit", (code) => {
+        if (code == 0) {
+          resolve("registerProcess successful.");
+        } else {
+          reject("registerProcess failed.");
+        }
+      });
     });
 
     Notifications.deletePopup(popupName);
