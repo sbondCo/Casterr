@@ -175,7 +175,6 @@ export default class FFmpeg {
     // Don't run if dlls already installed.
     // Currently this is only checking if the dll exists in the tools folder.
     if (fs.existsSync(path.join(installDir, dlls[0])) && fs.existsSync(path.join(installDir, dlls[1]))) {
-      console.log("Both scr and vac are installed, not installing again.");
       return;
     }
 
