@@ -15,7 +15,7 @@ export default class Notifications {
    * @param desc Description for notification to display.
    * @param percentage Optional percentage for notifications requiring a percentage bar.
    */
-  public static popup(name: string, desc: string, percentage?: number) {
+  public static popup(name: string, desc: string, percentage?: string | number) {
     // Update or create notification depending on if it is in activeNotifs
     if (this.activePopups.has(name)) {
       const i = this.activePopups.get(name);
