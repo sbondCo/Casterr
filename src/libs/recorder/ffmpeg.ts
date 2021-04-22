@@ -173,17 +173,14 @@ export default class FFmpeg {
    */
   private async getSCR(installDir: string) {
     const dlls = ["screen-capture-recorder-x64.dll", "virtual-audio-capturer-x64.dll"];
-    let bothDLLsExist = true;
 
-    // If one file in `dlls` does not exist, set `bothDLLsExist` to false and break loop.
-    for (let i = 0; i < dlls.length; ++i) {
-      if (!fs.existsSync(path.join(installDir, dlls[i]))) {
-        bothDLLsExist = false;
-        break;
-      }
+    // Don't run if dlls already installed.
+    // Currently this isn't actually checking if they
+    // are installed, just that they exist in tools folder.
+    if (fs.existsSync(path.join(installDir, dlls[0])) && fs.existsSync(path.join(installDir, dlls[1]))) {
+      console.log("Both scr and vac are installed, not installing again.");
+      return;
     }
-
-    if (bothDLLsExist) return;
 
     const downloader = new Downloader();
     const dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421931";
@@ -202,11 +199,9 @@ export default class FFmpeg {
     await PathHelper.extract(dlTo, installDir, dlls);
 
     // Register as service
+    const cmd = `regsvr32 /s "${path.join(installDir, dlls[0])}" "${path.join(installDir, dlls[1])}"`;
     const registerProcess = childProcess.exec(
-      `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList 'regsvr32 "${path.join(
-        installDir,
-        dlls[0]
-      )}'"`
+      `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList '${cmd}'"`
     );
 
     registerProcess.stdout!.on("data", (data) => {
