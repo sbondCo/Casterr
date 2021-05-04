@@ -1,13 +1,15 @@
 <template>
-  <div class="btnWrapper" @[clickEvent]="$emit('click')">
+  <div class="btnWrapper">
     <button v-if="combinedInfo" id="outlined" class="infoBtn">
       <slot></slot>
     </button>
 
     <button ref="mainBtn" class="mainBtn">
-      <Icon v-if="icon" :i="icon" />
+      <div @[clickEvent]="$emit('click')">
+        <Icon v-if="icon" :i="icon" />
 
-      <span v-if="text">{{ text }}</span>
+        <span v-if="text">{{ text }}</span>
+      </div>
 
       <div v-if="slider" ref="sliderBar" class="sliderBar"></div>
     </button>
