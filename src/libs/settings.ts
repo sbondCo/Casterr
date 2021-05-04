@@ -17,7 +17,7 @@ export default class SettingsManager {
     const json: any = {};
 
     // Read all entries in correct settings object and make a json object to write
-    Object.entries(SettingsManager.getObjectFromName(which)).forEach((pair) => {
+    Object.entries(this.getObjectFromName(which)).forEach((pair) => {
       // Remove '_' from pair[0]/key then set it to pair[1]/value
       json[pair[0].substring(1)] = pair[1];
     });
@@ -40,7 +40,19 @@ export default class SettingsManager {
 
         // If file isn't empty, cast json from setting file to correct object
         if (data != "") {
-          Object.assign(SettingsManager.getObjectFromName(which), JSON.parse(data));
+          const dataJson = JSON.parse(data);
+          const settingsKeys = Object.keys(this.getObjectFromName(which));
+
+          // Delete items in `dataJson` that aren't present
+          // in the current settings class being processed
+          Object.keys(dataJson).forEach((k) => {
+            if (!settingsKeys.includes(`_${k}`)) {
+              delete dataJson[k];
+            }
+          });
+
+          // Assign dataJson to settings class
+          Object.assign(this.getObjectFromName(which), dataJson);
         }
 
         // Write settings back to file, incase of missing rules
@@ -141,8 +153,12 @@ export class RecordingSettings {
   private static _videoSaveFolder: string = path.join(PathHelper.homeFolderPath, "Videos", "Casterr");
   private static _videoSaveName: string = "%d.%m.%Y - %H.%i.%s";
   private static _videoDevice: string = "Default";
+  private static _monitorToRecord = {
+    id: "primary",
+    name: "Primary Monitor"
+  };
   private static _fps: string = "60";
-  private static _resolution: string = "In-Game";
+  private static _resolution: string = "1080p";
   private static _format: string = "mp4";
   private static _zeroLatency: boolean = true;
   private static _ultraFast: boolean = true;
@@ -191,6 +207,17 @@ export class RecordingSettings {
 
   public static set videoDevice(device) {
     this._videoDevice = device;
+  }
+
+  /**
+   * monitorToRecord
+   */
+  public static get monitorToRecord() {
+    return this._monitorToRecord;
+  }
+
+  public static set monitorToRecord(monitor) {
+    this._monitorToRecord = monitor;
   }
 
   /**

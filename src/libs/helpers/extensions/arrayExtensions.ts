@@ -13,7 +13,7 @@ interface Array<T> {
    * Replace an item in an array, identified with its value.
    * @param toRemove Item to remove from the array.
    */
-  replace(toReplace: string, replaceWith: string): string[];
+  replace(toReplace: string | object, replaceWith: string | object): string[];
 }
 
 Array.prototype.remove = function(this, toRemove: string | number | object): any[] {
@@ -25,9 +25,8 @@ Array.prototype.removeFirst = function(this, toRemove: string | number | object)
   return this;
 };
 
-Array.prototype.replace = function(this, toReplace: string, replaceWith: string): string[] {
-  // Get index of `toReplace` in array and set to `replaceWith`
-  this[this.indexOf(toReplace)] = replaceWith;
+Array.prototype.replace = function(this, toReplace: string | object, replaceWith: string | object): string[] {
+  this[this.findIndex((e) => e == toReplace)] = replaceWith;
 
   return this;
 };

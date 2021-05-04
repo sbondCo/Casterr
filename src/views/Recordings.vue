@@ -1,53 +1,62 @@
 <template>
-  <div>
-    <div id="recordings">
-      <div class="thumbContainer" v-if="allRecordings.length > 0">
-        <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
-          <div class="inner">
-            <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-            <img
-              v-if="require('fs').existsSync(vid.thumbPath)"
-              :src="'secfile://' + vid.thumbPath"
-              alt="Video Thumbnail"
-            />
-            <span v-else class="noThumb">No Thumbnail Found</span>
+  <div
+    id="recordings"
+    @drop="addDroppedRecordings"
+    @dragover="handleDragOver"
+    @dragenter="handleDragEnter"
+    @dragleave="handleDragEnd"
+  >
+    <div class="thumbContainer" v-if="allRecordings.length > 0">
+      <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
+        <div class="inner">
+          <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
+          <img
+            v-if="require('fs').existsSync(vid.thumbPath)"
+            :src="'secfile://' + vid.thumbPath"
+            alt="Video Thumbnail"
+          />
+          <span v-else class="noThumb">No Thumbnail Found</span>
 
-            <div class="info">
-              <span class="fps">
-                {{ vid.fps }}
-                <p>FPS</p>
+          <div class="info">
+            <span class="fps">
+              {{ vid.fps }}
+              <p>FPS</p>
+            </span>
+
+            <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
+              <Icon i="edit" :wh="25" />
+            </router-link>
+
+            <div class="bar">
+              <span class="title">
+                <p>{{ vid.videoPath }}</p>
               </span>
 
-              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
-                <Icon i="edit" :wh="25" />
-              </router-link>
-
-              <div class="bar">
-                <span class="title">
-                  <p>{{ vid.videoPath }}</p>
-                </span>
-
-                <div class="videoInfo">
-                  <span v-if="vid.duration >= 0">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                  <span v-if="vid.fileSize >= 0">{{ vid.fileSize.toReadableFileSize() }}</span>
-                </div>
+              <div class="videoInfo">
+                <span v-if="vid.duration >= 0">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                <span v-if="vid.fileSize >= 0">{{ vid.fileSize.toReadableFileSize() }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div v-else>
-        <span class="noRecordings">You Have No Recordings!</span>
-      </div>
+    </div>
+    <div v-else>
+      <span class="noRecordings">You Have No Recordings!</span>
+    </div>
+
+    <div :class="{ dropZone: true, hidden: dropZoneHidden }">
+      <Icon i="add" wh="36" />
+      <span>Add Files</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Icon from "./../components/Icon.vue";
-import RecordingsManager from "./../libs/recorder/recordingsManager";
-import "./../libs/helpers/extensions";
+import Icon from "@/components/Icon.vue";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {
@@ -57,6 +66,8 @@ import "./../libs/helpers/extensions";
 export default class extends Vue {
   allRecordings = RecordingsManager.get();
   loadedRecordings = new Array();
+  dropZoneHidden = true;
+  dragEnterTarget: EventTarget | null = null;
 
   mounted() {
     // Load initial set of recordings
@@ -85,6 +96,70 @@ export default class extends Vue {
 
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
+    }
+  }
+
+  /**
+   * Handles DragOver event.
+   * Just prevents the default browser action
+   * currently so that the custom drag handling works.
+   */
+  handleDragOver(event: DragEvent) {
+    // Prevent default behavior so out drop event will work.
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  /**
+   * Handles DragEnter event.
+   * Shows dropZone to user when they drag files to recordings view.
+   */
+  handleDragEnter(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Store target so we can reference it in the DragEnd event.
+    this.dragEnterTarget = event.target;
+
+    this.dropZoneHidden = false;
+  }
+
+  /**
+   * Handles DragEnd event.
+   * Hides dropZone when user ends drag.
+   */
+  handleDragEnd(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Only act as if drag has actually ended
+    // if dragEnterTarget is the same as event.target.
+    if (this.dragEnterTarget == event.target) {
+      this.dropZoneHidden = true;
+    }
+  }
+
+  /**
+   * Handles Drop event.
+   * Add files that user drops to their recordings.
+   */
+  addDroppedRecordings(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.dropZoneHidden = true;
+
+    // Add dropped files to recordings
+    if (event.dataTransfer != null) {
+      for (var i = 0; i < event.dataTransfer.items.length; i++) {
+        const item = event.dataTransfer.items[i];
+        const video = item.getAsFile();
+
+        // Only add to recordings if the file is a video
+        if (item.kind === "file" && item.type.includes("video") && video) {
+          RecordingsManager.add(video.path);
+        }
+      }
     }
   }
 }
@@ -248,6 +323,25 @@ export default class extends Vue {
       @media (min-width: 1200px) {
         width: 25%;
       }
+    }
+  }
+
+  .dropZone {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    padding: 15px;
+    border-radius: 4px;
+    border: dashed 2px $textPrimaryHover;
+    background-color: rgba($darkAccentColor, 0.8);
+    font-size: 36px;
+    font-weight: bold;
+
+    svg {
+      margin-right: 15px;
+      fill: $textPrimary;
     }
   }
 }

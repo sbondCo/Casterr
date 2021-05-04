@@ -8,6 +8,11 @@
     </div>
 
     <div class="setting">
+      <span class="title">Monitor To Record:</span>
+      <DropDown name="monitorToRecord" :activeItem="monitorToRecord" :items="monitors" @item-changed="updateSettings" />
+    </div>
+
+    <div class="setting">
       <span class="title">FPS:</span>
       <TextBox name="fps" :value="fps" placeholder="30" type="number" @item-changed="updateSettings" />
     </div>
@@ -66,13 +71,13 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import DropDown from "./../ui/DropDown.vue";
+import DropDown, { DropDownItem } from "./../ui/DropDown.vue";
 import TextBox from "./../ui/TextBox.vue";
 import TickBox from "./../ui/TickBox.vue";
 import ListBox, { ListBoxItem } from "./../ui/ListBox.vue";
-import SettingsManager, { SettingsFiles, RecordingSettings } from "./../../libs/settings";
-import DeviceManager, { AudioDevice } from "./../../libs/recorder/deviceManager";
-import "../../libs/helpers/extensions";
+import SettingsManager, { SettingsFiles, RecordingSettings } from "@/libs/settings";
+import DeviceManager from "@/libs/recorder/deviceManager";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {
@@ -83,37 +88,36 @@ import "../../libs/helpers/extensions";
   }
 })
 export default class RecordingSettingsComponent extends Vue {
-  data() {
-    return {
-      isWindows: require("os").platform == "win32",
-      videoDevice: RecordingSettings.videoDevice,
-      videoDevices: ["Default"],
-      fps: RecordingSettings.fps,
-      resolution: RecordingSettings.resolution,
-      resolutions: ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"],
-      format: RecordingSettings.format,
-      formats: ["mp4", "mkv"],
-      zeroLatency: RecordingSettings.zeroLatency,
-      ultraFast: RecordingSettings.ultraFast,
-      audioDevicesToRecord: [],
-      audioDevicesToRecordEnabled: [],
-      seperateAudioTracks: RecordingSettings.seperateAudioTracks,
-      thumbSaveFolder: RecordingSettings.thumbSaveFolder,
-      videoSaveFolder: RecordingSettings.videoSaveFolder,
-      videoSaveName: RecordingSettings.videoSaveName
-    };
-  }
+  isWindows = require("os").platform == "win32";
+  videoDevice = RecordingSettings.videoDevice;
+  videoDevices = ["Default"];
+  monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
+  monitorToRecord = RecordingSettings.monitorToRecord;
+  fps = RecordingSettings.fps;
+  resolution = RecordingSettings.resolution;
+  resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
+  format = RecordingSettings.format;
+  formats = ["mp4", "mkv"];
+  zeroLatency = RecordingSettings.zeroLatency;
+  ultraFast = RecordingSettings.ultraFast;
+  audioDevicesToRecord = new Array<ListBoxItem>();
+  audioDevicesToRecordEnabled = new Array<string>();
+  seperateAudioTracks = RecordingSettings.seperateAudioTracks;
+  thumbSaveFolder = RecordingSettings.thumbSaveFolder;
+  videoSaveFolder = RecordingSettings.videoSaveFolder;
+  videoSaveName = RecordingSettings.videoSaveName;
 
   async mounted() {
     let d = await DeviceManager.getDevices();
+    let monitors = await DeviceManager.getMonitors();
 
     // Add video devices to videoDevices
-    d.videoDevices.forEach((vd) => {
+    d.video.forEach((vd) => {
       this.$data.videoDevices.push(vd);
     });
 
     // Add audio devices to audioDevicesToRecord
-    d.audioDevices.forEach((ad: AudioDevice) => {
+    d.audio.forEach((ad) => {
       // Whether device is an input device or not.
       // Always going to be undefined on Windows
       // because DirectShow doesn't give us that information.
@@ -122,12 +126,20 @@ export default class RecordingSettingsComponent extends Vue {
         isInput = ad.isInput ? "Input Device" : "Output Device";
       }
 
-      this.$data.audioDevicesToRecord.push(new ListBoxItem(ad.ID, ad.name, isInput));
+      this.audioDevicesToRecord.push({ id: ad.id.toString(), name: ad.name, title: isInput });
+    });
+
+    // Add displays
+    monitors.forEach((screen) => {
+      this.monitors.push({
+        id: screen.id.toString(),
+        name: `${screen.id}: ${screen.size.width}x${screen.size.height} ${screen.displayFrequency}hz`
+      });
     });
 
     // Add enabled items to audioDevicesToRecordEnabled for ListBox to know what to tick by default
     RecordingSettings.audioDevicesToRecord.forEach((adtr) => {
-      this.$data.audioDevicesToRecordEnabled.push(adtr.ID);
+      this.audioDevicesToRecordEnabled.push(adtr.id.toString());
     });
   }
 
@@ -136,6 +148,9 @@ export default class RecordingSettingsComponent extends Vue {
     switch (toUpdate) {
       case "videoDevice":
         RecordingSettings.videoDevice = newValue;
+        break;
+      case "monitorToRecord":
+        RecordingSettings.monitorToRecord = newValue;
         break;
       case "fps":
         RecordingSettings.fps = newValue;
@@ -155,11 +170,11 @@ export default class RecordingSettingsComponent extends Vue {
       case "audioDevicesToRecord":
         if (newValue[1]) {
           // Add new audio device to audioDevicesToRecord
-          RecordingSettings.audioDevicesToRecord.push({ ID: newValue[0][0], name: newValue[0][1] });
+          RecordingSettings.audioDevicesToRecord.push({ id: newValue[0][0], name: newValue[0][1] });
         } else {
           // Remove audio device from audioDevicesToRecord
           RecordingSettings.audioDevicesToRecord = RecordingSettings.audioDevicesToRecord.remove({
-            ID: newValue[0][0],
+            id: newValue[0][0],
             name: newValue[0][1]
           });
         }

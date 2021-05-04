@@ -1,0 +1,72 @@
+name: Test PR changes
+
+on:
+  pull_request:
+    branches:
+      - "**"
+    tags-ignore:
+      - v*
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 15
+
+      - uses: c-hive/gha-yarn-cache@v1
+
+      - name: Get dependencies
+        run: yarn install
+
+      - name: Build app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: false
+          use_vue_cli: true
+
+  is_formatted:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 15
+
+      - uses: c-hive/gha-yarn-cache@v1
+
+      - name: Get dependencies
+        run: yarn install
+
+      - name: Check if files are formatted
+        id: prettier
+        run: yarn run prettier:check
+      #
+      # Commenting currently disabled because it doesn't work on prs from forks
+      # and the effort required to fix it has been deemed "too much" by my superiors.
+      #
+      # - name: Add comment if prettier fails
+      #   uses: mshick/add-pr-comment@v1
+      #   if: ${{ always() && steps.prettier.outcome == 'failure' }}
+      #   with:
+      #     message: |
+      #       **The 'is_formatted' check failed!**
+      #       Make sure all files are formatted with `yarn run prettier:formatall`.
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token-user-login: "github-actions[bot]"
+      #     allow-repeats: false

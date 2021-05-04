@@ -13,13 +13,13 @@ export default class Recorder {
   /**
    * Start recording.
    */
-  public static start() {
+  public static async start() {
     // Create args from user's settings
     this.args = ArgumentBuilder.createArgs();
 
     // Only start recording if not currently doing so
     if (this.isRecording == false) {
-      this.ffmpeg.run(this.args.args.toString());
+      await this.ffmpeg.run((await this.args).args.toString(), "onOpen");
       this.isRecording = true;
 
       Notifications.desktop("Started Recording", "play");
@@ -36,7 +36,7 @@ export default class Recorder {
     await this.ffmpeg.kill();
 
     // Add recording to pastRecordings
-    RecordingsManager.add(this.args.videoPath);
+    RecordingsManager.add((await this.args).videoPath);
   }
 
   /**

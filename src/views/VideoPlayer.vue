@@ -48,11 +48,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import Icon from "./../components/Icon.vue";
-import Button from "./../components/ui/Button.vue";
-import "./../libs/helpers/extensions";
-import Helpers from "./../libs/helpers";
-import RecordingsManager from "./../libs/recorder/recordingsManager";
+import Icon from "@/components/Icon.vue";
+import Button from "@/components/ui/Button.vue";
+import "@/libs/helpers/extensions";
+import Helpers from "@/libs/helpers";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
 import noUiSlider from "nouislider";
@@ -75,7 +75,7 @@ export default class VideoPlayer extends Vue {
   currentVideoTime = "00:00";
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
-  continueBtnCI = true;
+  continueBtnCI = false;
 
   /**
    * Play/Pause the video.
@@ -283,8 +283,6 @@ export default class VideoPlayer extends Vue {
 
       // Show clips bar
       this.clipsBar.style.visibility = "visible";
-
-      this.continueBtnCI = true;
     }
 
     // Add new starts and then sort the array.
@@ -293,6 +291,9 @@ export default class VideoPlayer extends Vue {
     starts.sort((a, b) => a - b);
 
     this.createClipsBar(starts, connects, tooltips);
+
+    // Show continue button clip info
+    this.continueBtnCI = true;
   }
 
   /**

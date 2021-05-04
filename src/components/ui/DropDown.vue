@@ -1,9 +1,18 @@
 <template>
-  <div id="dropDown" @click="toggleDropDown()">
-    <label>{{ itemActive }}</label>
+  <div id="dropDown" class="border-med" @click="toggleDropDown()">
+    <label>
+      <span>{{ itemActive.name != undefined ? itemActive.name : itemActive }}</span>
+      <Icon i="chevron" wh="16" />
+    </label>
+
     <ul ref="dropDownItems" id="dropDownItems">
-      <li v-for="item in dropDownItems" :key="item" @click="switchItems(item)">
-        {{ item }}
+      <li
+        v-for="item in items"
+        :key="item.id"
+        :class="JSON.stringify(item) == JSON.stringify(itemActive) ? 'active' : ''"
+        @click="switchItems(item)"
+      >
+        {{ item.name != undefined ? item.name : item }}
       </li>
     </ul>
   </div>
@@ -11,72 +20,83 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
+import Icon from "./../Icon.vue";
 
-@Component
+@Component({
+  components: {
+    Icon
+  }
+})
 export default class DropDown extends Vue {
   @Prop({ required: true }) name: string;
   @Prop({ required: true }) activeItem: string;
-  @Prop({ required: true }) items: Array<any>;
+  @Prop({ required: true }) items: string[] | number[] | DropDownItem[];
 
   itemActive = this.$props.activeItem;
 
-  get dropDownItems() {
-    return this.items.remove(this.activeItem);
-  }
-
   private toggleDropDown() {
     let dd = this.$el as HTMLElement;
-    let items = this.$refs.dropDownItems as HTMLElement;
 
-    if (items.classList.contains("opened")) {
-      dd.style.borderRadius = "4px";
-      items.classList.remove("opened");
+    if (dd.classList.contains("opened")) {
+      dd.classList.remove("opened");
     } else {
-      dd.style.borderRadius = "4px 4px 0 0";
-      items.classList.add("opened");
+      dd.classList.add("opened");
     }
   }
 
-  private switchItems(itemClicked: string) {
-    // Replace itemClicked on with current activeItem
-    this.dropDownItems.replace(itemClicked, this.$data.itemActive);
-
+  private switchItems(itemClicked: string | DropDownItem) {
     // Update itemActive prop with itemClicked on
     this.$set(this.$data, "itemActive", itemClicked);
 
     this.$emit("item-changed", this.name, this.$data.itemActive);
   }
 }
+
+export interface DropDownItem {
+  id: string;
+  name: string;
+}
 </script>
 
 <style lang="scss" scoped>
 #dropDown {
-  position: relative;
-  display: inline-block;
   min-width: 160px;
   width: 100%;
-  padding: 8px;
   background-color: $secondaryColor;
   border-radius: 4px;
   transition: background-color 250ms ease;
   cursor: pointer;
 
+  &.opened {
+    ul {
+      max-height: 160px;
+    }
+
+    label svg {
+      transform: rotate(270deg);
+    }
+  }
+
   label {
-    transition: all 250ms ease;
+    display: flex;
+    align-items: center;
+    padding: 8px;
     cursor: pointer;
+
+    svg {
+      margin-left: auto;
+      fill: $textPrimary;
+      transform: rotate(90deg);
+      transition: transform 250ms ease;
+    }
   }
 
   ul {
-    display: none;
-    position: absolute;
-    right: 0;
-    max-height: 160px;
-    width: 100%;
-    margin: 8px 0 0 0;
-    z-index: 1;
+    max-height: 0;
     overflow-y: auto;
     border-radius: 0 0 4px 4px;
     cursor: pointer;
+    transition: max-height 150ms ease, margin 150ms ease;
 
     li {
       width: 100%;
@@ -86,7 +106,8 @@ export default class DropDown extends Vue {
       cursor: pointer;
 
       &.active {
-        background-color: $quaternaryColor !important;
+        font-weight: bold;
+        font-style: italic;
       }
 
       &:hover {
@@ -94,12 +115,14 @@ export default class DropDown extends Vue {
       }
     }
 
-    &.opened {
-      display: block;
+    &:hover {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
     }
 
     &::-webkit-scrollbar {
-      width: 5px;
+      width: 0px;
       background: $primaryColor;
     }
 

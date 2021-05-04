@@ -1,18 +1,21 @@
 import DeviceManager from "./deviceManager";
 import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
+import Registry from "../helpers/registry";
 import "../helpers/extensions";
 import * as path from "path";
 
 export default class ArgumentBuilder {
+  private static scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
+
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
-  public static createArgs(): {
+  public static async createArgs(): Promise<{
     args: string;
     videoPath: string;
-  } {
+  }> {
     // Make sure settings we have are up to date
     SettingsManager.getSettings(SettingsFiles.Recording);
 
@@ -29,25 +32,25 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Linux.
    */
-  private static buildLinuxArgs() {
+  private static async buildLinuxArgs() {
     const args = new Array<string>();
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f pulse -i ${ad.ID}`);
+      args.push(`-f pulse -i ${ad.id}`);
     });
 
     // Recording FPS
     args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.push(`-video_size ${this.resolution}`);
+    args.push(`-video_size ${await this.resolution()}`);
 
     // FFmpeg video device
     args.push(`-f ${this.ffmpegDevice}`);
 
     // Recording region
-    args.push(`-i ${this.recordingRegion}`);
+    args.push(`-i ${await this.recordingRegion()}`);
 
     // Audio maps
     args.push(`${this.audioMaps}`);
@@ -65,12 +68,12 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Windows.
    */
-  private static buildWindowsArgs() {
+  private static async buildWindowsArgs() {
     const args = new Array<string>();
 
     // Audio devices
     RecordingSettings.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f dshow -i audio="${ad.ID}"`);
+      args.push(`-f dshow -i audio="${ad.id}"`);
     });
 
     // FFmpeg video device
@@ -94,7 +97,10 @@ export default class ArgumentBuilder {
     args.push(`-framerate ${this.fps}`);
 
     // Recording resolution
-    args.push(`-video_size ${this.resolution}`);
+    await this.resolution();
+
+    // Recording region
+    await this.recordingRegion();
 
     // Zero Latency
     if (RecordingSettings.zeroLatency) {
@@ -128,36 +134,48 @@ export default class ArgumentBuilder {
     }
   }
 
-  private static get resolution(): string {
-    let res;
+  private static async resolution(): Promise<string> {
+    // Initialise res and set 1920x1080 as default
+    const res = {
+      width: 1920,
+      height: 1080
+    };
 
     switch (RecordingSettings.resolution) {
       case "In-Game":
         throw new Error("In-Game directive not currently supported.");
       case "2160p":
-        res = "3840x2160";
+        res.width = 3840;
+        res.height = 2160;
         break;
       case "1440p":
-        res = "2560x1440";
+        res.width = 2560;
+        res.height = 1440;
         break;
       case "1080p":
-        res = "1920x1080";
+        res.width = 1920;
+        res.height = 1080;
         break;
       case "720p":
-        res = "1280x720";
+        res.width = 1280;
+        res.height = 720;
         break;
       case "480p":
-        res = "640x480";
+        res.width = 640;
+        res.height = 480;
         break;
       case "360p":
-        res = "480x360";
-        break;
-      default:
-        res = "1920x1080";
+        res.width = 480;
+        res.height = 360;
         break;
     }
 
-    return res;
+    if (process.platform == "win32") {
+      await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
+      await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
+    }
+
+    return `${res.width}x${res.height}`;
   }
 
   private static get ffmpegDevice(): string {
@@ -166,8 +184,29 @@ export default class ArgumentBuilder {
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
-  private static get recordingRegion(): String {
-    return ":0.0+0,0";
+  private static async recordingRegion(): Promise<string> {
+    let monitor;
+    const monitorToRecord = RecordingSettings.monitorToRecord.id.toLowerCase();
+
+    // Get monitor
+    if (monitorToRecord == "primary") {
+      monitor = await DeviceManager.getPrimaryMonitor();
+    } else {
+      monitor = await DeviceManager.findMonitor(monitorToRecord);
+    }
+
+    // Return different format depending on OS
+    if (process.platform == "win32") {
+      await this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
+      await this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
+
+      // Return offsets as string anyway
+      return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
+    } else if (process.platform == "linux") {
+      return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
+    } else {
+      throw new Error("Can't get recording region for unsupported platform.");
+    }
   }
 
   private static get audioMaps(): string {
