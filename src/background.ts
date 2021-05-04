@@ -108,7 +108,6 @@ function registerChannels(win: BrowserWindow) {
       await notifWin.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/${page}`);
     } else {
       // Load the index.html when not in development
-      // notifWin.loadURL(`file://${path.join(__dirname, `index.html/#/${page}`)}`);
       notifWin.loadURL(`file://${__dirname}/index.html#${page}`);
     }
 
