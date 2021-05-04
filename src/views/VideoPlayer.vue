@@ -16,7 +16,7 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button :icon="volumeIcon" :slider="true" @update="updateVolume" />
+      <Button :icon="volumeIcon" :slider="true" @click="toggleMute" @update="updateVolume" />
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
 
@@ -118,6 +118,14 @@ export default class VideoPlayer extends Vue {
       this.volumeIcon = "volumeMed";
     } else {
       this.volumeIcon = "volumeMax";
+    }
+  }
+
+  toggleMute() {
+    if (this.video.volume > 0) {
+      this.updateVolume(0);
+    } else {
+      this.updateVolume(0.5);
     }
   }
 
