@@ -210,6 +210,7 @@ export default class Button extends Vue {
           right: -6px;
           height: 12px;
           width: 12px;
+          cursor: pointer;
         }
 
         // Set transition for slider handle to 0ms.
