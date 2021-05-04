@@ -16,7 +16,13 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button :icon="volumeIcon" :slider="true" @click="toggleMute" @update="updateVolume" />
+      <Button
+        :icon="volumeIcon"
+        :slider="true"
+        :sliderValue="volume"
+        @click="toggleMute"
+        @slider-update="updateVolume"
+      />
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
 
@@ -77,6 +83,7 @@ export default class VideoPlayer extends Vue {
   playPauseBtnIcon = "play";
   continueBtnCI = false;
   volumeIcon = "volumeMax";
+  volume = 0.8;
 
   /**
    * Play/Pause the video.
@@ -99,6 +106,10 @@ export default class VideoPlayer extends Vue {
    * @param volume Volume to set video to.
    */
   async updateVolume(volume: number) {
+    // Update volume var used for volumeBars sliderValue
+    // So the slider is updated on the volume button.
+    this.volume = volume;
+
     // Try 3 times to update volume
     // First time volume is updated, the video element
     // hasn't loaded fully so we need to keep trying until it has.

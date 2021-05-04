@@ -32,8 +32,10 @@ export default class Button extends Vue {
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
+  @Prop({ default: 0 }) sliderValue: number;
 
   mainBtn: HTMLButtonElement;
+  sliderBar: noUiSlider.Instance;
   clickEvent = "click";
 
   mounted() {
@@ -44,6 +46,11 @@ export default class Button extends Vue {
   }
 
   updated() {
+    // Update sliderBar value, if slider is enabled and it is updated
+    if (this.slider && this.sliderBar) {
+      this.sliderBar.noUiSlider.set(this.sliderValue);
+    }
+
     // Enable/disable button click event
     if (this.disabled) {
       this.clickEvent = "null";
@@ -61,10 +68,10 @@ export default class Button extends Vue {
   createSlider() {
     this.addClassToButton("slider");
 
-    let slider = this.$refs.sliderBar as noUiSlider.Instance;
+    this.sliderBar = this.$refs.sliderBar as noUiSlider.Instance;
 
-    noUiSlider.create(slider, {
-      start: [0.8],
+    noUiSlider.create(this.sliderBar, {
+      start: [this.sliderValue],
       behaviour: "snap",
       range: {
         min: 0,
@@ -72,14 +79,14 @@ export default class Button extends Vue {
       }
     });
 
-    slider.noUiSlider.on("update", (value) => {
-      this.$emit("update", Number(value[0]));
+    this.sliderBar.noUiSlider.on("update", (value) => {
+      this.$emit("slider-update", Number(value[0]));
     });
 
     this.mainBtn.addEventListener(
       "wheel",
       (e) => {
-        let noSlider = slider.noUiSlider;
+        let noSlider = this.sliderBar.noUiSlider;
         let sliderVal = Number(noSlider.get());
 
         if (e.deltaY < 0) {
