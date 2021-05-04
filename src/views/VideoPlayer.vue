@@ -16,7 +16,7 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button icon="volumeMax" :slider="true" @update="updateVolume" />
+      <Button :icon="volumeIcon" :slider="true" @update="updateVolume" />
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
 
@@ -76,6 +76,7 @@ export default class VideoPlayer extends Vue {
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
   continueBtnCI = false;
+  volumeIcon = "volumeMax";
 
   /**
    * Play/Pause the video.
@@ -109,6 +110,14 @@ export default class VideoPlayer extends Vue {
       }
 
       await Helpers.sleep(250);
+    }
+
+    if (this.video.volume == 0) {
+      this.volumeIcon = "volumeMute";
+    } else if (this.video.volume < 0.5) {
+      this.volumeIcon = "volumeMed";
+    } else {
+      this.volumeIcon = "volumeMax";
     }
   }
 
@@ -343,11 +352,13 @@ export default class VideoPlayer extends Vue {
   updateTotalLengthOfClips(values: string[]) {
     let totalLength = 0;
     let v = values.map(Number);
+
     // Loop over values in pairs
     for (let i = 0, n = v.length; i < n; i += 2) {
       // Update totalLength after calculating current pairs length
       totalLength += Number((v[i + 1] - v[i]).toFixed(0));
     }
+
     // Finally, update actual lengthOfClips variable
     this.lengthOfClips = totalLength.toReadableTimeFromSeconds();
   }
