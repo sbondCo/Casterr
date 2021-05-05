@@ -35,6 +35,7 @@ export default class Button extends Vue {
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
   @Prop({ default: 0 }) sliderValue: number;
+  @Prop({ default: 0.1 }) sliderStep: number;
 
   mainBtn: HTMLButtonElement;
   sliderBar: noUiSlider.Instance;
@@ -78,7 +79,8 @@ export default class Button extends Vue {
       range: {
         min: 0,
         max: 1
-      }
+      },
+      step: this.sliderStep
     });
 
     this.sliderBar.noUiSlider.on("update", (value) => {

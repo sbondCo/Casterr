@@ -20,8 +20,9 @@
         :icon="volumeIcon"
         :slider="true"
         :sliderValue="volume"
-        @click="toggleMute"
+        :sliderStep="0.1"
         @slider-update="updateVolume"
+        @click="toggleMute"
       />
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
