@@ -20,7 +20,7 @@
         :icon="volumeIcon"
         :slider="true"
         :sliderValue="volume"
-        :sliderStep="0.1"
+        :sliderStep="0.05"
         @slider-update="updateVolume"
         @click="toggleMute"
       />
@@ -124,6 +124,7 @@ export default class VideoPlayer extends Vue {
       await Helpers.sleep(250);
     }
 
+    // Change volume icon depending on volume
     if (this.video.volume == 0) {
       this.volumeIcon = "volumeMute";
     } else if (this.video.volume < 0.5) {
