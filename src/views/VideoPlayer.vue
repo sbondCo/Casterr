@@ -27,7 +27,11 @@
         @click="toggleMute"
       />
 
-      <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
+      <Button
+        :text="videoTimeReadable"
+        :outlined="true"
+        @click="showTimeAsElapsed ? (showTimeAsElapsed = false) : (showTimeAsElapsed = true)"
+      />
 
       <Button text="ADD CLIP" @click="addClip" />
 
@@ -81,12 +85,13 @@ export default class VideoPlayer extends Vue {
 
   numberOfClips = 0;
   lengthOfClips = "00:00";
-  currentVideoTime = "00:00";
-  maxVideoTime = "00:00";
+  currentVideoTime = 0;
+  maxVideoTime = 0;
   playPauseBtnIcon = "play";
   continueBtnCI = false;
   volumeIcon = "volumeMax";
   volume = 0.8;
+  showTimeAsElapsed = false;
 
   /**
    * Play/Pause the video.
@@ -136,6 +141,9 @@ export default class VideoPlayer extends Vue {
     }
   }
 
+  /**
+   * Toggle mute on video.
+   */
   toggleMute() {
     if (this.video.volume > 0) {
       this.updateVolume(0);
@@ -152,7 +160,7 @@ export default class VideoPlayer extends Vue {
     this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
     this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
 
-    this.maxVideoTime = this.video.duration.toReadableTimeFromSeconds();
+    this.maxVideoTime = this.video.duration;
 
     this.video.addEventListener("play", () => {
       this.playPause(false);
@@ -189,7 +197,19 @@ export default class VideoPlayer extends Vue {
    */
   updateVideoTime(newTime: number) {
     this.video.currentTime = newTime;
-    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+    this.currentVideoTime = this.video.currentTime;
+  }
+
+  /**
+   * Return video time in readable format.
+   * Different format returned depending on `showTimeAsElapsed` var.
+   */
+  get videoTimeReadable() {
+    if (this.showTimeAsElapsed) {
+      return `${(this.maxVideoTime - this.currentVideoTime).toReadableTimeFromSeconds()} Left`;
+    } else {
+      return `${this.currentVideoTime.toReadableTimeFromSeconds()} / ${this.maxVideoTime.toReadableTimeFromSeconds()}`;
+    }
   }
 
   /**
@@ -197,7 +217,7 @@ export default class VideoPlayer extends Vue {
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider.set(this.video.currentTime);
-    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+    this.currentVideoTime = this.video.currentTime;
   }
 
   /**
