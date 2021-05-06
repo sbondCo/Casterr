@@ -20,7 +20,9 @@
         :icon="volumeIcon"
         :slider="true"
         :sliderValue="volume"
-        :sliderStep="0.05"
+        sliderMin="0"
+        sliderMax="1"
+        sliderStep="0.01"
         @slider-update="updateVolume"
         @click="toggleMute"
       />

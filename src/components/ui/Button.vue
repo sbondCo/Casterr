@@ -11,7 +11,15 @@
         <span v-if="text">{{ text }}</span>
       </div>
 
-      <input v-if="slider" ref="sliderBar" class="sliderBar" type="range" min="0" max="1" :step="sliderStep" />
+      <input
+        v-if="slider"
+        ref="sliderBar"
+        class="sliderBar"
+        type="range"
+        :min="sliderMin"
+        :max="sliderMax"
+        :step="sliderStep"
+      />
     </button>
   </div>
 </template>
@@ -33,8 +41,10 @@ export default class Button extends Vue {
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
-  @Prop({ default: 0 }) sliderValue: number;
-  @Prop({ default: 0.1 }) sliderStep: number;
+  @Prop({ default: 0 }) sliderValue: string;
+  @Prop({ default: 0 }) sliderMin: number;
+  @Prop({ default: 100 }) sliderMax: number;
+  @Prop({ default: 1 }) sliderStep: number;
 
   mainBtn: HTMLButtonElement;
   sliderBar: HTMLInputElement;
@@ -46,13 +56,13 @@ export default class Button extends Vue {
 
     if (this.outlined) this.mainBtn.id += "outlined";
     if (this.slider) this.initSlider();
+
+    this.updateSliderValue();
   }
 
   updated() {
     // Update sliderBar value, if slider is enabled and it is updated
-    if (this.slider && this.sliderBar) {
-      this.sliderBar.value = String(this.sliderValue);
-    }
+    this.updateSliderValue();
 
     // Enable/disable button click event
     if (this.disabled) {
@@ -93,6 +103,12 @@ export default class Button extends Vue {
       },
       { passive: true }
     );
+  }
+
+  updateSliderValue() {
+    if (this.slider && this.sliderBar) {
+      this.sliderBar.value = String(this.sliderValue);
+    }
   }
 }
 </script>
