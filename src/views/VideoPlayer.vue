@@ -91,7 +91,7 @@ export default class VideoPlayer extends Vue {
   continueBtnCI = false;
   volumeIcon = "volumeMax";
   volume = 0.8;
-  showTimeAsElapsed = true;
+  showTimeAsElapsed = false;
 
   /**
    * Play/Pause the video.
@@ -201,7 +201,8 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   *
+   * Return video time in readable format.
+   * Different format returned depending on `showTimeAsElapsed` var.
    */
   get videoTimeReadable() {
     if (this.showTimeAsElapsed) {
