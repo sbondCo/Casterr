@@ -16,7 +16,16 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button icon="volumeMax" :slider="true" @update="updateVolume" />
+      <Button
+        :icon="volumeIcon"
+        :slider="true"
+        :sliderValue="volume"
+        sliderMin="0"
+        sliderMax="1"
+        sliderStep="0.01"
+        @slider-update="updateVolume"
+        @click="toggleMute"
+      />
 
       <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
 
@@ -76,6 +85,8 @@ export default class VideoPlayer extends Vue {
   maxVideoTime = "00:00";
   playPauseBtnIcon = "play";
   continueBtnCI = false;
+  volumeIcon = "volumeMax";
+  volume = 0.8;
 
   /**
    * Play/Pause the video.
@@ -98,6 +109,10 @@ export default class VideoPlayer extends Vue {
    * @param volume Volume to set video to.
    */
   async updateVolume(volume: number) {
+    // Update volume var used for volumeBars sliderValue
+    // So the slider is updated on the volume button.
+    this.volume = volume;
+
     // Try 3 times to update volume
     // First time volume is updated, the video element
     // hasn't loaded fully so we need to keep trying until it has.
@@ -109,6 +124,23 @@ export default class VideoPlayer extends Vue {
       }
 
       await Helpers.sleep(250);
+    }
+
+    // Change volume icon depending on volume
+    if (this.video.volume == 0) {
+      this.volumeIcon = "volumeMute";
+    } else if (this.video.volume < 0.5) {
+      this.volumeIcon = "volumeMed";
+    } else {
+      this.volumeIcon = "volumeMax";
+    }
+  }
+
+  toggleMute() {
+    if (this.video.volume > 0) {
+      this.updateVolume(0);
+    } else {
+      this.updateVolume(0.5);
     }
   }
 
@@ -343,11 +375,13 @@ export default class VideoPlayer extends Vue {
   updateTotalLengthOfClips(values: string[]) {
     let totalLength = 0;
     let v = values.map(Number);
+
     // Loop over values in pairs
     for (let i = 0, n = v.length; i < n; i += 2) {
       // Update totalLength after calculating current pairs length
       totalLength += Number((v[i + 1] - v[i]).toFixed(0));
     }
+
     // Finally, update actual lengthOfClips variable
     this.lengthOfClips = totalLength.toReadableTimeFromSeconds();
   }

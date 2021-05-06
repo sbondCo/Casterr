@@ -1,22 +1,31 @@
 <template>
-  <div class="btnWrapper" @[clickEvent]="$emit('click')">
+  <div class="btnWrapper">
     <button v-if="combinedInfo" id="outlined" class="infoBtn">
       <slot></slot>
     </button>
 
     <button ref="mainBtn" class="mainBtn">
-      <Icon v-if="icon" :i="icon" />
+      <div @[clickEvent]="$emit('click')">
+        <Icon v-if="icon" :i="icon" />
 
-      <span v-if="text">{{ text }}</span>
+        <span v-if="text">{{ text }}</span>
+      </div>
 
-      <div v-if="slider" ref="sliderBar" class="sliderBar"></div>
+      <input
+        v-if="slider"
+        ref="sliderBar"
+        class="sliderBar"
+        type="range"
+        :min="sliderMin"
+        :max="sliderMax"
+        :step="sliderStep"
+      />
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
-import noUiSlider from "nouislider";
 import Icon from "./../Icon.vue";
 
 @Component({
@@ -32,18 +41,29 @@ export default class Button extends Vue {
   @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
+  @Prop({ default: 0 }) sliderValue: string;
+  @Prop({ default: 0 }) sliderMin: number;
+  @Prop({ default: 100 }) sliderMax: number;
+  @Prop({ default: 1 }) sliderStep: number;
 
   mainBtn: HTMLButtonElement;
+  sliderBar: HTMLInputElement;
   clickEvent = "click";
 
   mounted() {
     this.mainBtn = this.$refs.mainBtn as HTMLButtonElement;
+    this.sliderBar = this.$refs.sliderBar as HTMLInputElement;
 
     if (this.outlined) this.mainBtn.id += "outlined";
-    if (this.slider) this.createSlider();
+    if (this.slider) this.initSlider();
+
+    this.updateSliderValue();
   }
 
   updated() {
+    // Update sliderBar value, if slider is enabled and it is updated
+    this.updateSliderValue();
+
     // Enable/disable button click event
     if (this.disabled) {
       this.clickEvent = "null";
@@ -58,38 +78,37 @@ export default class Button extends Vue {
     this.mainBtn.classList.add(classToAdd);
   }
 
-  createSlider() {
+  initSlider() {
     this.addClassToButton("slider");
 
-    let slider = this.$refs.sliderBar as noUiSlider.Instance;
-
-    noUiSlider.create(slider, {
-      start: [0.8],
-      behaviour: "snap",
-      range: {
-        min: 0,
-        max: 1
-      }
-    });
-
-    slider.noUiSlider.on("update", (value) => {
-      this.$emit("update", Number(value[0]));
+    this.sliderBar.addEventListener("input", (value) => {
+      this.$emit("slider-update", Number((value.target as HTMLInputElement).value));
     });
 
     this.mainBtn.addEventListener(
       "wheel",
       (e) => {
-        let noSlider = slider.noUiSlider;
-        let sliderVal = Number(noSlider.get());
+        let slider = this.sliderBar;
+        let sliderVal = Number(slider.value);
 
+        // Change slider value up/down depending on if wheel was scrolled up/down
         if (e.deltaY < 0) {
-          noSlider.set(sliderVal + 0.1);
+          slider.value = String(sliderVal + 0.1);
         } else {
-          noSlider.set(sliderVal - 0.1);
+          slider.value = String(sliderVal - 0.1);
         }
+
+        // Manually fire input event, because it doesn't do this itself
+        slider.dispatchEvent(new Event("input"));
       },
       { passive: true }
     );
+  }
+
+  updateSliderValue() {
+    if (this.slider && this.sliderBar) {
+      this.sliderBar.value = String(this.sliderValue);
+    }
   }
 }
 </script>
@@ -189,25 +208,15 @@ export default class Button extends Vue {
       flex-flow: row;
 
       .sliderBar {
+        -webkit-appearance: none;
         width: 0;
         margin: 0;
-
         height: 5px;
         transition: width 150ms ease-in-out, margin 150ms ease-in-out;
+        background: transparent;
 
-        ::v-deep .noUi-handle {
+        &::-webkit-slider-thumb {
           visibility: hidden;
-          top: -3px;
-          right: -6px;
-          height: 12px;
-          width: 12px;
-        }
-
-        // Set transition for slider handle to 0ms.
-        // For some reason 'snap' behaviour doesn't
-        // work when moving handle by using mouse wheel.
-        ::v-deep .noUi-origin {
-          transition: transform 0ms ease-in;
         }
       }
 
@@ -218,9 +227,9 @@ export default class Button extends Vue {
       &:active {
         .sliderBar {
           width: 100px;
-          margin: 0 7px 0 12px;
+          margin: 0 7px 0 7.5px;
 
-          ::v-deep .noUi-handle {
+          &::-webkit-slider-thumb {
             visibility: visible;
           }
         }

@@ -32,7 +32,7 @@ a {
   display: none !important;
 }
 
-// Default slider styling
+// Default nouislider styling
 .noUi-target {
   &,
   * {
@@ -59,5 +59,27 @@ a {
     &:active {
       cursor: grabbing;
     }
+  }
+}
+
+// Default slider styling
+[type="range"] {
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    margin-top: -2px;
+    background-color: $darkAccentColor;
+    border: 1px solid $textPrimary;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 8px;
+    background-color: $quaternaryColor;
+    border-radius: 4px;
   }
 }
