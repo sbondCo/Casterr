@@ -32,7 +32,7 @@ export default class DefaultLayout extends Vue {
     const excludedPages = ["videoPlayer"];
 
     // If user is on an excludedPage, don't push user to their default startupPage.
-    if (!this.$route.name.equalsAnyOf(excludedPages)) {
+    if (!String(this.$route.name).equalsAnyOf(excludedPages)) {
       // Redirect to startup page defined in settings
       // If startupPage setting is a page in the application, redirect to it
       // Else go to first page in AppSettings.pages setting
