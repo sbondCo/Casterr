@@ -60,6 +60,12 @@ a {
       cursor: grabbing;
     }
   }
+
+  .noUi-tooltip {
+    color: $textPrimary;
+    background-color: $darkAccentColor;
+    box-shadow: 0px 0px 8px $darkAccentColor;
+  }
 }
 
 // Default slider styling
