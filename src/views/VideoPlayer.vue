@@ -85,13 +85,22 @@ export default class VideoPlayer extends Vue {
 
   numberOfClips = 0;
   lengthOfClips = "00:00";
-  currentVideoTime = 0;
   maxVideoTime = 0;
   playPauseBtnIcon = "play";
   continueBtnCI = false;
   volumeIcon = "volumeMax";
   volume = 0.8;
   showTimeAsElapsed = false;
+
+  get currentVideoTime() {
+    if (this.video != undefined) {
+      return this.video.currentTime;
+    } else {
+      // If this.video is undefined, then it most-likely hasn't
+      // loaded yet, so it's value will be 0 anyways.
+      return 0;
+    }
+  }
 
   /**
    * Play/Pause the video.
@@ -200,7 +209,6 @@ export default class VideoPlayer extends Vue {
    */
   updateVideoTime(newTime: number) {
     this.video.currentTime = newTime;
-    this.currentVideoTime = this.video.currentTime;
   }
 
   /**
@@ -220,7 +228,6 @@ export default class VideoPlayer extends Vue {
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
-    this.currentVideoTime = this.video.currentTime;
   }
 
   /**
