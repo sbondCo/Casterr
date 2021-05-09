@@ -113,6 +113,11 @@ export default class RecordingsManager {
   }
 
   public static async clip(videoPath: string, timestamps: number[]) {
+    // Make sure .processing folder exists and is hidden
+    PathHelper.ensureExists(`${RecordingSettings.videoSaveFolder}/clips/.processing`, true, {
+      hidden: true
+    });
+
     const ffmpeg = new FFmpeg();
     const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
     const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
