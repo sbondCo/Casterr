@@ -113,16 +113,18 @@ export default class RecordingsManager {
   }
 
   public static async clip(videoPath: string, timestamps: number[]) {
+    // Make sure .processing folder exists and is hidden
+    PathHelper.ensureExists(`${RecordingSettings.videoSaveFolder}/clips/.processing`, true, {
+      hidden: true
+    });
+
     const ffmpeg = new FFmpeg();
     const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
     const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
     const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
     const tmpOutFolder = PathHelper.ensureExists(
       `${RecordingSettings.videoSaveFolder}/clips/.processing/${clipOutName}`,
-      true,
-      {
-        hidden: true
-      }
+      true
     );
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
 

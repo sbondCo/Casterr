@@ -83,18 +83,19 @@ export default class PathHelper {
   }
 
   /**
-   *
-   * @param path
+   * Hide file or folder.
+   * @param path Path to file/folder that needs to be hidden.
    */
   public static hide(path: string) {
     return new Promise((resolve, reject) => {
-      console.log(Path.basename(path));
-      if (!Path.basename(path)) {
+      // Only allow files that start with a period, this is how we will ensure the path is hidden on linux
+      if (!Path.basename(path).startsWith(".")) {
         reject(
           `Hidden files/folders should start with a '.'! change '${Path.basename(path)}' to '.${Path.basename(path)}'.`
         );
       }
 
+      // If on windows, run `attrib` command to hide folder
       if (process.platform == "win32") {
         const cp = childProcess.exec(`attrib +h ${path}`);
 
@@ -105,6 +106,9 @@ export default class PathHelper {
             reject(code);
           }
         });
+      } else {
+        // Nothing to do on other platforms, so just make sure to resolve promise
+        resolve(0);
       }
     });
   }
