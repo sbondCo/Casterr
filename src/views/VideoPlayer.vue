@@ -68,7 +68,7 @@ import Helpers from "@/libs/helpers";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
-import noUiSlider from "nouislider";
+import noUiSlider, { PipsMode, target } from "nouislider";
 
 @Component({
   components: {
@@ -80,18 +80,27 @@ export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
-  private progressBar: noUiSlider.Instance;
-  private clipsBar: noUiSlider.Instance;
+  private progressBar: target;
+  private clipsBar: target;
 
   numberOfClips = 0;
   lengthOfClips = "00:00";
-  currentVideoTime = 0;
   maxVideoTime = 0;
   playPauseBtnIcon = "play";
   continueBtnCI = false;
   volumeIcon = "volumeMax";
   volume = 0.8;
   showTimeAsElapsed = false;
+
+  get currentVideoTime() {
+    if (this.video != undefined) {
+      return this.video.currentTime;
+    } else {
+      // If this.video is undefined, then it most-likely hasn't
+      // loaded yet, so it's value will be 0 anyways.
+      return 0;
+    }
+  }
 
   /**
    * Play/Pause the video.
@@ -157,8 +166,8 @@ export default class VideoPlayer extends Vue {
    */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
-    this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
-    this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
+    this.progressBar = this.$refs.progressBar as target;
+    this.clipsBar = this.$refs.clipsBar as target;
 
     this.maxVideoTime = this.video.duration;
 
@@ -178,12 +187,15 @@ export default class VideoPlayer extends Vue {
         max: this.video.duration // + 99999
       },
       pips: {
-        mode: "count",
+        mode: PipsMode.Count,
         values: 10,
         format: {
           to: (value: number) => {
             // Show readable time on pip values
             return value.toReadableTimeFromSeconds();
+          },
+          from: (value: string) => {
+            return Number(value);
           }
         }
       }
@@ -197,7 +209,6 @@ export default class VideoPlayer extends Vue {
    */
   updateVideoTime(newTime: number) {
     this.video.currentTime = newTime;
-    this.currentVideoTime = this.video.currentTime;
   }
 
   /**
@@ -216,8 +227,7 @@ export default class VideoPlayer extends Vue {
    * Update time on progress bar
    */
   updateProgressBarTime() {
-    this.progressBar.noUiSlider.set(this.video.currentTime);
-    this.currentVideoTime = this.video.currentTime;
+    this.progressBar.noUiSlider!.set(this.video.currentTime);
   }
 
   /**
@@ -225,17 +235,17 @@ export default class VideoPlayer extends Vue {
    */
   addProgressBarEvents() {
     // First remove all events
-    this.progressBar.noUiSlider.off();
+    this.progressBar.noUiSlider!.off("");
 
-    this.progressBar.noUiSlider.on("slide", (values: any[]) => {
+    this.progressBar.noUiSlider!.on("slide", (values: any[]) => {
       this.updateVideoTime(values[0]);
     });
 
-    this.progressBar.noUiSlider.on("start", () => {
+    this.progressBar.noUiSlider!.on("start", () => {
       this.video.removeEventListener("timeupdate", this.updateProgressBarTime);
     });
 
-    this.progressBar.noUiSlider.on("end", () => {
+    this.progressBar.noUiSlider!.on("end", () => {
       this.video.addEventListener("timeupdate", this.updateProgressBarTime);
     });
 
@@ -267,15 +277,17 @@ export default class VideoPlayer extends Vue {
     this.addClipsBarEvents();
 
     // Update numberOfClips
-    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
+    this.numberOfClips = tooltips.length / 2;
   }
 
   /**
    * Re-add all events to Clips bar
    */
   addClipsBarEvents() {
+    let isDragging = false;
+
     // First remove all events
-    this.clipsBar.noUiSlider.off();
+    this.clipsBar.noUiSlider!.off("");
 
     let connectElements = document.querySelectorAll(".clipsBar .noUi-connect");
 
@@ -285,18 +297,35 @@ export default class VideoPlayer extends Vue {
       });
     }
 
-    this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("update", (values: any, handle: any) => {
       this.updateTooltip(values, handle);
       this.updateTotalLengthOfClips(values);
     });
 
+    const slideHandler = (values: any, handle: any) => {
+      // Only do anything if user isn't dragging so we can avoid
+      // running actions twice, since slide is also ran when dragging.
+      if (!isDragging) {
+        this.updateVideoTime(values[handle]);
+      }
+    };
+    this.clipsBar.noUiSlider!.on("slide", slideHandler);
+
+    this.clipsBar.noUiSlider!.on("drag", (values: any, handle: any) => {
+      isDragging = true;
+
+      this.updateVideoTime(values[handle]);
+    });
+
     // Show tooltip on drag
-    this.clipsBar.noUiSlider.on("start", (_, handle: any) => {
+    this.clipsBar.noUiSlider!.on("start", (_: any, handle: any) => {
       this.getPairFromHandle(handle).tooltip.style.display = "block";
     });
 
     // Hide tooltip on finish drag
-    this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
+    this.clipsBar.noUiSlider!.on("end", (_: any, handle: any) => {
+      isDragging = false;
+
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
   }
@@ -308,7 +337,7 @@ export default class VideoPlayer extends Vue {
     let starts = new Array<number>();
     let connects = new Array<boolean>();
     let tooltips = new Array<boolean>();
-    let currentProgress = Number(this.progressBar.noUiSlider.get());
+    let currentProgress = Number(this.progressBar.noUiSlider!.get());
 
     // If noUiSlider exists on clipsBar then update vars with actual values
     if (this.clipsBar.noUiSlider != undefined) {
@@ -354,12 +383,12 @@ export default class VideoPlayer extends Vue {
    *                     to the first handle bars value on the clip being removed.
    */
   removeClip(connectIndex: number) {
-    let allHandleValues = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let allHandleValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
     let handleValues = [allHandleValues[connectIndex], allHandleValues[connectIndex + 1]];
 
-    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
-    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
-    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    let starts = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
+    let connects = this.clipsBar.noUiSlider!.options.connect! as boolean[];
+    let tooltips = this.clipsBar.noUiSlider!.options.tooltips as boolean[];
 
     // Remove all clips normally unless there is
     // only one left, in that case, just hide the clips bar.
@@ -385,7 +414,7 @@ export default class VideoPlayer extends Vue {
   }
 
   saveClips() {
-    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider.get() as string[]).map(Number));
+    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
   }
 
   /**
@@ -428,7 +457,7 @@ export default class VideoPlayer extends Vue {
    * @param handle Handle that is connected to pair
    */
   getPairFromHandle(handle: number) {
-    let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider.getTooltips();
+    let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider!.getTooltips() as [HTMLElement | Boolean];
     let tooltip: HTMLElement;
 
     if (tooltips[handle] instanceof HTMLElement) {
