@@ -4,7 +4,7 @@ module.exports = {
     loaderOptions: {
       sass: {
         additionalData: `
-          @use "./node_modules/nouislider/distribute/nouislider.css";
+          @use "./node_modules/nouislider/dist/nouislider.css";
           @import "./src/styles/_vars.scss";
           @import "./src/styles/_norm.scss";
         `
