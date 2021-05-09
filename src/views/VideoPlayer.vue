@@ -277,6 +277,8 @@ export default class VideoPlayer extends Vue {
    * Re-add all events to Clips bar
    */
   addClipsBarEvents() {
+    let isDragging = false;
+
     // First remove all events
     this.clipsBar.noUiSlider!.off("");
 
@@ -293,9 +295,20 @@ export default class VideoPlayer extends Vue {
       this.updateTotalLengthOfClips(values);
     });
 
-    // this.clipsBar.noUiSlider.on("slide", (values: any, handle: any) => {
+    const slideHandler = (values: any, handle: any) => {
+      // Only do anything if user isn't dragging so we can avoid
+      // running actions twice, since slide is also ran when dragging.
+      if (!isDragging) {
+        this.updateVideoTime(values[handle]);
+      }
+    };
+    this.clipsBar.noUiSlider!.on("slide", slideHandler);
 
-    // });
+    this.clipsBar.noUiSlider!.on("drag", (values: any, handle: any) => {
+      isDragging = true;
+
+      this.updateVideoTime(values[handle]);
+    });
 
     // Show tooltip on drag
     this.clipsBar.noUiSlider!.on("start", (_: any, handle: any) => {
@@ -304,6 +317,8 @@ export default class VideoPlayer extends Vue {
 
     // Hide tooltip on finish drag
     this.clipsBar.noUiSlider!.on("end", (_: any, handle: any) => {
+      isDragging = false;
+
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
   }
