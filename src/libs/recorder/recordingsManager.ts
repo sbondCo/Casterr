@@ -119,7 +119,10 @@ export default class RecordingsManager {
     const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
     const tmpOutFolder = PathHelper.ensureExists(
       `${RecordingSettings.videoSaveFolder}/clips/.processing/${clipOutName}`,
-      true
+      true,
+      {
+        hidden: true
+      }
     );
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
 

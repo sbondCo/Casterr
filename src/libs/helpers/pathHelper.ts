@@ -1,6 +1,7 @@
 import * as os from "os";
 import * as Path from "path";
 import * as fs from "fs";
+import * as childProcess from "child_process";
 import jsZip from "jszip";
 
 export default class PathHelper {
@@ -51,7 +52,7 @@ export default class PathHelper {
    * @param path Path of file/folder
    * @param isDir Is `path` pointing to a directory?
    */
-  public static ensureExists(path: string, isDir: boolean = false): string {
+  public static ensureExists(path: string, isDir: boolean = false, options?: { hidden: boolean }): string {
     let folders = path;
 
     if (!isDir) {
@@ -72,7 +73,40 @@ export default class PathHelper {
       }
     }
 
+    if (options != undefined) {
+      if (options.hidden) {
+        this.hide(path);
+      }
+    }
+
     return path;
+  }
+
+  /**
+   *
+   * @param path
+   */
+  public static hide(path: string) {
+    return new Promise((resolve, reject) => {
+      console.log(Path.basename(path));
+      if (!Path.basename(path)) {
+        reject(
+          `Hidden files/folders should start with a '.'! change '${Path.basename(path)}' to '.${Path.basename(path)}'.`
+        );
+      }
+
+      if (process.platform == "win32") {
+        const cp = childProcess.exec(`attrib +h ${path}`);
+
+        cp.on("exit", (code) => {
+          if (code == 0) {
+            resolve(code);
+          } else {
+            reject(code);
+          }
+        });
+      }
+    });
   }
 
   /**
