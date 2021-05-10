@@ -171,6 +171,9 @@ export default class VideoPlayer extends Vue {
 
     this.maxVideoTime = this.video.duration;
 
+    // Update volume once now, so default volume value is applied
+    this.updateVolume(this.volume);
+
     this.video.addEventListener("play", () => {
       this.playPause(false);
     });
