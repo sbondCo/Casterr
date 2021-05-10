@@ -174,12 +174,8 @@ export default class VideoPlayer extends Vue {
     // Update volume once now, so default volume value is applied
     this.updateVolume(this.volume);
 
-    this.video.addEventListener("play", () => {
-      this.playPause(false);
-    });
-    this.video.addEventListener("pause", () => {
-      this.playPause(false);
-    });
+    this.video.addEventListener("play", () => this.playPause(false));
+    this.video.addEventListener("pause", () => this.playPause(false));
     this.video.addEventListener("timeupdate", this.updateProgressBarTime);
 
     noUiSlider.create(this.progressBar, {
