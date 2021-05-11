@@ -8,7 +8,7 @@
       @click="playPause"
     ></video>
 
-    <div class="progressBarContainer">
+    <div ref="timeline" class="timeline">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
     </div>
@@ -83,6 +83,7 @@ export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
+  private timelineBar: target;
   private progressBar: target;
   private clipsBar: target;
 
@@ -170,6 +171,7 @@ export default class VideoPlayer extends Vue {
    */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
+    this.timelineBar = this.$refs.timeline as target;
     this.progressBar = this.$refs.progressBar as target;
     this.clipsBar = this.$refs.clipsBar as target;
 
@@ -234,14 +236,29 @@ export default class VideoPlayer extends Vue {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
   }
 
+  /**
+   * Adjust zoom up or down.
+   * @param increase If should increase or decrease zoom.
+   */
   adjustZoom(increase: boolean) {
     const min = 100;
     const max = 1000;
 
+    // Increase/decrease `timelineZoom`
     if (increase && this.timelineZoom != max) {
       this.timelineZoom += 50;
     } else if (!increase && this.timelineZoom != min) {
       this.timelineZoom -= 50;
+    }
+
+    // Adjust width of progressBar
+    this.progressBar.style.width = `${this.timelineZoom}%`;
+
+    // Add/remove `zoomed` class on progressBar
+    if (this.timelineZoom !== min) {
+      this.timelineBar.classList.add("zoomed");
+    } else {
+      this.timelineBar.classList.remove("zoomed");
     }
   }
 
@@ -530,21 +547,30 @@ export default class VideoPlayer extends Vue {
     }
   }
 
-  .progressBarContainer {
+  .timeline {
     width: 100%;
     height: 40px;
     padding: 0 10px;
     background-color: $secondaryColor;
-    // overflow-y: hidden;
-    // overflow-x: auto;
 
-    // &::-webkit-scrollbar {
-    //   height: 5px;
-    // }
+    &.zoomed {
+      padding-bottom: 48px;
+      overflow-y: hidden;
+      overflow-x: auto;
 
-    // &::-webkit-scrollbar-track {
-    //   background-color: $secondaryColor;
-    // }
+      &::-webkit-scrollbar {
+        height: 5px;
+      }
+
+      &::-webkit-scrollbar-track {
+        padding-top: 50px;
+        background-color: $primaryColor;
+      }
+
+      .progressBar .noUi-pips {
+        top: 13px;
+      }
+    }
 
     .progressBar {
       // width: 200%;
@@ -571,6 +597,15 @@ export default class VideoPlayer extends Vue {
 
         .noUi-value {
           transform: translateX(-50%);
+
+          &:nth-child(2) {
+            transform: translateX(-10%);
+          }
+
+          &:last-child {
+            transform: translateX(-90%);
+            margin-right: 1px;
+          }
         }
       }
     }
