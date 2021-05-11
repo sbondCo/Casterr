@@ -183,7 +183,7 @@ export default class VideoPlayer extends Vue {
       behaviour: "snap",
       range: {
         min: 0,
-        max: this.video.duration // + 99999
+        max: this.video.duration
       },
       pips: {
         mode: PipsMode.Count,
@@ -223,21 +223,21 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Update time on progress bar
+   * Update time on progress bar with current time on video.
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
   }
 
   /**
-   * Re-add all events to Progress bar
+   * Re-add all events to progress bar.
    */
   addProgressBarEvents() {
     // First remove all events
     this.progressBar.noUiSlider!.off("");
 
-    this.progressBar.noUiSlider!.on("slide", (values: any[]) => {
-      this.updateVideoTime(values[0]);
+    this.progressBar.noUiSlider!.on("slide", (_0: any, _1: any, unencoded: number[]) => {
+      this.updateVideoTime(unencoded[0]);
     });
 
     this.progressBar.noUiSlider!.on("start", () => {
@@ -536,11 +536,7 @@ export default class VideoPlayer extends Vue {
       background-color: $secondaryColor;
 
       .noUi-origin {
-        transition: transform 80ms ease-in;
-
-        &:active {
-          transition: transform 0ms;
-        }
+        transition: none;
       }
 
       .noUi-handle {
