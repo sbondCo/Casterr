@@ -35,6 +35,9 @@
 
       <Button text="ADD CLIP" @click="addClip" />
 
+      <Button icon="add" @click="adjustZoom(true)" />
+      <Button icon="min2" @click="adjustZoom(false)" />
+
       <Button
         class="rightFromHere"
         icon="arrow"
@@ -91,6 +94,7 @@ export default class VideoPlayer extends Vue {
   volumeIcon = "volumeMax";
   volume = 0.8;
   showTimeAsElapsed = false;
+  timelineZoom = 100;
 
   get currentVideoTime() {
     if (this.video != undefined) {
@@ -228,6 +232,17 @@ export default class VideoPlayer extends Vue {
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
+  }
+
+  adjustZoom(increase: boolean) {
+    const min = 100;
+    const max = 1000;
+
+    if (increase && this.timelineZoom != max) {
+      this.timelineZoom += 50;
+    } else if (!increase && this.timelineZoom != min) {
+      this.timelineZoom -= 50;
+    }
   }
 
   /**
