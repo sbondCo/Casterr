@@ -34,11 +34,12 @@ a {
 
 // Default nouislider styling
 .noUi-target {
+  border: unset;
+
   &,
   * {
     box-shadow: unset;
     outline: unset;
-    border: unset;
   }
 
   .noUi-handle {
