@@ -16,6 +16,7 @@
         ref="sliderBar"
         class="sliderBar"
         type="range"
+        :value="sliderValue"
         :min="sliderMin"
         :max="sliderMax"
         :step="sliderStep"

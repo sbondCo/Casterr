@@ -171,20 +171,20 @@ export default class VideoPlayer extends Vue {
 
     this.maxVideoTime = this.video.duration;
 
-    this.video.addEventListener("play", () => {
-      this.playPause(false);
-    });
-    this.video.addEventListener("pause", () => {
-      this.playPause(false);
-    });
+    // Update volume once now, so default volume value is applied
+    this.updateVolume(this.volume);
+
+    this.video.addEventListener("play", () => this.playPause(false));
+    this.video.addEventListener("pause", () => this.playPause(false));
     this.video.addEventListener("timeupdate", this.updateProgressBarTime);
 
     noUiSlider.create(this.progressBar, {
       start: [0],
       behaviour: "snap",
+      animate: false,
       range: {
         min: 0,
-        max: this.video.duration // + 99999
+        max: this.video.duration
       },
       pips: {
         mode: PipsMode.Count,
@@ -224,21 +224,21 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Update time on progress bar
+   * Update time on progress bar with current time on video.
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
   }
 
   /**
-   * Re-add all events to Progress bar
+   * Re-add all events to progress bar.
    */
   addProgressBarEvents() {
     // First remove all events
     this.progressBar.noUiSlider!.off("");
 
-    this.progressBar.noUiSlider!.on("slide", (values: any[]) => {
-      this.updateVideoTime(values[0]);
+    this.progressBar.noUiSlider!.on("slide", (_0: any, _1: any, unencoded: number[]) => {
+      this.updateVideoTime(unencoded[0]);
     });
 
     this.progressBar.noUiSlider!.on("start", () => {
@@ -536,14 +536,6 @@ export default class VideoPlayer extends Vue {
       height: 100%;
       background-color: $secondaryColor;
 
-      .noUi-origin {
-        transition: transform 80ms ease-in;
-
-        &:active {
-          transition: transform 0ms;
-        }
-      }
-
       .noUi-handle {
         top: 0;
         height: 40px;
@@ -610,6 +602,7 @@ export default class VideoPlayer extends Vue {
 
       .noUi-tooltip {
         display: none;
+        bottom: 165%;
       }
     }
   }
