@@ -8,7 +8,7 @@
       @click="playPause"
     ></video>
 
-    <div class="timeline">
+    <div ref="timeline" class="timeline">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
     </div>
@@ -84,6 +84,7 @@ export default class VideoPlayer extends Vue {
 
   private video: HTMLVideoElement;
   private videoEditor: target;
+  private timelineBar: target;
   private progressBar: target;
   private clipsBar: target;
 
@@ -172,6 +173,7 @@ export default class VideoPlayer extends Vue {
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
     this.videoEditor = this.$refs.videoEditor as target;
+    this.timelineBar = this.$refs.timeline as target;
     this.progressBar = this.$refs.progressBar as target;
     this.clipsBar = this.$refs.clipsBar as target;
 
@@ -207,7 +209,19 @@ export default class VideoPlayer extends Vue {
       }
     });
 
+    this.addTimelineBarEvents();
     this.addProgressBarEvents();
+  }
+
+  addTimelineBarEvents() {
+    // Scroll across by using mouse wheel
+    this.timelineBar.addEventListener("wheel", (e) => {
+      if (e.deltaY < 0) {
+        this.timelineBar.scrollBy(-50, 0);
+      } else {
+        this.timelineBar.scrollBy(50, 0);
+      }
+    });
   }
 
   /**
