@@ -1,5 +1,5 @@
 <template>
-  <div v-if="videoExists" class="videoPlayerContainer">
+  <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <video
       ref="videoPlayer"
       id="video"
@@ -8,7 +8,7 @@
       @click="playPause"
     ></video>
 
-    <div ref="timeline" class="timeline">
+    <div class="timeline">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
     </div>
@@ -83,7 +83,7 @@ export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
-  private timelineBar: target;
+  private videoEditor: target;
   private progressBar: target;
   private clipsBar: target;
 
@@ -171,7 +171,7 @@ export default class VideoPlayer extends Vue {
    */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
-    this.timelineBar = this.$refs.timeline as target;
+    this.videoEditor = this.$refs.videoEditor as target;
     this.progressBar = this.$refs.progressBar as target;
     this.clipsBar = this.$refs.clipsBar as target;
 
@@ -251,14 +251,15 @@ export default class VideoPlayer extends Vue {
       this.timelineZoom -= 50;
     }
 
-    // Adjust width of progressBar
+    // Adjust width of bars
     this.progressBar.style.width = `${this.timelineZoom}%`;
+    this.clipsBar.style.width = `${this.timelineZoom}%`;
 
     // Add/remove `zoomed` class on progressBar
     if (this.timelineZoom !== min) {
-      this.timelineBar.classList.add("zoomed");
+      this.videoEditor.classList.add("timelineZoomed");
     } else {
-      this.timelineBar.classList.remove("zoomed");
+      this.videoEditor.classList.remove("timelineZoomed");
     }
   }
 
@@ -523,7 +524,7 @@ export default class VideoPlayer extends Vue {
 </script>
 
 <style lang="scss">
-.videoPlayerContainer {
+.videoEditor {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -547,14 +548,13 @@ export default class VideoPlayer extends Vue {
     }
   }
 
-  .timeline {
-    width: 100%;
-    height: 40px;
-    padding: 0 10px;
-    background-color: $secondaryColor;
+  &.timelineZoomed {
+    video {
+      height: calc(100% - 98px); // Make height of video all take up all blank space on page
+    }
 
-    &.zoomed {
-      padding-bottom: 48px;
+    .timeline {
+      height: 45px;
       overflow-y: hidden;
       overflow-x: auto;
 
@@ -563,17 +563,18 @@ export default class VideoPlayer extends Vue {
       }
 
       &::-webkit-scrollbar-track {
-        padding-top: 50px;
         background-color: $primaryColor;
       }
-
-      .progressBar .noUi-pips {
-        top: 13px;
-      }
     }
+  }
+
+  .timeline {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    background-color: $secondaryColor;
 
     .progressBar {
-      // width: 200%;
       height: 100%;
       background-color: $secondaryColor;
 
@@ -613,7 +614,6 @@ export default class VideoPlayer extends Vue {
     .clipsBar {
       position: relative;
       top: -100%;
-      width: 100%;
       height: 100%;
       background-color: transparent;
 
