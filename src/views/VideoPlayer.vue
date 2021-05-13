@@ -216,7 +216,20 @@ export default class VideoPlayer extends Vue {
   addTimelineBarEvents() {
     // Scroll across by using mouse wheel
     this.timelineBar.addEventListener("wheel", (e) => {
-      if (e.deltaY < 0) {
+      let wheelUp = e.deltaY < 0;
+
+      // If holding control, adjust zoom instead of scrolling
+      if (e.ctrlKey) {
+        if (wheelUp) {
+          this.adjustZoom(true);
+        } else {
+          this.adjustZoom(false);
+        }
+
+        return;
+      }
+
+      if (wheelUp) {
         this.timelineBar.scrollBy(-50, 0);
       } else {
         this.timelineBar.scrollBy(50, 0);
@@ -564,7 +577,7 @@ export default class VideoPlayer extends Vue {
 
   &.timelineZoomed {
     video {
-      height: calc(100% - 98px); // Make height of video all take up all blank space on page
+      height: calc(100% - 95px); // Make height of video all take up all blank space on page
     }
 
     .timeline {
