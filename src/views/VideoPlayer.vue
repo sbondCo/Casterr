@@ -695,6 +695,7 @@ export default class VideoPlayer extends Vue {
       .noUi-tooltip {
         display: none;
         bottom: 165%;
+        pointer-events: none;
       }
     }
   }
