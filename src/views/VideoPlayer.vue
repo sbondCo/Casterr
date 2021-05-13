@@ -1,5 +1,5 @@
 <template>
-  <div v-if="videoExists" class="videoPlayerContainer">
+  <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <video
       ref="videoPlayer"
       id="video"
@@ -8,7 +8,7 @@
       @click="playPause"
     ></video>
 
-    <div class="progressBarContainer">
+    <div ref="timeline" class="timeline">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
     </div>
@@ -34,6 +34,9 @@
       />
 
       <Button text="ADD CLIP" @click="addClip" />
+
+      <Button icon="add" @click="adjustZoom(true)" />
+      <Button icon="min2" @click="adjustZoom(false)" />
 
       <Button
         class="rightFromHere"
@@ -80,6 +83,8 @@ export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
+  private videoEditor: target;
+  private timelineBar: target;
   private progressBar: target;
   private clipsBar: target;
 
@@ -91,6 +96,7 @@ export default class VideoPlayer extends Vue {
   volumeIcon = "volumeMax";
   volume = 0.8;
   showTimeAsElapsed = false;
+  timelineZoom = 100;
 
   get currentVideoTime() {
     if (this.video != undefined) {
@@ -166,6 +172,8 @@ export default class VideoPlayer extends Vue {
    */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
+    this.videoEditor = this.$refs.videoEditor as target;
+    this.timelineBar = this.$refs.timeline as target;
     this.progressBar = this.$refs.progressBar as target;
     this.clipsBar = this.$refs.clipsBar as target;
 
@@ -201,7 +209,32 @@ export default class VideoPlayer extends Vue {
       }
     });
 
+    this.addTimelineBarEvents();
     this.addProgressBarEvents();
+  }
+
+  addTimelineBarEvents() {
+    // Scroll across by using mouse wheel
+    this.timelineBar.addEventListener("wheel", (e) => {
+      let wheelUp = e.deltaY < 0;
+
+      // If holding control, adjust zoom instead of scrolling
+      if (e.ctrlKey) {
+        if (wheelUp) {
+          this.adjustZoom(true);
+        } else {
+          this.adjustZoom(false);
+        }
+
+        return;
+      }
+
+      if (wheelUp) {
+        this.timelineBar.scrollBy(-50, 0);
+      } else {
+        this.timelineBar.scrollBy(50, 0);
+      }
+    });
   }
 
   /**
@@ -228,6 +261,33 @@ export default class VideoPlayer extends Vue {
    */
   updateProgressBarTime() {
     this.progressBar.noUiSlider!.set(this.video.currentTime);
+  }
+
+  /**
+   * Adjust zoom up or down.
+   * @param increase If should increase or decrease zoom.
+   */
+  adjustZoom(increase: boolean) {
+    const min = 100;
+    const max = 1000;
+
+    // Increase/decrease `timelineZoom`
+    if (increase && this.timelineZoom != max) {
+      this.timelineZoom += 50;
+    } else if (!increase && this.timelineZoom != min) {
+      this.timelineZoom -= 50;
+    }
+
+    // Adjust width of bars
+    this.progressBar.style.width = `${this.timelineZoom}%`;
+    this.clipsBar.style.width = `${this.timelineZoom}%`;
+
+    // Add/remove `zoomed` class on progressBar
+    if (this.timelineZoom !== min) {
+      this.videoEditor.classList.add("timelineZoomed");
+    } else {
+      this.videoEditor.classList.remove("timelineZoomed");
+    }
   }
 
   /**
@@ -302,14 +362,13 @@ export default class VideoPlayer extends Vue {
       this.updateTotalLengthOfClips(values);
     });
 
-    const slideHandler = (values: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("slide", (values: any, handle: any) => {
       // Only do anything if user isn't dragging so we can avoid
       // running actions twice, since slide is also ran when dragging.
       if (!isDragging) {
         this.updateVideoTime(values[handle]);
       }
-    };
-    this.clipsBar.noUiSlider!.on("slide", slideHandler);
+    });
 
     this.clipsBar.noUiSlider!.on("drag", (values: any, handle: any) => {
       isDragging = true;
@@ -318,7 +377,11 @@ export default class VideoPlayer extends Vue {
     });
 
     // Show tooltip on drag
-    this.clipsBar.noUiSlider!.on("start", (_: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("start", (values: any, handle: any) => {
+      // Also update tooltip on start, to avoid users seeing
+      // it jump around if they dont drag right away (or never drag)
+      this.updateTooltip(values, handle);
+
       this.getPairFromHandle(handle).tooltip.style.display = "block";
     });
 
@@ -491,7 +554,7 @@ export default class VideoPlayer extends Vue {
 </script>
 
 <style lang="scss">
-.videoPlayerContainer {
+.videoEditor {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -515,24 +578,45 @@ export default class VideoPlayer extends Vue {
     }
   }
 
-  .progressBarContainer {
+  &.timelineZoomed {
+    video {
+      height: calc(100% - 95px); // Make height of video all take up all blank space on page
+    }
+
+    .timeline {
+      height: 45px;
+      overflow-y: hidden;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        height: 5px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: $primaryColor;
+      }
+
+      .clipsBar {
+        .noUi-tooltip {
+          bottom: -5%;
+          height: 25px;
+          background-color: $lightHoverColor;
+          border: unset;
+          box-shadow: unset;
+          font-weight: bold;
+          text-shadow: 1px 1px black;
+        }
+      }
+    }
+  }
+
+  .timeline {
     width: 100%;
     height: 40px;
     padding: 0 10px;
     background-color: $secondaryColor;
-    // overflow-y: hidden;
-    // overflow-x: auto;
-
-    // &::-webkit-scrollbar {
-    //   height: 5px;
-    // }
-
-    // &::-webkit-scrollbar-track {
-    //   background-color: $secondaryColor;
-    // }
 
     .progressBar {
-      // width: 200%;
       height: 100%;
       background-color: $secondaryColor;
 
@@ -556,6 +640,15 @@ export default class VideoPlayer extends Vue {
 
         .noUi-value {
           transform: translateX(-50%);
+
+          &:nth-child(2) {
+            transform: translateX(-10%);
+          }
+
+          &:last-child {
+            transform: translateX(-90%);
+            margin-right: 1px;
+          }
         }
       }
     }
@@ -563,7 +656,6 @@ export default class VideoPlayer extends Vue {
     .clipsBar {
       position: relative;
       top: -100%;
-      width: 100%;
       height: 100%;
       background-color: transparent;
 
@@ -603,6 +695,7 @@ export default class VideoPlayer extends Vue {
       .noUi-tooltip {
         display: none;
         bottom: 165%;
+        pointer-events: none;
       }
     }
   }

@@ -90,6 +90,11 @@ export default class Icon extends Vue {
         return `
           <path d="M68 38.857H38.857V68h-9.714V38.857H0v-9.714h29.143V0h9.714v29.143H68v9.714z" />
         `;
+      case "min2":
+        this.viewBox = "0 0 12 12";
+        return `
+          <rect width="10" height="2" x="1" y="5"></rect>
+        `;
       case "min":
         this.viewBox = "0 0 12 12";
         return `
