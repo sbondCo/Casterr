@@ -362,14 +362,13 @@ export default class VideoPlayer extends Vue {
       this.updateTotalLengthOfClips(values);
     });
 
-    const slideHandler = (values: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("slide", (values: any, handle: any) => {
       // Only do anything if user isn't dragging so we can avoid
       // running actions twice, since slide is also ran when dragging.
       if (!isDragging) {
         this.updateVideoTime(values[handle]);
       }
-    };
-    this.clipsBar.noUiSlider!.on("slide", slideHandler);
+    });
 
     this.clipsBar.noUiSlider!.on("drag", (values: any, handle: any) => {
       isDragging = true;
@@ -378,7 +377,11 @@ export default class VideoPlayer extends Vue {
     });
 
     // Show tooltip on drag
-    this.clipsBar.noUiSlider!.on("start", (_: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("start", (values: any, handle: any) => {
+      // Also update tooltip on start, to avoid users seeing
+      // it jump around if they dont drag right away (or never drag)
+      this.updateTooltip(values, handle);
+
       this.getPairFromHandle(handle).tooltip.style.display = "block";
     });
 
@@ -591,6 +594,18 @@ export default class VideoPlayer extends Vue {
 
       &::-webkit-scrollbar-track {
         background-color: $primaryColor;
+      }
+
+      .clipsBar {
+        .noUi-tooltip {
+          bottom: -5%;
+          height: 25px;
+          background-color: $lightHoverColor;
+          border: unset;
+          box-shadow: unset;
+          font-weight: bold;
+          text-shadow: 1px 1px black;
+        }
       }
     }
   }
