@@ -38,6 +38,8 @@
       <Button icon="add" @click="adjustZoom(true)" />
       <Button icon="min2" @click="adjustZoom(false)" />
 
+      <Button text="play clips" @click="playClips()" />
+
       <Button
         class="rightFromHere"
         icon="arrow"
@@ -474,6 +476,41 @@ export default class VideoPlayer extends Vue {
     }
 
     this.createClipsBar(starts, connects, tooltips);
+  }
+
+  /**
+   * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
+   */
+  get allClips() {
+    let clipsBarValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
+    let clips = [];
+    let i = 0;
+    let n = clipsBarValues.length;
+
+    while (i < n) {
+      clips.push(clipsBarValues.slice(i, (i += 2)));
+    }
+
+    return clips;
+  }
+
+  async playClips() {
+    let clips = this.allClips;
+
+    for (let i = 0, n = clips.length; i < n; ++i) {
+      console.log(clips[i]);
+
+      let start = clips[i][0];
+      let end = clips[i][1];
+      let diff = (end - start) * 1000; // in ms
+
+      this.updateVideoTime(start);
+      this.video.play();
+
+      await Helpers.sleep(diff);
+
+      this.video.pause();
+    }
   }
 
   saveClips() {
