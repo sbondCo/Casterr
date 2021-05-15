@@ -481,7 +481,7 @@ export default class VideoPlayer extends Vue {
   /**
    * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
    */
-  get allClips() {
+  getAllClips() {
     let clipsBarValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
     let clips = [];
     let i = 0;
@@ -495,7 +495,7 @@ export default class VideoPlayer extends Vue {
   }
 
   async playClips() {
-    let clips = this.allClips;
+    let clips = this.getAllClips();
 
     for (let i = 0, n = clips.length; i < n; ++i) {
       console.log(clips[i]);
