@@ -99,6 +99,7 @@ export default class VideoPlayer extends Vue {
   volume = 0.8;
   showTimeAsElapsed = false;
   timelineZoom = 100;
+  isPlayingAllClips = false;
 
   get currentVideoTime() {
     if (this.video != undefined) {
@@ -124,6 +125,8 @@ export default class VideoPlayer extends Vue {
       if (fromButton) this.video.pause();
       this.playPauseBtnIcon = "pause";
     }
+
+    // this.cancelPlayingClips();
   }
 
   /**
@@ -305,6 +308,7 @@ export default class VideoPlayer extends Vue {
 
     this.progressBar.noUiSlider!.on("start", () => {
       this.video.removeEventListener("timeupdate", this.updateProgressBarTime);
+      this.cancelPlayingClips();
     });
 
     this.progressBar.noUiSlider!.on("end", () => {
@@ -385,6 +389,8 @@ export default class VideoPlayer extends Vue {
       this.updateTooltip(values, handle);
 
       this.getPairFromHandle(handle).tooltip.style.display = "block";
+
+      this.cancelPlayingClips();
     });
 
     // Hide tooltip on finish drag
@@ -494,7 +500,11 @@ export default class VideoPlayer extends Vue {
     return clips;
   }
 
+  /**
+   * Play all clips currently created on clipsBar.
+   */
   async playClips() {
+    this.isPlayingAllClips = true;
     let clips = this.getAllClips();
 
     for (let i = 0, n = clips.length; i < n; ++i) {
@@ -502,15 +512,42 @@ export default class VideoPlayer extends Vue {
 
       let start = clips[i][0];
       let end = clips[i][1];
-      let diff = (end - start) * 1000; // in ms
 
       this.updateVideoTime(start);
       this.video.play();
 
-      await Helpers.sleep(diff);
+      let cp = await new Promise((resolve) => {
+        const u = () => {
+          // If an action somewhere else has changed `isPlayingAllClips` to false,
+          // then don't continue after sleep.
+          if (!this.isPlayingAllClips) {
+            this.video.removeEventListener("timeupdate", u);
+            return resolve("cancelled");
+          }
 
-      this.video.pause();
+          if (this.video.currentTime >= end) {
+            this.video.pause();
+            this.video.removeEventListener("timeupdate", u);
+            resolve("finished");
+          }
+        };
+
+        this.video.addEventListener("timeupdate", u);
+      });
+
+      // If promise above was cancelled, return as to not continue playing clips.
+      if (cp == "cancelled") return;
     }
+
+    this.isPlayingAllClips = false;
+  }
+
+  /**
+   * Cancel playing all clips.
+   */
+  cancelPlayingClips() {
+    // console.trace("cancelling playing clips");
+    this.isPlayingAllClips = false;
   }
 
   saveClips() {
