@@ -101,6 +101,9 @@ export default class VideoPlayer extends Vue {
   timelineZoom = 100;
   isPlayingAllClips = false;
 
+  /**
+   * Get current video time.
+   */
   get currentVideoTime() {
     if (this.video != undefined) {
       return this.video.currentTime;
@@ -113,20 +116,20 @@ export default class VideoPlayer extends Vue {
 
   /**
    * Play/Pause the video.
-   * @param fromButton If function is being called by playPauseBtn.
-   *                   If not it won't play/pause the video, but instead
-   *                   just update the playPauseBtns icon to reflect the change.
+   * @param userFired If function is being called by a user fired action.
+   *                  If not it won't play/pause the video, but instead
+   *                  just update the playPauseBtns icon to reflect the change.
    */
-  playPause(fromButton: boolean = true) {
+  playPause(userFired: boolean = true) {
     if (this.video.paused) {
-      if (fromButton) this.video.play();
+      if (userFired) this.video.play();
       this.playPauseBtnIcon = "play";
     } else {
-      if (fromButton) this.video.pause();
+      if (userFired) this.video.pause();
       this.playPauseBtnIcon = "pause";
     }
 
-    // this.cancelPlayingClips();
+    if (userFired) this.cancelPlayingClips();
   }
 
   /**
@@ -218,6 +221,9 @@ export default class VideoPlayer extends Vue {
     this.addProgressBarEvents();
   }
 
+  /**
+   * Add events to timeline bar.
+   */
   addTimelineBarEvents() {
     // Scroll across by using mouse wheel
     this.timelineBar.addEventListener("wheel", (e) => {
@@ -243,7 +249,8 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Update time on video element
+   * Update time on video element.
+   * @param newTime Time to skip to.
    */
   updateVideoTime(newTime: number) {
     this.video.currentTime = newTime;
@@ -508,26 +515,30 @@ export default class VideoPlayer extends Vue {
     let clips = this.getAllClips();
 
     for (let i = 0, n = clips.length; i < n; ++i) {
-      console.log(clips[i]);
-
+      // Clip start and end times
       let start = clips[i][0];
       let end = clips[i][1];
 
+      // Skip to start of clip and play
       this.updateVideoTime(start);
       this.video.play();
 
+      // Play clip until we reach `end` or playing is cancelled.
       let cp = await new Promise((resolve) => {
         const u = () => {
           // If an action somewhere else has changed `isPlayingAllClips` to false,
           // then don't continue after sleep.
           if (!this.isPlayingAllClips) {
             this.video.removeEventListener("timeupdate", u);
+
             return resolve("cancelled");
           }
 
+          // If video time has past or is equal to end time, carry on to next clip.
           if (this.video.currentTime >= end) {
             this.video.pause();
             this.video.removeEventListener("timeupdate", u);
+
             resolve("finished");
           }
         };
@@ -546,10 +557,12 @@ export default class VideoPlayer extends Vue {
    * Cancel playing all clips.
    */
   cancelPlayingClips() {
-    // console.trace("cancelling playing clips");
     this.isPlayingAllClips = false;
   }
 
+  /**
+   * Save all clips.
+   */
   saveClips() {
     RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
   }
