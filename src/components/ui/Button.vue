@@ -5,7 +5,7 @@
     </button>
 
     <button ref="mainBtn" class="mainBtn">
-      <div @[clickEvent]="$emit('click')">
+      <div class="content" @[clickEvent]="$emit('click')">
         <Icon v-if="icon" :i="icon" />
 
         <span v-if="text">{{ text }}</span>
@@ -58,13 +58,21 @@ export default class Button extends Vue {
     if (this.outlined) this.mainBtn.id += "outlined";
     if (this.slider) this.initSlider();
 
+    this.handleDisability();
     this.updateSliderValue();
   }
 
   updated() {
+    this.handleDisability();
+
     // Update sliderBar value, if slider is enabled and it is updated
     this.updateSliderValue();
+  }
 
+  /**
+   * Manage whether button should be disabled or not.
+   */
+  handleDisability() {
     // Enable/disable button click event
     if (this.disabled) {
       this.clickEvent = "null";
@@ -200,6 +208,16 @@ export default class Button extends Vue {
     background-color: $secondaryColor;
     transition: background-color 150ms ease, border 150ms ease;
     cursor: pointer;
+
+    .content {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+
+      *:not(:last-child) {
+        margin-right: 3px;
+      }
+    }
 
     &.disabled {
       cursor: not-allowed;
