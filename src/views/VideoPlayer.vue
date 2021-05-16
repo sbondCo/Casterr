@@ -38,7 +38,7 @@
       <Button icon="add" @click="adjustZoom(true)" />
       <Button icon="min2" @click="adjustZoom(false)" />
 
-      <Button icon="play" text="Play Clips" @click="playClips()" :disabled="numberOfClips > 0 ? false : true" />
+      <Button icon="play" text="Play Clips" @click="playClips" />
 
       <div class="rightFromHere"></div>
 
@@ -485,13 +485,16 @@ export default class VideoPlayer extends Vue {
    * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
    */
   getAllClips() {
-    let clipsBarValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
     let clips = [];
-    let i = 0;
-    let n = clipsBarValues.length;
 
-    while (i < n) {
-      clips.push(clipsBarValues.slice(i, (i += 2)));
+    if (this.clipsBar.noUiSlider != undefined) {
+      let clipsBarValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
+      let i = 0;
+      let n = clipsBarValues.length;
+
+      while (i < n) {
+        clips.push(clipsBarValues.slice(i, (i += 2)));
+      }
     }
 
     return clips;
