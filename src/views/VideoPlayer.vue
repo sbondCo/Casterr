@@ -425,28 +425,16 @@ export default class VideoPlayer extends Vue {
       tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     }
 
-    // Update connects/tooltips only if:
-    //  - There isn't only one clip (if connects length is 3 then there is only 1 clip)
-    //  - The clips bar is visible (if clipsBar visibility == "" then assume it is visible)
-    // This is because we are going to reuse the old connects/tooltips when adding 1st clip again.
-    if (connects.length != 3 || this.clipsBar.style.visibility == "visible" || this.clipsBar.style.visibility == "") {
-      // Remove last connect, then add connects
-      // for new starts and add 'false' back to end.
-      connects.pop();
-      connects.push(false, true, false);
+    // Remove last connect, then add connects
+    // for new starts and add 'false' back to end.
+    connects.pop();
+    connects.push(false, true, false);
 
-      // Add tooltips to new connects
-      tooltips.push(true, false);
-    } else {
-      // Empty starts to remove last clip that is hidden
-      starts = [];
-
-      // Show clips bar
-      this.clipsBar.style.visibility = "visible";
-    }
+    // Add tooltips to new connects
+    tooltips.push(true, false);
 
     // Add new starts and then sort the array.
-    // CANT have array as [100, 200, 50, 80]
+    // CAN'T have array as [100, 200, 50, 80].
     starts.push(currentProgress, currentProgress + 5);
     starts.sort((a, b) => a - b);
 
@@ -469,8 +457,8 @@ export default class VideoPlayer extends Vue {
     let connects = this.clipsBar.noUiSlider!.options.connect! as boolean[];
     let tooltips = this.clipsBar.noUiSlider!.options.tooltips as boolean[];
 
-    // Remove all clips normally unless there is
-    // only one left, in that case, just hide the clips bar.
+    // Remove all clips normally unless there is only one left,
+    // in that case, reset starts, connects & tooltips so clipsBar gets destoryed.
     if (connects.length != 3) {
       // Remove starts from clip being removes
       starts = starts.removeFirst(handleValues[0]);
@@ -488,9 +476,6 @@ export default class VideoPlayer extends Vue {
       starts = [];
       connects = [];
       tooltips = [];
-
-      // Hide clips bar
-      this.clipsBar.style.visibility = "hidden";
     }
 
     this.createClipsBar(starts, connects, tooltips);
