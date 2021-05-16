@@ -38,15 +38,11 @@
       <Button icon="add" @click="adjustZoom(true)" />
       <Button icon="min2" @click="adjustZoom(false)" />
 
-      <Button text="play clips" @click="playClips()" />
+      <Button icon="play" text="Play Clips" @click="playClips()" :disabled="numberOfClips > 0 ? false : true" />
 
-      <Button
-        class="rightFromHere"
-        icon="arrow"
-        :combinedInfo="continueBtnCI"
-        :disabled="!continueBtnCI"
-        @click="saveClips"
-      >
+      <div class="rightFromHere"></div>
+
+      <Button icon="arrow" :combinedInfo="continueBtnCI" :disabled="!continueBtnCI" @click="saveClips">
         <div>
           <Icon i="clips" wh="18" />
           <span>{{ numberOfClips }}</span>
