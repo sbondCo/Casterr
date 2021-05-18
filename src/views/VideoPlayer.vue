@@ -38,12 +38,10 @@
       <Button icon="add" @click="adjustZoom(true)" />
       <Button icon="min2" @click="adjustZoom(false)" />
 
-      <Button icon="play" text="Play Clips" @click="playClips" />
-
       <div class="rightFromHere"></div>
 
       <ButtonConnector>
-        <Button :outlined="true">
+        <Button :outlined="true" @click="playClips">
           <template slot="info">
             <div>
               <Icon i="clips" wh="18" />
