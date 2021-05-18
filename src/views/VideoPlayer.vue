@@ -1,5 +1,5 @@
 <template>
-  <div v-if="videoExists" class="videoPlayerContainer">
+  <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <video
       ref="videoPlayer"
       id="video"
@@ -8,7 +8,7 @@
       @click="playPause"
     ></video>
 
-    <div class="progressBarContainer">
+    <div ref="timeline" class="timeline">
       <div ref="progressBar" class="progressBar"></div>
       <div ref="clipsBar" class="clipsBar"></div>
     </div>
@@ -16,29 +16,47 @@
     <div class="controls">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
-      <Button icon="volumeMax" :slider="true" @update="updateVolume" />
-
-      <Button :text="`${currentVideoTime} / ${maxVideoTime}`" :outlined="true" />
-
-      <Button text="ADD CLIP" @click="addClip" />
+      <Button
+        :icon="volumeIcon"
+        :slider="true"
+        :sliderValue="volume"
+        sliderMin="0"
+        sliderMax="1"
+        sliderStep="0.01"
+        @slider-update="updateVolume"
+        @click="toggleMute"
+      />
 
       <Button
-        class="rightFromHere"
-        icon="arrow"
-        :combinedInfo="continueBtnCI"
-        :disabled="!continueBtnCI"
-        @click="saveClips"
-      >
-        <div>
-          <Icon i="clips" wh="18" />
-          <span>{{ numberOfClips }}</span>
-        </div>
+        :text="videoTimeReadable"
+        :outlined="true"
+        @click="showTimeAsElapsed ? (showTimeAsElapsed = false) : (showTimeAsElapsed = true)"
+      />
 
-        <div>
-          <Icon i="time" wh="18" />
-          <span>{{ lengthOfClips }}</span>
-        </div>
-      </Button>
+      <Button text="Add Clip" @click="addClip" />
+
+      <Button icon="add" @click="adjustZoom(true)" />
+      <Button icon="min2" @click="adjustZoom(false)" />
+
+      <div class="rightFromHere"></div>
+
+      <ButtonConnector>
+        <Button :outlined="true" @click="playClips">
+          <template slot="info">
+            <div>
+              <Icon i="clips" wh="18" />
+              <span>{{ numberOfClips }}</span>
+            </div>
+
+            <div>
+              <Icon i="time" wh="18" />
+              <span>{{ lengthOfClips }}</span>
+            </div>
+          </template>
+        </Button>
+
+        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" />
+      </ButtonConnector>
     </div>
   </div>
   <div v-else>
@@ -50,47 +68,70 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import Button from "@/components/ui/Button.vue";
+import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import "@/libs/helpers/extensions";
 import Helpers from "@/libs/helpers";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
-import noUiSlider from "nouislider";
+import noUiSlider, { PipsMode, target } from "nouislider";
 
 @Component({
   components: {
     Icon,
-    Button
+    Button,
+    ButtonConnector
   }
 })
 export default class VideoPlayer extends Vue {
   @Prop({ required: true }) videoPath: string;
 
   private video: HTMLVideoElement;
-  private progressBar: noUiSlider.Instance;
-  private clipsBar: noUiSlider.Instance;
+  private videoEditor: target;
+  private timelineBar: target;
+  private progressBar: target;
+  private clipsBar: target;
 
   numberOfClips = 0;
   lengthOfClips = "00:00";
-  currentVideoTime = "00:00";
-  maxVideoTime = "00:00";
+  maxVideoTime = 0;
   playPauseBtnIcon = "play";
-  continueBtnCI = false;
+  continueBtnDisabled = true;
+  volumeIcon = "volumeMax";
+  volume = 0.8;
+  showTimeAsElapsed = false;
+  timelineZoom = 100;
+  isPlayingAllClips = false;
+
+  /**
+   * Get current video time.
+   */
+  get currentVideoTime() {
+    if (this.video != undefined) {
+      return this.video.currentTime;
+    } else {
+      // If this.video is undefined, then it most-likely hasn't
+      // loaded yet, so it's value will be 0 anyways.
+      return 0;
+    }
+  }
 
   /**
    * Play/Pause the video.
-   * @param fromButton If function is being called by playPauseBtn.
-   *                   If not it won't play/pause the video, but instead
-   *                   just update the playPauseBtns icon to reflect the change.
+   * @param userFired If function is being called by a user fired action.
+   *                  If not it won't play/pause the video, but instead
+   *                  just update the playPauseBtns icon to reflect the change.
    */
-  playPause(fromButton: boolean = true) {
+  playPause(userFired: boolean = true) {
     if (this.video.paused) {
-      if (fromButton) this.video.play();
+      if (userFired) this.video.play();
       this.playPauseBtnIcon = "play";
     } else {
-      if (fromButton) this.video.pause();
+      if (userFired) this.video.pause();
       this.playPauseBtnIcon = "pause";
     }
+
+    if (userFired) this.cancelPlayingClips();
   }
 
   /**
@@ -98,6 +139,10 @@ export default class VideoPlayer extends Vue {
    * @param volume Volume to set video to.
    */
   async updateVolume(volume: number) {
+    // Update volume var used for volumeBars sliderValue
+    // So the slider is updated on the volume button.
+    this.volume = volume;
+
     // Try 3 times to update volume
     // First time volume is updated, the video element
     // hasn't loaded fully so we need to keep trying until it has.
@@ -110,6 +155,26 @@ export default class VideoPlayer extends Vue {
 
       await Helpers.sleep(250);
     }
+
+    // Change volume icon depending on volume
+    if (this.video.volume == 0) {
+      this.volumeIcon = "volumeMute";
+    } else if (this.video.volume < 0.5) {
+      this.volumeIcon = "volumeMed";
+    } else {
+      this.volumeIcon = "volumeMax";
+    }
+  }
+
+  /**
+   * Toggle mute on video.
+   */
+  toggleMute() {
+    if (this.video.volume > 0) {
+      this.updateVolume(0);
+    } else {
+      this.updateVolume(0.5);
+    }
   }
 
   /**
@@ -117,73 +182,145 @@ export default class VideoPlayer extends Vue {
    */
   videoLoaded() {
     this.video = this.$refs.videoPlayer as HTMLVideoElement;
-    this.progressBar = this.$refs.progressBar as noUiSlider.Instance;
-    this.clipsBar = this.$refs.clipsBar as noUiSlider.Instance;
+    this.videoEditor = this.$refs.videoEditor as target;
+    this.timelineBar = this.$refs.timeline as target;
+    this.progressBar = this.$refs.progressBar as target;
+    this.clipsBar = this.$refs.clipsBar as target;
 
-    this.maxVideoTime = this.video.duration.toReadableTimeFromSeconds();
+    this.maxVideoTime = this.video.duration;
 
-    this.video.addEventListener("play", () => {
-      this.playPause(false);
-    });
-    this.video.addEventListener("pause", () => {
-      this.playPause(false);
-    });
+    // Update volume once now, so default volume value is applied
+    this.updateVolume(this.volume);
+
+    this.video.addEventListener("play", () => this.playPause(false));
+    this.video.addEventListener("pause", () => this.playPause(false));
     this.video.addEventListener("timeupdate", this.updateProgressBarTime);
 
     noUiSlider.create(this.progressBar, {
       start: [0],
       behaviour: "snap",
+      animate: false,
       range: {
         min: 0,
-        max: this.video.duration // + 99999
+        max: this.video.duration
       },
       pips: {
-        mode: "count",
+        mode: PipsMode.Count,
         values: 10,
         format: {
           to: (value: number) => {
             // Show readable time on pip values
             return value.toReadableTimeFromSeconds();
+          },
+          from: (value: string) => {
+            return Number(value);
           }
         }
       }
     });
 
+    this.addTimelineBarEvents();
     this.addProgressBarEvents();
   }
 
   /**
-   * Update time on video element
+   * Add events to timeline bar.
+   */
+  addTimelineBarEvents() {
+    // Scroll across by using mouse wheel
+    this.timelineBar.addEventListener("wheel", (e) => {
+      let wheelUp = e.deltaY < 0;
+
+      // If holding control, adjust zoom instead of scrolling
+      if (e.ctrlKey) {
+        if (wheelUp) {
+          this.adjustZoom(true);
+        } else {
+          this.adjustZoom(false);
+        }
+
+        return;
+      }
+
+      if (wheelUp) {
+        this.timelineBar.scrollBy(-50, 0);
+      } else {
+        this.timelineBar.scrollBy(50, 0);
+      }
+    });
+  }
+
+  /**
+   * Update time on video element.
+   * @param newTime Time to skip to.
    */
   updateVideoTime(newTime: number) {
     this.video.currentTime = newTime;
-    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
   }
 
   /**
-   * Update time on progress bar
+   * Return video time in readable format.
+   * Different format returned depending on `showTimeAsElapsed` var.
+   */
+  get videoTimeReadable() {
+    if (this.showTimeAsElapsed) {
+      return `${(this.maxVideoTime - this.currentVideoTime).toReadableTimeFromSeconds()} Left`;
+    } else {
+      return `${this.currentVideoTime.toReadableTimeFromSeconds()} / ${this.maxVideoTime.toReadableTimeFromSeconds()}`;
+    }
+  }
+
+  /**
+   * Update time on progress bar with current time on video.
    */
   updateProgressBarTime() {
-    this.progressBar.noUiSlider.set(this.video.currentTime);
-    this.currentVideoTime = this.video.currentTime.toReadableTimeFromSeconds();
+    this.progressBar.noUiSlider!.set(this.video.currentTime);
   }
 
   /**
-   * Re-add all events to Progress bar
+   * Adjust zoom up or down.
+   * @param increase If should increase or decrease zoom.
+   */
+  adjustZoom(increase: boolean) {
+    const min = 100;
+    const max = 1000;
+
+    // Increase/decrease `timelineZoom`
+    if (increase && this.timelineZoom != max) {
+      this.timelineZoom += 50;
+    } else if (!increase && this.timelineZoom != min) {
+      this.timelineZoom -= 50;
+    }
+
+    // Adjust width of bars
+    this.progressBar.style.width = `${this.timelineZoom}%`;
+    this.clipsBar.style.width = `${this.timelineZoom}%`;
+
+    // Add/remove `zoomed` class on progressBar
+    if (this.timelineZoom !== min) {
+      this.videoEditor.classList.add("timelineZoomed");
+    } else {
+      this.videoEditor.classList.remove("timelineZoomed");
+    }
+  }
+
+  /**
+   * Re-add all events to progress bar.
    */
   addProgressBarEvents() {
     // First remove all events
-    this.progressBar.noUiSlider.off();
+    this.progressBar.noUiSlider!.off("");
 
-    this.progressBar.noUiSlider.on("slide", (values: any[]) => {
-      this.updateVideoTime(values[0]);
+    this.progressBar.noUiSlider!.on("slide", (_0: any, _1: any, unencoded: number[]) => {
+      this.updateVideoTime(unencoded[0]);
     });
 
-    this.progressBar.noUiSlider.on("start", () => {
+    this.progressBar.noUiSlider!.on("start", () => {
       this.video.removeEventListener("timeupdate", this.updateProgressBarTime);
+      this.cancelPlayingClips();
     });
 
-    this.progressBar.noUiSlider.on("end", () => {
+    this.progressBar.noUiSlider!.on("end", () => {
       this.video.addEventListener("timeupdate", this.updateProgressBarTime);
     });
 
@@ -194,36 +331,43 @@ export default class VideoPlayer extends Vue {
 
   /**
    * (Re)create clips bar with events.
+   * @param starts Starts for slider. If set to an empty array, clipsBar is just destroyed.
+   * @param connects Connects for slider.
+   * @param tooltips Tooltips for slider.
    */
   createClipsBar(starts: number[], connects: boolean[], tooltips: boolean[]) {
     // If exists, destroy old clipsBar first
     if (this.clipsBar.noUiSlider) this.clipsBar.noUiSlider.destroy();
 
-    // Create new clipsBar with passed args
-    noUiSlider.create(this.clipsBar, {
-      start: starts,
-      behaviour: "drag",
-      connect: connects,
-      tooltips: tooltips,
-      range: {
-        min: 0,
-        max: this.video.duration
-      }
-    });
+    if (starts.length > 0) {
+      // Create new clipsBar with passed args
+      noUiSlider.create(this.clipsBar, {
+        start: starts,
+        behaviour: "drag",
+        connect: connects,
+        tooltips: tooltips,
+        range: {
+          min: 0,
+          max: this.video.duration
+        }
+      });
 
-    // Add all events to new clipBar
-    this.addClipsBarEvents();
+      // Add all events to new clipBar
+      this.addClipsBarEvents();
+    }
 
     // Update numberOfClips
-    this.numberOfClips = this.clipsBar.noUiSlider.getTooltips().length / 2;
+    this.numberOfClips = tooltips.length / 2;
   }
 
   /**
    * Re-add all events to Clips bar
    */
   addClipsBarEvents() {
+    let isDragging = false;
+
     // First remove all events
-    this.clipsBar.noUiSlider.off();
+    this.clipsBar.noUiSlider!.off("");
 
     let connectElements = document.querySelectorAll(".clipsBar .noUi-connect");
 
@@ -233,18 +377,40 @@ export default class VideoPlayer extends Vue {
       });
     }
 
-    this.clipsBar.noUiSlider.on("update", (values: any, handle: any) => {
+    this.clipsBar.noUiSlider!.on("update", (values: any, handle: any) => {
       this.updateTooltip(values, handle);
       this.updateTotalLengthOfClips(values);
     });
 
+    this.clipsBar.noUiSlider!.on("slide", (values: any, handle: any) => {
+      // Only do anything if user isn't dragging so we can avoid
+      // running actions twice, since slide is also ran when dragging.
+      if (!isDragging) {
+        this.updateVideoTime(values[handle]);
+      }
+    });
+
+    this.clipsBar.noUiSlider!.on("drag", (values: any, handle: any) => {
+      isDragging = true;
+
+      this.updateVideoTime(values[handle]);
+    });
+
     // Show tooltip on drag
-    this.clipsBar.noUiSlider.on("start", (_, handle: any) => {
+    this.clipsBar.noUiSlider!.on("start", (values: any, handle: any) => {
+      // Also update tooltip on start, to avoid users seeing
+      // it jump around if they dont drag right away (or never drag)
+      this.updateTooltip(values, handle);
+
       this.getPairFromHandle(handle).tooltip.style.display = "block";
+
+      this.cancelPlayingClips();
     });
 
     // Hide tooltip on finish drag
-    this.clipsBar.noUiSlider.on("end", (_, handle: any) => {
+    this.clipsBar.noUiSlider!.on("end", (_: any, handle: any) => {
+      isDragging = false;
+
       this.getPairFromHandle(handle).tooltip.style.display = "none";
     });
   }
@@ -256,7 +422,7 @@ export default class VideoPlayer extends Vue {
     let starts = new Array<number>();
     let connects = new Array<boolean>();
     let tooltips = new Array<boolean>();
-    let currentProgress = Number(this.progressBar.noUiSlider.get());
+    let currentProgress = Number(this.progressBar.noUiSlider!.get());
 
     // If noUiSlider exists on clipsBar then update vars with actual values
     if (this.clipsBar.noUiSlider != undefined) {
@@ -265,35 +431,23 @@ export default class VideoPlayer extends Vue {
       tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
     }
 
-    // Update connects/tooltips only if:
-    //  - There isn't only one clip (if connects length is 3 then there is only 1 clip)
-    //  - The clips bar is visible (if clipsBar visibility == "" then assume it is visible)
-    // This is because we are going to reuse the old connects/tooltips when adding 1st clip again.
-    if (connects.length != 3 || this.clipsBar.style.visibility == "visible" || this.clipsBar.style.visibility == "") {
-      // Remove last connect, then add connects
-      // for new starts and add 'false' back to end.
-      connects.pop();
-      connects.push(false, true, false);
+    // Remove last connect, then add connects
+    // for new starts and add 'false' back to end.
+    connects.pop();
+    connects.push(false, true, false);
 
-      // Add tooltips to new connects
-      tooltips.push(true, false);
-    } else {
-      // Empty starts to remove last clip that is hidden
-      starts = [];
-
-      // Show clips bar
-      this.clipsBar.style.visibility = "visible";
-    }
+    // Add tooltips to new connects
+    tooltips.push(true, false);
 
     // Add new starts and then sort the array.
-    // CANT have array as [100, 200, 50, 80]
+    // CAN'T have array as [100, 200, 50, 80].
     starts.push(currentProgress, currentProgress + 5);
     starts.sort((a, b) => a - b);
 
     this.createClipsBar(starts, connects, tooltips);
 
     // Show continue button clip info
-    this.continueBtnCI = true;
+    this.continueBtnDisabled = false;
   }
 
   /**
@@ -302,15 +456,15 @@ export default class VideoPlayer extends Vue {
    *                     to the first handle bars value on the clip being removed.
    */
   removeClip(connectIndex: number) {
-    let allHandleValues = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
+    let allHandleValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
     let handleValues = [allHandleValues[connectIndex], allHandleValues[connectIndex + 1]];
 
-    let starts = (this.clipsBar.noUiSlider.get() as string[]).map(Number);
-    let connects = this.clipsBar.noUiSlider.options.connect! as boolean[];
-    let tooltips = this.clipsBar.noUiSlider.options.tooltips as boolean[];
+    let starts = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
+    let connects = this.clipsBar.noUiSlider!.options.connect! as boolean[];
+    let tooltips = this.clipsBar.noUiSlider!.options.tooltips as boolean[];
 
-    // Remove all clips normally unless there is
-    // only one left, in that case, just hide the clips bar.
+    // Remove all clips normally unless there is only one left,
+    // in that case, reset starts, connects & tooltips so clipsBar gets destoryed.
     if (connects.length != 3) {
       // Remove starts from clip being removes
       starts = starts.removeFirst(handleValues[0]);
@@ -323,17 +477,96 @@ export default class VideoPlayer extends Vue {
       // Remove unneeded tooltips
       tooltips = tooltips.slice(0, tooltips.length - 2);
     } else {
-      this.continueBtnCI = false;
+      this.continueBtnDisabled = true;
 
-      // Hide clips bar
-      this.clipsBar.style.visibility = "hidden";
+      starts = [];
+      connects = [];
+      tooltips = [];
+
+      // Reset length of clips
+      this.updateTotalLengthOfClips([]);
     }
 
     this.createClipsBar(starts, connects, tooltips);
   }
 
+  /**
+   * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
+   */
+  getAllClips() {
+    let clips = [];
+
+    if (this.clipsBar.noUiSlider != undefined) {
+      let clipsBarValues = (this.clipsBar.noUiSlider!.get() as string[]).map(Number);
+      let i = 0;
+      let n = clipsBarValues.length;
+
+      while (i < n) {
+        clips.push(clipsBarValues.slice(i, (i += 2)));
+      }
+    }
+
+    return clips;
+  }
+
+  /**
+   * Play all clips currently created on clipsBar.
+   */
+  async playClips() {
+    this.isPlayingAllClips = true;
+    let clips = this.getAllClips();
+
+    for (let i = 0, n = clips.length; i < n; ++i) {
+      // Clip start and end times
+      let start = clips[i][0];
+      let end = clips[i][1];
+
+      // Skip to start of clip and play
+      this.updateVideoTime(start);
+      this.video.play();
+
+      // Play clip until we reach `end` or playing is cancelled.
+      let cp = await new Promise((resolve) => {
+        const u = () => {
+          // If an action somewhere else has changed `isPlayingAllClips` to false,
+          // then don't continue after sleep.
+          if (!this.isPlayingAllClips) {
+            this.video.removeEventListener("timeupdate", u);
+
+            return resolve("cancelled");
+          }
+
+          // If video time has past or is equal to end time, carry on to next clip.
+          if (this.video.currentTime >= end) {
+            this.video.pause();
+            this.video.removeEventListener("timeupdate", u);
+
+            resolve("finished");
+          }
+        };
+
+        this.video.addEventListener("timeupdate", u);
+      });
+
+      // If promise above was cancelled, return as to not continue playing clips.
+      if (cp == "cancelled") return;
+    }
+
+    this.isPlayingAllClips = false;
+  }
+
+  /**
+   * Cancel playing all clips.
+   */
+  cancelPlayingClips() {
+    this.isPlayingAllClips = false;
+  }
+
+  /**
+   * Save all clips.
+   */
   saveClips() {
-    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider.get() as string[]).map(Number));
+    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
   }
 
   /**
@@ -343,11 +576,13 @@ export default class VideoPlayer extends Vue {
   updateTotalLengthOfClips(values: string[]) {
     let totalLength = 0;
     let v = values.map(Number);
+
     // Loop over values in pairs
     for (let i = 0, n = v.length; i < n; i += 2) {
       // Update totalLength after calculating current pairs length
       totalLength += Number((v[i + 1] - v[i]).toFixed(0));
     }
+
     // Finally, update actual lengthOfClips variable
     this.lengthOfClips = totalLength.toReadableTimeFromSeconds();
   }
@@ -374,7 +609,7 @@ export default class VideoPlayer extends Vue {
    * @param handle Handle that is connected to pair
    */
   getPairFromHandle(handle: number) {
-    let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider.getTooltips();
+    let tooltips: Array<HTMLElement | Boolean> = this.clipsBar.noUiSlider!.getTooltips() as [HTMLElement | Boolean];
     let tooltip: HTMLElement;
 
     if (tooltips[handle] instanceof HTMLElement) {
@@ -408,7 +643,7 @@ export default class VideoPlayer extends Vue {
 </script>
 
 <style lang="scss">
-.videoPlayerContainer {
+.videoEditor {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -432,34 +667,47 @@ export default class VideoPlayer extends Vue {
     }
   }
 
-  .progressBarContainer {
+  &.timelineZoomed {
+    video {
+      height: calc(100% - 95px); // Make height of video all take up all blank space on page
+    }
+
+    .timeline {
+      height: 45px;
+      overflow-y: hidden;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        height: 5px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: $primaryColor;
+      }
+
+      .clipsBar {
+        .noUi-tooltip {
+          bottom: -5%;
+          height: 25px;
+          background-color: $lightHoverColor;
+          border: unset;
+          box-shadow: unset;
+          font-weight: bold;
+          text-shadow: 1px 1px black;
+        }
+      }
+    }
+  }
+
+  .timeline {
     width: 100%;
     height: 40px;
     padding: 0 10px;
     background-color: $secondaryColor;
-    // overflow-y: hidden;
-    // overflow-x: auto;
-
-    // &::-webkit-scrollbar {
-    //   height: 5px;
-    // }
-
-    // &::-webkit-scrollbar-track {
-    //   background-color: $secondaryColor;
-    // }
 
     .progressBar {
-      // width: 200%;
       height: 100%;
       background-color: $secondaryColor;
-
-      .noUi-origin {
-        transition: transform 80ms ease-in;
-
-        &:active {
-          transition: transform 0ms;
-        }
-      }
 
       .noUi-handle {
         top: 0;
@@ -481,6 +729,15 @@ export default class VideoPlayer extends Vue {
 
         .noUi-value {
           transform: translateX(-50%);
+
+          &:nth-child(2) {
+            transform: translateX(-10%);
+          }
+
+          &:last-child {
+            transform: translateX(-90%);
+            margin-right: 1px;
+          }
         }
       }
     }
@@ -488,7 +745,6 @@ export default class VideoPlayer extends Vue {
     .clipsBar {
       position: relative;
       top: -100%;
-      width: 100%;
       height: 100%;
       background-color: transparent;
 
@@ -527,6 +783,8 @@ export default class VideoPlayer extends Vue {
 
       .noUi-tooltip {
         display: none;
+        bottom: 165%;
+        pointer-events: none;
       }
     }
   }
