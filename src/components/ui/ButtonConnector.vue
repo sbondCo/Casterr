@@ -23,6 +23,8 @@ export default class ButtonConnector extends Vue {}
     margin-left: 0;
 
     &:first-child ::v-deep .mainBtn {
+      border-left: unset;
+      border-right: 2px solid $secondaryColor;
       border-radius: 3px 0 0 3px;
     }
 
@@ -37,6 +39,7 @@ export default class ButtonConnector extends Vue {}
 
     ::v-deep .mainBtn {
       border: unset;
+      border-left: 2px solid $secondaryColor;
       border-radius: unset;
     }
   }

@@ -194,7 +194,7 @@ export default class Button extends Vue {
     flex-flow: row;
     align-items: center;
     height: 100%;
-    padding: 3px;
+    padding: 3px 5px;
     border: unset;
     border: 2px solid $secondaryColor;
     border-radius: 3px;
