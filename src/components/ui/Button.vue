@@ -1,14 +1,14 @@
 <template>
   <div class="btnWrapper">
-    <button v-if="combinedInfo" id="outlined" class="infoBtn">
-      <slot></slot>
-    </button>
-
     <button ref="mainBtn" class="mainBtn">
       <div class="content" @[clickEvent]="$emit('click')">
         <Icon v-if="icon" :i="icon" />
 
         <span v-if="text">{{ text }}</span>
+
+        <div v-if="this.$slots.info" class="infoBtn">
+          <slot name="info"></slot>
+        </div>
       </div>
 
       <input
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component, Vue } from "vue-property-decorator";
+import { Vue, Prop, Component, Watch } from "vue-property-decorator";
 import Icon from "./../Icon.vue";
 
 @Component({
@@ -39,7 +39,6 @@ export default class Button extends Vue {
   @Prop() text: string;
 
   @Prop({ default: false }) disabled: boolean;
-  @Prop() combinedInfo: boolean;
   @Prop() outlined: boolean;
   @Prop({ default: false }) slider: boolean;
   @Prop({ default: 0 }) sliderValue: string;
@@ -58,22 +57,17 @@ export default class Button extends Vue {
     if (this.outlined) this.mainBtn.id += "outlined";
     if (this.slider) this.initSlider();
 
+    // Run these at mount to match default var values passed
     this.handleDisability();
-    this.updateSliderValue();
-  }
-
-  updated() {
-    this.handleDisability();
-
-    // Update sliderBar value, if slider is enabled and it is updated
     this.updateSliderValue();
   }
 
   /**
    * Manage whether button should be disabled or not.
    */
+  @Watch("disabled")
   handleDisability() {
-    // Enable/disable button click event
+    // Enable/disable button click event & `disabled` class
     if (this.disabled) {
       this.clickEvent = "null";
       this.mainBtn.classList.add("disabled");
@@ -114,6 +108,7 @@ export default class Button extends Vue {
     );
   }
 
+  @Watch("sliderValue")
   updateSliderValue() {
     if (this.slider && this.sliderBar) {
       this.sliderBar.value = String(this.sliderValue);
@@ -220,6 +215,7 @@ export default class Button extends Vue {
     }
 
     &.disabled {
+      background-color: $secondaryColor;
       cursor: not-allowed;
     }
 

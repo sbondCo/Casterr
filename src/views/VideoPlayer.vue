@@ -33,7 +33,7 @@
         @click="showTimeAsElapsed ? (showTimeAsElapsed = false) : (showTimeAsElapsed = true)"
       />
 
-      <Button text="ADD CLIP" @click="addClip" />
+      <Button text="Add Clip" @click="addClip" />
 
       <Button icon="add" @click="adjustZoom(true)" />
       <Button icon="min2" @click="adjustZoom(false)" />
@@ -42,17 +42,23 @@
 
       <div class="rightFromHere"></div>
 
-      <Button icon="arrow" :combinedInfo="continueBtnCI" :disabled="!continueBtnCI" @click="saveClips">
-        <div>
-          <Icon i="clips" wh="18" />
-          <span>{{ numberOfClips }}</span>
-        </div>
+      <ButtonConnector>
+        <Button :outlined="true">
+          <template slot="info">
+            <div>
+              <Icon i="clips" wh="18" />
+              <span>{{ numberOfClips }}</span>
+            </div>
 
-        <div>
-          <Icon i="time" wh="18" />
-          <span>{{ lengthOfClips }}</span>
-        </div>
-      </Button>
+            <div>
+              <Icon i="time" wh="18" />
+              <span>{{ lengthOfClips }}</span>
+            </div>
+          </template>
+        </Button>
+
+        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" />
+      </ButtonConnector>
     </div>
   </div>
   <div v-else>
@@ -64,6 +70,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import Button from "@/components/ui/Button.vue";
+import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import "@/libs/helpers/extensions";
 import Helpers from "@/libs/helpers";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
@@ -74,7 +81,8 @@ import noUiSlider, { PipsMode, target } from "nouislider";
 @Component({
   components: {
     Icon,
-    Button
+    Button,
+    ButtonConnector
   }
 })
 export default class VideoPlayer extends Vue {
@@ -90,7 +98,7 @@ export default class VideoPlayer extends Vue {
   lengthOfClips = "00:00";
   maxVideoTime = 0;
   playPauseBtnIcon = "play";
-  continueBtnCI = false;
+  continueBtnDisabled = true;
   volumeIcon = "volumeMax";
   volume = 0.8;
   showTimeAsElapsed = false;
@@ -441,7 +449,7 @@ export default class VideoPlayer extends Vue {
     this.createClipsBar(starts, connects, tooltips);
 
     // Show continue button clip info
-    this.continueBtnCI = true;
+    this.continueBtnDisabled = false;
   }
 
   /**
@@ -471,7 +479,7 @@ export default class VideoPlayer extends Vue {
       // Remove unneeded tooltips
       tooltips = tooltips.slice(0, tooltips.length - 2);
     } else {
-      this.continueBtnCI = false;
+      this.continueBtnDisabled = true;
 
       starts = [];
       connects = [];
