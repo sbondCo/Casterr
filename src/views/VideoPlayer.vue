@@ -482,6 +482,9 @@ export default class VideoPlayer extends Vue {
       starts = [];
       connects = [];
       tooltips = [];
+
+      // Reset length of clips
+      this.updateTotalLengthOfClips([]);
     }
 
     this.createClipsBar(starts, connects, tooltips);

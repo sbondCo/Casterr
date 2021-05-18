@@ -22,9 +22,12 @@ export default class ButtonConnector extends Vue {}
   .btnWrapper {
     margin-left: 0;
 
+    &:first-child:not(:only-child) ::v-deep .mainBtn {
+      border-right: 2px solid $secondaryColor;
+    }
+
     &:first-child ::v-deep .mainBtn {
       border-left: unset;
-      border-right: 2px solid $secondaryColor;
       border-radius: 3px 0 0 3px;
     }
 
