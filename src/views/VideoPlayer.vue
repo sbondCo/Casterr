@@ -35,13 +35,13 @@
 
       <Button text="Add Clip" @click="addClip" />
 
-      <Button icon="add" @click="adjustZoom(true)" />
-      <Button icon="min2" @click="adjustZoom(false)" />
+      <Button icon="add" @click="adjustZoom(true)" tooltip="Zoom In" />
+      <Button icon="min2" @click="adjustZoom(false)" tooltip="Zoom Out" />
 
       <div class="rightFromHere"></div>
 
       <ButtonConnector>
-        <Button :outlined="true" @click="playClips">
+        <Button :outlined="true" @click="playClips" tooltip="Play All Clips">
           <template slot="info">
             <div>
               <Icon i="clips" wh="18" />
@@ -55,7 +55,7 @@
           </template>
         </Button>
 
-        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" />
+        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" tooltip="Continue" />
       </ButtonConnector>
     </div>
   </div>
