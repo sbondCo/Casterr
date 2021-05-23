@@ -63,12 +63,14 @@ export default class DefaultLayout extends Vue {
 
         tooltip.innerHTML = el.getAttribute("tooltip")!;
 
+        tooltip.style.transform = "scale(1)";
         tooltip.style.top = `${er.top - er.height - 3}px`;
         tooltip.style.left = `${er.left + er.width / 2 - tooltip.getBoundingClientRect().width / 2}px`;
         tooltip.style.opacity = "1";
       });
 
       el.addEventListener("mouseleave", () => {
+        tooltip.style.transform = "scale(0.85)";
         tooltip.style.opacity = "0";
       });
     }
