@@ -60,12 +60,22 @@ export default class DefaultLayout extends Vue {
 
       el.addEventListener("mouseenter", () => {
         const er = el.getBoundingClientRect();
+        const getTooltipLeftPos = () => {
+          let tw = tooltip.getBoundingClientRect().width;
+          let left = er.left + er.width / 2 - tw / 2;
+
+          if (left + tw > window.innerWidth) {
+            left = window.innerWidth - tw - 5;
+          }
+
+          return left;
+        };
 
         tooltip.innerHTML = el.getAttribute("tooltip")!;
 
         tooltip.style.transform = "scale(1)";
-        tooltip.style.top = `${er.top - er.height - 3}px`;
-        tooltip.style.left = `${er.left + er.width / 2 - tooltip.getBoundingClientRect().width / 2}px`;
+        tooltip.style.top = `${er.top - er.height - 2}px`;
+        tooltip.style.left = `${getTooltipLeftPos()}px`;
         tooltip.style.opacity = "1";
       });
 
@@ -98,20 +108,9 @@ section#main {
   border-radius: 3px;
   box-shadow: 0px 0px 8px $darkAccentColor;
   font-size: 13px;
+  white-space: nowrap;
   transition: opacity 150ms ease-in-out, left 25ms ease-in;
   z-index: 100;
   pointer-events: none;
-
-  &:before {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: $darkAccentColor;
-  }
 }
 </style>
