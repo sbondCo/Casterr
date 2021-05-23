@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div id="tooltip">
-      <div class="arrow"></div>
-    </div>
-
+    <div id="tooltip"></div>
     <section id="notifications"></section>
 
     <section id="top">
@@ -50,6 +47,10 @@ export default class DefaultLayout extends Vue {
     this.applyTooltips();
   }
 
+  updated() {
+    this.applyTooltips();
+  }
+
   applyTooltips() {
     const tooltip = document.getElementById("tooltip")!;
     let els = document.querySelectorAll("[tooltip]");
@@ -57,22 +58,17 @@ export default class DefaultLayout extends Vue {
     for (let i = 0, n = els.length; i < n; ++i) {
       let el = els[i];
 
-      el.addEventListener("mouseover", () => {
-        const r = el.getBoundingClientRect();
-        // console.log(r);
+      el.addEventListener("mouseenter", () => {
+        const er = el.getBoundingClientRect();
 
         tooltip.innerHTML = el.getAttribute("tooltip")!;
 
-        tooltip.style.transform = "scale(1)";
-        tooltip.style.top = `${r.top - r.height - 3}px`;
-        console.log(tooltip.style.transform, `${r.left + r.width / 2 - tooltip.getBoundingClientRect().width / 2}px`);
-        tooltip.style.left = `${r.left + r.width / 2 - tooltip.getBoundingClientRect().width / 2}px`;
-
+        tooltip.style.top = `${er.top - er.height - 3}px`;
+        tooltip.style.left = `${er.left + er.width / 2 - tooltip.getBoundingClientRect().width / 2}px`;
         tooltip.style.opacity = "1";
       });
 
       el.addEventListener("mouseleave", () => {
-        tooltip.style.transform = "scale(0.85)";
         tooltip.style.opacity = "0";
       });
     }
@@ -100,7 +96,7 @@ section#main {
   border-radius: 3px;
   box-shadow: 0px 0px 8px $darkAccentColor;
   font-size: 13px;
-  transition: opacity 150ms ease-in-out, left 25ms ease-in-out, transform 50ms ease;
+  transition: opacity 150ms ease-in-out, left 25ms ease-in;
   z-index: 100;
   pointer-events: none;
 
