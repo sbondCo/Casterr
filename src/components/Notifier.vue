@@ -1,7 +1,7 @@
 <template>
   <div ref="notifier" class="notifierContainer">
     <div class="notification">
-      <Icon class="cancel" i="close" wh="15" @click.native="cancel" />
+      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native="cancel" />
       <span class="title">{{ desc }}</span>
 
       <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->
@@ -27,6 +27,7 @@ import Loader from "./ui/Loader.vue";
 export default class Notifier extends Vue {
   @Prop({ default: "Give us a second" }) description!: string;
   @Prop() percentage?: number;
+  @Prop({ default: false }) showCancel: boolean;
 
   desc = this.$props.description;
   percent = this.$props.percentage;

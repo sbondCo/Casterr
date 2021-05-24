@@ -159,7 +159,7 @@ export default class FFmpeg {
     if (process.platform == "win32") await this.getSCR(installDir);
 
     // Get exec perms for ff binaries.
-    // Do this even if we didn't just download so there
+    // Do this even if we didn't just download them so there
     // is no reason for it to fail with 'no perms' error.
     fs.chmodSync(ffmpegPath, 0o111);
     fs.chmodSync(ffprobePath, 0o111);

@@ -13,7 +13,8 @@ export default class Notifications {
    * Create or modify an existing popup notification.
    * @param name Name of notification.
    * @param desc Description for notification to display.
-   * @param percentage Optional percentage for notifications requiring a percentage bar.
+   * @param percentage Percentage for notifications requiring a percentage bar.
+   * @param cancelRequested Callback func called when a cancel is requested by user clicking `close` on notifier.
    */
   public static popup(name: string, desc: string, percentage?: string | number, cancelRequested?: CallableFunction) {
     // Update or create notification depending on if it is in activeNotifs
@@ -29,7 +30,8 @@ export default class Notifications {
       const instance = new notifier({
         propsData: {
           description: desc,
-          percentage: percentage
+          percentage: percentage,
+          showCancel: cancelRequested ? true : false
         }
       });
 
