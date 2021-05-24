@@ -1,7 +1,7 @@
 <template>
   <div ref="notifier" class="notifierContainer">
     <div class="notification">
-      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native="cancel" />
+      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native.once="cancel" />
       <span class="title">{{ desc }}</span>
 
       <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->

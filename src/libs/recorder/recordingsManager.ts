@@ -131,6 +131,8 @@ export default class RecordingsManager {
     const popupName = "clipVideo";
 
     Notifications.popup(popupName, "Clipping Your Video", undefined, () => {
+      Notifications.popup(popupName, "Cancelling Processing Of Your Video");
+
       // Stop ffmpeg and destroy manifestStream
       ffmpeg.kill();
       manifestStream.destroy();
@@ -139,6 +141,8 @@ export default class RecordingsManager {
       PathHelper.removeDir(tmpOutFolder);
       PathHelper.removeFile(clipOutPath);
 
+      // When FFmpeg is closed, popup is also deleted below, but FFmpeg won't always
+      // be open when user is cancelling so also delete it here just incase.
       Notifications.deletePopup(popupName);
     });
 
