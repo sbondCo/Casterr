@@ -128,8 +128,9 @@ export default class RecordingsManager {
       true
     );
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
+    const popupName = "clipVideo";
 
-    Notifications.popup("clipVideo", "Clipping Video", undefined, () => {
+    Notifications.popup(popupName, "Clipping Video", undefined, () => {
       // Stop ffmpeg and destroy manifestStream
       ffmpeg.kill();
       manifestStream.destroy();
@@ -138,7 +139,7 @@ export default class RecordingsManager {
       PathHelper.removeDir(tmpOutFolder);
       PathHelper.removeFile(clipOutPath);
 
-      Notifications.deletePopup("clipVideo");
+      Notifications.deletePopup(popupName);
     });
 
     // Create clips from video.
@@ -165,7 +166,7 @@ export default class RecordingsManager {
         onExitCallback: () => {
           // Remove temp dir
           PathHelper.removeDir(tmpOutFolder);
-          Notifications.deletePopup("clipVideo");
+          Notifications.deletePopup(popupName);
         }
       }
     );

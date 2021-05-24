@@ -122,6 +122,7 @@ export default class FFmpeg {
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
+      const popupName = "ffmpegDownloadProgress";
       const downloadTo = ffmpegPath + ".zip";
       let dlURL: string;
 
@@ -138,17 +139,17 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
+        Notifications.popup(popupName, "Fetching Recording Utilities", progress);
       });
 
       // Update popup to extracting phase
-      Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
+      Notifications.popup(popupName, "Extracting Recording Utilities", undefined);
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
-      Notifications.deletePopup("ffmpegDownloadProgress");
+      Notifications.deletePopup(popupName);
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise((resolve) => setTimeout(resolve, 1000));
