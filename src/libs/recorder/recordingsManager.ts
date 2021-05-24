@@ -130,7 +130,7 @@ export default class RecordingsManager {
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
     const popupName = "clipVideo";
 
-    Notifications.popup(popupName, "Clipping Video", undefined, () => {
+    Notifications.popup(popupName, "Clipping Your Video", undefined, () => {
       // Stop ffmpeg and destroy manifestStream
       ffmpeg.kill();
       manifestStream.destroy();
