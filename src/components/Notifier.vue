@@ -1,10 +1,11 @@
 <template>
   <div ref="notifier" class="notifierContainer">
     <div class="notification">
+      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native.once="cancel" />
       <span class="title">{{ desc }}</span>
 
       <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->
-      <ProgressBar v-if="percent != null" :percentage="percent" />
+      <ProgressBar v-if="percentage != null" :percentage="percent" />
       <Loader v-else />
     </div>
   </div>
@@ -26,9 +27,14 @@ import Loader from "./ui/Loader.vue";
 export default class Notifier extends Vue {
   @Prop({ default: "Give us a second" }) description!: string;
   @Prop() percentage?: number;
+  @Prop({ default: false }) showCancel: boolean;
 
   desc = this.$props.description;
   percent = this.$props.percentage;
+
+  cancel() {
+    this.$emit("cancel-requested");
+  }
 }
 </script>
 
@@ -48,6 +54,7 @@ export default class Notifier extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
     padding: 10px 20px;
     min-width: 500px;
     min-height: 150px;
@@ -61,6 +68,20 @@ export default class Notifier extends Vue {
       padding: 5px;
       margin-bottom: 20px;
       text-transform: capitalize;
+    }
+
+    .cancel {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      fill: $textPrimary;
+      transition: fill 100ms ease-in-out, transform 100ms ease-in;
+      cursor: pointer;
+
+      &:hover {
+        fill: $textPrimaryHover;
+        transform: scale(1.15);
+      }
     }
   }
 }

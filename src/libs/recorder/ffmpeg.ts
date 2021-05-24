@@ -81,17 +81,17 @@ export default class FFmpeg {
    * Kill FF process.
    */
   public async kill() {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.ffProcess != undefined) {
         // FFmpeg gracefully stops recording when you press q
         this.ffProcess.stdin?.write("q");
 
         this.ffProcess.on("exit", () => {
           this.ffProcess = undefined;
-          resolve();
+          resolve("Successfully stopped FFmpeg.");
         });
       } else {
-        reject("Can't stop FFmpeg when it's not currently running!");
+        resolve("FFmpeg not running, nothing to close.");
       }
     });
   }
@@ -122,6 +122,7 @@ export default class FFmpeg {
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
+      const popupName = "ffmpegDownloadProgress";
       const downloadTo = ffmpegPath + ".zip";
       let dlURL: string;
 
@@ -138,17 +139,17 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        Notifications.popup("ffmpegDownloadProgress", "Fetching Recording Utilities", progress);
+        Notifications.popup(popupName, "Fetching Recording Utilities", progress);
       });
 
       // Update popup to extracting phase
-      Notifications.popup("ffmpegDownloadProgress", "Extracting Recording Utilities", undefined);
+      Notifications.popup(popupName, "Extracting Recording Utilities", undefined);
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
-      Notifications.deletePopup("ffmpegDownloadProgress");
+      Notifications.deletePopup(popupName);
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -158,7 +159,7 @@ export default class FFmpeg {
     if (process.platform == "win32") await this.getSCR(installDir);
 
     // Get exec perms for ff binaries.
-    // Do this even if we didn't just download so there
+    // Do this even if we didn't just download them so there
     // is no reason for it to fail with 'no perms' error.
     fs.chmodSync(ffmpegPath, 0o111);
     fs.chmodSync(ffprobePath, 0o111);
