@@ -81,17 +81,17 @@ export default class FFmpeg {
    * Kill FF process.
    */
   public async kill() {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.ffProcess != undefined) {
         // FFmpeg gracefully stops recording when you press q
         this.ffProcess.stdin?.write("q");
 
         this.ffProcess.on("exit", () => {
           this.ffProcess = undefined;
-          resolve();
+          resolve("Successfully stopped FFmpeg.");
         });
       } else {
-        reject("Can't stop FFmpeg when it's not currently running!");
+        resolve("FFmpeg not running, nothing to close.");
       }
     });
   }
