@@ -141,6 +141,16 @@ export default class PathHelper {
   }
 
   /**
+   * Delete a file if it exists, if it doesn't do nothing.
+   * @param path Path to file that should be deleted.
+   */
+  public static removeFile(path: string) {
+    if (fs.existsSync(path)) {
+      fs.unlinkSync(path);
+    }
+  }
+
+  /**
    * Extract zip archive.
    * @param zipPath Path to zip file that should be uncompressed.
    * @param destFolder Path to destination folder for uncompressed files.

@@ -4,6 +4,7 @@ import { RecordingSettings } from "./../settings";
 import * as fs from "fs";
 import * as path from "path";
 import ArgumentBuilder from "./argumentBuilder";
+import Notifications from "./../helpers/notifications";
 
 export interface Recording {
   videoPath: string;
@@ -128,6 +129,18 @@ export default class RecordingsManager {
     );
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
 
+    Notifications.popup("clipVideo", "Clipping Video", undefined, () => {
+      // Stop ffmpeg and destroy manifestStream
+      ffmpeg.kill();
+      manifestStream.destroy();
+
+      // Remove associated files/folders if they exist
+      PathHelper.removeDir(tmpOutFolder);
+      PathHelper.removeFile(clipOutPath);
+
+      Notifications.deletePopup("clipVideo");
+    });
+
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
@@ -152,6 +165,7 @@ export default class RecordingsManager {
         onExitCallback: () => {
           // Remove temp dir
           PathHelper.removeDir(tmpOutFolder);
+          Notifications.deletePopup("clipVideo");
         }
       }
     );
