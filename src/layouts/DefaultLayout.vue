@@ -16,10 +16,10 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Dragger from "./../components/Dragger.vue";
-import Nav from "./../components/Nav.vue";
-import router from "./../router";
-import { AppSettings, GeneralSettings } from "./../libs/settings";
+import Dragger from "@/components/Dragger.vue";
+import Nav from "@/components/Nav.vue";
+import router from "@/router";
+import { AppSettings, GeneralSettings } from "@/libs/settings";
 import "@/libs/helpers/extensions";
 
 @Component({
@@ -56,26 +56,16 @@ export default class DefaultLayout extends Vue {
     let els = document.querySelectorAll("[tooltip]");
 
     for (let i = 0, n = els.length; i < n; ++i) {
-      let el = els[i];
+      let el = els[i] as HTMLElement;
 
       el.addEventListener("mouseenter", () => {
         const er = el.getBoundingClientRect();
-        const getTooltipLeftPos = () => {
-          let tw = tooltip.getBoundingClientRect().width;
-          let left = er.left + er.width / 2 - tw / 2;
-
-          if (left + tw > window.innerWidth) {
-            left = window.innerWidth - tw - 5;
-          }
-
-          return left;
-        };
 
         tooltip.innerHTML = el.getAttribute("tooltip")!;
 
         tooltip.style.transform = "scale(1)";
         tooltip.style.top = `${er.top - er.height - 2}px`;
-        tooltip.style.left = `${getTooltipLeftPos()}px`;
+        tooltip.style.left = `${er.left.toInWindowBounds("x", tooltip, el)}px`;
         tooltip.style.opacity = "1";
       });
 
