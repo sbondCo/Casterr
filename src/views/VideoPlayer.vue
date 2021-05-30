@@ -8,9 +8,21 @@
       @click="playPause"
     ></video>
 
+    <ContextMenu ref="timelineContextMenu" mountID="progressBar">
+      <ContextItem @click.native="addClip">
+        Add Clip
+      </ContextItem>
+    </ContextMenu>
+
+    <ContextMenu ref="clipContextMenu" mountID="clipsBar">
+      <ContextItem>
+        Remove Clip
+      </ContextItem>
+    </ContextMenu>
+
     <div ref="timeline" class="timeline">
-      <div ref="progressBar" class="progressBar"></div>
-      <div ref="clipsBar" class="clipsBar"></div>
+      <div ref="progressBar" id="progressBar" class="progressBar"></div>
+      <div ref="clipsBar" id="clipsBar" class="clipsBar"></div>
     </div>
 
     <div class="controls">
@@ -67,6 +79,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
+import ContextMenu from "@/components/context/ContextMenu.vue";
+import ContextItem from "@/components/context/ContextItem.vue";
 import Button from "@/components/ui/Button.vue";
 import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import "@/libs/helpers/extensions";
@@ -79,6 +93,8 @@ import noUiSlider, { PipsMode, target } from "nouislider";
 @Component({
   components: {
     Icon,
+    ContextMenu,
+    ContextItem,
     Button,
     ButtonConnector
   }
