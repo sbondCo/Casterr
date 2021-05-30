@@ -15,7 +15,7 @@
     </ContextMenu>
 
     <ContextMenu ref="clipContextMenu" mountID="clipsBar">
-      <ContextItem>
+      <ContextItem @click.native="removeClosestClip">
         Remove Clip
       </ContextItem>
     </ContextMenu>
@@ -504,6 +504,31 @@ export default class VideoPlayer extends Vue {
     }
 
     this.createClipsBar(starts, connects, tooltips);
+  }
+
+  /**
+   * Remove closest clip to cursors X position from MouseEvent data.
+   * @param ev Data from mouse event.
+   */
+  removeClosestClip(ev: MouseEvent) {
+    let handles = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-origin .noUi-handle");
+    let handleXs = new Array<number>();
+
+    // Add x positions of handles to `handleXs` array
+    for (let i = 0, n = handles.length; i < n; ++i) {
+      handleXs.push(handles[i].getBoundingClientRect().x + 35);
+    }
+
+    // Get closest value in `handleXs` using pointer x from event
+    var closestX = handleXs.reduce(function(prev, curr) {
+      return Math.abs(curr - ev.clientX) < Math.abs(prev - ev.clientX) ? curr : prev;
+    });
+
+    // Get handleIndex, if even number minus one to get first handle in clip
+    let handleIndex = handleXs.indexOf(closestX);
+    if (handleIndex % 2) --handleIndex;
+
+    this.removeClip(handleIndex);
   }
 
   /**
