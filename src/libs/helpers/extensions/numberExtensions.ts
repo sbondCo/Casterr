@@ -11,6 +11,14 @@ interface Number {
    * Convert signed decimal to hex twos complement.
    */
   toHexTwosComplement(): string;
+  /**
+   * Get new X or Y values for an element to
+   * ensure that it lies within the windows bounds.
+   * @param pos If should calculate pos as X(left) or Y(top).
+   * @param el Element that is being corrected.
+   * @param centerTo If passed, will return X or Y that is centered to specified element.
+   */
+  toInWindowBounds(pos: "x" | "y", el: HTMLElement, centerTo?: HTMLElement): number;
 }
 
 Number.prototype.toReadableTimeFromSeconds = function(this: number): string {
@@ -62,4 +70,46 @@ Number.prototype.toHexTwosComplement = function(this: number, size: number = 8):
 
     return (0x01 + parseInt(output, 16)).toString(16);
   }
+};
+
+Number.prototype.toInWindowBounds = function(
+  this: number,
+  pos: "x" | "y",
+  el: HTMLElement,
+  centerTo?: HTMLElement
+): number {
+  // How much space to add between `el` and window border
+  const pad = 5;
+
+  // X or Y pos
+  let xy = this;
+
+  // If el to centerTo passed, update `xy`
+  if (centerTo) {
+    const rect = centerTo.getBoundingClientRect();
+
+    // Only supports aligning elements on X axis currently,
+    // if needed later for Y axis, will update.
+    if (pos == "x") {
+      xy = rect.left + rect.width / 2 - el.getBoundingClientRect().width / 2;
+    }
+  }
+
+  if (pos == "x") {
+    const width = el.getBoundingClientRect().width;
+
+    if (xy + width > window.innerWidth) {
+      xy = window.innerWidth - width - pad;
+    }
+  }
+
+  if (pos == "y") {
+    const height = el.getBoundingClientRect().height;
+
+    if (xy + height > window.innerHeight) {
+      xy = window.innerHeight - height - pad;
+    }
+  }
+
+  return xy;
 };
