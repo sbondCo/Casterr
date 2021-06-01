@@ -8,12 +8,8 @@
       @click="playPause"
     ></video>
 
-    <ContextMenu ref="timelineContextMenu" mountID="progressBar">
-      <ContextItem @click.native="addClip">
-        Add Clip
-      </ContextItem>
-    </ContextMenu>
-
+    <!-- clipsBar connects are the only things the user can click on, on the timelineBar.
+         So the user can only see this ContextMenu by right clicking on a clip. -->
     <ContextMenu ref="clipContextMenu" mountID="clipsBar">
       <ContextItem @click.native="removeClosestClip">
         Remove Clip
@@ -432,7 +428,7 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Add clip at currentProgress/current position of progressBar handle
+   * Add clip at currentProgress/current position of progressBar handle.
    */
   addClip() {
     let starts = new Array<number>();
