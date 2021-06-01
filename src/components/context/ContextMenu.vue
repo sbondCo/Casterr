@@ -37,7 +37,7 @@ export default class ContextMenu extends Vue {
 <style lang="scss">
 .contextMenu {
   position: fixed;
-  padding: 8px;
+  padding: 6px;
   background-color: $darkAccentColor;
   border-radius: 4px;
   outline: unset;

@@ -11,7 +11,7 @@
     <!-- clipsBar connects are the only things the user can click on, on the timelineBar.
          So the user can only see this ContextMenu by right clicking on a clip. -->
     <ContextMenu ref="clipContextMenu" mountID="clipsBar">
-      <ContextItem @click.native="removeClosestClip">
+      <ContextItem @click="removeClosestClip">
         Remove Clip
       </ContextItem>
     </ContextMenu>
