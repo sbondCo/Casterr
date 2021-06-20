@@ -20,57 +20,13 @@
   </a>
 </p>
 
-## Main Goal
+## The best way to share your moments
 
-Easing the process of sharing your best moments in-game.
+Casterr eases the process of sharing your best moments in and out game.
 
-Automatically start recording your game when it is opened. When the game closes, stop recording. Show local recordings and allow users to clip the parts in the video that they want to upload or keep. If the user chooses to upload the video, process it and then send it to an upload service that the user has predefined. Once uploaded give the user the share link.
+We're currently still under development and working towards a first release with all the main features included.
 
-## Current Features
-
-- **Works on Windows & Linux**
-
-- <details open>
-  <summary><b>Recording</b></summary>
-  <ul>
-    <li>Start / Stop</li>
-    <li>Clip recordings</li>
-      <ul>
-        Clip the best parts from your recording into their own video.
-      </ul>
-    <li>Recordings browser</li> 
-      <ul>
-        <li>Name</li>
-        <li>Length</li>
-        <li>Size</li>
-        <li>FPS</li>
-        <li>Thumbnail</li>
-      </ul>
-    <li>Status indicator</li>
-  </ul>
-</details>
-
-- <details>
-  <summary><b>Settings</b></summary>
-  <ul>
-    <li><b>General</b></li>
-      <ul>
-        <li>Startup Page</li>
-      </ul>
-    <li><b>Recording</b></li>
-      <ul>
-        <li>Thumb Save Folder</li>
-        <li>Video Save Folder</li>
-        <li>Video Save Name (With custom date/time formatting)</li>
-        <li>Video Device</li>
-        <li>FPS</li>
-        <li>Resolution</li>
-        <li>Format</li>
-        <li>Audio Devices To Record (Select as many as you want!)</li>
-        <li>Seperate Audio Tracks</li>
-      </ul>
-  </ul>
-</details>
+Feel free to [test Casterr out](https://github.com/sbondCo/Casterr/releases) or [track our progress to 1.0](https://github.com/orgs/sbondCo/projects/2).
 
 ## Contributing
 
