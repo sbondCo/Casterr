@@ -17,7 +17,7 @@
       </span>
     </div>
 
-    <div class="thumbContainer" v-if="allRecordings.length > 0">
+    <div class="thumbContainer" v-if="videos.length > 0">
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
           <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
@@ -81,9 +81,11 @@ export default class extends Vue {
   subPages = subPages;
   activeSubPage: subPage = "recordings";
 
-  // TODO: make better, .get func should have param to get certain number of videos
   allRecordings = RecordingsManager.get();
+  allClips = RecordingsManager.get(true);
+  videos = this.allRecordings;
   loadedRecordings = new Array();
+
   dropZoneHidden = true;
   dragEnterTarget: EventTarget | null = null;
 
@@ -105,9 +107,9 @@ export default class extends Vue {
     this.loadedRecordings = [];
 
     if (val == "recordings") {
-      this.allRecordings = RecordingsManager.get();
-    } else if (val == "clips") {
-      this.allRecordings = RecordingsManager.getClips();
+      this.videos = this.allRecordings;
+    } else {
+      this.videos = this.allClips;
     }
 
     this.loadMoreRecordings();
@@ -120,8 +122,8 @@ export default class extends Vue {
     // How many videos to load in
     let videosToLoad = 8;
 
-    // Loop over allRecordings after removing currently loaded recordings adding to loadedRecordings
-    for (let [i, v] of this.allRecordings.slice(this.loadedRecordings.length).entries()) {
+    // Loop over videos after removing currently loaded recordings adding to loadedRecordings
+    for (let [i, v] of this.videos.slice(this.loadedRecordings.length).entries()) {
       // Add to loadedRecordings
       this.loadedRecordings.push(v);
 

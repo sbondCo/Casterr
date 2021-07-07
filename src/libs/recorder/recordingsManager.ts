@@ -18,11 +18,12 @@ export default class RecordingsManager {
   /**
    * Get all user's past recordings.
    */
-  public static get(): Array<Recording> {
+  public static get(clips: boolean = false): Array<Recording> {
+    const file = clips ? "clips.json" : "PastRecordings.json";
     const recordings = new Array<Recording>();
 
     // Get all pastRecordings from json file
-    const data = fs.readFileSync(PathHelper.getFile("PastRecordings.json"), "utf8");
+    const data = fs.readFileSync(PathHelper.getFile(file), "utf8");
 
     // Parse JSON from file and assign it to recordings variable.
     // Because it is stored in a way so that we don't have to read the file
@@ -32,14 +33,6 @@ export default class RecordingsManager {
     Object.assign(recordings, JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`));
 
     return recordings.reverse();
-  }
-
-  public static getClips(): Array<Recording> {
-    const recordings = new Array<Recording>();
-
-    recordings.push({ videoPath: "", thumbPath: "", fileSize: 0, fps: "4", duration: 2 });
-
-    return recordings;
   }
 
   /**
