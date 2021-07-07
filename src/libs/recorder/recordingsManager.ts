@@ -34,6 +34,14 @@ export default class RecordingsManager {
     return recordings.reverse();
   }
 
+  public static getClips(): Array<Recording> {
+    const recordings = new Array<Recording>();
+
+    recordings.push({ videoPath: "", thumbPath: "", fileSize: 0, fps: "4", duration: 2 });
+
+    return recordings;
+  }
+
   /**
    * Add video to user's PastRecordings file
    * @param videoPath Path to video that should be added

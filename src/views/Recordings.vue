@@ -6,6 +6,17 @@
     @dragenter="handleDragEnter"
     @dragleave="handleDragEnd"
   >
+    <div class="viewToggler">
+      <span
+        v-for="page in subPages"
+        :key="page"
+        :class="{ active: page == activeSubPage }"
+        @click="activeSubPage = page"
+      >
+        {{ page }}
+      </span>
+    </div>
+
     <div class="thumbContainer" v-if="allRecordings.length > 0">
       <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
         <div class="inner">
@@ -53,10 +64,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import "@/libs/helpers/extensions";
+
+const subPages = ["recordings", "clips"] as const;
+type subPage = typeof subPages[number];
 
 @Component({
   components: {
@@ -64,6 +78,10 @@ import "@/libs/helpers/extensions";
   }
 })
 export default class extends Vue {
+  subPages = subPages;
+  activeSubPage: subPage = "recordings";
+
+  // TODO: make better, .get func should have param to get certain number of videos
   allRecordings = RecordingsManager.get();
   loadedRecordings = new Array();
   dropZoneHidden = true;
@@ -82,6 +100,19 @@ export default class extends Vue {
     });
   }
 
+  @Watch("activeSubPage")
+  subPageChanged(val: subPage) {
+    this.loadedRecordings = [];
+
+    if (val == "recordings") {
+      this.allRecordings = RecordingsManager.get();
+    } else if (val == "clips") {
+      this.allRecordings = RecordingsManager.getClips();
+    }
+
+    this.loadMoreRecordings();
+  }
+
   /**
    * Load more recordings into view
    */
@@ -90,9 +121,9 @@ export default class extends Vue {
     let videosToLoad = 8;
 
     // Loop over allRecordings after removing currently loaded recordings adding to loadedRecordings
-    for (let [i, v] of this.$data.allRecordings.slice(this.$data.loadedRecordings.length).entries()) {
+    for (let [i, v] of this.allRecordings.slice(this.loadedRecordings.length).entries()) {
       // Add to loadedRecordings
-      this.$data.loadedRecordings.push(v);
+      this.loadedRecordings.push(v);
 
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
@@ -168,6 +199,7 @@ export default class extends Vue {
 <style lang="scss">
 #recordings {
   display: flex;
+  flex-flow: column;
   justify-content: center;
   align-items: center;
 
@@ -177,6 +209,25 @@ export default class extends Vue {
     align-items: center;
     height: calc(100vh - 86px);
     font-size: 32px;
+  }
+
+  .viewToggler {
+    align-self: flex-start;
+    font-size: 28px;
+    margin: 10px 10px 0 20px;
+
+    span {
+      text-transform: capitalize;
+      cursor: pointer;
+
+      &:not(.active) {
+        color: $textPrimaryHover;
+      }
+
+      &:not(:first-child) {
+        margin-left: 15px;
+      }
+    }
   }
 
   .thumbContainer {
