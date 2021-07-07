@@ -6,54 +6,56 @@
     @dragenter="handleDragEnter"
     @dragleave="handleDragEnd"
   >
-    <div class="viewToggler">
-      <span
-        v-for="page in subPages"
-        :key="page"
-        :class="{ active: page == activeSubPage }"
-        @click="activeSubPage = page"
-      >
-        {{ page }}
-      </span>
-    </div>
+    <div class="wrapper">
+      <div class="viewToggler">
+        <span
+          v-for="page in subPages"
+          :key="page"
+          :class="{ active: page == activeSubPage }"
+          @click="activeSubPage = page"
+        >
+          {{ page }}
+        </span>
+      </div>
 
-    <div class="thumbContainer" v-if="videos.length > 0">
-      <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
-        <div class="inner">
-          <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
-          <img
-            v-if="require('fs').existsSync(vid.thumbPath)"
-            :src="'secfile://' + vid.thumbPath"
-            alt="Video Thumbnail"
-          />
-          <span v-else class="noThumb">No Thumbnail Found</span>
+      <div class="thumbContainer" v-if="videos.length > 0">
+        <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
+          <div class="inner">
+            <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
+            <img
+              v-if="require('fs').existsSync(vid.thumbPath)"
+              :src="'secfile://' + vid.thumbPath"
+              alt="Video Thumbnail"
+            />
+            <span v-else class="noThumb">No Thumbnail Found</span>
 
-          <div class="info">
-            <span class="fps">
-              {{ vid.fps }}
-              <p>FPS</p>
-            </span>
-
-            <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
-              <Icon i="edit" :wh="25" />
-            </router-link>
-
-            <div class="bar">
-              <span class="title">
-                <p>{{ vid.videoPath }}</p>
+            <div class="info">
+              <span class="fps">
+                {{ vid.fps }}
+                <p>FPS</p>
               </span>
 
-              <div class="videoInfo">
-                <span v-if="vid.duration >= 0">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
-                <span v-if="vid.fileSize >= 0">{{ vid.fileSize.toReadableFileSize() }}</span>
+              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
+                <Icon i="edit" :wh="25" />
+              </router-link>
+
+              <div class="bar">
+                <span class="title">
+                  <p>{{ vid.videoPath }}</p>
+                </span>
+
+                <div class="videoInfo">
+                  <span v-if="vid.duration >= 0">{{ vid.duration.toReadableTimeFromSeconds() }}</span>
+                  <span v-if="vid.fileSize >= 0">{{ vid.fileSize.toReadableFileSize() }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      <span class="noRecordings">You Have No Recordings!</span>
+      <div v-else>
+        <span class="noRecordings">You Have No Recordings!</span>
+      </div>
     </div>
 
     <div :class="{ dropZone: true, hidden: dropZoneHidden }">
@@ -204,6 +206,7 @@ export default class extends Vue {
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  margin: 10px 20px;
 
   .noRecordings {
     display: flex;
@@ -213,168 +216,188 @@ export default class extends Vue {
     font-size: 32px;
   }
 
-  .viewToggler {
-    align-self: flex-start;
-    font-size: 28px;
-    margin: 10px 10px 0 20px;
+  .wrapper {
+    & > div:not(.dropZone) {
+      margin-bottom: 10px;
+    }
 
-    span {
-      text-transform: capitalize;
-      cursor: pointer;
+    .viewToggler {
+      align-self: flex-start;
+      font-size: 28px;
 
-      &:not(.active) {
-        color: $textPrimaryHover;
-      }
+      span {
+        text-transform: capitalize;
+        cursor: pointer;
 
-      &:not(:first-child) {
-        margin-left: 15px;
+        &:not(.active) {
+          color: $textPrimaryHover;
+        }
+
+        &:not(:first-child) {
+          margin-left: 15px;
+        }
       }
     }
-  }
 
-  .thumbContainer {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 10px;
-    max-width: 1600px;
+    .thumbContainer {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1600px;
 
-    .thumb {
-      flex-grow: 1;
-      width: 25%;
-      height: 250px;
-      margin: 10px;
-      background-color: $quaternaryColor;
-      border-radius: 4px;
-      overflow: hidden;
+      .thumb {
+        flex-grow: 1;
+        width: 25%;
+        height: 250px;
+        margin-bottom: 20px;
+        background-color: $quaternaryColor;
+        border-radius: 4px;
+        overflow: hidden;
 
-      .inner {
-        position: relative;
-        height: 100%;
-
-        img {
-          width: 100%;
+        .inner {
+          position: relative;
           height: 100%;
-          object-fit: cover;
-        }
 
-        .noThumb {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: 100%;
-          font-size: 25px;
-        }
-
-        .info {
-          position: absolute;
-          top: 0;
-          height: 100%;
-          width: 100%;
-          cursor: pointer;
-
-          .fps {
-            display: inline-flex;
-            position: absolute;
-            right: 0;
-            padding: 10px;
-            text-shadow: 1px 1px black;
-            font-weight: bold;
-            font-style: italic;
-
-            * {
-              padding: 0 5px;
-            }
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
           }
 
-          .edit {
+          .noThumb {
             display: flex;
             justify-content: center;
             align-items: center;
-            position: absolute;
-            opacity: 0;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            transition: opacity 250ms ease-in-out;
-
-            svg {
-              fill: $textPrimary;
-              filter: drop-shadow(0 0 5px $primaryColor);
-            }
+            width: 100%;
+            height: 100%;
+            font-size: 25px;
           }
 
-          .bar {
+          .info {
             position: absolute;
-            bottom: 0;
-            right: 0;
+            top: 0;
+            height: 100%;
             width: 100%;
-            height: 40px;
-            padding: 0 10px;
-            line-height: 40px;
-            background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
-            transition: background-color 250ms ease-in-out;
+            cursor: pointer;
 
-            .title {
-              display: flex;
-              width: 60%;
-              font-weight: 700;
-              transition: width 250ms ease-in-out;
+            .fps {
+              display: inline-flex;
+              position: absolute;
+              right: 0;
+              padding: 10px;
+              text-shadow: 1px 1px black;
+              font-weight: bold;
+              font-style: italic;
 
-              p {
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-              }
-
-              @media (max-width: 1370px) {
-                width: 50%;
-              }
-
-              @media (max-width: 1130px) {
-                width: 40%;
-              }
-
-              @media (max-width: 1000px) {
-                width: 50%;
+              * {
+                padding: 0 5px;
               }
             }
 
-            .videoInfo {
+            .edit {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              position: absolute;
+              opacity: 0;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              transition: opacity 250ms ease-in-out;
+
+              svg {
+                fill: $textPrimary;
+                filter: drop-shadow(0 0 5px $primaryColor);
+              }
+            }
+
+            .bar {
               position: absolute;
               bottom: 0;
-              right: 10px;
+              right: 0;
+              width: 100%;
+              height: 40px;
+              padding: 0 10px;
+              line-height: 40px;
+              background-color: change-color($color: $darkAccentColor, $alpha: 0.5);
+              transition: background-color 250ms ease-in-out;
 
-              span {
-                padding: 5px;
-                font-size: 15px;
+              .title {
+                display: flex;
+                width: 60%;
+                font-weight: 700;
+                transition: width 250ms ease-in-out;
+
+                p {
+                  overflow: hidden;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                }
+
+                @media (max-width: 1370px) {
+                  width: 50%;
+                }
+
+                @media (max-width: 1130px) {
+                  width: 40%;
+                }
+
+                @media (max-width: 1000px) {
+                  width: 50%;
+                }
+              }
+
+              .videoInfo {
+                position: absolute;
+                bottom: 0;
+                right: 10px;
+
+                span {
+                  padding: 5px;
+                  font-size: 15px;
+                }
               }
             }
-          }
 
-          &:hover {
-            > .title {
-              background-color: $darkAccentColor;
-            }
+            &:hover {
+              > .title {
+                background-color: $darkAccentColor;
+              }
 
-            > .edit {
-              opacity: 1;
+              > .edit {
+                opacity: 1;
+              }
             }
           }
         }
-      }
 
-      @media (max-width: 800px) {
-        width: 50%;
-      }
+        @media (max-width: 800px) {
+          width: 100%;
+        }
 
-      @media (min-width: 800px) and (max-width: 1000px) {
-        width: 33%;
-      }
+        @media (min-width: 800px) and (max-width: 1200px) {
+          width: 45%;
 
-      @media (min-width: 1200px) {
-        width: 25%;
+          &:nth-child(odd):not(:only-child) {
+            margin-right: 20px;
+          }
+        }
+
+        @media (min-width: 1200px) {
+          width: 25%;
+
+          &:not(:only-child) {
+            margin-left: 20px;
+          }
+
+          &:first-child {
+            margin-left: 0;
+          }
+
+          &:nth-child(3n + 4) {
+            margin-left: 0;
+          }
+        }
       }
     }
   }
@@ -397,14 +420,5 @@ export default class extends Vue {
       fill: $textPrimary;
     }
   }
-}
-
-.videoPlayerWrapper {
-  position: absolute;
-  top: 68px;
-  height: 100vh;
-  width: 100vw;
-  background-color: $quaternaryColor;
-  z-index: 999999999999;
 }
 </style>
