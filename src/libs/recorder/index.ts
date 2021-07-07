@@ -35,7 +35,7 @@ export default class Recorder {
     // Wait for ffmpeg to exit
     await this.ffmpeg.kill();
 
-    // Add recording to pastRecordings
+    // Add recording to recordings file
     RecordingsManager.add((await this.args).videoPath);
   }
 
