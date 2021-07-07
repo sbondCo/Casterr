@@ -53,12 +53,12 @@
           </div>
         </div>
       </div>
-      <span v-else class="noRecordings">You Have No Recordings!</span>
+      <span v-else class="noRecordings txt-capitalised">You Have No {{ activeSubPage }}!</span>
     </div>
 
     <div :class="{ dropZone: true, hidden: dropZoneHidden }">
       <Icon i="add" wh="36" />
-      <span>Add Files</span>
+      <span class="txt-capitalised">Add {{ activeSubPage }}</span>
     </div>
   </div>
 </template>
@@ -202,8 +202,8 @@ export default class extends Vue {
 #recordings {
   display: flex;
   flex-flow: column;
-  justify-content: center;
   align-items: center;
+  min-height: calc(100% - 20px);
   margin: 10px 20px;
 
   .wrapper {
