@@ -17,9 +17,11 @@ export interface Recording {
 export default class RecordingsManager {
   /**
    * Get all user's past recordings.
+   * @param clips If should fetch clips, instead of recordings.
+   * @returns All recordings | clips.
    */
   public static get(clips: boolean = false): Array<Recording> {
-    const file = clips ? "Clips.json" : "Recordings.json";
+    const file = this.getVideoFile(clips);
     const recordings = new Array<Recording>();
 
     // Get all videos from appropriate json file
@@ -36,10 +38,11 @@ export default class RecordingsManager {
   }
 
   /**
-   * Add video to user's recordings file
-   * @param videoPath Path to video that should be added
+   * Add video to user's recordings file.
+   * @param videoPath Path to video that should be added.
+   * @param isClip If adding a clip instead of a recording.
    */
-  public static async add(videoPath: string): Promise<void> {
+  public static async add(videoPath: string, isClip: boolean = false): Promise<void> {
     // Throw exception if video from videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
@@ -86,9 +89,13 @@ export default class RecordingsManager {
           // JSON string is appended with a ',' at the end. If you are going to use
           // the data in this file, always remove the last letter (the ',') first.
           // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(PathHelper.getFile("Recordings.json"), `${JSON.stringify(recording, null, 2)},`, (err: any) => {
-            if (err) throw err;
-          });
+          fs.appendFile(
+            PathHelper.getFile(this.getVideoFile(isClip)),
+            `${JSON.stringify(recording, null, 2)},`,
+            (err: any) => {
+              if (err) throw err;
+            }
+          );
         }
       }
     );
@@ -110,6 +117,11 @@ export default class RecordingsManager {
     return thumbPath;
   }
 
+  /**
+   * Clip a recording.
+   * @param videoPath Path to video being clipped.
+   * @param timestamps Timestamps from recording to clip.
+   */
   public static async clip(videoPath: string, timestamps: number[]) {
     // Make sure .processing folder exists and is hidden
     PathHelper.ensureExists(`${RecordingSettings.videoSaveFolder}/clips/.processing`, true, {
@@ -163,13 +175,25 @@ export default class RecordingsManager {
       `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
       "onExit",
       {
-        // After creating final clip, delete all temp files
+        // After creating final clip...
         onExitCallback: () => {
-          // Remove temp dir
+          // Remove temp dir and files inside it
           PathHelper.removeDir(tmpOutFolder);
           Notifications.deletePopup(popupName);
+
+          // Add clip to clips file
+          this.add(clipOutPath, true);
         }
       }
     );
+  }
+
+  /**
+   * Get correct video file name.
+   * @param clips If should get clips file.
+   * @returns Name of file including videos.
+   */
+  private static getVideoFile(clips: boolean) {
+    return clips ? "Clips.json" : "Recordings.json";
   }
 }
