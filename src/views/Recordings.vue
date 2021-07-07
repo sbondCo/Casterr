@@ -377,8 +377,8 @@ export default class extends Vue {
         @media (min-width: 800px) and (max-width: 1200px) {
           width: 45%;
 
-          &:nth-child(odd):not(:only-child) {
-            margin-right: 20px;
+          &:nth-child(even):not(:only-child) {
+            margin-left: 20px;
           }
         }
 
