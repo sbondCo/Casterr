@@ -19,10 +19,10 @@ export default class RecordingsManager {
    * Get all user's past recordings.
    */
   public static get(clips: boolean = false): Array<Recording> {
-    const file = clips ? "clips.json" : "PastRecordings.json";
+    const file = clips ? "clips.json" : "recordings.json";
     const recordings = new Array<Recording>();
 
-    // Get all pastRecordings from json file
+    // Get all videos from appropriate json file
     const data = fs.readFileSync(PathHelper.getFile(file), "utf8");
 
     // Parse JSON from file and assign it to recordings variable.
@@ -36,7 +36,7 @@ export default class RecordingsManager {
   }
 
   /**
-   * Add video to user's PastRecordings file
+   * Add video to user's recordings file
    * @param videoPath Path to video that should be added
    */
   public static async add(videoPath: string): Promise<void> {
@@ -82,17 +82,13 @@ export default class RecordingsManager {
               }
             });
 
-          // Append recording to PastRecordings file
+          // Append recording to recordings file
           // JSON string is appended with a ',' at the end. If you are going to use
           // the data in this file, always remove the last letter (the ',') first.
           // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(
-            PathHelper.getFile("PastRecordings.json"),
-            `${JSON.stringify(recording, null, 2)},`,
-            (err: any) => {
-              if (err) throw err;
-            }
-          );
+          fs.appendFile(PathHelper.getFile("recordings.json"), `${JSON.stringify(recording, null, 2)},`, (err: any) => {
+            if (err) throw err;
+          });
         }
       }
     );

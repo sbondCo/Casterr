@@ -27,7 +27,7 @@ export default class PathHelper {
       | "GeneralSettings.json"
       | "RecordingSettings.json"
       | "KeyBindingSettings.json"
-      | "PastRecordings.json"
+      | "recordings.json"
       | "clips.json"
   ) {
     let path: string[];
@@ -42,8 +42,8 @@ export default class PathHelper {
       case "KeyBindingSettings.json":
         path = ["Settings", "KeyBindingSettings.json"];
         break;
-      case "PastRecordings.json":
-        path = ["PastRecordings.json"];
+      case "recordings.json":
+        path = ["recordings.json"];
         break;
       case "clips.json":
         path = ["clips.json"];
