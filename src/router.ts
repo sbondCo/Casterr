@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Recordings from "./views/Recordings.vue";
+import Videos from "./views/Videos.vue";
 import Settings from "./views/Settings.vue";
 import VideoPlayer from "./views/VideoPlayer.vue";
 import DesktopNotification from "./views/DesktopNotification.vue";
@@ -9,9 +9,9 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/recordings",
-    name: "recordings",
-    component: Recordings
+    path: "/videos",
+    name: "videos",
+    component: Videos
   },
   {
     path: "/settings",
