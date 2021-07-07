@@ -53,9 +53,7 @@
           </div>
         </div>
       </div>
-      <div v-else>
-        <span class="noRecordings">You Have No Recordings!</span>
-      </div>
+      <span v-else class="noRecordings">You Have No Recordings!</span>
     </div>
 
     <div :class="{ dropZone: true, hidden: dropZoneHidden }">
@@ -208,17 +206,19 @@ export default class extends Vue {
   align-items: center;
   margin: 10px 20px;
 
-  .noRecordings {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 86px);
-    font-size: 32px;
-  }
-
   .wrapper {
+    width: 100%;
+    max-width: 1600px;
+
     & > div:not(.dropZone) {
       margin-bottom: 10px;
+    }
+
+    .noRecordings {
+      display: flex;
+      justify-content: center;
+      margin-top: 35px;
+      font-size: 32px;
     }
 
     .viewToggler {
@@ -242,7 +242,6 @@ export default class extends Vue {
     .thumbContainer {
       display: flex;
       flex-wrap: wrap;
-      max-width: 1600px;
 
       .thumb {
         flex-grow: 1;
