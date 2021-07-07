@@ -19,7 +19,7 @@ export default class RecordingsManager {
    * Get all user's past recordings.
    */
   public static get(clips: boolean = false): Array<Recording> {
-    const file = clips ? "clips.json" : "recordings.json";
+    const file = clips ? "Clips.json" : "Recordings.json";
     const recordings = new Array<Recording>();
 
     // Get all videos from appropriate json file
@@ -86,7 +86,7 @@ export default class RecordingsManager {
           // JSON string is appended with a ',' at the end. If you are going to use
           // the data in this file, always remove the last letter (the ',') first.
           // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(PathHelper.getFile("recordings.json"), `${JSON.stringify(recording, null, 2)},`, (err: any) => {
+          fs.appendFile(PathHelper.getFile("Recordings.json"), `${JSON.stringify(recording, null, 2)},`, (err: any) => {
             if (err) throw err;
           });
         }
