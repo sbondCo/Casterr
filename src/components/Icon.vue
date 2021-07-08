@@ -1,5 +1,5 @@
 <template>
-  <svg v-html="Icon" :width="wh" :height="wh" :viewBox="viewBox"></svg>
+  <svg v-html="Icon" ref="icon" :width="wh" :height="wh" :viewBox="viewBox"></svg>
 </template>
 
 <script lang="ts">
@@ -9,6 +9,7 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 export default class Icon extends Vue {
   @Prop({ required: true }) i: string;
   @Prop({ default: 24 }) wh: number;
+  @Prop({ required: false }) direction?: "up" | "down" | "left" | "right";
 
   viewBox = "0 0 24 24";
 
@@ -61,9 +62,9 @@ export default class Icon extends Vue {
       case "volumeMax":
         this.viewBox = "0 0 18 18";
         return `
-          <path fill-rule="evenodd" clip-rule="evenodd" 
-            d="M0 6v6h4l5 5V1L4 6H0zm7-.17v6.34L4.83 10H2V8h2.83L7 5.83zM13.5 9A4.5 4.5 0 0011 
-            4.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM11 .23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M0 6v6h4l5 5V1L4 6H0zm7-.17v6.34L4.83 10H2V8h2.83L7 5.83zM13.5 9A4.5 4.5 0 0011
+            4.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM11 .23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5
             6.71v2.06c4.01-.91 7-4.49 7-8.77 0-4.28-2.99-7.86-7-8.77z"
           />
         `;
@@ -113,15 +114,13 @@ export default class Icon extends Vue {
             1.576 11 1 10.424 5.417 6 1 1.576 1.576 1 6 5.417 10.424 1">
           </polygon>
         `;
-      // Arrow points right by default, plan is to just rotate it when needed instead of having arrows for each direction
       case "arrow":
         this.viewBox = "0 0 57 57";
         return `
-          <path fill-rule="evenodd" clip-rule="evenodd" 
+          <path fill-rule="evenodd" clip-rule="evenodd"
             d="M28.5.167L23.506 5.16 43.27 24.957H.167v7.084h43.102L23.506 51.84l4.994 4.993L56.833 28.5 28.5.167z"
           />
         `;
-      // Chevron points right by default, plan is to just rotate it when needed instead of having chevrons for each direction
       case "chevron":
         this.viewBox = "0 0 8 12";
         return `
@@ -130,23 +129,23 @@ export default class Icon extends Vue {
       case "clips":
         this.viewBox = "0 0 30 30";
         return `
-          <path 
+          <path
             fill-rule="evenodd"
             clip-rule="evenodd"
             d="M3 15C3 8.385 8.385 3 15 3s12 5.385 12 12-5.385 12-12 12S3
-            21.615 3 15zm-3 0c0 8.28 6.72 15 15 15 8.28 0 15-6.72 15-15 
+            21.615 3 15zm-3 0c0 8.28 6.72 15 15 15 8.28 0 15-6.72 15-15
             0-8.28-6.72-15-15-15C6.72 0 0 6.72 0 15zm19.5 0l-6 6V9l6 6z"
           />
         `;
       case "time":
         this.viewBox = "0 0 30 30";
         return `
-          <path 
+          <path
             fill-rule="evenodd"
             clip-rule="evenodd"
-            d="M14.985 0C6.705 0 0 6.72 0 15c0 8.28 6.705 15 14.985 15C23.28 30 30 
-            23.28 30 15c0-8.28-6.72-15-15.015-15zM15 27C8.37 27 3 21.63 3 15S8.37 3 
-            15 3s12 5.37 12 12-5.37 12-12 12zm.75-19.5H13.5v9l7.875 4.725L22.5 19.38l-6.75-4.005V7.5z" 
+            d="M14.985 0C6.705 0 0 6.72 0 15c0 8.28 6.705 15 14.985 15C23.28 30 30
+            23.28 30 15c0-8.28-6.72-15-15.015-15zM15 27C8.37 27 3 21.63 3 15S8.37 3
+            15 3s12 5.37 12 12-5.37 12-12 12zm.75-19.5H13.5v9l7.875 4.725L22.5 19.38l-6.75-4.005V7.5z"
           />
         `;
       case "edit":
@@ -165,6 +164,34 @@ export default class Icon extends Vue {
         `;
     }
   }
+
+  mounted() {
+    console.log(this.direction);
+    if (this.direction) this.correctIconDirection();
+  }
+
+  /**
+   * Change direction of Icon, if specified to do so
+   * with an extension to the name of it (-left, -up, etc).
+   */
+  correctIconDirection() {
+    const iconEl = this.$refs.icon as HTMLElement;
+
+    console.log("correcter", this.i);
+
+    // No right direction needed since the icon is right by default
+    switch (this.direction) {
+      case "up":
+        iconEl.classList.add("up");
+        break;
+      case "down":
+        iconEl.classList.add("down");
+        break;
+      case "left":
+        iconEl.classList.add("left");
+        break;
+    }
+  }
 }
 </script>
 
@@ -172,5 +199,17 @@ export default class Icon extends Vue {
 svg {
   // Fix div around SVG being too tall
   display: flex;
+
+  &.left {
+    transform: rotate(180deg);
+  }
+
+  &.up {
+    transform: rotate(270deg);
+  }
+
+  &.down {
+    transform: rotate(90deg);
+  }
 }
 </style>
