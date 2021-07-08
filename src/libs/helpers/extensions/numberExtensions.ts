@@ -98,8 +98,14 @@ Number.prototype.toInWindowBounds = function(
   if (pos == "x") {
     const width = el.getBoundingClientRect().width;
 
+    // If el goes off right of screen
     if (xy + width > window.innerWidth) {
       xy = window.innerWidth - width - pad;
+    }
+
+    // off left of screen
+    if (xy <= pad) {
+      xy = pad;
     }
   }
 
