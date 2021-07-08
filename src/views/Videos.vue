@@ -19,7 +19,7 @@
       </div>
 
       <div class="thumbContainer" v-if="videos.length > 0">
-        <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
+        <div class="thumb" v-for="vid in loadedVideos" :key="vid.id">
           <div class="inner">
             <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
             <img
@@ -35,7 +35,7 @@
                 <p>FPS</p>
               </span>
 
-              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
+              <router-link :to="{ name: 'videoEditor', params: { video: vid } }" class="edit">
                 <Icon i="edit" :wh="25" />
               </router-link>
 
@@ -84,7 +84,7 @@ export default class extends Vue {
   allRecordings = RecordingsManager.get();
   allClips = RecordingsManager.get(true);
   videos = this.allRecordings;
-  loadedRecordings = new Array();
+  loadedVideos = new Array();
 
   dropZoneHidden = true;
   dragEnterTarget: EventTarget | null = null;
@@ -104,7 +104,7 @@ export default class extends Vue {
 
   @Watch("activeSubPage")
   subPageChanged(val: subPage) {
-    this.loadedRecordings = [];
+    this.loadedVideos = [];
 
     if (val == "recordings") {
       this.videos = this.allRecordings;
@@ -122,10 +122,10 @@ export default class extends Vue {
     // How many videos to load in
     let videosToLoad = 8;
 
-    // Loop over videos after removing currently loaded recordings adding to loadedRecordings
-    for (let [i, v] of this.videos.slice(this.loadedRecordings.length).entries()) {
-      // Add to loadedRecordings
-      this.loadedRecordings.push(v);
+    // Loop over videos after removing currently loaded recordings adding to loadedVideos
+    for (let [i, v] of this.videos.slice(this.loadedVideos.length).entries()) {
+      // Add to loadedVideos
+      this.loadedVideos.push(v);
 
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;

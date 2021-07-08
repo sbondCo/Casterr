@@ -3,7 +3,7 @@
     <video
       ref="videoPlayer"
       id="video"
-      :src="'secfile://' + videoPath"
+      :src="'secfile://' + video.videoPath"
       @loadedmetadata="videoLoaded"
       @click="playPause"
     ></video>
@@ -81,7 +81,7 @@ import Button from "@/components/ui/Button.vue";
 import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import "@/libs/helpers/extensions";
 import Helpers from "@/libs/helpers";
-import RecordingsManager from "@/libs/recorder/recordingsManager";
+import RecordingsManager, { Recording } from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
 import noUiSlider, { PipsMode, target } from "nouislider";
@@ -96,9 +96,9 @@ import noUiSlider, { PipsMode, target } from "nouislider";
   }
 })
 export default class VideoPlayer extends Vue {
-  @Prop({ required: true }) videoPath: string;
+  @Prop({ required: true }) video: Recording;
 
-  private video: HTMLVideoElement;
+  private player: HTMLVideoElement;
   private videoEditor: target;
   private timelineBar: target;
   private progressBar: target;
@@ -119,10 +119,10 @@ export default class VideoPlayer extends Vue {
    * Get current video time.
    */
   get currentVideoTime() {
-    if (this.video != undefined) {
-      return this.video.currentTime;
+    if (this.player != undefined) {
+      return this.player.currentTime;
     } else {
-      // If this.video is undefined, then it most-likely hasn't
+      // If this.player is undefined, then it most-likely hasn't
       // loaded yet, so it's value will be 0 anyways.
       return 0;
     }
@@ -135,11 +135,11 @@ export default class VideoPlayer extends Vue {
    *                  just update the playPauseBtns icon to reflect the change.
    */
   playPause(userFired: boolean = true) {
-    if (this.video.paused) {
-      if (userFired) this.video.play();
+    if (this.player.paused) {
+      if (userFired) this.player.play();
       this.playPauseBtnIcon = "play";
     } else {
-      if (userFired) this.video.pause();
+      if (userFired) this.player.pause();
       this.playPauseBtnIcon = "pause";
     }
 
@@ -160,8 +160,8 @@ export default class VideoPlayer extends Vue {
     // hasn't loaded fully so we need to keep trying until it has.
     for (let i = 0; i < 3; ++i) {
       // Update volume if video element is defined
-      if (this.video != undefined) {
-        this.video.volume = volume;
+      if (this.player != undefined) {
+        this.player.volume = volume;
         break;
       }
 
@@ -169,9 +169,9 @@ export default class VideoPlayer extends Vue {
     }
 
     // Change volume icon depending on volume
-    if (this.video.volume == 0) {
+    if (this.player.volume == 0) {
       this.volumeIcon = "volumeMute";
-    } else if (this.video.volume < 0.5) {
+    } else if (this.player.volume < 0.5) {
       this.volumeIcon = "volumeMed";
     } else {
       this.volumeIcon = "volumeMax";
@@ -182,7 +182,7 @@ export default class VideoPlayer extends Vue {
    * Toggle mute on video.
    */
   toggleMute() {
-    if (this.video.volume > 0) {
+    if (this.player.volume > 0) {
       this.updateVolume(0);
     } else {
       this.updateVolume(0.5);
@@ -193,20 +193,20 @@ export default class VideoPlayer extends Vue {
    * Initialize all components after video had loaded.
    */
   videoLoaded() {
-    this.video = this.$refs.videoPlayer as HTMLVideoElement;
+    this.player = this.$refs.videoPlayer as HTMLVideoElement;
     this.videoEditor = this.$refs.videoEditor as target;
     this.timelineBar = this.$refs.timeline as target;
     this.progressBar = this.$refs.progressBar as target;
     this.clipsBar = this.$refs.clipsBar as target;
 
-    this.maxVideoTime = this.video.duration;
+    this.maxVideoTime = this.player.duration;
 
     // Update volume once now, so default volume value is applied
     this.updateVolume(this.volume);
 
-    this.video.addEventListener("play", () => this.playPause(false));
-    this.video.addEventListener("pause", () => this.playPause(false));
-    this.video.addEventListener("timeupdate", this.updateProgressBarTime);
+    this.player.addEventListener("play", () => this.playPause(false));
+    this.player.addEventListener("pause", () => this.playPause(false));
+    this.player.addEventListener("timeupdate", this.updateProgressBarTime);
 
     noUiSlider.create(this.progressBar, {
       start: [0],
@@ -214,7 +214,7 @@ export default class VideoPlayer extends Vue {
       animate: false,
       range: {
         min: 0,
-        max: this.video.duration
+        max: this.player.duration
       },
       pips: {
         mode: PipsMode.Count,
@@ -267,7 +267,7 @@ export default class VideoPlayer extends Vue {
    * @param newTime Time to skip to.
    */
   updateVideoTime(newTime: number) {
-    this.video.currentTime = newTime;
+    this.player.currentTime = newTime;
   }
 
   /**
@@ -286,7 +286,7 @@ export default class VideoPlayer extends Vue {
    * Update time on progress bar with current time on video.
    */
   updateProgressBarTime() {
-    this.progressBar.noUiSlider!.set(this.video.currentTime);
+    this.progressBar.noUiSlider!.set(this.player.currentTime);
   }
 
   /**
@@ -328,12 +328,12 @@ export default class VideoPlayer extends Vue {
     });
 
     this.progressBar.noUiSlider!.on("start", () => {
-      this.video.removeEventListener("timeupdate", this.updateProgressBarTime);
+      this.player.removeEventListener("timeupdate", this.updateProgressBarTime);
       this.cancelPlayingClips();
     });
 
     this.progressBar.noUiSlider!.on("end", () => {
-      this.video.addEventListener("timeupdate", this.updateProgressBarTime);
+      this.player.addEventListener("timeupdate", this.updateProgressBarTime);
     });
 
     this.progressBar.addEventListener("dblclick", () => {
@@ -360,7 +360,7 @@ export default class VideoPlayer extends Vue {
         tooltips: tooltips,
         range: {
           min: 0,
-          max: this.video.duration
+          max: this.player.duration
         }
       });
 
@@ -560,7 +560,7 @@ export default class VideoPlayer extends Vue {
 
       // Skip to start of clip and play
       this.updateVideoTime(start);
-      this.video.play();
+      this.player.play();
 
       // Play clip until we reach `end` or playing is cancelled.
       let cp = await new Promise((resolve) => {
@@ -568,21 +568,21 @@ export default class VideoPlayer extends Vue {
           // If an action somewhere else has changed `isPlayingAllClips` to false,
           // then don't continue after sleep.
           if (!this.isPlayingAllClips) {
-            this.video.removeEventListener("timeupdate", u);
+            this.player.removeEventListener("timeupdate", u);
 
             return resolve("cancelled");
           }
 
           // If video time has past or is equal to end time, carry on to next clip.
-          if (this.video.currentTime >= end) {
-            this.video.pause();
-            this.video.removeEventListener("timeupdate", u);
+          if (this.player.currentTime >= end) {
+            this.player.pause();
+            this.player.removeEventListener("timeupdate", u);
 
             resolve("finished");
           }
         };
 
-        this.video.addEventListener("timeupdate", u);
+        this.player.addEventListener("timeupdate", u);
       });
 
       // If promise above was cancelled, return as to not continue playing clips.
@@ -603,7 +603,7 @@ export default class VideoPlayer extends Vue {
    * Save all clips.
    */
   saveClips() {
-    RecordingsManager.clip(this.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
+    RecordingsManager.clip(this.video.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
   }
 
   /**
@@ -667,11 +667,11 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Check if videoPath exists and has a supported extension (mp4, mkv, etc)
+   * Check if video exists and has a supported extension (mp4, mkv, etc)
    */
   get videoExists() {
-    if (fs.existsSync(this.videoPath)) {
-      return path.extname(this.videoPath).equalsAnyOf([".mp4", ".mkv", ".webm"]);
+    if (fs.existsSync(this.video.videoPath)) {
+      return path.extname(this.video.videoPath).equalsAnyOf([".mp4", ".mkv", ".webm"]);
     }
 
     return false;
