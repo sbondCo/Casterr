@@ -1,7 +1,7 @@
 <template>
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar">
-      <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" />
+      <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
       <TextBox :value="video.name" :plain="true" class="name"></TextBox>
     </div>
 

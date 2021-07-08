@@ -55,6 +55,11 @@ export default class DefaultLayout extends Vue {
     const tooltip = document.getElementById("tooltip")!;
     let els = document.querySelectorAll("[tooltip]");
 
+    const closeTooltip = () => {
+      tooltip.style.transform = "scale(0.85)";
+      tooltip.style.opacity = "0";
+    };
+
     for (let i = 0, n = els.length; i < n; ++i) {
       let el = els[i] as HTMLElement;
 
@@ -69,10 +74,8 @@ export default class DefaultLayout extends Vue {
         tooltip.style.opacity = "1";
       });
 
-      el.addEventListener("mouseleave", () => {
-        tooltip.style.transform = "scale(0.85)";
-        tooltip.style.opacity = "0";
-      });
+      el.addEventListener("mouseleave", closeTooltip);
+      el.addEventListener("mousedown", closeTooltip);
     }
   }
 }
