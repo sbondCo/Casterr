@@ -6,6 +6,7 @@
       :placeholder="placeholder"
       spellcheck="false"
       @blur="textBoxValueUpdated"
+      :class="{ plain: plain }"
     />
 
     <button v-if="folderSelect" @click="selectFolder">Change</button>
@@ -24,6 +25,12 @@ export default class TextBox extends Vue {
   @Prop() placeholder?: string;
   @Prop({ default: "text" }) type: string;
   @Prop({ default: false }) folderSelect: boolean;
+
+  /**
+   * If TextBox should only appear as such when hovered over.
+   * When not hovered over, it will look like normal text.
+   */
+  @Prop({ default: false }) plain: boolean;
 
   textBoxValue = this.$props.value;
 
@@ -73,6 +80,10 @@ export default class TextBox extends Vue {
     border: none;
     border-radius: 4px;
     transition: background-color 250ms ease;
+
+    &.plain {
+      background-color: transparent;
+    }
 
     &[type="number"]::-webkit-inner-spin-button,
     &[type="number"]::-webkit-outer-spin-button {

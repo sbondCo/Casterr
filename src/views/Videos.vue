@@ -41,7 +41,7 @@
 
               <div class="bar">
                 <span class="title">
-                  <p>{{ vid.videoPath }}</p>
+                  <p>{{ vid.name }}</p>
                 </span>
 
                 <div class="videoInfo">
