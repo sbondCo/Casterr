@@ -124,11 +124,6 @@ export default class Button extends Vue {
   align-items: center;
   height: 100%;
 
-  // Add margin between buttons
-  &:not(:first-child) {
-    margin-left: 5px;
-  }
-
   #outlined {
     padding: 5px;
     border: 2px solid $secondaryColor;

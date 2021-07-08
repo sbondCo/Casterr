@@ -1,5 +1,10 @@
 <template>
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
+    <div class="topBar">
+      <Button icon="arrow" tooltip="Back To Videos" />
+      <TextBox :value="video.name" :plain="true" class="name"></TextBox>
+    </div>
+
     <video
       ref="videoPlayer"
       id="video"
@@ -79,12 +84,13 @@ import ContextMenu from "@/components/context/ContextMenu.vue";
 import ContextItem from "@/components/context/ContextItem.vue";
 import Button from "@/components/ui/Button.vue";
 import ButtonConnector from "@/components/ui/ButtonConnector.vue";
-import "@/libs/helpers/extensions";
+import TextBox from "@/components/ui/TextBox.vue";
 import Helpers from "@/libs/helpers";
 import RecordingsManager, { Recording } from "@/libs/recorder/recordingsManager";
 import fs from "fs";
 import path from "path";
 import noUiSlider, { PipsMode, target } from "nouislider";
+import "@/libs/helpers/extensions";
 
 @Component({
   components: {
@@ -92,7 +98,8 @@ import noUiSlider, { PipsMode, target } from "nouislider";
     ContextMenu,
     ContextItem,
     Button,
-    ButtonConnector
+    ButtonConnector,
+    TextBox
   }
 })
 export default class VideoPlayer extends Vue {
@@ -685,14 +692,28 @@ export default class VideoPlayer extends Vue {
   height: 100%;
   overflow-x: hidden;
 
+  .topBar {
+    @extend %m-l-all-not-first;
+
+    display: flex;
+    flex-flow: row;
+    margin: 5px;
+
+    .name {
+      width: 100%;
+    }
+  }
+
   video {
     width: 100%;
-    height: calc(100% - 90px); // Make height of video all take up all blank space on page
+    height: calc(100% - 134px); // Make height of video all take up all blank space on page
     outline: none;
     background-color: black;
   }
 
   .controls {
+    @extend %m-l-all-not-first;
+
     display: flex;
     align-items: center;
     margin: 5px;
