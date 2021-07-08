@@ -203,14 +203,14 @@ export default class extends Vue {
   display: flex;
   flex-flow: column;
   align-items: center;
-  min-height: calc(100% - 20px);
+  min-height: calc(100% - 24px);
   margin: 12px 20px;
 
   .wrapper {
     width: 100%;
     max-width: 1600px;
 
-    & > div:not(.dropZone) {
+    & > div:not(.dropZone):not(:last-child) {
       margin-bottom: 12px;
     }
 
