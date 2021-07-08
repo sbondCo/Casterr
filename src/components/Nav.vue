@@ -2,16 +2,9 @@
   <nav>
     <ul>
       <li>
-        <router-link to="/recordings">
+        <router-link to="/videos">
           <Icon i="play" />
-          <span>Recordings</span>
-        </router-link>
-      </li>
-
-      <li>
-        <router-link to="/clips">
-          <Icon i="upload" />
-          <span>Clips</span>
+          <span>Videos</span>
         </router-link>
       </li>
 

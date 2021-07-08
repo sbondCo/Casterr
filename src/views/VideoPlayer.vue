@@ -8,9 +8,17 @@
       @click="playPause"
     ></video>
 
+    <!-- clipsBar connects are the only things the user can click on, on the timelineBar.
+         So the user can only see this ContextMenu by right clicking on a clip. -->
+    <ContextMenu ref="clipContextMenu" mountID="clipsBar">
+      <ContextItem @click="removeClosestClip">
+        Remove Clip
+      </ContextItem>
+    </ContextMenu>
+
     <div ref="timeline" class="timeline">
-      <div ref="progressBar" class="progressBar"></div>
-      <div ref="clipsBar" class="clipsBar"></div>
+      <div ref="progressBar" id="progressBar" class="progressBar"></div>
+      <div ref="clipsBar" id="clipsBar" class="clipsBar"></div>
     </div>
 
     <div class="controls">
@@ -35,13 +43,13 @@
 
       <Button text="Add Clip" @click="addClip" />
 
-      <Button icon="add" @click="adjustZoom(true)" />
-      <Button icon="min2" @click="adjustZoom(false)" />
+      <Button icon="add" @click="adjustZoom(true)" tooltip="Zoom In" />
+      <Button icon="min2" @click="adjustZoom(false)" tooltip="Zoom Out" />
 
       <div class="rightFromHere"></div>
 
       <ButtonConnector>
-        <Button :outlined="true" @click="playClips">
+        <Button :outlined="true" @click="playClips" tooltip="Play All Clips">
           <template slot="info">
             <div>
               <Icon i="clips" wh="18" />
@@ -55,7 +63,7 @@
           </template>
         </Button>
 
-        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" />
+        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" tooltip="Continue" />
       </ButtonConnector>
     </div>
   </div>
@@ -67,6 +75,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
+import ContextMenu from "@/components/context/ContextMenu.vue";
+import ContextItem from "@/components/context/ContextItem.vue";
 import Button from "@/components/ui/Button.vue";
 import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import "@/libs/helpers/extensions";
@@ -79,6 +89,8 @@ import noUiSlider, { PipsMode, target } from "nouislider";
 @Component({
   components: {
     Icon,
+    ContextMenu,
+    ContextItem,
     Button,
     ButtonConnector
   }
@@ -416,7 +428,7 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Add clip at currentProgress/current position of progressBar handle
+   * Add clip at currentProgress/current position of progressBar handle.
    */
   addClip() {
     let starts = new Array<number>();
@@ -488,6 +500,31 @@ export default class VideoPlayer extends Vue {
     }
 
     this.createClipsBar(starts, connects, tooltips);
+  }
+
+  /**
+   * Remove closest clip to cursors X position from MouseEvent data.
+   * @param ev Data from mouse event.
+   */
+  removeClosestClip(ev: MouseEvent) {
+    let handles = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-origin .noUi-handle");
+    let handleXs = new Array<number>();
+
+    // Add x positions of handles to `handleXs` array
+    for (let i = 0, n = handles.length; i < n; ++i) {
+      handleXs.push(handles[i].getBoundingClientRect().x + 35);
+    }
+
+    // Get closest value in `handleXs` using pointer x from event
+    var closestX = handleXs.reduce(function(prev, curr) {
+      return Math.abs(curr - ev.clientX) < Math.abs(prev - ev.clientX) ? curr : prev;
+    });
+
+    // Get handleIndex, if even number minus one to get first handle in clip
+    let handleIndex = handleXs.indexOf(closestX);
+    if (handleIndex % 2) --handleIndex;
+
+    this.removeClip(handleIndex);
   }
 
   /**

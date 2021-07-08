@@ -23,7 +23,12 @@ export default class PathHelper {
    * @param name Name of file with extension
    */
   public static getFile(
-    name: "GeneralSettings.json" | "RecordingSettings.json" | "KeyBindingSettings.json" | "PastRecordings.json"
+    name:
+      | "GeneralSettings.json"
+      | "RecordingSettings.json"
+      | "KeyBindingSettings.json"
+      | "Recordings.json"
+      | "Clips.json"
   ) {
     let path: string[];
 
@@ -37,8 +42,11 @@ export default class PathHelper {
       case "KeyBindingSettings.json":
         path = ["Settings", "KeyBindingSettings.json"];
         break;
-      case "PastRecordings.json":
-        path = ["PastRecordings.json"];
+      case "Recordings.json":
+        path = ["Recordings.json"];
+        break;
+      case "Clips.json":
+        path = ["Clips.json"];
         break;
     }
 
@@ -137,6 +145,16 @@ export default class PathHelper {
 
         fs.rmdirSync(path);
       });
+    }
+  }
+
+  /**
+   * Delete a file if it exists, if it doesn't do nothing.
+   * @param path Path to file that should be deleted.
+   */
+  public static removeFile(path: string) {
+    if (fs.existsSync(path)) {
+      fs.unlinkSync(path);
     }
   }
 

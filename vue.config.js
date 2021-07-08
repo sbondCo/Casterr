@@ -7,6 +7,7 @@ module.exports = {
           @use "./node_modules/nouislider/dist/nouislider.css";
           @import "./src/styles/_vars.scss";
           @import "./src/styles/_norm.scss";
+          @import "./src/styles/_general.scss";
         `
       }
     }

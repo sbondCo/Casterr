@@ -92,7 +92,7 @@ export default class SettingsManager {
 export class AppSettings {
   // Pages in application
   public static get pages() {
-    return ["Recordings", "Uploads", "Settings", "Profile"];
+    return ["Videos", "Settings"];
   }
 
   // Supported recording formats
@@ -105,7 +105,7 @@ export class AppSettings {
  * General Settings
  */
 export class GeneralSettings {
-  private static _startupPage: string = "Recordings";
+  private static _startupPage: string = "Videos";
   private static _recordingStatusAlsoStopStartRecording: boolean = true;
   private static _recordingStatusDblClkToRecord: boolean = false;
 
