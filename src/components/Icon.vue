@@ -166,7 +166,6 @@ export default class Icon extends Vue {
   }
 
   mounted() {
-    console.log(this.direction);
     if (this.direction) this.correctIconDirection();
   }
 
@@ -176,8 +175,6 @@ export default class Icon extends Vue {
    */
   correctIconDirection() {
     const iconEl = this.$refs.icon as HTMLElement;
-
-    console.log("correcter", this.i);
 
     // No right direction needed since the icon is right by default
     switch (this.direction) {
