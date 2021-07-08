@@ -96,7 +96,7 @@ export default class extends Vue {
     let el = document.getElementById("main");
     el?.addEventListener("scroll", () => {
       // If scrolled to bottom loadMoreRecordings
-      if (el?.scrollHeight! - el?.scrollTop! === el?.clientHeight) {
+      if (el?.scrollHeight! - el?.scrollTop! === el?.clientHeight!) {
         this.loadMoreRecordings();
       }
     });

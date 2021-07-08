@@ -1,7 +1,7 @@
 <template>
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar">
-      <Button icon="arrow" tooltip="Back To Videos" />
+      <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" />
       <TextBox :value="video.name" :plain="true" class="name"></TextBox>
     </div>
 
@@ -68,7 +68,13 @@
           </template>
         </Button>
 
-        <Button icon="arrow" :disabled="continueBtnDisabled" @click="saveClips" tooltip="Continue" />
+        <Button
+          icon="arrow"
+          iconDirection="right"
+          :disabled="continueBtnDisabled"
+          @click="saveClips"
+          tooltip="Continue"
+        />
       </ButtonConnector>
     </div>
   </div>
