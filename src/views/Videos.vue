@@ -8,14 +8,14 @@
   >
     <div class="wrapper">
       <div class="viewToggler">
-        <span
+        <router-link
           v-for="page in subPages"
           :key="page"
-          :class="{ active: page == activeSubPage }"
-          @click="activeSubPage = page"
+          :to="{ name: 'videos', params: { subPage: page } }"
+          :class="{ active: page == subPage }"
         >
           {{ page }}
-        </span>
+        </router-link>
       </div>
 
       <div class="thumbContainer" v-if="videos.length > 0">
@@ -53,18 +53,18 @@
           </div>
         </div>
       </div>
-      <span v-else class="noRecordings txt-capitalised">You Have No {{ activeSubPage }}!</span>
+      <span v-else class="noRecordings txt-capitalised">You Have No {{ subPage }}!</span>
     </div>
 
     <div :class="{ dropZone: true, hidden: dropZoneHidden }">
       <Icon i="add" wh="36" />
-      <span class="txt-capitalised">Add {{ activeSubPage }}</span>
+      <span class="txt-capitalised">Add {{ subPage }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import "@/libs/helpers/extensions";
@@ -78,12 +78,13 @@ type subPage = typeof subPages[number];
   }
 })
 export default class extends Vue {
+  @Prop({ default: "recordings" }) subPage: subPage;
+
   subPages = subPages;
-  activeSubPage: subPage = "recordings";
 
   allRecordings = RecordingsManager.get();
   allClips = RecordingsManager.get(true);
-  videos = this.allRecordings;
+  videos = this.$props.subPage == "recordings" ? this.allRecordings : this.allClips;
   loadedVideos = new Array();
 
   dropZoneHidden = true;
@@ -102,7 +103,7 @@ export default class extends Vue {
     });
   }
 
-  @Watch("activeSubPage")
+  @Watch("subPage")
   subPageChanged(val: subPage) {
     this.loadedVideos = [];
 
@@ -225,7 +226,7 @@ export default class extends Vue {
       align-self: flex-start;
       font-size: 28px;
 
-      span {
+      a {
         text-transform: capitalize;
         cursor: pointer;
 
