@@ -2,7 +2,7 @@
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar">
       <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
-      <span>{{ video.name ? video.name : video.videoPath }}</span>
+      <span>{{ require("path").basename(video.videoPath) }}</span>
     </div>
 
     <video
