@@ -7,7 +7,6 @@ import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 
 export interface Recording {
-  name: string;
   videoPath: string;
   thumbPath: string | undefined;
   fileSize: number | undefined;
@@ -50,7 +49,6 @@ export default class RecordingsManager {
     const ffprobe = new FFmpeg("ffprobe");
     const recording = {} as Recording;
 
-    recording.name = path.basename(videoPath);
     recording.videoPath = videoPath;
     recording.thumbPath = this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
