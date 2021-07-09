@@ -2,7 +2,7 @@
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar">
       <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
-      <TextBox :value="video.name" :plain="true" class="name"></TextBox>
+      <span>{{ video.name }}</span>
     </div>
 
     <video
@@ -703,6 +703,7 @@ export default class VideoPlayer extends Vue {
 
     display: flex;
     flex-flow: row;
+    align-items: center;
     margin: 5px;
 
     .name {
