@@ -1,6 +1,6 @@
 <template>
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
-    <div class="topBar">
+    <div class="topBar m-l-all-not-first">
       <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
       <span>{{ require("path").basename(video.videoPath) }}</span>
     </div>
@@ -26,7 +26,7 @@
       <div ref="clipsBar" id="clipsBar" class="clipsBar"></div>
     </div>
 
-    <div class="controls">
+    <div class="controls m-l-all-not-first">
       <Button @click="playPause" :icon="playPauseBtnIcon" />
 
       <Button
@@ -699,8 +699,6 @@ export default class VideoPlayer extends Vue {
   overflow-x: hidden;
 
   .topBar {
-    @extend %m-l-all-not-first;
-
     display: flex;
     flex-flow: row;
     align-items: center;
@@ -719,8 +717,6 @@ export default class VideoPlayer extends Vue {
   }
 
   .controls {
-    @extend %m-l-all-not-first;
-
     display: flex;
     align-items: center;
     margin: 5px;
