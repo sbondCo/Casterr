@@ -92,13 +92,13 @@ export default class extends Vue {
 
   mounted() {
     // Load initial set of recordings
-    this.loadMoreRecordings();
+    this.loadMoreVideos();
 
     let el = document.getElementById("main");
     el?.addEventListener("scroll", () => {
-      // If scrolled to bottom loadMoreRecordings
-      if (el?.scrollHeight! - el?.scrollTop! === el?.clientHeight!) {
-        this.loadMoreRecordings();
+      // If scrolled to bottom loadMoreVideos
+      if (el?.scrollHeight! - el?.scrollTop! - 200 <= el?.clientHeight!) {
+        this.loadMoreVideos();
       }
     });
   }
@@ -113,13 +113,13 @@ export default class extends Vue {
       this.videos = this.allClips;
     }
 
-    this.loadMoreRecordings();
+    this.loadMoreVideos();
   }
 
   /**
    * Load more recordings into view
    */
-  loadMoreRecordings() {
+  loadMoreVideos() {
     // How many videos to load in
     let videosToLoad = 8;
 
