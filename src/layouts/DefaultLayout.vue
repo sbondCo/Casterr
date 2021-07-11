@@ -38,9 +38,9 @@ export default class DefaultLayout extends Vue {
       // If startupPage setting is a page in the application, redirect to it
       // Else go to first page in AppSettings.pages setting
       if (AppSettings.pages.includes(GeneralSettings.startupPage)) {
-        router.push(GeneralSettings.startupPage).catch(() => {});
+        router.push({ name: GeneralSettings.startupPage.toLowerCase() }).catch(() => {});
       } else {
-        router.push(AppSettings.pages[0]).catch(() => {});
+        router.push({ name: AppSettings.pages[0].toLowerCase() }).catch(() => {});
       }
     }
 
@@ -54,6 +54,11 @@ export default class DefaultLayout extends Vue {
   applyTooltips() {
     const tooltip = document.getElementById("tooltip")!;
     let els = document.querySelectorAll("[tooltip]");
+
+    const closeTooltip = () => {
+      tooltip.style.transform = "scale(0.85)";
+      tooltip.style.opacity = "0";
+    };
 
     for (let i = 0, n = els.length; i < n; ++i) {
       let el = els[i] as HTMLElement;
@@ -69,10 +74,8 @@ export default class DefaultLayout extends Vue {
         tooltip.style.opacity = "1";
       });
 
-      el.addEventListener("mouseleave", () => {
-        tooltip.style.transform = "scale(0.85)";
-        tooltip.style.opacity = "0";
-      });
+      el.addEventListener("mouseleave", closeTooltip);
+      el.addEventListener("mousedown", closeTooltip);
     }
   }
 }

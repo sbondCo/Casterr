@@ -2,7 +2,7 @@
   <div id="dropDown" class="border-med" @click="toggleDropDown()">
     <label>
       <span>{{ itemActive.name != undefined ? itemActive.name : itemActive }}</span>
-      <Icon i="chevron" wh="16" />
+      <Icon i="chevron" direction="down" wh="16" />
     </label>
 
     <ul ref="dropDownItems" id="dropDownItems">

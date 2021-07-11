@@ -2,7 +2,7 @@
   <div class="btnWrapper">
     <button ref="mainBtn" class="mainBtn">
       <div class="content" @[clickEvent]="$emit('click')">
-        <Icon v-if="icon" :i="icon" />
+        <Icon v-if="icon" :i="icon" :direction="iconDirection" />
 
         <span v-if="text">{{ text }}</span>
 
@@ -36,6 +36,7 @@ import Icon from "./../Icon.vue";
 })
 export default class Button extends Vue {
   @Prop() icon: string;
+  @Prop() iconDirection: string;
   @Prop() text: string;
 
   @Prop({ default: false }) disabled: boolean;
@@ -123,11 +124,6 @@ export default class Button extends Vue {
   flex-flow: row;
   align-items: center;
   height: 100%;
-
-  // Add margin between buttons
-  &:not(:first-child) {
-    margin-left: 5px;
-  }
 
   #outlined {
     padding: 5px;

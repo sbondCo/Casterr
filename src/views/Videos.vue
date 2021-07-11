@@ -8,18 +8,18 @@
   >
     <div class="wrapper">
       <div class="viewToggler">
-        <span
+        <router-link
           v-for="page in subPages"
           :key="page"
-          :class="{ active: page == activeSubPage }"
-          @click="activeSubPage = page"
+          :to="{ name: 'videos', params: { subPage: page } }"
+          :class="{ active: page == subPage }"
         >
           {{ page }}
-        </span>
+        </router-link>
       </div>
 
       <div class="thumbContainer" v-if="videos.length > 0">
-        <div class="thumb" v-for="vid in loadedRecordings" :key="vid.id">
+        <div class="thumb" v-for="vid in loadedVideos" :key="vid.id">
           <div class="inner">
             <!-- If thumbPath is an actual file display it, otherwise, display noThumb message -->
             <img
@@ -35,13 +35,13 @@
                 <p>FPS</p>
               </span>
 
-              <router-link :to="{ name: 'videoPlayer', params: { videoPath: vid.videoPath } }" class="edit">
+              <router-link :to="{ name: 'videoEditor', params: { video: vid } }" class="edit">
                 <Icon i="edit" :wh="25" />
               </router-link>
 
               <div class="bar">
                 <span class="title">
-                  <p>{{ vid.videoPath }}</p>
+                  <p>{{ require("path").basename(vid.videoPath) }}</p>
                 </span>
 
                 <div class="videoInfo">
@@ -53,18 +53,18 @@
           </div>
         </div>
       </div>
-      <span v-else class="noRecordings txt-capitalised">You Have No {{ activeSubPage }}!</span>
+      <span v-else class="noRecordings txt-capitalised">You Have No {{ subPage }}!</span>
     </div>
 
     <div :class="{ dropZone: true, hidden: dropZoneHidden }">
       <Icon i="add" wh="36" />
-      <span class="txt-capitalised">Add {{ activeSubPage }}</span>
+      <span class="txt-capitalised">Add {{ subPage }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import "@/libs/helpers/extensions";
@@ -78,33 +78,34 @@ type subPage = typeof subPages[number];
   }
 })
 export default class extends Vue {
+  @Prop({ default: "recordings" }) subPage: subPage;
+
   subPages = subPages;
-  activeSubPage: subPage = "recordings";
 
   allRecordings = RecordingsManager.get();
   allClips = RecordingsManager.get(true);
-  videos = this.allRecordings;
-  loadedRecordings = new Array();
+  videos = this.$props.subPage == "recordings" ? this.allRecordings : this.allClips;
+  loadedVideos = new Array();
 
   dropZoneHidden = true;
   dragEnterTarget: EventTarget | null = null;
 
   mounted() {
     // Load initial set of recordings
-    this.loadMoreRecordings();
+    this.loadMoreVideos();
 
     let el = document.getElementById("main");
     el?.addEventListener("scroll", () => {
-      // If scrolled to bottom loadMoreRecordings
-      if (el?.scrollHeight! - el?.scrollTop! === el?.clientHeight) {
-        this.loadMoreRecordings();
+      // If scrolled to bottom loadMoreVideos
+      if (el?.scrollHeight! - el?.scrollTop! - 200 <= el?.clientHeight!) {
+        this.loadMoreVideos();
       }
     });
   }
 
-  @Watch("activeSubPage")
+  @Watch("subPage")
   subPageChanged(val: subPage) {
-    this.loadedRecordings = [];
+    this.loadedVideos = [];
 
     if (val == "recordings") {
       this.videos = this.allRecordings;
@@ -112,20 +113,20 @@ export default class extends Vue {
       this.videos = this.allClips;
     }
 
-    this.loadMoreRecordings();
+    this.loadMoreVideos();
   }
 
   /**
    * Load more recordings into view
    */
-  loadMoreRecordings() {
+  loadMoreVideos() {
     // How many videos to load in
     let videosToLoad = 8;
 
-    // Loop over videos after removing currently loaded recordings adding to loadedRecordings
-    for (let [i, v] of this.videos.slice(this.loadedRecordings.length).entries()) {
-      // Add to loadedRecordings
-      this.loadedRecordings.push(v);
+    // Loop over videos after removing currently loaded recordings adding to loadedVideos
+    for (let [i, v] of this.videos.slice(this.loadedVideos.length).entries()) {
+      // Add to loadedVideos
+      this.loadedVideos.push(v);
 
       // Stop for loop if index >= videosToLoad
       if (i >= videosToLoad) return;
@@ -203,14 +204,14 @@ export default class extends Vue {
   display: flex;
   flex-flow: column;
   align-items: center;
-  min-height: calc(100% - 20px);
+  min-height: calc(100% - 24px);
   margin: 12px 20px;
 
   .wrapper {
     width: 100%;
     max-width: 1600px;
 
-    & > div:not(.dropZone) {
+    & > div:not(.dropZone):not(:last-child) {
       margin-bottom: 12px;
     }
 
@@ -225,7 +226,7 @@ export default class extends Vue {
       align-self: flex-start;
       font-size: 28px;
 
-      span {
+      a {
         text-transform: capitalize;
         cursor: pointer;
 

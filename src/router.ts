@@ -2,16 +2,17 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Videos from "./views/Videos.vue";
 import Settings from "./views/Settings.vue";
-import VideoPlayer from "./views/VideoPlayer.vue";
+import VideoEditor from "./views/VideoEditor.vue";
 import DesktopNotification from "./views/DesktopNotification.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/videos",
+    path: "/videos/:subPage?",
     name: "videos",
-    component: Videos
+    component: Videos,
+    props: true
   },
   {
     path: "/settings",
@@ -19,9 +20,9 @@ const routes: Array<RouteConfig> = [
     component: Settings
   },
   {
-    path: "/videoPlayer/:videoPath",
-    name: "videoPlayer",
-    component: VideoPlayer,
+    path: "/videoEditor/:video",
+    name: "videoEditor",
+    component: VideoEditor,
     props: true
   },
   {

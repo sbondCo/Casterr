@@ -5,3 +5,10 @@
 .txt-capitalised {
   text-transform: capitalize;
 }
+
+.m-l-all-not-first {
+  // Add margin between buttons
+  & > *:not(:first-child) {
+    margin-left: 5px;
+  }
+}
