@@ -730,7 +730,7 @@ export default class VideoPlayer extends Vue {
 
   &.timelineZoomed {
     video {
-      height: calc(100% - 95px); // Make height of video all take up all blank space on page
+      height: calc(100% - 139px); // Make height of video all take up all blank space on page
     }
 
     .timeline {
