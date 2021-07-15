@@ -7,6 +7,7 @@ import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 
 export interface Recording {
+  name: string;
   videoPath: string;
   thumbPath: string | undefined;
   fileSize: number | undefined;
@@ -21,20 +22,7 @@ export default class RecordingsManager {
    * @returns All recordings | clips.
    */
   public static get(clips: boolean = false): Array<Recording> {
-    const file = this.getVideoFile(clips);
-    const recordings = new Array<Recording>();
-
-    // Get all videos from appropriate json file
-    const data = fs.readFileSync(PathHelper.getFile(file), "utf8");
-
-    // Parse JSON from file and assign it to recordings variable.
-    // Because it is stored in a way so that we don't have to read the file
-    // before writing to it, we need to prepare the data in the file before it is parsable JSON.
-    // 1. Make into array by wrapping [square brackets] around it.
-    // 2. If last letter in data is a ',' then remove it.
-    Object.assign(recordings, JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`));
-
-    return recordings.reverse();
+    return this.getVideos(clips).reverse();
   }
 
   /**
@@ -49,6 +37,7 @@ export default class RecordingsManager {
     const ffprobe = new FFmpeg("ffprobe");
     const recording = {} as Recording;
 
+    recording.name = path.basename(videoPath);
     recording.videoPath = videoPath;
     recording.thumbPath = this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
@@ -89,13 +78,9 @@ export default class RecordingsManager {
           // JSON string is appended with a ',' at the end. If you are going to use
           // the data in this file, always remove the last letter (the ',') first.
           // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(
-            PathHelper.getFile(this.getVideoFile(isClip)),
-            `${JSON.stringify(recording, null, 2)},`,
-            (err: any) => {
-              if (err) throw err;
-            }
-          );
+          fs.appendFile(this.getVideoFile(isClip), this.toWritingReady(recording), (err: any) => {
+            if (err) throw err;
+          });
         }
       }
     );
@@ -189,11 +174,70 @@ export default class RecordingsManager {
   }
 
   /**
+   * Rename a video and update it in the correct video file.
+   * @param videoPath Path to video. Used to search for correct video.
+   * @param to What to rename video to.
+   * @param isClip If video is a clip.
+   */
+  public static rename(videoPath: string, to: string, isClip: boolean) {
+    const videos = this.getVideos(isClip);
+    const video = videos.find((v) => v.videoPath == videoPath);
+
+    if (!video) throw new Error("Couldn't find video to rename.");
+
+    video.name = to;
+
+    fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+      if (err) throw err;
+    });
+  }
+
+  /**
+   * Get JSON object ready for writing to a video file.
+   * @param obj Video(s) object to write to file.
+   * @param forAppending If get ready for appending and not replacing the file.
+   * @returns Same object, but ready for writing to video file.
+   */
+  private static toWritingReady(obj: Object, forAppending: boolean = true) {
+    let w = JSON.stringify(obj);
+
+    if (!forAppending) {
+      w = `${w
+        .slice(0, -1)
+        .slice(1)
+        .trim()}`;
+    }
+
+    return `${w},`;
+  }
+
+  /**
    * Get correct video file name.
    * @param clips If should get clips file.
    * @returns Name of file including videos.
    */
   private static getVideoFile(clips: boolean) {
-    return clips ? "Clips.json" : "Recordings.json";
+    return PathHelper.getFile(clips ? "Clips.json" : "Recordings.json");
+  }
+
+  /**
+   * Read and return videos from file.
+   * @param clips If should return clips instead of recordings.
+   * @returns All videos from specified file.
+   */
+  private static getVideos(clips: boolean) {
+    const videos = new Array<Recording>();
+
+    // Get all videos from appropriate json file
+    const data = fs.readFileSync(this.getVideoFile(clips), "utf8");
+
+    // Parse JSON from file and assign it to recordings variable.
+    // Because it is stored in a way so that we don't have to read the file
+    // before writing to it, we need to prepare the data in the file before it is parsable JSON.
+    // 1. Make into array by wrapping [square brackets] around it.
+    // 2. If last letter in data is a ',' then remove it.
+    Object.assign(videos, JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`));
+
+    return videos;
   }
 }
