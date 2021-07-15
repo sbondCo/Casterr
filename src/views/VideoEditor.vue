@@ -2,7 +2,12 @@
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar m-l-all-not-first">
       <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
-      <span>{{ require("path").basename(video.videoPath) }}</span>
+      <TextBox
+        name="videoName"
+        :value="video.name ? video.name : video.videoPath"
+        @item-changed="updateVideoName"
+        class="name"
+      />
     </div>
 
     <video
@@ -110,6 +115,7 @@ import "@/libs/helpers/extensions";
 })
 export default class VideoPlayer extends Vue {
   @Prop({ required: true }) video: Recording;
+  @Prop({ required: true }) isClip: boolean;
 
   private player: HTMLVideoElement;
   private videoEditor: target;
@@ -139,6 +145,10 @@ export default class VideoPlayer extends Vue {
       // loaded yet, so it's value will be 0 anyways.
       return 0;
     }
+  }
+
+  updateVideoName(_: any, newValue: string) {
+    RecordingsManager.rename(this.video.videoPath, newValue, this.isClip);
   }
 
   /**

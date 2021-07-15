@@ -35,13 +35,16 @@
                 <p>FPS</p>
               </span>
 
-              <router-link :to="{ name: 'videoEditor', params: { video: vid } }" class="edit">
+              <router-link
+                :to="{ name: 'videoEditor', params: { video: vid, isClip: subPage == 'clips' } }"
+                class="edit"
+              >
                 <Icon i="edit" :wh="25" />
               </router-link>
 
               <div class="bar">
                 <span class="title">
-                  <p>{{ require("path").basename(vid.videoPath) }}</p>
+                  <p>{{ vid.name ? vid.name : vid.videoPath }}</p>
                 </span>
 
                 <div class="videoInfo">

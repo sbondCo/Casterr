@@ -20,7 +20,7 @@ const routes: Array<RouteConfig> = [
     component: Settings
   },
   {
-    path: "/videoEditor/:video",
+    path: "/videoEditor/:video/:isClip",
     name: "videoEditor",
     component: VideoEditor,
     props: true
