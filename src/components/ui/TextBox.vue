@@ -45,12 +45,15 @@ export default class TextBox extends Vue {
   textBoxValueUpdated() {
     // Only emit item-changed event, if textBox value has actually changed since entering
     if (this.textBoxValue != this.textBoxValueWhenEntering) {
-      this.$emit("item-changed", this.name, this.$data.textBoxValue);
+      this.$emit("item-changed", this.name, this.textBoxValue);
     }
   }
 
   selectFolder() {
-    let defaultFolder = this.$data.textBoxValue;
+    let defaultFolder = this.textBoxValue;
+
+    // Pretend textBox was focused, so we can update textBoxValueWhenEntering
+    this.textBoxFocused();
 
     ipcRenderer
       .invoke("show-open-dialog", {
@@ -62,8 +65,6 @@ export default class TextBox extends Vue {
         properties: ["openDirectory"]
       })
       .then((reply) => {
-        console.log("reply", reply);
-
         let folder = reply.filePaths[0];
 
         // If a folder was selected, set textBox value to it
