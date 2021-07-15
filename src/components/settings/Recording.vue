@@ -113,7 +113,7 @@ export default class RecordingSettingsComponent extends Vue {
 
     // Add video devices to videoDevices
     d.video.forEach((vd) => {
-      this.$data.videoDevices.push(vd);
+      this.videoDevices.push(vd);
     });
 
     // Add audio devices to audioDevicesToRecord

@@ -46,9 +46,9 @@ export default class DropDown extends Vue {
 
   private switchItems(itemClicked: string | DropDownItem) {
     // Update itemActive prop with itemClicked on
-    this.$set(this.$data, "itemActive", itemClicked);
+    this.itemActive = itemClicked;
 
-    this.$emit("item-changed", this.name, this.$data.itemActive);
+    this.$emit("item-changed", this.name, this.itemActive);
   }
 }
 
