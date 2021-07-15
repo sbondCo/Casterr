@@ -69,7 +69,7 @@ export default class TextBox extends Vue {
 
         // If a folder was selected, set textBox value to it
         if (folder != null) {
-          this.$set(this.$data, "textBoxValue", folder);
+          this.textBoxValue = folder;
           this.textBoxValueUpdated();
         }
       });

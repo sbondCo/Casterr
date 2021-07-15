@@ -56,7 +56,7 @@ export default class Nav extends Vue {
 
         // Set timeElapsed to `00:00` so you
         // get instant feedback once you start recording
-        this.$data.timeElapsed = "00:00";
+        this.timeElapsed = "00:00";
 
         // Update elapsed time every second
         timer = setInterval(() => {
@@ -64,14 +64,14 @@ export default class Nav extends Vue {
           const elapsed = (Date.now() - timeoutScheduled) / 1000;
 
           // Update time elapsed in a readable format
-          this.$data.timeElapsed = `${elapsed.toReadableTimeFromSeconds()}`;
+          this.timeElapsed = `${elapsed.toReadableTimeFromSeconds()}`;
         }, 1000);
       } else {
         rs.classList.remove("isRecording");
 
         // Clear timer if running and set timeElapsed to empty string
         clearTimeout(timer);
-        this.$data.timeElapsed = ``;
+        this.timeElapsed = ``;
       }
     });
   }
