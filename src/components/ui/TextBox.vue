@@ -5,6 +5,7 @@
       v-model="textBoxValue"
       :placeholder="placeholder"
       spellcheck="false"
+      @focus="textBoxFocused"
       @blur="textBoxValueUpdated"
       :class="{ plain: plain }"
     />
@@ -33,9 +34,19 @@ export default class TextBox extends Vue {
   @Prop({ default: false }) plain: boolean;
 
   textBoxValue = this.$props.value;
+  textBoxValueWhenEntering = this.textBoxValue;
+
+  textBoxFocused() {
+    // Update textBoxValueWhenEntering to current
+    // value for later reference when user clicks out of textBox
+    this.textBoxValueWhenEntering = this.textBoxValue;
+  }
 
   textBoxValueUpdated() {
-    this.$emit("item-changed", this.name, this.$data.textBoxValue);
+    // Only emit item-changed event, if textBox value has actually changed since entering
+    if (this.textBoxValue != this.textBoxValueWhenEntering) {
+      this.$emit("item-changed", this.name, this.$data.textBoxValue);
+    }
   }
 
   selectFolder() {
