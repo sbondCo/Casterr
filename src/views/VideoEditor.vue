@@ -2,12 +2,15 @@
   <div v-if="videoExists" ref="videoEditor" class="videoEditor">
     <div class="topBar m-l-all-not-first">
       <Button icon="arrow" iconDirection="left" tooltip="Back To Videos" @click="$router.go(-1)" />
+
       <TextBox
         name="videoName"
         :value="video.name ? video.name : video.videoPath"
         @item-changed="updateVideoName"
         class="name"
       />
+
+      <Button icon="close" tooltip="Delete Video" @click="deleteVideo" />
     </div>
 
     <video
@@ -623,13 +626,6 @@ export default class VideoPlayer extends Vue {
   }
 
   /**
-   * Save all clips.
-   */
-  saveClips() {
-    RecordingsManager.clip(this.video.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
-  }
-
-  /**
    * Update total length of clips.
    * @param values String array of values from slider.
    */
@@ -687,6 +683,21 @@ export default class VideoPlayer extends Vue {
       connect: connect,
       handle: handle
     };
+  }
+
+  /**
+   * Save all clips.
+   */
+  saveClips() {
+    RecordingsManager.clip(this.video.videoPath, (this.clipsBar.noUiSlider!.get() as string[]).map(Number));
+  }
+
+  /**
+   * Delete current video then go back to library.
+   */
+  deleteVideo() {
+    RecordingsManager.delete(this.video.videoPath, this.isClip);
+    // route.gobackonenowples
   }
 
   /**

@@ -17,7 +17,7 @@ export interface Recording {
 
 export default class RecordingsManager {
   /**
-   * Get all user's past recordings.
+   * Get all user's past recordings in order ready for viewing.
    * @param clips If should fetch clips, instead of recordings.
    * @returns All recordings | clips.
    */
@@ -84,6 +84,24 @@ export default class RecordingsManager {
         }
       }
     );
+  }
+
+  /**
+   * Delete a video.
+   * @param videoPath Path to video to be deleted.
+   * @param isClip If video is a clip.
+   */
+  public static async delete(videoPath: string, isClip: boolean) {
+    // Videos, except the one to delete
+    const videos = this.getVideos(isClip).filter((e) => e.videoPath !== videoPath);
+
+    // Delete video file
+    // ...
+
+    // Rewrite video file
+    fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+      if (err) throw err;
+    });
   }
 
   /**
