@@ -40,7 +40,7 @@ export default class Button extends Vue {
   @Prop() text: string;
 
   @Prop({ default: false }) disabled: boolean;
-  @Prop() outlined: boolean;
+  @Prop({ default: false }) outlined: boolean;
   @Prop({ default: false }) slider: boolean;
   @Prop({ default: 0 }) sliderValue: string;
   @Prop({ default: 0 }) sliderMin: number;
@@ -163,6 +163,7 @@ export default class Button extends Vue {
     color: $textPrimary;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
+    font-size: 14px;
     cursor: pointer;
 
     ::v-deep div {
@@ -198,6 +199,7 @@ export default class Button extends Vue {
     color: $textPrimary;
     background-color: $secondaryColor;
     transition: background-color 150ms ease, border 150ms ease;
+    font-size: 14px;
     cursor: pointer;
 
     .content {

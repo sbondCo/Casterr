@@ -6,6 +6,8 @@
     @dragenter="handleDragEnter"
     @dragleave="handleDragEnd"
   >
+    <button @click="notif">Notify</button>
+
     <div class="wrapper">
       <div class="viewToggler">
         <router-link
@@ -71,6 +73,8 @@ import { Vue, Component, Watch, Prop } from "vue-property-decorator";
 import Icon from "@/components/Icon.vue";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import "@/libs/helpers/extensions";
+import "@/libs/helpers/notifications";
+import Notifications from "@/libs/helpers/notifications";
 
 const subPages = ["recordings", "clips"] as const;
 type subPage = typeof subPages[number];
@@ -92,6 +96,12 @@ export default class extends Vue {
 
   dropZoneHidden = true;
   dragEnterTarget: EventTarget | null = null;
+
+  notif() {
+    Notifications.popup("test", "testilinio", { showCancel: true, buttons: ["Die", "Live", "Fly", "By"] }).then((e) => {
+      console.log("in here", e);
+    });
+  }
 
   mounted() {
     // Load initial set of recordings
