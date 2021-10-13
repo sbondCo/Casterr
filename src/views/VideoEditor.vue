@@ -101,6 +101,7 @@ import ButtonConnector from "@/components/ui/ButtonConnector.vue";
 import TextBox from "@/components/ui/TextBox.vue";
 import Helpers from "@/libs/helpers";
 import RecordingsManager, { Recording } from "@/libs/recorder/recordingsManager";
+import Notifications from "@/libs/helpers/notifications";
 import fs from "fs";
 import path from "path";
 import noUiSlider, { PipsMode, target } from "nouislider";
@@ -696,7 +697,9 @@ export default class VideoPlayer extends Vue {
    * Delete current video then go back to library.
    */
   deleteVideo() {
-    RecordingsManager.delete(this.video.videoPath, this.isClip);
+    Notifications.popup("dave", "some descripchon");
+
+    // RecordingsManager.delete(this.video.videoPath, this.isClip);
     // route.gobackonenowples
   }
 

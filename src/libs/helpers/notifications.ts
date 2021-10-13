@@ -13,43 +13,48 @@ export default class Notifications {
    * Create or modify an existing popup notification.
    * @param name Name of notification.
    * @param desc Description for notification to display.
-   * @param percentage Percentage for notifications requiring a percentage bar.
-   * @param cancelRequested Callback func called when a cancel is requested by user clicking `close` on notifier.
+   * @param options
+   * @returns
    */
-  public static popup(name: string, desc: string, percentage?: string | number, cancelRequested?: CallableFunction) {
-    // Update or create notification depending on if it is in activeNotifs
-    if (this.activePopups.has(name)) {
-      const i = this.activePopups.get(name);
+  public static popup(
+    name: string,
+    desc: string,
+    options?: { percentage?: string | number; loader?: boolean; showCancel?: boolean; buttons?: string[] }
+  ) {
+    return new Promise<string>((resolve, reject) => {
+      // Update or create popup depending on if it is in activePopups
+      if (this.activePopups.has(name)) {
+        const i = this.activePopups.get(name);
 
-      // Update notification data everytime, incase of updated data sent to func
-      if (i != undefined) i.$data.desc = desc;
-      if (i != undefined) i.$data.percent = percentage;
-    } else {
-      // Create Notifier instance
-      const notifier = Vue.extend(Notifier);
-      const instance = new notifier({
-        propsData: {
-          description: desc,
-          percentage: percentage,
-          showCancel: cancelRequested ? true : false
-        }
-      });
-
-      // Mount and append to DOM in notifications section
-      instance.$mount();
-      document.getElementById("notifications")?.appendChild(instance.$el);
-
-      // If cancelRequested callback is filled out, then
-      // listen to `cancel-requested` on Notifier and call callback it is heard.
-      if (cancelRequested) {
-        instance.$on("cancel-requested", () => {
-          cancelRequested();
+        // Update popup data everytime, incase of updated data sent to func
+        if (i != undefined) i.$data.desc = desc;
+        if (i != undefined) i.$data.percent = options?.percentage;
+      } else {
+        // Create Notifier instance
+        const notifier = Vue.extend(Notifier);
+        const instance = new notifier({
+          propsData: {
+            description: desc,
+            percentage: options?.percentage,
+            loader: options?.loader,
+            showCancel: options?.showCancel ?? true,
+            buttons: options?.buttons ? options.buttons : null
+          }
         });
-      }
 
-      // Add to activeNotifs
-      this.activePopups.set(name, instance);
-    }
+        // Mount and append to DOM in notifications section
+        instance.$mount();
+        document.getElementById("notifications")?.appendChild(instance.$el);
+
+        // Listen for an element clicked then resolve method with it's value
+        instance.$on("element-clicked", (elClicked: string) => {
+          resolve(elClicked);
+        });
+
+        // Add to activePopups
+        this.activePopups.set(name, instance);
+      }
+    });
   }
 
   /**

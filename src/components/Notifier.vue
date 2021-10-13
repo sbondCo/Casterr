@@ -1,12 +1,17 @@
 <template>
   <div ref="notifier" class="notifierContainer">
     <div class="notification">
-      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native.once="cancel" />
+      <Icon v-if="showCancel" class="cancel" i="close" wh="15" @click.native.once="elClicked('cancel')" />
       <span class="title">{{ desc }}</span>
 
       <!-- Show ProgressBar is a percentage is present, otherwise show Loader  -->
       <ProgressBar v-if="percentage != null" :percentage="percent" />
-      <Loader v-else />
+
+      <Loader v-if="loader != null" />
+
+      <div class="buttonsContainer">
+        <Button v-for="button in buttons" :key="button" :text="button" @click.native.once="elClicked(button)" />
+      </div>
     </div>
   </div>
 </template>
@@ -16,24 +21,28 @@ import { Prop, Component, Vue } from "vue-property-decorator";
 import Icon from "./Icon.vue";
 import ProgressBar from "./ui/ProgressBar.vue";
 import Loader from "./ui/Loader.vue";
+import Button from "./ui/Button.vue";
 
 @Component({
   components: {
     Icon,
     ProgressBar,
-    Loader
+    Loader,
+    Button
   }
 })
 export default class Notifier extends Vue {
   @Prop({ default: "Give us a second" }) description!: string;
   @Prop() percentage?: number;
+  @Prop() loader?: boolean;
   @Prop({ default: false }) showCancel: boolean;
+  @Prop() buttons: string[];
 
   desc = this.$props.description;
   percent = this.$props.percentage;
 
-  cancel() {
-    this.$emit("cancel-requested");
+  elClicked(elClicked: string) {
+    this.$emit("element-clicked", elClicked);
   }
 }
 </script>
@@ -81,6 +90,17 @@ export default class Notifier extends Vue {
       &:hover {
         fill: $textPrimaryHover;
         transform: scale(1.15);
+      }
+    }
+
+    .buttonsContainer {
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+
+      *:not(:last-child) {
+        margin-right: 10px;
       }
     }
   }
