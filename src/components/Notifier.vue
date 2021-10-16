@@ -127,6 +127,7 @@ export default class Notifier extends Vue {
 
       .boxContainer {
         margin-bottom: 5px;
+        text-transform: capitalize;
       }
     }
 
@@ -136,8 +137,12 @@ export default class Notifier extends Vue {
       justify-content: center;
       align-items: center;
 
-      *:not(:last-child) {
-        margin-right: 10px;
+      * {
+        text-transform: capitalize;
+
+        &:not(:last-child) {
+          margin-right: 10px;
+        }
       }
     }
   }
