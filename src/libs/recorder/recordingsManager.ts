@@ -142,8 +142,8 @@ export default class RecordingsManager {
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
     const popupName = "clipVideo";
 
-    Notifications.popup(popupName, "Clipping Your Video", { loader: true, showCancel: true }).then((action) => {
-      if (action == "cancel") {
+    Notifications.popup(popupName, "Clipping Your Video", { loader: true, showCancel: true }).then((popup) => {
+      if (popup.action == "cancel") {
         Notifications.popup(popupName, "Cancelling Processing Of Your Video");
 
         // Stop ffmpeg and destroy manifestStream
