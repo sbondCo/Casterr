@@ -697,10 +697,25 @@ export default class VideoPlayer extends Vue {
    * Delete current video then go back to library.
    */
   deleteVideo() {
-    Notifications.popup("dave", "some descripchon");
+    Notifications.popup("delete-video", "Delete Video", {
+      showCancel: true,
+      tickBoxes: ["Also remove from disk"],
+      buttons: ["cancel", "delete"]
+    }).then((popup) => {
+      if (popup.action == "delete") {
+        // Delete video
+        RecordingsManager.delete(
+          this.video.videoPath,
+          this.isClip,
+          popup.tickBoxesChecked?.includes("Also remove from disk")
+        );
 
-    // RecordingsManager.delete(this.video.videoPath, this.isClip);
-    // route.gobackonenowples
+        // Go back after deleting
+        this.$router.go(-1);
+      }
+
+      Notifications.deletePopup("delete-video");
+    });
   }
 
   /**
