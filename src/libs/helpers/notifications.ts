@@ -3,6 +3,36 @@ import { CombinedVueInstance } from "vue/types/vue";
 import { ipcRenderer } from "electron";
 import Notifier from "@/components/Notifier.vue";
 
+interface PopupOptions {
+  /**
+   * If should show a percentage bar.
+   */
+  percentage?: string | number;
+
+  /**
+   * If should show an infinite loader.
+   */
+  loader?: boolean;
+
+  /**
+   * If should show a cancel icon in popup.
+   * Method will resolve with an `action` of "cancel".
+   */
+  showCancel?: boolean;
+
+  /**
+   * String array of button names.
+   * Method will resolve with an `action` of the name of the button clicked.
+   */
+  buttons?: string[];
+
+  /**
+   * String array of tickbox names.
+   * Method will resolve with a list of tickbox names that have been ticked.
+   */
+  tickBoxes?: string[];
+}
+
 export default class Notifications {
   private static activePopups = new Map<
     string,
@@ -13,15 +43,11 @@ export default class Notifications {
    * Create or modify an existing popup notification.
    * @param name Name of notification.
    * @param desc Description for notification to display.
-   * @param options
+   * @param options Optional popup options for things such as displaying button, percentage, etc.
    * @returns
    */
-  public static popup(
-    name: string,
-    desc: string,
-    options?: { percentage?: string | number; loader?: boolean; showCancel?: boolean; buttons?: string[] }
-  ) {
-    return new Promise<string>((resolve, reject) => {
+  public static popup(name: string, desc: string, options?: PopupOptions) {
+    return new Promise<{ action: string; tickBoxesChecked?: string[] }>((resolve, reject) => {
       // Update or create popup depending on if it is in activePopups
       if (this.activePopups.has(name)) {
         const i = this.activePopups.get(name);
@@ -38,7 +64,8 @@ export default class Notifications {
             percentage: options?.percentage,
             loader: options?.loader,
             showCancel: options?.showCancel ?? true,
-            buttons: options?.buttons ? options.buttons : null
+            buttons: options?.buttons,
+            tickBoxes: options?.tickBoxes
           }
         });
 
@@ -47,8 +74,8 @@ export default class Notifications {
         document.getElementById("notifications")?.appendChild(instance.$el);
 
         // Listen for an element clicked then resolve method with it's value
-        instance.$on("element-clicked", (elClicked: string) => {
-          resolve(elClicked);
+        instance.$on("element-clicked", (elClicked: string, tickBoxesChecked?: string[]) => {
+          resolve({ action: elClicked, tickBoxesChecked: tickBoxesChecked });
         });
 
         // Add to activePopups

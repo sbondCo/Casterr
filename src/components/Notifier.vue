@@ -9,6 +9,13 @@
 
       <Loader v-if="loader != null" />
 
+      <div class="tickboxesContainer">
+        <div class="boxContainer" v-for="box in tickBoxes" :key="box">
+          <TickBox :name="box" @item-changed="tickBoxChanged" />
+          <span>{{ box }}</span>
+        </div>
+      </div>
+
       <div class="buttonsContainer">
         <Button v-for="button in buttons" :key="button" :text="button" @click.native.once="elClicked(button)" />
       </div>
@@ -22,13 +29,15 @@ import Icon from "./Icon.vue";
 import ProgressBar from "./ui/ProgressBar.vue";
 import Loader from "./ui/Loader.vue";
 import Button from "./ui/Button.vue";
+import TickBox from "./ui/TickBox.vue";
 
 @Component({
   components: {
     Icon,
     ProgressBar,
     Loader,
-    Button
+    Button,
+    TickBox
   }
 })
 export default class Notifier extends Vue {
@@ -37,12 +46,28 @@ export default class Notifier extends Vue {
   @Prop() loader?: boolean;
   @Prop({ default: false }) showCancel: boolean;
   @Prop() buttons: string[];
+  @Prop() tickBoxes: string[];
 
   desc = this.$props.description;
   percent = this.$props.percentage;
+  tickBoxesChecked: string[] = [];
 
   elClicked(elClicked: string) {
-    this.$emit("element-clicked", elClicked);
+    this.$emit("element-clicked", elClicked, this.tickBoxes != null ? this.tickBoxesChecked : null);
+  }
+
+  tickBoxChanged(toUpdate: string, ticked: boolean) {
+    // Add to tickBoxesChecked
+    if (!this.tickBoxesChecked.includes(toUpdate) && ticked) {
+      this.tickBoxesChecked.push(toUpdate);
+      return;
+    }
+
+    // Remove from tickBoxesChecked
+    if (!ticked) {
+      this.tickBoxesChecked.remove(toUpdate);
+      return;
+    }
   }
 }
 </script>
@@ -64,7 +89,7 @@ export default class Notifier extends Vue {
     justify-content: center;
     align-items: center;
     position: relative;
-    padding: 10px 20px;
+    padding: 18px 20px;
     min-width: 500px;
     min-height: 150px;
     flex-flow: column;
@@ -90,6 +115,18 @@ export default class Notifier extends Vue {
       &:hover {
         fill: $textPrimaryHover;
         transform: scale(1.15);
+      }
+    }
+
+    .tickboxesContainer {
+      display: flex;
+      flex-flow: column;
+      justify-content: left;
+      align-items: flex-start;
+      margin-bottom: 20px;
+
+      .boxContainer {
+        margin-bottom: 5px;
       }
     }
 
