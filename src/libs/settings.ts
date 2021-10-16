@@ -108,6 +108,8 @@ export class GeneralSettings {
   private static _startupPage: string = "Videos";
   private static _recordingStatusAlsoStopStartRecording: boolean = true;
   private static _recordingStatusDblClkToRecord: boolean = false;
+  private static _deleteVideoConfirmationDisabled: boolean = false;
+  private static _deleteVideosFromDiskByDefault: boolean = false;
 
   /**
    * startupPage
@@ -142,6 +144,29 @@ export class GeneralSettings {
 
   public static set recordingStatusDblClkToRecord(should) {
     this._recordingStatusDblClkToRecord = should;
+  }
+
+  /**
+   * If the delete video confirmation popup should be disabled.
+   */
+  public static get deleteVideoConfirmationDisabled() {
+    return this._deleteVideoConfirmationDisabled;
+  }
+
+  public static set deleteVideoConfirmationDisabled(should) {
+    this._deleteVideoConfirmationDisabled = should;
+  }
+
+  /**
+   * If the 'remove from disk' TickBox should be set to true by default.
+   * If the popup is disabled, this will still cause videos to be removed from disk by default.
+   */
+  public static get deleteVideosFromDiskByDefault() {
+    return this._deleteVideosFromDiskByDefault;
+  }
+
+  public static set deleteVideosFromDiskByDefault(should) {
+    this._deleteVideosFromDiskByDefault = should;
   }
 }
 
