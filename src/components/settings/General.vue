@@ -24,6 +24,24 @@
         @item-changed="updateSettings"
       />
     </div>
+
+    <div class="setting">
+      <span class="title">Disable delete video confirmation:</span>
+      <TickBox
+        name="deleteVideoConfirmationDisabled"
+        :ticked="deleteVideoConfirmationDisabled"
+        @item-changed="updateSettings"
+      />
+    </div>
+
+    <div class="setting">
+      <span class="title">Delete videos from disk by default:</span>
+      <TickBox
+        name="deleteVideosFromDiskByDefault"
+        :ticked="deleteVideosFromDiskByDefault"
+        @item-changed="updateSettings"
+      />
+    </div>
   </div>
 </template>
 
@@ -46,7 +64,9 @@ export default class GeneralSettingsComponent extends Vue {
       startupPage: GeneralSettings.startupPage,
       startupPageItems: AppSettings.pages,
       recordingStatusAlsoStopStartRecording: GeneralSettings.recordingStatusAlsoStopStartRecording,
-      recordingStatusDblClkToRecord: GeneralSettings.recordingStatusDblClkToRecord
+      recordingStatusDblClkToRecord: GeneralSettings.recordingStatusDblClkToRecord,
+      deleteVideoConfirmationDisabled: GeneralSettings.deleteVideoConfirmationDisabled,
+      deleteVideosFromDiskByDefault: GeneralSettings.deleteVideosFromDiskByDefault
     };
   }
 
@@ -61,6 +81,12 @@ export default class GeneralSettingsComponent extends Vue {
         break;
       case "recordingStatusDblClkToRecord":
         GeneralSettings.recordingStatusDblClkToRecord = newValue;
+        break;
+      case "deleteVideoConfirmationDisabled":
+        GeneralSettings.deleteVideoConfirmationDisabled = newValue;
+        break;
+      case "deleteVideosFromDiskByDefault":
+        GeneralSettings.deleteVideosFromDiskByDefault = newValue;
         break;
     }
 
