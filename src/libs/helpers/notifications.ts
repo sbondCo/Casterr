@@ -28,7 +28,8 @@ interface PopupOptions {
 
   /**
    * String array of tickbox names.
-   * Method will resolve with a list of tickbox names that have been ticked.
+   * Method will resolve after a button is clicked with a list of tickbox
+   * names that have been ticked.
    */
   tickBoxes?: string[];
 }

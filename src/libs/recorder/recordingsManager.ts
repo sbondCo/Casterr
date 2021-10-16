@@ -90,18 +90,27 @@ export default class RecordingsManager {
    * Delete a video.
    * @param videoPath Path to video to be deleted.
    * @param isClip If video is a clip.
+   * @param removeFromDisk If should also remove from disk.
    */
-  public static async delete(videoPath: string, isClip: boolean) {
-    // Videos, except the one to delete
-    const videos = this.getVideos(isClip).filter((e) => e.videoPath !== videoPath);
+  public static delete(videoPath: string, isClip: boolean, removeFromDisk: boolean = false) {
+    let videos = this.getVideos(isClip);
+    const vidIdx = videos.findIndex((e) => e.videoPath == videoPath);
+    const video = videos[vidIdx];
 
-    // Delete video file
-    // ...
+    if (video?.videoPath) {
+      // Delete video file from disk
+      if (removeFromDisk) {
+        fs.rmSync(video.videoPath);
+      }
 
-    // Rewrite video file
-    fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
-      if (err) throw err;
-    });
+      // Remove video from videos array
+      videos = videos.filter((e) => e.videoPath !== video.videoPath);
+
+      // Rewrite video file
+      fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+        if (err) throw err;
+      });
+    }
   }
 
   /**
