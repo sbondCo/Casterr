@@ -31,7 +31,12 @@ interface PopupOptions {
    * Method will resolve after a button is clicked with a list of tickbox
    * names that have been ticked.
    */
-  tickBoxes?: string[];
+  tickBoxes?: string[] | TickBoxInfo[];
+}
+
+interface TickBoxInfo {
+  name: string;
+  ticked: boolean;
 }
 
 export default class Notifications {
@@ -57,6 +62,27 @@ export default class Notifications {
         if (i != undefined) i.$data.desc = desc;
         if (i != undefined) i.$data.percent = options?.percentage;
       } else {
+        const tickBoxNames = new Array<string>();
+        const tickBoxesChecked = new Array<string>();
+
+        if (options?.tickBoxes != undefined) {
+          // Loop over tickboxes array passed adding to tickBoxNames/Checked
+          for (let i = 0; i < options.tickBoxes.length; i++) {
+            // If tickBoxes is passed in as TickBoxInfo[]
+            // also add to tickBoxesChecked depending on `ticked` value passed in it.
+            if ((options.tickBoxes[i] as TickBoxInfo).name !== undefined) {
+              const el = options.tickBoxes[i] as TickBoxInfo;
+
+              tickBoxNames.push(el.name);
+              if ((el as TickBoxInfo).ticked) tickBoxesChecked.push(el.name);
+            } else {
+              const el = options.tickBoxes[i] as string;
+
+              tickBoxNames.push(el);
+            }
+          }
+        }
+
         // Create Notifier instance
         const notifier = Vue.extend(Notifier);
         const instance = new notifier({
@@ -66,7 +92,8 @@ export default class Notifications {
             loader: options?.loader,
             showCancel: options?.showCancel ?? true,
             buttons: options?.buttons,
-            tickBoxes: options?.tickBoxes
+            tickBoxes: tickBoxNames,
+            tickBoxesChecked: tickBoxesChecked
           }
         });
 

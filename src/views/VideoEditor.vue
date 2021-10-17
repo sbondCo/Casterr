@@ -106,6 +106,7 @@ import fs from "fs";
 import path from "path";
 import noUiSlider, { PipsMode, target } from "nouislider";
 import "@/libs/helpers/extensions";
+import { GeneralSettings } from "@/libs/settings";
 
 @Component({
   components: {
@@ -697,21 +698,31 @@ export default class VideoPlayer extends Vue {
    * Delete current video then go back to library.
    */
   deleteVideo() {
+    const removeFromDisk = GeneralSettings.deleteVideosFromDiskByDefault;
+
+    const deleteAndGoBack = (alsoRemoveFromDisk: boolean = false) => {
+      // Delete video
+      RecordingsManager.delete(this.video.videoPath, this.isClip, alsoRemoveFromDisk);
+
+      // Go back after deleting
+      this.$router.go(-1);
+    };
+
+    if (GeneralSettings.deleteVideoConfirmationDisabled) {
+      deleteAndGoBack(removeFromDisk);
+
+      // Return method here so confirmation popup below isn't shown
+      return;
+    }
+
+    // Show popup to confirm video deletion (if it isn't disabled ^)
     Notifications.popup("delete-video", "Delete Video", {
       showCancel: true,
-      tickBoxes: ["Also remove from disk"],
+      tickBoxes: [{ name: "Also remove from disk", ticked: removeFromDisk }],
       buttons: ["cancel", "delete"]
     }).then((popup) => {
       if (popup.action == "delete") {
-        // Delete video
-        RecordingsManager.delete(
-          this.video.videoPath,
-          this.isClip,
-          popup.tickBoxesChecked?.includes("Also remove from disk")
-        );
-
-        // Go back after deleting
-        this.$router.go(-1);
+        deleteAndGoBack(popup.tickBoxesChecked?.includes("Also remove from disk"));
       }
 
       Notifications.deletePopup("delete-video");

@@ -11,7 +11,8 @@
 
       <div class="tickboxesContainer">
         <div class="boxContainer" v-for="box in tickBoxes" :key="box">
-          <TickBox :name="box" @item-changed="tickBoxChanged" />
+          <TickBox :name="box" :ticked="isChecked(box)" @item-changed="tickBoxChanged" />
+
           <span>{{ box }}</span>
         </div>
       </div>
@@ -47,25 +48,36 @@ export default class Notifier extends Vue {
   @Prop({ default: false }) showCancel: boolean;
   @Prop() buttons: string[];
   @Prop() tickBoxes: string[];
+  @Prop() tickBoxesChecked: string[];
 
-  desc = this.$props.description;
-  percent = this.$props.percentage;
-  tickBoxesChecked: string[] = [];
+  desc: string = this.$props.description;
+  percent: number = this.$props.percentage;
+  checkedTickBoxes: string[] = this.$props.tickBoxesChecked;
 
   elClicked(elClicked: string) {
-    this.$emit("element-clicked", elClicked, this.tickBoxes != null ? this.tickBoxesChecked : null);
+    const chkdTickBoxes: string[] | null = this.tickBoxes?.length > 0 ? this.checkedTickBoxes : null;
+
+    this.$emit("element-clicked", elClicked, chkdTickBoxes);
+  }
+
+  isChecked(name: string) {
+    if (this.checkedTickBoxes) {
+      return this.checkedTickBoxes.includes(name);
+    }
+
+    return false;
   }
 
   tickBoxChanged(toUpdate: string, ticked: boolean) {
-    // Add to tickBoxesChecked
-    if (!this.tickBoxesChecked.includes(toUpdate) && ticked) {
-      this.tickBoxesChecked.push(toUpdate);
+    // Add to checkedTickBoxes
+    if (!this.checkedTickBoxes.includes(toUpdate) && ticked) {
+      this.checkedTickBoxes.push(toUpdate);
       return;
     }
 
-    // Remove from tickBoxesChecked
+    // Remove from checkedTickBoxes
     if (!ticked) {
-      this.tickBoxesChecked.remove(toUpdate);
+      this.checkedTickBoxes = this.checkedTickBoxes.remove(toUpdate);
       return;
     }
   }
