@@ -139,7 +139,7 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        // Notifications.popup(popupName, "Fetching Recording Utilities", progress);
+        Notifications.popup(popupName, "Fetching Recording Utilities", { percentage: progress });
       });
 
       // Update popup to extracting phase
