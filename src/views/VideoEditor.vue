@@ -138,11 +138,12 @@ export default class VideoPlayer extends Vue {
   showTimeAsElapsed = false;
   timelineZoom = 100;
   isPlayingAllClips = false;
+  videoTimeReadable = "00:00 / 00:00";
 
   /**
    * Get current video time.
    */
-  get currentVideoTime() {
+  currentVideoTime() {
     if (this.player != undefined) {
       return this.player.currentTime;
     } else {
@@ -229,12 +230,16 @@ export default class VideoPlayer extends Vue {
 
     this.maxVideoTime = this.player.duration;
 
-    // Update volume once now, so default volume value is applied
+    // Ensure volume and readable video time is set
     this.updateVolume(this.volume);
+    this.setVideoTimeReadable();
 
     this.player.addEventListener("play", () => this.playPause(false));
     this.player.addEventListener("pause", () => this.playPause(false));
-    this.player.addEventListener("timeupdate", this.updateProgressBarTime);
+    this.player.addEventListener("timeupdate", () => {
+      this.setVideoTimeReadable();
+      this.updateProgressBarTime();
+    });
 
     noUiSlider.create(this.progressBar, {
       start: [0],
@@ -302,11 +307,11 @@ export default class VideoPlayer extends Vue {
    * Return video time in readable format.
    * Different format returned depending on `showTimeAsElapsed` var.
    */
-  get videoTimeReadable() {
+  setVideoTimeReadable() {
     if (this.showTimeAsElapsed) {
-      return `${(this.maxVideoTime - this.currentVideoTime).toReadableTimeFromSeconds()} Left`;
+      this.videoTimeReadable = `${(this.maxVideoTime - this.currentVideoTime()).toReadableTimeFromSeconds()} Left`;
     } else {
-      return `${this.currentVideoTime.toReadableTimeFromSeconds()} / ${this.maxVideoTime.toReadableTimeFromSeconds()}`;
+      this.videoTimeReadable = `${this.currentVideoTime().toReadableTimeFromSeconds()} / ${this.maxVideoTime.toReadableTimeFromSeconds()}`;
     }
   }
 
