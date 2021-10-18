@@ -100,8 +100,8 @@ export default class RecordingsManager {
     if (video?.videoPath) {
       // Delete video file from disk
       if (removeFromDisk) {
-        if (video.videoPath) fs.rmSync(video.videoPath);
-        if (video.thumbPath) fs.rmSync(video.thumbPath);
+        if (video.videoPath) fs.rmSync(video.videoPath, { force: true });
+        if (video.thumbPath) fs.rmSync(video.thumbPath, { force: true });
       }
 
       // Remove video from videos array
