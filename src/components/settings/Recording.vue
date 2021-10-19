@@ -28,13 +28,11 @@
     </div>
 
     <div v-if="this.isWindows" class="setting">
-      <span class="title">Zero Latency:</span>
-      <TickBox name="zeroLatency" :ticked="zeroLatency" @item-changed="updateSettings" />
+      <TickBox name="zeroLatency" text="Zero Latency" :ticked="zeroLatency" @item-changed="updateSettings" />
     </div>
 
     <div v-if="this.isWindows" class="setting">
-      <span class="title">Ultra Fast:</span>
-      <TickBox name="ultraFast" :ticked="ultraFast" @item-changed="updateSettings" />
+      <TickBox name="ultraFast" text="Ultra Fast" :ticked="ultraFast" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
@@ -48,8 +46,12 @@
     </div>
 
     <div class="setting">
-      <span class="title">Seperate Audio Tracks:</span>
-      <TickBox name="seperateAudioTracks" :ticked="seperateAudioTracks" @item-changed="updateSettings" />
+      <TickBox
+        name="seperateAudioTracks"
+        text="Seperate Audio Tracks"
+        :ticked="seperateAudioTracks"
+        @item-changed="updateSettings"
+      />
     </div>
 
     <div class="setting">
