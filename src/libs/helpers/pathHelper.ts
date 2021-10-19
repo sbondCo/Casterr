@@ -76,8 +76,8 @@ export default class PathHelper {
     } catch (err) {
       // If exception is caused by file already existing,
       // don't throw it. Throw again if caused by something else.
-      if (err.code != "EEXIST") {
-        throw new Error(err);
+      if ((err as any).code != "EEXIST") {
+        throw new Error(err as any);
       }
     }
 
