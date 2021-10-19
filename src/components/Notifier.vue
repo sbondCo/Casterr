@@ -11,9 +11,7 @@
 
       <div class="tickboxesContainer">
         <div class="boxContainer" v-for="box in tickBoxes" :key="box">
-          <TickBox :name="box" :ticked="isChecked(box)" @item-changed="tickBoxChanged" />
-
-          <span>{{ box }}</span>
+          <TickBox :name="box" :text="box" :ticked="isChecked(box)" @item-changed="tickBoxChanged" />
         </div>
       </div>
 

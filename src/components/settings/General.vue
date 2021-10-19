@@ -3,41 +3,41 @@
     <span class="pageTitle">General Settings</span>
 
     <div class="setting">
-      <span class="title">Startup Page:</span>
+      <span class="title">Startup Page</span>
       <DropDown name="startupPage" :activeItem="startupPage" :items="startupPageItems" @item-changed="updateSettings" />
     </div>
 
     <div class="setting">
-      <span class="title">Recording status also start/stops recording:</span>
       <TickBox
         name="recordingStatusAlsoStopStartRecording"
+        text="Recording status also start/stops recording"
         :ticked="recordingStatusAlsoStopStartRecording"
         @item-changed="updateSettings"
       />
     </div>
 
     <div class="setting">
-      <span class="title">Recording status double click to record:</span>
       <TickBox
         name="recordingStatusDblClkToRecord"
+        text="Recording status double click to record"
         :ticked="recordingStatusDblClkToRecord"
         @item-changed="updateSettings"
       />
     </div>
 
     <div class="setting">
-      <span class="title">Disable delete video confirmation:</span>
       <TickBox
         name="deleteVideoConfirmationDisabled"
+        text="Disable delete video confirmation"
         :ticked="deleteVideoConfirmationDisabled"
         @item-changed="updateSettings"
       />
     </div>
 
     <div class="setting">
-      <span class="title">Delete videos from disk by default:</span>
       <TickBox
         name="deleteVideosFromDiskByDefault"
+        text="Delete videos from disk by default"
         :ticked="deleteVideosFromDiskByDefault"
         @item-changed="updateSettings"
       />
