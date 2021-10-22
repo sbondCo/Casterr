@@ -1,11 +1,13 @@
-"use strict";
+// import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
+// // import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+// // import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+// import * as path from "path";
+// import { electron } from "process";
 
-import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
-import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import * as path from "path";
-import { electron } from "process";
-const isDevelopment = process.env.NODE_ENV !== "production";
+const { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } = require("electron");
+const path = require("path");
+
+const isDev = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
@@ -33,13 +35,13 @@ async function createWindow() {
 
   registerChannels(win);
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
+  if (isDev && process.env.SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    await win.loadURL(process.env.SERVER_URL);
 
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
-    createProtocol("app");
+    // createProtocol("app");
 
     // Load the index.html when not in development
     win.loadURL(`file://${path.join(__dirname, "index.html")}`);
@@ -50,7 +52,7 @@ async function createWindow() {
  * Register and handle all ipc channels.
  * @param win Main window.
  */
-function registerChannels(win: BrowserWindow) {
+function registerChannels(win) {
   /**
    * Manage current state of window.
    */
@@ -75,7 +77,7 @@ function registerChannels(win: BrowserWindow) {
   /**
    * Create desktop notification window and display correct message to user.
    */
-  ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
+  ipcMain.on("create-desktop-notification", async (_, args) => {
     const notifWin = new BrowserWindow({
       parent: win,
       width: 400,
@@ -120,7 +122,7 @@ function registerChannels(win: BrowserWindow) {
   /**
    * Show open dialog with args passed through.
    */
-  ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
+  ipcMain.handle("show-open-dialog", async (_, args) => {
     return dialog.showOpenDialog(win, args);
   });
 
@@ -169,11 +171,11 @@ app.on("activate", () => {
  */
 app.on("ready", async () => {
   // Install VUEJS devtools if in development mode
-  if (isDevelopment && !process.env.IS_TEST) {
-    await installExtension(VUEJS_DEVTOOLS, true)
-      .then((name) => console.log(`Added Extension: ${name}`))
-      .catch((err) => console.log("An error occurred: ", err));
-  }
+  // if (isDev && !process.env.IS_TEST) {
+  //   await installExtension(VUEJS_DEVTOOLS, true)
+  //     .then((name) => console.log(`Added Extension: ${name}`))
+  //     .catch((err) => console.log("An error occurred: ", err));
+  // }
 
   // Create file protocol, so we can access users files
   const protocolName = "secfile";
@@ -193,7 +195,7 @@ app.on("ready", async () => {
 /**
  * Exit cleanly on request from parent process in development mode
  */
-if (isDevelopment) {
+if (isDev) {
   if (process.platform === "win32") {
     process.on("message", (data) => {
       if (data === "graceful-exit") {
