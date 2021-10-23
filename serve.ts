@@ -1,12 +1,12 @@
-const { get } = require("http");
-const { exec } = require("child_process");
+import { get } from "http";
+import { ChildProcess, exec } from "child_process";
 
 const NODE_BIN = "./node_modules/.bin";
 const ATTEMPTS = Infinity;
 const DELAY = 500;
 
-let electron;
-let vite;
+let electron: ChildProcess;
+let vite: ChildProcess;
 
 async function start() {
   log("Starting tasks", "Srve");
@@ -19,7 +19,7 @@ async function start() {
 }
 
 function openElectron() {
-  return new Promise(async (resolve) => {
+  return new Promise<ChildProcess>(async (resolve) => {
     const viteBase = "http://localhost:3000";
 
     for (let i = 0; i < ATTEMPTS; i++) {
@@ -41,9 +41,9 @@ function openElectron() {
   });
 }
 
-async function listen(proc, prefix) {
-  proc.stdout.on("data", (chunk) => log(chunk, prefix));
-  proc.stderr.on("data", (chunk) => log(chunk, prefix));
+async function listen(proc: ChildProcess, prefix: string) {
+  proc.stdout?.on("data", (chunk) => log(chunk, prefix));
+  proc.stderr?.on("data", (chunk) => log(chunk, prefix));
 
   proc.on("close", () => {
     log(`${prefix} was closed, stopping other tasks.`, "Srve");
@@ -51,7 +51,7 @@ async function listen(proc, prefix) {
   });
 }
 
-async function log(msg, prefix) {
+async function log(msg: string, prefix: string) {
   const text = msg.split("\n").map((line) => {
     return `[${coloured(prefix)}] ${line}`;
   });
@@ -59,7 +59,7 @@ async function log(msg, prefix) {
   console.log(`${text.join("\n")}`);
 }
 
-function coloured(prefix) {
+function coloured(prefix: string) {
   let colour = "\x1b[35m";
 
   switch (prefix) {

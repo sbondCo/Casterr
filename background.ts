@@ -1,11 +1,7 @@
-// import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
 // // import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-// // import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-// import * as path from "path";
-// import { electron } from "process";
-
-const { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } = require("electron");
-const path = require("path");
+import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
+import * as path from "path";
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -52,7 +48,7 @@ async function createWindow() {
  * Register and handle all ipc channels.
  * @param win Main window.
  */
-function registerChannels(win) {
+function registerChannels(win: BrowserWindow) {
   /**
    * Manage current state of window.
    */
@@ -77,7 +73,7 @@ function registerChannels(win) {
   /**
    * Create desktop notification window and display correct message to user.
    */
-  ipcMain.on("create-desktop-notification", async (_, args) => {
+  ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
     const notifWin = new BrowserWindow({
       parent: win,
       width: 400,
@@ -122,7 +118,7 @@ function registerChannels(win) {
   /**
    * Show open dialog with args passed through.
    */
-  ipcMain.handle("show-open-dialog", async (_, args) => {
+  ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
     return dialog.showOpenDialog(win, args);
   });
 
@@ -170,12 +166,12 @@ app.on("activate", () => {
  * When Electron is finished initializing
  */
 app.on("ready", async () => {
-  // Install VUEJS devtools if in development mode
-  // if (isDev && !process.env.IS_TEST) {
-  //   await installExtension(VUEJS_DEVTOOLS, true)
-  //     .then((name) => console.log(`Added Extension: ${name}`))
-  //     .catch((err) => console.log("An error occurred: ", err));
-  // }
+  // Install devtools if in development mode
+  if (isDev && !process.env.IS_TEST) {
+    await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], true)
+      .then((name) => console.log(`Added Extension: ${name}`))
+      .catch((err) => console.log("An error occurred: ", err));
+  }
 
   // Create file protocol, so we can access users files
   const protocolName = "secfile";
