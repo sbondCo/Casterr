@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
-    <nav>
-      <ul>
+    <nav className="">
+      <ul className="flex flex-row flex-nowrap items-center justify-center">
         <li>
           <Link to="/videos">
             {/* <Icon i="play" /> */}
