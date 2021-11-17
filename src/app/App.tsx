@@ -1,3 +1,4 @@
+import Dragger from "@/app/Dragger";
 import Nav from "@/app/Nav";
 import Videos from "@/videos";
 import Settings from "@/settings";
@@ -10,6 +11,7 @@ function App() {
     <div className="App">
       <Provider store={store}>
         <Router>
+          <Dragger />
           <Nav />
 
           <Switch>

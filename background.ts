@@ -54,14 +54,14 @@ function registerChannels(win: BrowserWindow) {
    */
   ipcMain.on("manage-window", (_, args) => {
     switch (args) {
-      case "maximize":
+      case "max":
         if (win.isMaximized()) {
           win.unmaximize();
         } else {
           win.maximize();
         }
         break;
-      case "minimize":
+      case "min":
         win.minimize();
         break;
       case "close":
