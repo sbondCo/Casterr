@@ -9,7 +9,7 @@
   },
   "main": "./entry/background.js",
   "scripts": {
-    "serve": "tsc background.ts serve.ts --removeComments true --strict true --outDir ./entry && node ./entry/serve.js",
+    "serve": "tsc background.ts preload.ts serve.ts --removeComments true --strict true --outDir ./entry && node ./entry/serve.js",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",

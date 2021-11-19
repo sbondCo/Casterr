@@ -24,8 +24,11 @@ async function createWindow() {
     minHeight: 500,
     frame: false,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
+      nodeIntegrationInSubFrames: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js")
     }
   });
 
