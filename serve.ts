@@ -20,7 +20,7 @@ async function start() {
 
 function openElectron() {
   return new Promise<ChildProcess>(async (resolve) => {
-    const viteBase = "http://localhost:3000";
+    const viteBase = "http://localhost:3060";
 
     for (let i = 0; i < ATTEMPTS; i++) {
       // If electron is set, make sure for loop exits
@@ -31,6 +31,8 @@ function openElectron() {
         // launched the react app, so we can now open Electron
         if (resp.statusCode == 200) {
           resolve(exec(`NODE_ENV=dev SERVER_URL=${viteBase} ${NODE_BIN}/electron .`));
+        } else {
+          log(`Recieved HTTP code ${resp.statusCode} from vite!`, "Srve");
         }
       }).on("error", () => {
         log(`App not available yet, retrying in ${DELAY}ms`, "Srve");
