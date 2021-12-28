@@ -17,7 +17,7 @@ module.exports = {
       },
       white: {
         100: "#e1e1e1",
-        50: "#4f545c"
+        50: "#e1e1e15A"
       },
       red: {
         100: "#c10000"

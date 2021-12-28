@@ -7,13 +7,15 @@ interface IconProps {
 
   // Icon direction
   direction?: "up" | "down" | "left" | "right";
+
+  className?: string;
 }
 
-export default function Icon({ i, wh = 24 }: IconProps) {
+export default function Icon({ i, wh = 24, className }: IconProps) {
   const icon = getIcon(i);
 
   return (
-    <svg width={wh} height={wh} viewBox={icon.viewBox}>
+    <svg width={wh} height={wh} viewBox={icon.viewBox} className={className}>
       {icon.el}
     </svg>
   );
