@@ -2,7 +2,7 @@ import Dragger from "@/app/Dragger";
 import Nav from "@/app/Nav";
 import Videos from "@/videos";
 import Settings from "@/settings";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { store } from "@/app/store";
 import { Provider } from "react-redux";
 
@@ -15,6 +15,10 @@ function App() {
           <Nav />
 
           <Switch>
+            <Route exact path="/">
+              <Redirect to="/videos" />
+            </Route>
+
             <Route path="/videos">
               <Videos />
             </Route>

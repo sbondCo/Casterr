@@ -24,7 +24,7 @@ function DraggerItem(props: { icon: string; hoverColor?: string }) {
   return (
     <div
       onClick={manageWindow}
-      className={`flex justify-center items-center h-full w-8 fill-current text-white-100 hover:bg-${hoverColor}`}
+      className={`flex justify-center items-center h-full w-8 fill-current text-white-100 hover:bg-${hoverColor} cursor-pointer`}
       style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
     >
       <Icon i={icon} wh={12} />
