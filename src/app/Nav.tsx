@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
-    <nav className="flex items-center justify-center h-12 min-h-full text-2xl bg-secondary-100">
+    <nav className="flex items-center justify-center h-12 min-h-full bg-secondary-100">
       <ul className="flex flex-row flex-nowrap">
         <NavItem text="videos" icon="play" />
         <NavItem text="settings" icon="settings" />
@@ -33,11 +33,12 @@ function NavItem(props: { text: string; icon: string }) {
     <li>
       <Link
         to={`/${text}`}
-        className="flex flex-row items-center justify-center px-5 md:px-3 text-white-100 
-          fill-current hover:text-white-50 transition-colors ease-in-out duration-250"
+        className="flex flex-row items-center justify-center py-2 sm:py-0.5 px-4 mx-1.5 
+          bg-primary-100 rounded text-white-100 fill-current hover:bg-tertiary-100
+          transition-colors ease-in-out duration-250 text-xl"
       >
-        <Icon i={icon} className="mr-1.5" />
-        <span className="capitalize hidden md:flex">{text}</span>
+        <Icon i={icon} className="mr-0 sm:mr-1.5" wh={16} />
+        <span className="capitalize hidden sm:flex">{text}</span>
       </Link>
     </li>
   );
