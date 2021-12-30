@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App bg-primary-100 text-white-100 min-h-screen">
       <Provider store={store}>
         <Router>
           <Dragger />
