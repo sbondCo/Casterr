@@ -7,9 +7,9 @@
     "name": "sbondCo",
     "url": "https://sbond.co"
   },
-  "main": "./entry/background.js",
+  "main": "./entry/out/background.js",
   "scripts": {
-    "serve": "tsc background.ts preload.ts serve.ts --removeComments true --strict true --outDir ./entry && node ./entry/serve.js",
+    "serve": "tsc ./entry/background.ts ./entry/preload.ts ./entry/serve.ts --removeComments true --strict true --outDir ./entry/out && node ./entry/out/serve.js",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",

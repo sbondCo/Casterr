@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { store } from "@/app/store";
+import TextBox from "@/common/TextBox";
 import { Redirect, Route, Switch, useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 
 export default function Settings() {
+  const state = store.getState().settings;
+
   return (
     <div>
       <ul className="flex row justify-center items-center my-4 text-xl">
@@ -17,7 +20,8 @@ export default function Settings() {
         </Route>
 
         <Route path="/settings/general">
-          <span>General</span>
+          {/* this is supposed to be a dropdown... */}
+          <TextBox name="Startup Page" value={state.general.startupPage} />
         </Route>
 
         <Route path="/settings/recording">
@@ -32,6 +36,7 @@ export default function Settings() {
   );
 }
 
+// TODO: Move this to its own component file, it can be reused for videos page with some editing
 function SettingsNavItem(props: { text: string }) {
   const to = props.text.replace(" ", "").toLowerCase();
   const active = useLocation().pathname.replace("/settings/", "").toLowerCase() == to;

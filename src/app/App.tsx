@@ -14,19 +14,23 @@ function App() {
           <Dragger />
           <Nav />
 
-          <Switch>
-            <Route exact path="/">
-              <Redirect to="/videos" />
-            </Route>
+          <div className="flex justify-center">
+            <div className="sm:w-full" style={{ width: "500px" }}>
+              <Switch>
+                <Route exact path="/">
+                  <Redirect to="/videos" />
+                </Route>
 
-            <Route path="/videos">
-              <Videos />
-            </Route>
+                <Route path="/videos">
+                  <Videos />
+                </Route>
 
-            <Route path="/settings">
-              <Settings />
-            </Route>
-          </Switch>
+                <Route path="/settings">
+                  <Settings />
+                </Route>
+              </Switch>
+            </div>
+          </div>
         </Router>
       </Provider>
     </div>

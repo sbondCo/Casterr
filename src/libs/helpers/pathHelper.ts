@@ -1,12 +1,11 @@
-import * as os from "os";
-import * as Path from "path";
-import * as fs from "fs";
-import * as childProcess from "child_process";
+import fs from "fs";
+import childProcess from "child_process";
 import jsZip from "jszip";
+import { OS, Path } from "../node";
 
 export default class PathHelper {
   public static get mainFolderPath() {
-    return Path.join(os.homedir(), "Documents", "Casterr");
+    return Path.join(window.node.os.homedir(), "Documents", "Casterr");
   }
 
   public static get toolsPath() {
@@ -14,7 +13,7 @@ export default class PathHelper {
   }
 
   public static get homeFolderPath() {
-    return os.homedir();
+    return OS.homedir();
   }
 
   /**
