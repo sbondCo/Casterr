@@ -5,7 +5,7 @@ import { OS, Path } from "../node";
 
 export default class PathHelper {
   public static get mainFolderPath() {
-    return Path.join(window.node.os.homedir(), "Documents", "Casterr");
+    return Path.join(window.node.os.homedir(), "Documents", "CasterrNew");
   }
 
   public static get toolsPath() {
