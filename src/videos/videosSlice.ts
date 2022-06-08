@@ -3,12 +3,10 @@ import { VideosState, Video } from "./types";
 
 const videosSlice = createSlice({
   name: "videos",
-  initialState: {
-    value: { videos: [] } as VideosState
-  },
+  initialState: { videos: [] } as VideosState,
   reducers: {
     addVideos: (state, action: PayloadAction<Video[]>) => {
-      state.value.videos.push(...action.payload);
+      state.videos.push(...action.payload);
     }
   }
 });

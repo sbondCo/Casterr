@@ -4,6 +4,8 @@ import { AudioDevice } from "@/libs/recorder/deviceManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Settings, Page, MonitorToRecord } from "./types";
 
+// TODO: save settings state to file when updated
+
 const settingsSlice = createSlice({
   name: "settings",
   initialState: {
@@ -101,6 +103,26 @@ const settingsSlice = createSlice({
   }
 });
 
-export const { ...reducers } = settingsSlice.actions;
+export const {
+  setStartupPage,
+  setRcStatusAlsoStopStart,
+  setRcStatusDblClkToRecord,
+  setDeleteVideoConfirmationDisabled,
+  setDeleteVideosFromDisk,
+
+  setThumbSaveFolder,
+  setVideoSaveFolder,
+  setVideoSaveName,
+  setVideoDevice,
+  setMonitorToRecord,
+  setFps,
+  setResolution,
+  setFormat,
+  setZeroLatency,
+  setUltraFast,
+  addAudioDevicesToRecord,
+  delAudioDevicesToRecord,
+  setSeperateAudioTracks
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;
