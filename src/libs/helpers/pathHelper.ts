@@ -1,7 +1,6 @@
-import fs from "fs";
 import childProcess from "child_process";
 import jsZip from "jszip";
-import { OS, Path } from "../node";
+import { OS, Path, FS } from "../node";
 
 export default class PathHelper {
   public static get mainFolderPath() {
@@ -58,32 +57,30 @@ export default class PathHelper {
    * Make sure files/dirs exist from path
    * @param path Path of file/folder
    * @param isDir Is `path` pointing to a directory?
+   * @returns The path input.
    */
   public static ensureExists(path: string, isDir: boolean = false, options?: { hidden: boolean }): string {
-    let folders = path;
-
-    if (!isDir) {
-      folders = Path.dirname(path);
-    }
-
-    // Recursively create all folders
-    fs.mkdirSync(folders, { recursive: true });
+    // If exists, return
+    if (FS.existsSync(path)) return path;
 
     try {
-      // Create file if it doesn't exist
-      fs.writeFileSync(path, "", { flag: "wx" });
-    } catch (err) {
-      // If exception is caused by file already existing,
-      // don't throw it. Throw again if caused by something else.
-      if ((err as any).code != "EEXIST") {
-        throw new Error(err as any);
-      }
-    }
+      // Recursively create all folders.
+      // If `!isDir`, get dirname from path first, so we don't
+      // create a folder for the file.
+      FS.mkdirSync(isDir ? path : Path.dirname(path), { recursive: true });
 
-    if (options != undefined) {
-      if (options.hidden) {
-        this.hide(path);
+      // Only write a file if `!isDir`.
+      // Needs to be after making dirs since this method
+      // will fail if the dir the file is being written in doesn't exist.
+      if (!isDir) FS.writeFileSync(path, "", { flag: "wx" });
+
+      if (options != undefined) {
+        if (options.hidden) {
+          this.hide(path);
+        }
       }
+    } catch (e) {
+      throw new Error(`Error ensuring file exists: ${e}`);
     }
 
     return path;
@@ -134,15 +131,15 @@ export default class PathHelper {
    * @param path
    */
   public static removeDir(path: string) {
-    if (fs.existsSync(path)) {
-      fs.readdir(path, (_, files) => {
+    if (FS.existsSync(path)) {
+      FS.readdir(path, (_, files) => {
         if (files) {
           files.forEach((file) => {
-            fs.unlinkSync(Path.join(path, file));
+            FS.unlinkSync(Path.join(path, file));
           });
         }
 
-        fs.rmdirSync(path);
+        FS.rmdirSync(path);
       });
     }
   }
@@ -152,8 +149,8 @@ export default class PathHelper {
    * @param path Path to file that should be deleted.
    */
   public static removeFile(path: string) {
-    if (fs.existsSync(path)) {
-      fs.unlinkSync(path);
+    if (FS.existsSync(path)) {
+      FS.unlinkSync(path);
     }
   }
 
@@ -171,7 +168,7 @@ export default class PathHelper {
     deleteAfter: boolean = true
   ) {
     return new Promise((resolve, reject) => {
-      fs.readFile(zipPath, (err, data) => {
+      FS.readFile(zipPath, (err, data) => {
         if (err) reject(err);
 
         const zip = new jsZip();
@@ -194,7 +191,7 @@ export default class PathHelper {
                   .file(filename)!
                   .async("nodebuffer")
                   .then((content: any) => {
-                    fs.writeFile(Path.join(destFolder, filenameWithoutFolder), content, () => {
+                    FS.writeFile(Path.join(destFolder, filenameWithoutFolder), content, () => {
                       resolve("");
                     });
                   });
@@ -212,7 +209,7 @@ export default class PathHelper {
               // Don't wait for file to delete before resolving the promise,
               // theres no reason to make the user wait for it to finish deleting the zip.
               if (deleteAfter) {
-                fs.unlink(zipPath, (err) => {
+                FS.unlink(zipPath, (err) => {
                   if (err) throw err;
                 });
               }
