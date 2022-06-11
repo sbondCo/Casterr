@@ -9,8 +9,10 @@ import {
   setDeleteVideoConfirmationDisabled,
   setDeleteVideosFromDisk,
   setRcStatusAlsoStopStart,
-  setRcStatusDblClkToRecord
+  setRcStatusDblClkToRecord,
+  setStartupPage
 } from "./settingsSlice";
+import { Page } from "./types";
 
 export default function Settings() {
   const state = useSelector((store: RootState) => store.settings);
@@ -32,7 +34,13 @@ export default function Settings() {
 
         <Route path="/settings/general">
           <SettingsItem title="Startup Page">
-            <DropDown activeItem={state.general.startupPage} items={state.app.pages} />
+            <DropDown
+              activeItem={state.general.startupPage}
+              items={state.app.pages}
+              onChange={(s) => {
+                dispatch(setStartupPage(s as Page));
+              }}
+            />
           </SettingsItem>
 
           <SettingsItem title="Recording Status Also Stop/Start Recording" row>
@@ -42,21 +50,21 @@ export default function Settings() {
             />
           </SettingsItem>
 
-          <SettingsItem title="Recording status double click to record" row>
+          <SettingsItem title="Recording Status Double Click To Record" row>
             <TickBox
               ticked={state.general.rcStatusDblClkToRecord}
               onChange={(t) => dispatch(setRcStatusDblClkToRecord(t))}
             />
           </SettingsItem>
 
-          <SettingsItem title="Disable delete video confirmation" row>
+          <SettingsItem title="Disable Delete Video Confirmation" row>
             <TickBox
               ticked={state.general.deleteVideoConfirmationDisabled}
               onChange={(t) => dispatch(setDeleteVideoConfirmationDisabled(t))}
             />
           </SettingsItem>
 
-          <SettingsItem title="Delete videos from disk by default" row>
+          <SettingsItem title="Delete Videos From Disk By Default" row>
             <TickBox
               ticked={state.general.deleteVideosFromDisk}
               onChange={(t) => dispatch(setDeleteVideosFromDisk(t))}
@@ -87,7 +95,7 @@ function SettingsItem({ title, children, row }: SettingsItemProps) {
 
   return (
     <div className={`mb-5 ${containerClass}`}>
-      <p className="mb-1.5 mr-2.5 font-bold">{title}</p>
+      <p className="mb-1.5 mr-2.5 font-bold capitalize">{title}</p>
       {children}
     </div>
   );

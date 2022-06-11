@@ -8,7 +8,7 @@ import { DEFAULT_SETTINGS } from "./initialState";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => (action: AnyAction) => {
   try {
-    console.log(action);
+    console.log("saver:", action);
 
     // Call the next dispatch method in the middleware chain.
     const returnValue = next(action);

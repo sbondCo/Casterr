@@ -4,6 +4,7 @@ import Icon from "./Icon";
 interface DropDownProps {
   activeItem: DropDownItem | string | number;
   items: DropDownItem[] | string[] | number[];
+  onChange: (selected: DropDownItem | string | number) => void;
 }
 
 export interface DropDownItem {
@@ -19,8 +20,9 @@ export interface DropDownItem {
   name: string;
 }
 
-export default function DropDown({ activeItem, items }: DropDownProps) {
+export default function DropDown({ activeItem, items, onChange }: DropDownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(activeItem);
 
   return (
     <div className="flex flex-col bg-secondary-100 rounded">
@@ -30,7 +32,7 @@ export default function DropDown({ activeItem, items }: DropDownProps) {
         } flex items-center relative py-1.5 px-3 cursor-pointer hover:bg-tertiary-100`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{typeof activeItem === "object" ? activeItem.name : activeItem}</span>
+        <span>{typeof selected === "object" ? selected.name : selected}</span>
         <Icon i="chevron" direction="down" wh={16} className="absolute right-3 fill-white-100" />
       </label>
 
@@ -39,6 +41,11 @@ export default function DropDown({ activeItem, items }: DropDownProps) {
           <li
             key={idx}
             className={`${length - 1 === idx && "rounded-b"} py-1.5 px-3 cursor-pointer hover:bg-tertiary-100`}
+            onClick={() => {
+              setSelected(i);
+              onChange(i);
+              setIsOpen(false);
+            }}
           >
             {typeof i === "object" ? i.name : i}
           </li>
