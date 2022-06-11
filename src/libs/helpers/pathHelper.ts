@@ -20,30 +20,17 @@ export default class PathHelper {
    * Paths are hardcoded, only supported files that are listed here will work.
    * @param name Name of file with extension
    */
-  public static getFile(
-    name:
-      | "GeneralSettings.json"
-      | "RecordingSettings.json"
-      | "KeyBindingSettings.json"
-      | "Recordings.json"
-      | "Clips.json"
-  ) {
+  public static getFile(name: "settings" | "recordings" | "clips") {
     let path: string[];
 
     switch (name) {
-      case "GeneralSettings.json":
-        path = ["Settings", "GeneralSettings.json"];
+      case "settings":
+        path = ["settings.json"];
         break;
-      case "RecordingSettings.json":
-        path = ["Settings", "RecordingSettings.json"];
-        break;
-      case "KeyBindingSettings.json":
-        path = ["Settings", "KeyBindingSettings.json"];
-        break;
-      case "Recordings.json":
+      case "recordings":
         path = ["Recordings.json"];
         break;
-      case "Clips.json":
+      case "clips":
         path = ["Clips.json"];
         break;
     }

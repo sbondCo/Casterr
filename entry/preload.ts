@@ -1,8 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
-
-const { contextBridge, ipcRenderer } = require("electron");
+import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("api", {
   send: (channel: string, ...args: any[]) => {
@@ -10,30 +9,46 @@ contextBridge.exposeInMainWorld("api", {
   }
 });
 
-contextBridge.exposeInMainWorld("node", {
-  fs: {
-    existsSync: (path: fs.PathLike) => {
-      return fs.existsSync(path);
-    },
-    writeFile: (
-      file: fs.PathOrFileDescriptor,
-      data: string | NodeJS.ArrayBufferView,
-      options: fs.WriteFileOptions,
-      callback: fs.NoParamCallback
-    ) => {
-      return fs.writeFile(file, data, options, callback);
-    },
-    writeFileSync: (
-      file: fs.PathOrFileDescriptor,
-      data: string | NodeJS.ArrayBufferView,
-      options?: fs.WriteFileOptions
-    ) => {
-      return fs.writeFileSync(file, data, options);
-    },
-    mkdirSync: (path: fs.PathLike, options?: fs.Mode | fs.MakeDirectoryOptions | null) => {
-      return fs.mkdirSync(path, options);
-    }
-  },
+const nodeAPI = {
+  fs: fs,
+  // fs: {
+  //   existsSync: (path: fs.PathLike) => {
+  //     return fs.existsSync(path);
+  //   },
+  //   readFile: (path: fs.PathOrFileDescriptor, callback: (err: NodeJS.ErrnoException | null, data: Buffer) => void) => {
+  //     return fs.readFile(path, callback);
+  //   },
+  //   readdir: (path: fs.PathLike, callback: (err: NodeJS.ErrnoException | null, files: string[]) => void) => {
+  //     return fs.readdir(path, callback);
+  //   },
+  //   rmdirSync: (path: fs.PathLike, options?: fs.RmDirOptions | undefined) => {
+  //     return fs.rmdirSync(path, options);
+  //   },
+  //   unlink: (path: fs.PathLike, callback: fs.NoParamCallback) => {
+  //     return fs.unlink(path, callback);
+  //   },
+  //   unlinkSync: (path: fs.PathLike) => {
+  //     return fs.unlinkSync(path);
+  //   },
+  //   writeFile: (
+  //     file: fs.PathOrFileDescriptor,
+  //     data: string | NodeJS.ArrayBufferView,
+  //     options: fs.WriteFileOptions,
+  //     callback: fs.NoParamCallback
+  //   ) => {
+  //     return fs.writeFile(file, data, options, callback);
+  //   },
+  //   writeFileSync: (
+  //     file: fs.PathOrFileDescriptor,
+  //     data: string | NodeJS.ArrayBufferView,
+  //     options?: fs.WriteFileOptions
+  //   ) => {
+  //     return fs.writeFileSync(file, data, options);
+  //   },
+  //   mkdirSync: (path: fs.PathLike, options?: fs.Mode | fs.MakeDirectoryOptions | null) => {
+  //     return fs.mkdirSync(path, options);
+  //   }
+  // },
   path: {
     join: (...paths: string[]) => {
       return path.join(...paths);
@@ -53,4 +68,8 @@ contextBridge.exposeInMainWorld("node", {
       return os.homedir();
     }
   }
-});
+};
+
+export type nodeAPI = typeof nodeAPI;
+
+contextBridge.exposeInMainWorld("node", nodeAPI);

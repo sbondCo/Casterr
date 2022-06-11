@@ -1,43 +1,13 @@
-import PathHelper from "@/libs/helpers/pathHelper";
-import { Path } from "@/libs/node";
+import { DEFAULT_SETTINGS } from "@/app/initialState";
 import { AudioDevice } from "@/libs/recorder/deviceManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Settings, Page, MonitorToRecord } from "./types";
+import { Page, MonitorToRecord } from "./types";
 
 // TODO: save settings state to file when updated
 
 const settingsSlice = createSlice({
   name: "settings",
-  initialState: {
-    app: {
-      pages: ["Videos", "Settings"],
-      supportedRecordingFormats: ["mp4", "mkv"]
-    },
-    general: {
-      startupPage: "Videos",
-      rcStatusAlsoStopStart: true,
-      rcStatusDblClkToRecord: false,
-      deleteVideoConfirmationDisabled: false,
-      deleteVideosFromDisk: false
-    },
-    recording: {
-      thumbSaveFolder: Path.join(PathHelper.mainFolderPath, "Thumbs"),
-      videoSaveFolder: Path.join(PathHelper.homeFolderPath, "Videos", "Casterr"),
-      videoSaveName: "%d.%m.%Y - %H.%i.%s",
-      videoDevice: "Default",
-      monitorToRecord: {
-        id: "primary",
-        name: "Primary Monitor"
-      },
-      fps: 60,
-      resolution: "1080p",
-      format: "mp4",
-      zeroLatency: true,
-      ultraFast: true,
-      audioDevicesToRecord: new Array(),
-      seperateAudioTracks: false
-    }
-  } as Settings,
+  initialState: DEFAULT_SETTINGS,
   reducers: {
     //
     // General Settings

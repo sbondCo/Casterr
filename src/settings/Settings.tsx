@@ -26,6 +26,7 @@ export default function Settings() {
 
       <Switch>
         <Route exact path="/settings">
+          {/* Redirect to general settings - the default */}
           <Redirect to="/settings/general" />
         </Route>
 

@@ -8,5 +8,6 @@
  * make sure it is defined in the preload.ts file.
  */
 
+export const FS = window.node.fs;
 export const Path = window.node.path;
 export const OS = window.node.os;
