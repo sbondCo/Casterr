@@ -91,11 +91,11 @@ interface SettingsItemProps {
 }
 
 function SettingsItem({ title, children, row }: SettingsItemProps) {
-  const containerClass = row ? "flex flex-row" : "";
+  const containerClass = row ? "flex flex-row-reverse justify-end" : "";
 
   return (
     <div className={`mb-5 ${containerClass}`}>
-      <p className="mb-1.5 mr-2.5 font-bold capitalize">{title}</p>
+      <p className={`mb-1.5 mr-2.5 font-bold capitalize ${row && "ml-2.5"}`}>{title}</p>
       {children}
     </div>
   );

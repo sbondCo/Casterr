@@ -28,6 +28,8 @@ ul::-webkit-scrollbar-thumb {
   position: relative;
   font-size: 22px;
   cursor: pointer;
+  width: 25px;
+  height: 25px;
 }
 
 .tickBox input {
