@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS } from "@/app/initialState";
+import { DEFAULT_SETTINGS } from "@/app/constants";
 import { AudioDevice } from "@/libs/recorder/deviceManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Page, MonitorToRecord } from "./types";

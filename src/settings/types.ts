@@ -1,15 +1,9 @@
 import { AudioDevice } from "@/libs/recorder/deviceManager";
 
 export interface Settings {
-  app: AppSettings;
   general: GeneralSettings;
   recording: RecordingSettings;
   key: KeyBindingSettings;
-}
-
-export interface AppSettings {
-  pages: string[];
-  supportedRecordingFormats: string[];
 }
 
 export interface GeneralSettings {

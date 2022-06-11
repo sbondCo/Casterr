@@ -1,17 +1,19 @@
 /**
- * All initial states.
- * Defined here so we can reuse them as defaults.
+ * All initial states / constants for use around app.
+ * Initial states defined here so we can reuse them as defaults.
  */
 
 import PathHelper from "@/libs/helpers/pathHelper";
 import { Path } from "@/libs/node";
 import { Settings } from "@/settings/types";
 
+// App settings, not user editable.
+export const APP_SETTINGS = {
+  pages: ["Videos", "Settings"],
+  supportedRecordingFormats: ["mp4", "mkv"]
+};
+
 export const DEFAULT_SETTINGS = {
-  app: {
-    pages: ["Videos", "Settings"],
-    supportedRecordingFormats: ["mp4", "mkv"]
-  },
   general: {
     startupPage: "Videos",
     rcStatusAlsoStopStart: true,

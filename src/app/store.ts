@@ -4,7 +4,7 @@ import settingsSlice from "@/settings/settingsSlice";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { FS, OS, Path } from "@/libs/node";
 import { Settings } from "@/settings/types";
-import { DEFAULT_SETTINGS } from "./initialState";
+import { DEFAULT_SETTINGS } from "./constants";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => (action: AnyAction) => {
   try {

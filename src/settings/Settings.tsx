@@ -5,6 +5,8 @@ import TickBox from "@/common/TickBox";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch, useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
+import General from "./pages/General";
+import Recording from "./pages/Recording";
 import {
   setDeleteVideoConfirmationDisabled,
   setDeleteVideosFromDisk,
@@ -33,70 +35,17 @@ export default function Settings() {
         </Route>
 
         <Route path="/settings/general">
-          <SettingsItem title="Startup Page">
-            <DropDown
-              activeItem={state.general.startupPage}
-              items={state.app.pages}
-              onChange={(s) => {
-                dispatch(setStartupPage(s as Page));
-              }}
-            />
-          </SettingsItem>
-
-          <SettingsItem title="Recording Status Also Stop/Start Recording" row>
-            <TickBox
-              ticked={state.general.rcStatusAlsoStopStart}
-              onChange={(t) => dispatch(setRcStatusAlsoStopStart(t))}
-            />
-          </SettingsItem>
-
-          <SettingsItem title="Recording Status Double Click To Record" row>
-            <TickBox
-              ticked={state.general.rcStatusDblClkToRecord}
-              onChange={(t) => dispatch(setRcStatusDblClkToRecord(t))}
-            />
-          </SettingsItem>
-
-          <SettingsItem title="Disable Delete Video Confirmation" row>
-            <TickBox
-              ticked={state.general.deleteVideoConfirmationDisabled}
-              onChange={(t) => dispatch(setDeleteVideoConfirmationDisabled(t))}
-            />
-          </SettingsItem>
-
-          <SettingsItem title="Delete Videos From Disk By Default" row>
-            <TickBox
-              ticked={state.general.deleteVideosFromDisk}
-              onChange={(t) => dispatch(setDeleteVideosFromDisk(t))}
-            />
-          </SettingsItem>
+          <General />
         </Route>
 
         <Route path="/settings/recording">
-          <span>Recording</span>
+          <Recording />
         </Route>
 
         <Route path="/settings/keybindings">
-          <span>Key Bindings</span>
+          <span>Key Bindings Not Implemented</span>
         </Route>
       </Switch>
-    </div>
-  );
-}
-
-interface SettingsItemProps {
-  title: string;
-  children: React.ReactChild;
-  row?: boolean;
-}
-
-function SettingsItem({ title, children, row }: SettingsItemProps) {
-  const containerClass = row ? "flex flex-row-reverse justify-end" : "";
-
-  return (
-    <div className={`mb-5 ${containerClass}`}>
-      <p className={`mb-1.5 mr-2.5 font-bold capitalize ${row && "ml-2.5"}`}>{title}</p>
-      {children}
     </div>
   );
 }
