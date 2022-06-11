@@ -4,5 +4,5 @@ dist_electron
 # Node modules
 node_modules
 
-# Entry scripts (serve.ts & background.ts)
-entry
+# Built Entry scripts
+entry/out
