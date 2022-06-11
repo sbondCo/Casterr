@@ -40,7 +40,9 @@ export default function DropDown({ activeItem, items, onChange }: DropDownProps)
         {items.map((i, idx, { length }) => (
           <li
             key={idx}
-            className={`${length - 1 === idx && "rounded-b"} py-1.5 px-3 cursor-pointer hover:bg-tertiary-100`}
+            className={`${length - 1 === idx && "rounded-b"} ${
+              i === selected && "font-medium"
+            } py-1.5 px-3 cursor-pointer hover:bg-tertiary-100`}
             onClick={() => {
               setSelected(i);
               onChange(i);
