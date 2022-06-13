@@ -5,7 +5,17 @@ import TextBox from "@/common/TextBox";
 import TickBox from "@/common/TickBox";
 import { useDispatch, useSelector } from "react-redux";
 import SettingsItem from "../SettingsItem";
-import { setFps } from "../settingsSlice";
+import {
+  setFormat,
+  setFps,
+  setMonitorToRecord,
+  setResolution,
+  setSeperateAudioTracks,
+  setThumbSaveFolder,
+  setVideoDevice,
+  setVideoSaveFolder,
+  setVideoSaveName
+} from "../settingsSlice";
 
 export default function Recording() {
   const state = useSelector((store: RootState) => store.settings.recording);
@@ -18,11 +28,15 @@ export default function Recording() {
   return (
     <>
       <SettingsItem title="Video Device">
-        <DropDown activeItem={state.videoDevice} items={videoDevices} onChange={(s) => {}} />
+        <DropDown activeItem={state.videoDevice} items={videoDevices} onChange={(s) => setVideoDevice(s as string)} />
       </SettingsItem>
 
       <SettingsItem title="Monitor To Record">
-        <DropDown activeItem={state.monitorToRecord} items={monitors} onChange={(s) => {}} />
+        <DropDown
+          activeItem={state.monitorToRecord}
+          items={monitors}
+          onChange={(s) => setMonitorToRecord(s as DropDownItem)}
+        />
       </SettingsItem>
 
       <SettingsItem title="FPS">
@@ -37,15 +51,45 @@ export default function Recording() {
       </SettingsItem>
 
       <SettingsItem title="Resolution">
-        <DropDown activeItem={state.resolution} items={resolutions} onChange={(s) => {}} />
+        <DropDown activeItem={state.resolution} items={resolutions} onChange={(s) => setResolution(s as string)} />
       </SettingsItem>
 
       <SettingsItem title="Format">
-        <DropDown activeItem={state.format} items={APP_SETTINGS.supportedRecordingFormats} onChange={(s) => {}} />
+        <DropDown
+          activeItem={state.format}
+          items={APP_SETTINGS.supportedRecordingFormats}
+          onChange={(s) => setFormat(s as string)}
+        />
       </SettingsItem>
 
       <SettingsItem title="Separate Audio Tracks" row>
-        <TickBox ticked={state.seperateAudioTracks} onChange={(t) => {}} />
+        <TickBox ticked={state.seperateAudioTracks} onChange={(t) => setSeperateAudioTracks(t)} />
+      </SettingsItem>
+
+      <SettingsItem title="Thumbnail Save Folder">
+        <TextBox
+          value={state.thumbSaveFolder}
+          placeholder={DEFAULT_SETTINGS.recording.thumbSaveFolder}
+          folderSelect
+          onChange={(s) => setThumbSaveFolder(s)}
+        />
+      </SettingsItem>
+
+      <SettingsItem title="Video Save Folder">
+        <TextBox
+          value={state.videoSaveFolder}
+          placeholder={DEFAULT_SETTINGS.recording.videoSaveFolder}
+          folderSelect
+          onChange={(s) => setVideoSaveFolder(s)}
+        />
+      </SettingsItem>
+
+      <SettingsItem title="Video Save Name">
+        <TextBox
+          value={state.videoSaveName}
+          placeholder={DEFAULT_SETTINGS.recording.videoSaveName}
+          onChange={(s) => setVideoSaveName(s)}
+        />
       </SettingsItem>
     </>
   );

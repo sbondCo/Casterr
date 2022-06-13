@@ -122,7 +122,12 @@ function registerChannels(win: BrowserWindow) {
    * Show open dialog with args passed through.
    */
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
-    return dialog.showOpenDialog(win, args);
+    return new Promise((resolve, reject) => {
+      dialog
+        .showOpenDialog(win, { ...args })
+        .then((v) => resolve(v))
+        .catch(reject);
+    });
   });
 
   /**

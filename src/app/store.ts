@@ -6,7 +6,7 @@ import { FS, OS, Path } from "@/libs/node";
 import { Settings } from "@/settings/types";
 import { DEFAULT_SETTINGS } from "./constants";
 
-const saver = (store: any) => (next: Dispatch<AnyAction>) => (action: AnyAction) => {
+const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
     console.log("saver:", action);
 
@@ -19,9 +19,9 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => (action: AnyAction)
       Object.assign(settingsState, store.getState().settings);
       delete settingsState.app;
 
-      FS.writeFile(PathHelper.getFile("settings"), JSON.stringify(settingsState, null, 2), (err) => {
-        if (err) throw err;
-        else console.info("Updated settings.json");
+      const settingsFile = await PathHelper.getFile("settings");
+      FS.writeFile(settingsFile, JSON.stringify(settingsState, null, 2)).catch((e) => {
+        throw new Error(`Error writing updated settings to ${settingsFile}: ${e}`);
       });
     }
 
@@ -33,18 +33,17 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => (action: AnyAction)
   }
 };
 
-const rehydrated = () => {
+const rehydrated = async () => {
   try {
+    // Create reh var and clone default values into it.
     let reh = {} as any;
-
     reh.settings = {};
     Object.assign(reh.settings, DEFAULT_SETTINGS);
 
-    const stgsFile = PathHelper.getFile("settings");
-    if (FS.existsSync(stgsFile)) {
-      const r = FS.readFileSync(stgsFile, "utf-8");
-      if (r) Object.assign(reh.settings, JSON.parse(r));
-    }
+    // If settings file exists - read it and add to `reh.settings`.
+    const stgsFile = await PathHelper.getFile("settings");
+    const r = await FS.readFile(stgsFile, "utf-8");
+    if (r) Object.assign(reh.settings, JSON.parse(r));
 
     return reh;
   } catch (e) {
@@ -58,7 +57,7 @@ export const store = configureStore({
     settings: settingsSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saver),
-  preloadedState: rehydrated()
+  preloadedState: await rehydrated()
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -29,7 +29,7 @@ export default function DropDown({ activeItem, items, onChange }: DropDownProps)
       <label
         className={`${
           isOpen ? "rounded-t" : "rounded"
-        } flex items-center relative py-1.5 px-3 cursor-pointer hover:bg-tertiary-100`}
+        } flex items-center relative py-1.5 px-3 cursor-pointer hover:bg-tertiary-100 transition-colors`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{typeof selected === "object" ? selected.name : selected}</span>
