@@ -34,12 +34,11 @@ async function start() {
       log(`Detected changes in ${f}, restarting Electron.`);
 
       restarting = true;
-      // const epid = electron!.pid;
-
       electron!.kill("SIGTERM");
       await new Promise((r) => setTimeout(r, DELAY));
 
       log(`Building entry scripts.`);
+
       const buildProc = exec("npm run build:entry-scripts");
       buildProc.on("exit", async () => {
         electron = undefined;
@@ -49,19 +48,6 @@ async function start() {
         restarting = false;
         log(`Done.`);
       });
-
-      // for (let i = 0; i < ATTEMPTS; i++) {
-      //   try {
-      //     // Try kill process, if errors below we know it has exited
-      //     process.kill(epid!, 0);
-      //   } catch (e: any) {
-      //     // ESRCH: process doesn't exist, so we successfully terminated it.
-      //     if (e.code === "ESRCH") break;
-      //     else console.error("Error checking if process killed", e);
-      //   }
-
-      // await new Promise((r) => setTimeout(r, DELAY));
-      // }
     }
   };
 
@@ -100,6 +86,7 @@ async function listen(proc: ChildProcess, prefix: LogPrefix) {
   proc.stderr?.on("data", (chunk) => log(chunk, prefix));
 
   proc.on("close", () => {
+    // Only kill main process if we aren't restarting a service.
     if (!restarting) {
       log(`${prefix} was closed, stopping other tasks.`);
       process.kill(0);
