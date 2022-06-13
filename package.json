@@ -9,7 +9,8 @@
   },
   "main": "./entry/out/background.js",
   "scripts": {
-    "serve": "tsc ./entry/background.ts ./entry/preload.ts ./entry/serve.ts --removeComments true --strict true --esModuleInterop true --outDir ./entry/out && node ./entry/out/serve.js",
+    "serve": "npm run build:entry-scripts && node ./entry/out/serve.js",
+    "build:entry-scripts": "tsc --project tsconfig.entry.json",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",
