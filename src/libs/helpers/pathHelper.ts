@@ -1,5 +1,4 @@
 import childProcess from "child_process";
-import jsZip from "jszip";
 import { OS, Path, FS } from "../node";
 
 export default class PathHelper {
@@ -163,54 +162,9 @@ export default class PathHelper {
     deleteAfter: boolean = true
   ) {
     return new Promise((resolve, reject) => {
-      FS.readFile(zipPath)
-        .then((data) => {
-          const zip = new jsZip();
-
-          zip.loadAsync(data).then((contents: jsZip) => {
-            const files = contents.files;
-
-            // Delete directories from object
-            for (const f in files) {
-              if (files[f].dir == true) delete files[f];
-            }
-
-            Object.keys(files).forEach(async (filename: string, i) => {
-              const filenameWithoutFolder = Path.basename(filename);
-
-              // Write zip file to destination folder
-              const unzip = () => {
-                return new Promise((resolve) => {
-                  zip
-                    .file(filename)!
-                    .async("nodebuffer")
-                    .then((content: any) => {
-                      FS.writeFile(Path.join(destFolder, filenameWithoutFolder), content).then(() => resolve(""));
-                    });
-                });
-              };
-
-              // If filesToExtract is empty just unzip all files
-              // If filesToExtract isn't empty, if it includes filename then unzip
-              if (filesToExtract.length == 0) await unzip();
-              else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
-
-              // Resolve if index (+1) equals amount of files since this means all files have been processed
-              if (i + 1 == Object.keys(files).length) {
-                // Delete zip file if asked to.
-                // Don't wait for file to delete before resolving the promise,
-                // theres no reason to make the user wait for it to finish deleting the zip.
-                if (deleteAfter) {
-                  FS.unlink(zipPath).catch((e) => {
-                    throw e;
-                  });
-                }
-
-                resolve("");
-              }
-            });
-          });
-        })
+      window.api
+        .unzip(zipPath, destFolder, filesToExtract, deleteAfter)
+        .then(() => resolve(""))
         .catch((e) => reject(e));
     });
   }
