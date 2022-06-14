@@ -33,7 +33,7 @@ export default function DropDown({ activeItem, items, onChange }: DropDownProps)
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{typeof selected === "object" ? selected.name : selected}</span>
-        <Icon i="chevron" direction="down" wh={16} className="absolute right-3 fill-white-100" />
+        <Icon i="chevron" direction={isOpen ? "up" : "down"} wh={16} className="absolute right-3 fill-white-100" />
       </label>
 
       <ul className={`${!isOpen ? "max-h-0" : "max-h-36"} overflow-auto transition-all`}>

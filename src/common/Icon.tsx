@@ -15,13 +15,13 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   const icon = getIcon(i);
 
   const dirClass = () => {
-    if (direction === "up") return "-rotate-180";
+    if (direction === "up") return "-rotate-90";
     else if (direction === "down") return "rotate-90";
     else if (direction === "left") return "rotate-180";
   };
 
   return (
-    <svg width={wh} height={wh} viewBox={icon.viewBox} className={`${className} ${dirClass()}`}>
+    <svg width={wh} height={wh} viewBox={icon.viewBox} className={`${className} ${dirClass()} transition-transform`}>
       {icon.el}
     </svg>
   );
