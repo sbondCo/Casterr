@@ -14,7 +14,7 @@ interface SubNavItemProps {
 
 export function SubNavItem({ text }: SubNavItemProps) {
   const to = text.replace(" ", "").toLowerCase();
-  const isActive = useLocation().pathname.match(new RegExp("[^/]*$"))![0].toLowerCase() == to;
+  const isActive = useLocation().pathname.match(new RegExp("[^/]*$"))?.[0].toLowerCase() == to;
 
   return (
     <NavLink
