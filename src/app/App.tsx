@@ -8,14 +8,14 @@ import { Provider } from "react-redux";
 
 function App() {
   return (
-    <div className="App bg-primary-100 text-white-100 min-h-screen">
+    <div className="App bg-primary-100 text-white-100 min-h-screen max-h-screen overflow-hidden">
       <Provider store={store}>
         <Router>
           <Dragger />
           <Nav />
 
-          <div className="flex justify-center">
-            <div className="sm:w-full" style={{ width: "500px" }}>
+          <div className="flex justify-center h-[calc(100vh-64px)] overflow-y-auto">
+            <div className="w-full sm:w-[500px]">
               <Switch>
                 <Route exact path="/">
                   <Redirect to="/videos" />

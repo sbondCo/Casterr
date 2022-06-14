@@ -15,9 +15,9 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   const icon = getIcon(i);
 
   const dirClass = () => {
-    if (direction === "up") return "transform -rotate-180";
-    else if (direction === "down") return "transform rotate-90";
-    else if (direction === "left") return "transform rotate-180";
+    if (direction === "up") return "-rotate-180";
+    else if (direction === "down") return "rotate-90";
+    else if (direction === "left") return "rotate-180";
   };
 
   return (

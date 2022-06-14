@@ -6,6 +6,20 @@
  * Default Scrollbar Styling
  */
 
+/* Main Default */
+::-webkit-scrollbar {
+  width: 0.8rem;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-primary-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-tertiary-100;
+}
+
+/* Unordered List Default */
 ul::-webkit-scrollbar {
   @apply bg-secondary-100;
   width: 0px;
