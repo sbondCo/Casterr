@@ -1,6 +1,6 @@
 interface IconProps {
   // Icon name
-  i: string;
+  i: Icons;
 
   // Width and height
   wh?: number;
@@ -10,6 +10,25 @@ interface IconProps {
 
   className?: string;
 }
+
+type Icons =
+  | "play"
+  | "pause"
+  | "upload"
+  | "volumeMute"
+  | "volumeMed"
+  | "volumeMax"
+  | "settings"
+  | "add"
+  | "min2"
+  | "min"
+  | "max"
+  | "close"
+  | "arrow"
+  | "chevron"
+  | "clips"
+  | "time"
+  | "edit";
 
 export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   const icon = getIcon(i);
@@ -29,7 +48,7 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
 
 // TODO: Create interface with all Icons, so we have a proper type instead of accepting just any string.
 
-function getIcon(name: string): { viewBox: string; el: JSX.Element } {
+function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
   switch (name) {
     case "play":
       return {
