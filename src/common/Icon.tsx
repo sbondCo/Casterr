@@ -11,7 +11,7 @@ interface IconProps {
   className?: string;
 }
 
-type Icons =
+export type Icons =
   | "play"
   | "pause"
   | "upload"

@@ -1,4 +1,4 @@
-import Icon from "@/common/Icon";
+import Icon, { Icons } from "@/common/Icon";
 import { Link } from "react-router-dom";
 
 export default function Nav() {
@@ -26,7 +26,7 @@ export default function Nav() {
 /**
  * Text doubles as the link to go to. Add another prop if more specific urls need to be used.
  */
-function NavItem(props: { text: string; icon: string }) {
+function NavItem(props: { text: string; icon: Icons }) {
   const { text, icon } = props;
 
   return (

@@ -14,23 +14,19 @@ function App() {
           <Dragger />
           <Nav />
 
-          <div className="flex justify-center h-[calc(100vh-64px)] overflow-y-auto">
-            <div className="w-full sm:w-[500px]">
-              <Switch>
-                <Route exact path="/">
-                  <Redirect to="/videos" />
-                </Route>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/videos" />
+            </Route>
 
-                <Route path="/videos">
-                  <Videos />
-                </Route>
+            <Route path="/videos">
+              <Videos />
+            </Route>
 
-                <Route path="/settings">
-                  <Settings />
-                </Route>
-              </Switch>
-            </div>
-          </div>
+            <Route path="/settings">
+              <Settings />
+            </Route>
+          </Switch>
         </Router>
       </Provider>
     </div>

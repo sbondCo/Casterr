@@ -1,3 +1,4 @@
+import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
 import { Redirect, Route, Switch, useLocation } from "react-router";
 import General from "./pages/General";
@@ -5,7 +6,7 @@ import Recording from "./pages/Recording";
 
 export default function Settings() {
   return (
-    <div>
+    <PageLayout>
       <SubNav>
         <SubNavItem text="General" />
         <SubNavItem text="Recording" />
@@ -30,6 +31,6 @@ export default function Settings() {
           <span>Key Bindings Not Implemented</span>
         </Route>
       </Switch>
-    </div>
+    </PageLayout>
   );
 }
