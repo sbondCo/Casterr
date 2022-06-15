@@ -5,7 +5,7 @@ interface SubNavProps {
 }
 
 export default function SubNav({ children }: SubNavProps) {
-  return <ul className="flex row justify-center items-center my-4 text-xl">{children}</ul>;
+  return <ul className="flex row justify-center items-center my-4 text-2xl">{children}</ul>;
 }
 
 interface SubNavItemProps {
@@ -17,10 +17,7 @@ export function SubNavItem({ text }: SubNavItemProps) {
   const isActive = useLocation().pathname.match(new RegExp("[^/]*$"))?.[0].toLowerCase() == to;
 
   return (
-    <NavLink
-      to={to}
-      className={["mx-2", isActive ? `text-white-100 text-1xl` : `text-white-25 hover:text-white-50`].join(" ")}
-    >
+    <NavLink to={to} className={["mx-2", isActive ? `text-white-100` : `text-white-25 hover:text-white-50`].join(" ")}>
       <span className={`cursor-pointer`}>{text}</span>
       <div className={["h-0.5", isActive ? "rounded-full bg-white-100" : ""].join(" ")}></div>
     </NavLink>
