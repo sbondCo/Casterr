@@ -16,7 +16,7 @@ export default function PageLayout(props: PageLayoutProps) {
   return (
     <div className="flex justify-center h-[calc(100vh-64px)] overflow-y-auto">
       <div className={`w-full mx-4 ${smPageWidth ? "sm:w-[500px]" : "max-w-7xl"}`}>
-        <div className="py-5">{children}</div>
+        <div className="py-4">{children}</div>
       </div>
     </div>
   );
