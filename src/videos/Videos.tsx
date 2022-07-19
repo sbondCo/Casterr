@@ -4,7 +4,7 @@ import SubNav, { SubNavItem } from "@/common/SubNav";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 export default function Videos() {
-  const vids = [0, 1, 2, 3, 5, 6, 7];
+  const vids = [0, 1, 2];
 
   return (
     <PageLayout smPageWidth={false}>
@@ -23,7 +23,10 @@ export default function Videos() {
           <div className="flex flex-wrap gap-3">
             {vids.map(() => {
               return (
-                <div className="flex-grow basis-[100%] md:basis-[40%] lg:basis-[30%] w-3/12 h-64 relative rounded-md overflow-hidden cursor-pointer">
+                <div
+                  key={Math.random()}
+                  className="group flex-grow basis-[100%] md:basis-[40%] lg:basis-[30%] w-3/12 h-64 relative rounded-md overflow-hidden cursor-pointer"
+                >
                   <div className="h-full">
                     <img
                       className="w-full h-full object-cover"
@@ -31,7 +34,7 @@ export default function Videos() {
                       alt=""
                     />
 
-                    <div className="absolute top-2/4 left-2/4 drop-shadow">
+                    <div className="group-hover:opacity-100 opacity-0 absolute top-2/4 left-2/4 drop-shadow transition-opacity">
                       <Icon i="edit" />
                     </div>
 
