@@ -5,7 +5,7 @@ interface SubNavProps {
 }
 
 export default function SubNav({ children }: SubNavProps) {
-  return <ul className="flex row justify-center items-center my-4 text-2xl">{children}</ul>;
+  return <ul className="flex row justify-center items-center mb-4 text-2xl">{children}</ul>;
 }
 
 interface SubNavItemProps {
