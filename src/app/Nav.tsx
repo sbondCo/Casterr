@@ -3,21 +3,21 @@ import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
-    <nav className="flex items-center justify-center h-12 min-h-full bg-secondary-100">
+    <nav className="relative flex items-center justify-center h-12 min-h-full bg-secondary-100">
       <ul className="flex flex-row flex-nowrap">
         <NavItem text="videos" icon="play" />
         <NavItem text="settings" icon="settings" />
+      </ul>
 
-        <li id="status">
-          <span className="timeElapsed">{/* {{ timeElapsed }} */}</span>
-
-          {/* <div
-          ref="recordingStatus"
-          className="circle idle"
-          :title="`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`"
-          @click="startStopRecording"
-        ></div> */}
-        </li>
+      {/* Recording Status */}
+      <ul className="absolute right-5 flex flex-row flex-nowrap items-center gap-3">
+        <div className="" title="Recording duration">
+          01:12:52
+        </div>
+        <div
+          className={`h-6 w-6 rounded-3xl bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')] shadow cursor-pointer`}
+          title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
+        ></div>
       </ul>
     </nav>
   );
