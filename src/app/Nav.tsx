@@ -15,7 +15,7 @@ export default function Nav() {
           01:12:52
         </div>
         <div
-          className={`h-6 w-6 rounded-3xl bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')] shadow cursor-pointer`}
+          className={`h-6 w-6 rounded-3xl bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')] cursor-pointer`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
         ></div>
       </ul>
