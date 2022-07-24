@@ -3,6 +3,10 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import jsZip from "jszip";
+import * as childProcess from "child_process";
+import https from "https";
+import { IncomingMessage } from "http";
+import { URL } from "url";
 
 const mainAPI = {
   /**
@@ -87,10 +91,15 @@ const mainAPI = {
   }
 };
 
+type CreateWriteStreamArgs = Parameters<typeof fs.createWriteStream>; // StreamOptions not exported from fs definitions? Couldn't get.
+
 const nodeAPI = {
   fs: {
     ...fs.promises,
-    constants: fs.constants
+    constants: fs.constants,
+    createWriteStream: (path: CreateWriteStreamArgs[0], options?: CreateWriteStreamArgs[1]) => {
+      return fs.createWriteStream(path, options);
+    }
   },
   path: {
     join: (...paths: string[]) => {
@@ -109,6 +118,28 @@ const nodeAPI = {
   os: {
     homedir: () => {
       return os.homedir();
+    }
+  },
+  process: {
+    platform: process.platform
+  },
+  childProcess: {
+    // ChildProcess: childProcess.ChildProcess,
+    exec: (
+      command: string,
+      callback?: ((error: childProcess.ExecException | null, stdout: string, stderr: string) => void) | undefined
+    ) => {
+      return childProcess.exec(command, callback);
+    }
+  },
+  https: {
+    get: (
+      url: string | URL,
+      options: https.RequestOptions,
+      callback?: ((res: IncomingMessage) => void) | undefined
+    ) => {
+      console.log("https.get", url, options);
+      return https.get(url, options, callback);
     }
   }
 };

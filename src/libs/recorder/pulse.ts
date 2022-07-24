@@ -1,7 +1,9 @@
-import * as childProcess from "child_process";
+// import * as childProcess from "child_process";
+import { ChildProcess } from "@/libs/node";
+import { ChildProcess as cp } from "child_process";
 
 export default class Pulse {
-  private pulseProcess: childProcess.ChildProcess;
+  private pulseProcess?: cp;
 
   /**
    * Run pactl and send arguments to it.
@@ -22,7 +24,7 @@ export default class Pulse {
     let stdout = "";
 
     // Create child process and send args to it
-    this.pulseProcess = childProcess.exec(`${pulsePath} ${args}`);
+    this.pulseProcess = ChildProcess.exec(`${pulsePath} ${args}`);
 
     // Run stdoutCallback when recieving stdout
     this.pulseProcess.stdout!.on("data", (data) => {

@@ -1,10 +1,10 @@
 import FFmpeg from "./ffmpeg";
 import PathHelper from "./../helpers/pathHelper";
-import { RecordingSettings } from "./../settings";
 import * as fs from "fs";
 import * as path from "path";
 import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
+import { store } from "@/app/store";
 
 export interface Recording {
   name: string;
@@ -21,8 +21,8 @@ export default class RecordingsManager {
    * @param clips If should fetch clips, instead of recordings.
    * @returns All recordings | clips.
    */
-  public static get(clips: boolean = false): Array<Recording> {
-    return this.getVideos(clips).reverse();
+  public static async get(clips: boolean = false): Promise<Array<Recording>> {
+    return (await this.getVideos(clips)).reverse();
   }
 
   /**
@@ -39,7 +39,7 @@ export default class RecordingsManager {
 
     recording.name = path.basename(videoPath);
     recording.videoPath = videoPath;
-    recording.thumbPath = this.createThumbnail(videoPath);
+    recording.thumbPath = await this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
 
     // Get video info from ffprobe
@@ -47,7 +47,7 @@ export default class RecordingsManager {
       `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
       "onExit",
       {
-        stdoutCallback: (out: string) => {
+        stdoutCallback: async (out: string) => {
           // Loop over each line in response from ffprobe, removing empty lines
           out
             .toLowerCase()
@@ -78,7 +78,7 @@ export default class RecordingsManager {
           // JSON string is appended with a ',' at the end. If you are going to use
           // the data in this file, always remove the last letter (the ',') first.
           // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(this.getVideoFile(isClip), this.toWritingReady(recording), (err: any) => {
+          fs.appendFile(await this.getVideoFile(isClip), this.toWritingReady(recording), (err: any) => {
             if (err) throw err;
           });
         }
@@ -92,8 +92,8 @@ export default class RecordingsManager {
    * @param isClip If video is a clip.
    * @param removeFromDisk If should also remove from disk.
    */
-  public static delete(videoPath: string, isClip: boolean, removeFromDisk: boolean = false) {
-    let videos = this.getVideos(isClip);
+  public static async delete(videoPath: string, isClip: boolean, removeFromDisk: boolean = false) {
+    let videos = await this.getVideos(isClip);
     const vidIdx = videos.findIndex((e) => e.videoPath == videoPath);
     const video = videos[vidIdx];
 
@@ -108,7 +108,7 @@ export default class RecordingsManager {
       videos = videos.filter((e) => e.videoPath !== video.videoPath);
 
       // Rewrite video file
-      fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+      fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
         if (err) throw err;
       });
     }
@@ -118,10 +118,11 @@ export default class RecordingsManager {
    * Create thumbnail for video
    * @param videoPath Path to video to create thumbnail for
    */
-  public static createThumbnail(videoPath: string): string {
+  public static async createThumbnail(videoPath: string) {
+    const rs = store.getState().settings.recording;
     const ffmpeg = new FFmpeg();
     const thumbPath = path.join(
-      PathHelper.ensureExists(RecordingSettings.thumbSaveFolder, true),
+      await PathHelper.ensureExists(rs.thumbSaveFolder, true),
       path.basename(videoPath) + ".png"
     );
 
@@ -136,23 +137,23 @@ export default class RecordingsManager {
    * @param timestamps Timestamps from recording to clip.
    */
   public static async clip(videoPath: string, timestamps: number[]) {
+    const videoSaveFolder = store.getState().settings.recording.videoSaveFolder;
+
     // Make sure .processing folder exists and is hidden
-    PathHelper.ensureExists(`${RecordingSettings.videoSaveFolder}/clips/.processing`, true, {
+    PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing`, true, {
       hidden: true
     });
 
     const ffmpeg = new FFmpeg();
     const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
     const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
-    const clipOutPath = `${RecordingSettings.videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
-    const tmpOutFolder = PathHelper.ensureExists(
-      `${RecordingSettings.videoSaveFolder}/clips/.processing/${clipOutName}`,
-      true
-    );
+    const clipOutPath = `${videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
+    const tmpOutFolder = await PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing/${clipOutName}`, true);
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
     const popupName = "clipVideo";
 
     Notifications.popup(popupName, "Clipping Your Video", { loader: true, showCancel: true }).then((popup) => {
+      if (!popup) return;
       if (popup.action == "cancel") {
         Notifications.popup(popupName, "Cancelling Processing Of Your Video");
 
@@ -178,8 +179,9 @@ export default class RecordingsManager {
       manifestStream.write(`file '${curFile}'\n`);
 
       await ffmpeg.run(
-        `-ss ${timestamps[ii]} -i "${videoPath}" -to ${timestamps[ii + 1] -
-          timestamps[ii]} -map 0 -avoid_negative_ts 1 "${curFile}"`
+        `-ss ${timestamps[ii]} -i "${videoPath}" -to ${
+          timestamps[ii + 1] - timestamps[ii]
+        } -map 0 -avoid_negative_ts 1 "${curFile}"`
       );
     }
 
@@ -209,15 +211,15 @@ export default class RecordingsManager {
    * @param to What to rename video to.
    * @param isClip If video is a clip.
    */
-  public static rename(videoPath: string, to: string, isClip: boolean) {
-    const videos = this.getVideos(isClip);
+  public static async rename(videoPath: string, to: string, isClip: boolean) {
+    const videos = await this.getVideos(isClip);
     const video = videos.find((v) => v.videoPath == videoPath);
 
     if (!video) throw new Error("Couldn't find video to rename.");
 
     video.name = to;
 
-    fs.writeFile(this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+    fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
       if (err) throw err;
     });
   }
@@ -232,10 +234,7 @@ export default class RecordingsManager {
     let w = JSON.stringify(obj);
 
     if (!forAppending) {
-      w = `${w
-        .slice(0, -1)
-        .slice(1)
-        .trim()}`;
+      w = `${w.slice(0, -1).slice(1).trim()}`;
     }
 
     return `${w},`;
@@ -247,7 +246,7 @@ export default class RecordingsManager {
    * @returns Name of file including videos.
    */
   private static getVideoFile(clips: boolean) {
-    return PathHelper.getFile(clips ? "Clips.json" : "Recordings.json");
+    return PathHelper.getFile(clips ? "clips" : "recordings");
   }
 
   /**
@@ -255,11 +254,11 @@ export default class RecordingsManager {
    * @param clips If should return clips instead of recordings.
    * @returns All videos from specified file.
    */
-  private static getVideos(clips: boolean) {
+  private static async getVideos(clips: boolean) {
     const videos = new Array<Recording>();
 
     // Get all videos from appropriate json file
-    const data = fs.readFileSync(this.getVideoFile(clips), "utf8");
+    const data = fs.readFileSync(await this.getVideoFile(clips), "utf8");
 
     // Parse JSON from file and assign it to recordings variable.
     // Because it is stored in a way so that we don't have to read the file

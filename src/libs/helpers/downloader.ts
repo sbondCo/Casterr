@@ -1,7 +1,6 @@
-import * as https from "https";
 import { IncomingMessage } from "http";
 import { RequestOptions } from "node:https";
-import * as fs from "fs";
+import { FS, HTTPS } from "@/libs/node";
 
 export default class Downloader {
   private _accept: string = "*";
@@ -30,7 +29,7 @@ export default class Downloader {
    */
   public get(uri: string, dest: string, callback?: (percentage: string) => void) {
     return new Promise((resolve, reject) => {
-      const file = fs.createWriteStream(dest);
+      const file = FS.createWriteStream(dest);
       const reqOptions: RequestOptions = {
         headers: {
           Accept: this.accept,
@@ -38,7 +37,7 @@ export default class Downloader {
         }
       };
 
-      https.get(uri, reqOptions, (resp: IncomingMessage) => {
+      HTTPS.get(uri, reqOptions, (resp: IncomingMessage) => {
         // If redirect, download from location in headers.
         if (resp.statusCode == 302) {
           resolve(this.get(resp.headers.location!, dest, callback));

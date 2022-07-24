@@ -1,28 +1,31 @@
 import DeviceManager from "./deviceManager";
-import SettingsManager, { SettingsFiles, RecordingSettings } from "../settings";
 import PathHelper from "../helpers/pathHelper";
 import Registry from "../helpers/registry";
+import { Path, Process } from "@/libs/node";
+import { store } from "@/app/store";
+import { RecordingSettings } from "@/settings/types";
 import "../helpers/extensions";
-import * as path from "path";
+
+export interface Arguments {
+  args: string;
+  videoPath: string;
+}
 
 export default class ArgumentBuilder {
+  private static rs: RecordingSettings;
   private static scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
 
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
-  public static async createArgs(): Promise<{
-    args: string;
-    videoPath: string;
-  }> {
-    // Make sure settings we have are up to date
-    SettingsManager.getSettings(SettingsFiles.Recording);
+  public static async createArgs(): Promise<Arguments> {
+    this.rs = store.getState().settings.recording;
 
     // Build and return args differently depending on OS
-    if (process.platform == "win32") {
+    if (Process.platform == "win32") {
       return ArgumentBuilder.buildWindowsArgs();
-    } else if (process.platform == "linux") {
+    } else if (Process.platform == "linux") {
       return ArgumentBuilder.buildLinuxArgs();
     }
 
@@ -36,7 +39,7 @@ export default class ArgumentBuilder {
     const args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach((ad) => {
+    this.rs.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f pulse -i ${ad.id}`);
     });
 
@@ -56,8 +59,8 @@ export default class ArgumentBuilder {
     args.push(`${this.audioMaps}`);
 
     // Video output path
-    const videoOutputPath = this.videoOutputPath;
-    args.push(`"${this.videoOutputPath}"`);
+    const videoOutputPath = await this.videoOutputPath();
+    args.push(`"${videoOutputPath}"`);
 
     return {
       args: args.join(" ").toString(),
@@ -72,7 +75,7 @@ export default class ArgumentBuilder {
     const args = new Array<string>();
 
     // Audio devices
-    RecordingSettings.audioDevicesToRecord.forEach((ad) => {
+    this.rs.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f dshow -i audio="${ad.id}"`);
     });
 
@@ -81,13 +84,11 @@ export default class ArgumentBuilder {
 
     // Video device
     if (
-      RecordingSettings.videoDevice
-        .toLowerCase()
-        .equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
+      this.rs.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
     ) {
       args.push(`-i video=${DeviceManager.winDesktopVideoDevice}`);
     } else {
-      args.push(`-i video=${RecordingSettings.videoDevice}`);
+      args.push(`-i video=${this.rs.videoDevice}`);
     }
 
     // Audio maps
@@ -103,18 +104,18 @@ export default class ArgumentBuilder {
     await this.recordingRegion();
 
     // Zero Latency
-    if (RecordingSettings.zeroLatency) {
+    if (this.rs.zeroLatency) {
       args.push("-tune zerolatency");
     }
 
     // Ultra Fast
-    if (RecordingSettings.ultraFast) {
+    if (this.rs.ultraFast) {
       args.push("-preset ultrafast");
     }
 
     // Video output path
-    const videoOutputPath = this.videoOutputPath;
-    args.push(`"${this.videoOutputPath}"`);
+    const videoOutputPath = await this.videoOutputPath();
+    args.push(`"${videoOutputPath}"`);
 
     return {
       args: args.join(" ").toString(),
@@ -122,15 +123,15 @@ export default class ArgumentBuilder {
     };
   }
 
-  private static get fps(): string {
-    const fps = parseInt(RecordingSettings.fps, 10);
+  private static get fps(): number {
+    // const fps = parseInt(this.rs.fps, 10);
 
     // If can get number from FPS setting, then use it
     // If not, then just return 30fps as a default
-    if (!isNaN(fps)) {
-      return fps.toString();
+    if (!isNaN(this.rs.fps)) {
+      return this.rs.fps;
     } else {
-      return "30";
+      return 30;
     }
   }
 
@@ -141,7 +142,7 @@ export default class ArgumentBuilder {
       height: 1080
     };
 
-    switch (RecordingSettings.resolution) {
+    switch (this.rs.resolution) {
       case "In-Game":
         throw new Error("In-Game directive not currently supported.");
       case "2160p":
@@ -170,7 +171,7 @@ export default class ArgumentBuilder {
         break;
     }
 
-    if (process.platform == "win32") {
+    if (Process.platform == "win32") {
       await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
       await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
     }
@@ -179,14 +180,14 @@ export default class ArgumentBuilder {
   }
 
   private static get ffmpegDevice(): string {
-    if (process.platform == "win32") return "dshow";
-    else if (process.platform == "linux") return "x11grab";
+    if (Process.platform == "win32") return "dshow";
+    else if (Process.platform == "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
   private static async recordingRegion(): Promise<string> {
     let monitor;
-    const monitorToRecord = RecordingSettings.monitorToRecord.id.toLowerCase();
+    const monitorToRecord = this.rs.monitorToRecord.id.toLowerCase();
 
     // Get monitor
     if (monitorToRecord == "primary") {
@@ -196,13 +197,13 @@ export default class ArgumentBuilder {
     }
 
     // Return different format depending on OS
-    if (process.platform == "win32") {
+    if (Process.platform == "win32") {
       await this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
       await this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
-    } else if (process.platform == "linux") {
+    } else if (Process.platform == "linux") {
       return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
     } else {
       throw new Error("Can't get recording region for unsupported platform.");
@@ -211,10 +212,10 @@ export default class ArgumentBuilder {
 
   private static get audioMaps(): string {
     const maps = new Array<string>();
-    const audToRec = RecordingSettings.audioDevicesToRecord;
+    const audToRec = this.rs.audioDevicesToRecord;
 
     if (audToRec.length > 0) {
-      if (RecordingSettings.seperateAudioTracks) {
+      if (this.rs.seperateAudioTracks) {
         // Make maps so that audio devices are put on separate tracks
         // Add one to length of audToRec to include the one video device
         for (let i = 0, n = audToRec.length + 1; i < n; ++i) {
@@ -222,7 +223,7 @@ export default class ArgumentBuilder {
         }
       } else {
         // Make maps to put all audio devices onto the same track
-        const cap = RecordingSettings.audioDevicesToRecord.length;
+        const cap = this.rs.audioDevicesToRecord.length;
 
         maps.push(`-filter_complex "`);
 
@@ -239,10 +240,10 @@ export default class ArgumentBuilder {
   }
 
   public static get videoOutputName(): string {
-    return `${RecordingSettings.videoSaveName.toReadableDateTime()}.${RecordingSettings.format}`;
+    return `${this.rs.videoSaveName.toReadableDateTime()}.${this.rs.format}`;
   }
 
-  private static get videoOutputPath(): string {
-    return path.join(PathHelper.ensureExists(RecordingSettings.videoSaveFolder, true), this.videoOutputName);
+  private static async videoOutputPath(): Promise<string> {
+    return Path.join(await PathHelper.ensureExists(this.rs.videoSaveFolder, true), this.videoOutputName);
   }
 }

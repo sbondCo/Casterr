@@ -11,3 +11,6 @@
 export const FS = window.node.fs;
 export const Path = window.node.path;
 export const OS = window.node.os;
+export const Process = window.node.process;
+export const ChildProcess = window.node.childProcess;
+export const HTTPS = window.node.https;

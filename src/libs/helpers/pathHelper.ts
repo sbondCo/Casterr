@@ -1,5 +1,5 @@
 import childProcess from "child_process";
-import { OS, Path, FS } from "../node";
+import { OS, Path, FS, Process } from "../node";
 
 export default class PathHelper {
   public static get mainFolderPath() {
@@ -96,7 +96,7 @@ export default class PathHelper {
       }
 
       // If on windows, run `attrib` command to hide folder
-      if (process.platform == "win32") {
+      if (Process.platform == "win32") {
         const cp = childProcess.exec(`attrib +h ${path}`);
 
         cp.on("exit", (code) => {

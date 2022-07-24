@@ -1,9 +1,9 @@
 import { AnyAction, configureStore, Dispatch } from "@reduxjs/toolkit";
 import videosSlice from "@/videos/videosSlice";
 import settingsSlice from "@/settings/settingsSlice";
+import recorderSlice from "@/libs/recorder/recorderSlice";
 import PathHelper from "@/libs/helpers/pathHelper";
-import { FS, OS, Path } from "@/libs/node";
-import { Settings } from "@/settings/types";
+import { FS } from "@/libs/node";
 import { DEFAULT_SETTINGS } from "./constants";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
@@ -54,7 +54,8 @@ const rehydrated = async () => {
 export const store = configureStore({
   reducer: {
     videos: videosSlice,
-    settings: settingsSlice
+    settings: settingsSlice,
+    recorder: recorderSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saver),
   preloadedState: await rehydrated()

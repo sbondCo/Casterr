@@ -1,4 +1,4 @@
-import * as childProcess from "child_process";
+import { ChildProcess } from "@/libs/node";
 
 /**
  * Manage registry entries on Windows.
@@ -13,7 +13,7 @@ export default class Registry {
 
   private async run(cmd: string) {
     return new Promise((resolve, reject) => {
-      const cp = childProcess.exec(`reg ${cmd}`);
+      const cp = ChildProcess.exec(`reg ${cmd}`);
 
       cp.on("exit", (code) => {
         if (code == 0) {

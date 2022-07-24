@@ -1,7 +1,17 @@
 import Icon, { Icons } from "@/common/Icon";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "./store";
+import Recorder from "@/libs/recorder";
+import "@/libs/helpers/extensions";
 
 export default function Nav() {
+  const state = useSelector((store: RootState) => store.recorder);
+
+  let statusColClasses = state.isRecording
+    ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
+    : "bg-white-100 shadow-[_0_0_8px_theme('colors.white.100')]";
+
   return (
     <nav className="relative flex items-center justify-center h-12 min-h-full bg-secondary-100">
       <ul className="flex flex-row flex-nowrap">
@@ -11,12 +21,11 @@ export default function Nav() {
 
       {/* Recording Status */}
       <ul className="absolute right-5 flex flex-row flex-nowrap items-center gap-3">
-        <div className="" title="Recording duration">
-          01:12:52
-        </div>
+        {state.isRecording && <div title="Recording duration">{state.timeElapsed.toReadableTimeFromSeconds()}</div>}
         <div
-          className={`h-6 w-6 rounded-3xl bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')] cursor-pointer`}
+          className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
+          onClick={() => Recorder.auto()}
         ></div>
       </ul>
     </nav>
