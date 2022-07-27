@@ -1,6 +1,6 @@
 import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
-import { Redirect, Route, Switch, useLocation } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import General from "./pages/General";
 import Recording from "./pages/Recording";
 

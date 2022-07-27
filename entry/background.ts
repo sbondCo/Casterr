@@ -77,11 +77,12 @@ function registerChannels(win: BrowserWindow) {
    * Create desktop notification window and display correct message to user.
    */
   ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
+    const screenWithCursor = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
     const notifWin = new BrowserWindow({
       parent: win,
       width: 400,
       height: 80,
-      x: screen.getPrimaryDisplay().bounds.width / 2 - 400 / 2, // Middle of screen horizontally
+      x: screenWithCursor.bounds.x + screenWithCursor.bounds.width / 2 - 400 / 2, // Middle of screen horizontally
       y: 50,
       frame: false,
       skipTaskbar: true,
@@ -93,23 +94,23 @@ function registerChannels(win: BrowserWindow) {
       focusable: false,
       show: false,
       webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false
+        nodeIntegration: false,
+        nodeIntegrationInWorker: false,
+        nodeIntegrationInSubFrames: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, "preload.js")
       }
     });
 
     // Show window when ready to show
-    notifWin.once("ready-to-show", notifWin.show);
+    notifWin.once("ready-to-show", () => notifWin.show());
 
-    // Load desktopNotification view
-    const page = `desktopNotification/${args.desc}/${args.icon}`;
-
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Use dev server in development
-      await notifWin.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/${page}`);
+    if (isDev && process.env.SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await notifWin.loadURL(`${process.env.SERVER_URL}/dnotif/${args.icon}/${args.desc}`);
     } else {
       // Load the index.html when not in development
-      notifWin.loadURL(`file://${__dirname}/index.html#${page}`);
+      notifWin.loadURL(`file://${path.join(__dirname, "index.html")}`);
     }
 
     // Close window after defined duration

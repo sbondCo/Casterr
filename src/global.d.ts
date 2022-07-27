@@ -1,4 +1,4 @@
-import { mainAPI, nodeAPI } from "entry/preload";
+import { mainAPI, nodeAPI } from "../entry/preload";
 
 export {};
 
