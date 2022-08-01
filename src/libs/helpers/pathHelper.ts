@@ -7,7 +7,7 @@ export default class PathHelper {
   }
 
   public static get toolsPath() {
-    return Path.join(this.mainFolderPath, "Tools");
+    return Path.join(this.mainFolderPath, "tools");
   }
 
   public static get homeFolderPath() {
