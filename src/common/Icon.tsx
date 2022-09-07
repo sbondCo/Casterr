@@ -168,7 +168,7 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
     case "max":
       return {
         viewBox: "0 0 12 12",
-        el: <rect width="9" height="9" x="1.5" y="1.5" fill="currentcolor" stroke="currentColor"></rect>
+        el: <rect width="9" height="9" x="1.5" y="1.5" fill="transparent" stroke="currentColor"></rect>
       };
     case "close":
       return {
