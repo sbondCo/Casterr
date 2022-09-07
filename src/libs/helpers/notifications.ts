@@ -1,5 +1,6 @@
 // import Vue from "vue";
 // import { CombinedVueInstance } from "vue/types/vue";
+import { ipcRenderer } from "electron";
 // import Notifier from "@/components/Notifier.vue";
 
 interface PopupOptions {
@@ -52,67 +53,55 @@ export default class Notifications {
    * @returns
    */
   public static popup(name: string, desc: string, options?: PopupOptions) {
-    console.log("popup");
-
-    return new Promise<{ action: string; tickBoxesChecked?: string[] }>((resolve, reject) => {});
-
-    // return new Promise<{ action: string; tickBoxesChecked?: string[] }>((resolve, reject) => {
-    //   // Update or create popup depending on if it is in activePopups
-    //   if (this.activePopups.has(name)) {
-    //     const i = this.activePopups.get(name);
-
-    //     // Update popup data everytime, incase of updated data sent to func
-    //     if (i != undefined) i.$data.desc = desc;
-    //     if (i != undefined) i.$data.percent = options?.percentage;
-    //   } else {
-    //     const tickBoxNames = new Array<string>();
-    //     const tickBoxesChecked = new Array<string>();
-
-    //     if (options?.tickBoxes != undefined) {
-    //       // Loop over tickboxes array passed adding to tickBoxNames/Checked
-    //       for (let i = 0; i < options.tickBoxes.length; i++) {
-    //         // If tickBoxes is passed in as TickBoxInfo[]
-    //         // also add to tickBoxesChecked depending on `ticked` value passed in it.
-    //         if ((options.tickBoxes[i] as TickBoxInfo).name !== undefined) {
-    //           const el = options.tickBoxes[i] as TickBoxInfo;
-
-    //           tickBoxNames.push(el.name);
-    //           if ((el as TickBoxInfo).ticked) tickBoxesChecked.push(el.name);
-    //         } else {
-    //           const el = options.tickBoxes[i] as string;
-
-    //           tickBoxNames.push(el);
-    //         }
-    //       }
-    //     }
-
-    //     // Create Notifier instance
-    //     const notifier = Vue.extend(Notifier);
-    //     const instance = new notifier({
-    //       propsData: {
-    //         description: desc,
-    //         percentage: options?.percentage,
-    //         loader: options?.loader,
-    //         showCancel: options?.showCancel ?? true,
-    //         buttons: options?.buttons,
-    //         tickBoxes: tickBoxNames,
-    //         tickBoxesChecked: tickBoxesChecked
-    //       }
-    //     });
-
-    //     // Mount and append to DOM in notifications section
-    //     instance.$mount();
-    //     document.getElementById("notifications")?.appendChild(instance.$el);
-
-    //     // Listen for an element clicked then resolve method with it's value
-    //     instance.$on("element-clicked", (elClicked: string, tickBoxesChecked?: string[]) => {
-    //       resolve({ action: elClicked, tickBoxesChecked: tickBoxesChecked });
-    //     });
-
-    //     // Add to activePopups
-    //     this.activePopups.set(name, instance);
-    //   }
-    // });
+    return new Promise<{ action: string; tickBoxesChecked?: string[] }>((resolve, reject) => {
+      //   // Update or create popup depending on if it is in activePopups
+      //   if (this.activePopups.has(name)) {
+      //     const i = this.activePopups.get(name);
+      //     // Update popup data everytime, incase of updated data sent to func
+      //     if (i != undefined) i.$data.desc = desc;
+      //     if (i != undefined) i.$data.percent = options?.percentage;
+      //   } else {
+      //     const tickBoxNames = new Array<string>();
+      //     const tickBoxesChecked = new Array<string>();
+      //     if (options?.tickBoxes != undefined) {
+      //       // Loop over tickboxes array passed adding to tickBoxNames/Checked
+      //       for (let i = 0; i < options.tickBoxes.length; i++) {
+      //         // If tickBoxes is passed in as TickBoxInfo[]
+      //         // also add to tickBoxesChecked depending on `ticked` value passed in it.
+      //         if ((options.tickBoxes[i] as TickBoxInfo).name !== undefined) {
+      //           const el = options.tickBoxes[i] as TickBoxInfo;
+      //           tickBoxNames.push(el.name);
+      //           if ((el as TickBoxInfo).ticked) tickBoxesChecked.push(el.name);
+      //         } else {
+      //           const el = options.tickBoxes[i] as string;
+      //           tickBoxNames.push(el);
+      //         }
+      //       }
+      //     }
+      //     // Create Notifier instance
+      //     const notifier = Vue.extend(Notifier);
+      //     const instance = new notifier({
+      //       propsData: {
+      //         description: desc,
+      //         percentage: options?.percentage,
+      //         loader: options?.loader,
+      //         showCancel: options?.showCancel ?? true,
+      //         buttons: options?.buttons,
+      //         tickBoxes: tickBoxNames,
+      //         tickBoxesChecked: tickBoxesChecked
+      //       }
+      //     });
+      //     // Mount and append to DOM in notifications section
+      //     instance.$mount();
+      //     document.getElementById("notifications")?.appendChild(instance.$el);
+      //     // Listen for an element clicked then resolve method with it's value
+      //     instance.$on("element-clicked", (elClicked: string, tickBoxesChecked?: string[]) => {
+      //       resolve({ action: elClicked, tickBoxesChecked: tickBoxesChecked });
+      //     });
+      //     // Add to activePopups
+      //     this.activePopups.set(name, instance);
+      //   }
+    });
   }
 
   /**
@@ -120,14 +109,11 @@ export default class Notifications {
    * @param name Name of notification.
    */
   public static deletePopup(name: string) {
-    console.log("deletepopup");
     // // Get Notifier from activeNotifs map
     // const i = this.activePopups.get(name);
-
     // // Cleanup component and remove from DOM
     // i?.$destroy();
     // i?.$el.remove();
-
     // // Delete from activeNotifcs
     // this.activePopups.delete(name);
   }
@@ -140,6 +126,6 @@ export default class Notifications {
    */
   public static async desktop(desc: string, icon?: string, duration: number = 4000) {
     // Create new window for notification
-    window.api.send("create-desktop-notification", { desc, icon, duration });
+    ipcRenderer.send("create-desktop-notification", { desc, icon, duration });
   }
 }

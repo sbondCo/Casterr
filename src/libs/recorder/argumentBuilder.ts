@@ -1,7 +1,7 @@
 import DeviceManager from "./deviceManager";
 import PathHelper from "../helpers/pathHelper";
 import Registry from "../helpers/registry";
-import { Path, Process } from "@/libs/node";
+import path from "path";
 import { store } from "@/app/store";
 import { RecordingSettings } from "@/settings/types";
 import "../helpers/extensions";
@@ -23,9 +23,9 @@ export default class ArgumentBuilder {
     this.rs = store.getState().settings.recording;
 
     // Build and return args differently depending on OS
-    if (Process.platform == "win32") {
+    if (process.platform == "win32") {
       return ArgumentBuilder.buildWindowsArgs();
-    } else if (Process.platform == "linux") {
+    } else if (process.platform == "linux") {
       return ArgumentBuilder.buildLinuxArgs();
     }
 
@@ -123,15 +123,13 @@ export default class ArgumentBuilder {
     };
   }
 
-  private static get fps(): number {
-    // const fps = parseInt(this.rs.fps, 10);
-
+  private static get fps(): string {
     // If can get number from FPS setting, then use it
     // If not, then just return 30fps as a default
     if (!isNaN(this.rs.fps)) {
-      return this.rs.fps;
+      return this.rs.fps.toString();
     } else {
-      return 30;
+      return "30";
     }
   }
 
@@ -171,7 +169,7 @@ export default class ArgumentBuilder {
         break;
     }
 
-    if (Process.platform == "win32") {
+    if (process.platform == "win32") {
       await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
       await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
     }
@@ -180,8 +178,8 @@ export default class ArgumentBuilder {
   }
 
   private static get ffmpegDevice(): string {
-    if (Process.platform == "win32") return "dshow";
-    else if (Process.platform == "linux") return "x11grab";
+    if (process.platform == "win32") return "dshow";
+    else if (process.platform == "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
@@ -197,13 +195,13 @@ export default class ArgumentBuilder {
     }
 
     // Return different format depending on OS
-    if (Process.platform == "win32") {
+    if (process.platform == "win32") {
       await this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
       await this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
-    } else if (Process.platform == "linux") {
+    } else if (process.platform == "linux") {
       return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
     } else {
       throw new Error("Can't get recording region for unsupported platform.");
@@ -244,6 +242,6 @@ export default class ArgumentBuilder {
   }
 
   private static async videoOutputPath(): Promise<string> {
-    return Path.join(await PathHelper.ensureExists(this.rs.videoSaveFolder, true), this.videoOutputName);
+    return path.join(await PathHelper.ensureExists(this.rs.videoSaveFolder, true), this.videoOutputName);
   }
 }

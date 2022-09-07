@@ -1,8 +1,9 @@
-import { Path, FS, ChildProcess, Process } from "@/libs/node";
+import path from "path";
+import fs from "fs";
+import childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
-// import Notifications from "./../helpers/notifications";
+import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
-import { ChildProcess as cp } from "child_process";
 
 export default class FFmpeg {
   constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
@@ -11,7 +12,7 @@ export default class FFmpeg {
    * FFmpeg exe name which is dependent on the user's platform.
    */
   public static get ffmpegExeName() {
-    if (Process.platform == "win32") {
+    if (process.platform == "win32") {
       return "ffmpeg.exe";
     } else {
       return "ffmpeg";
@@ -22,7 +23,7 @@ export default class FFmpeg {
    * FFprobe exe name which is dependent on the user's platform.
    */
   public static get ffprobeExeName() {
-    if (Process.platform == "win32") {
+    if (process.platform == "win32") {
       return "ffprobe.exe";
     } else {
       return "ffprobe";
@@ -30,7 +31,7 @@ export default class FFmpeg {
   }
 
   // FFmpeg/probe process
-  private ffProcess: cp | undefined;
+  private ffProcess: childProcess.ChildProcess | undefined;
 
   /**
    * Run FF process and send args to it.
@@ -49,30 +50,34 @@ export default class FFmpeg {
   ) {
     // Get FFmpeg path
     const ffPath = await this.getPath();
+    console.log("FF Process starting:", ffPath);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       // Create child process and send args to it
-      this.ffProcess = ChildProcess.exec(`${ffPath} ${args}`);
-
-      if (whenToResolve == "onOpen") resolve("started");
+      this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
       // Run stdoutCallback when recieving stdout
       this.ffProcess.stdout!.on("data", (data) => {
+        console.log("FFProcess stdout:", data.toString());
         if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
       });
 
       // Run stderrCallback when recieving stderr
       this.ffProcess.stderr!.on("data", (data) => {
+        console.log("FFProcess stderr:", data.toString());
         if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
       });
 
       // When ffProcess exits
       this.ffProcess.on("close", (code) => {
+        console.info("FFProcess exited with code", code);
         // Call onExitCallback if set to do so
         if (outputs?.onExitCallback != undefined) outputs?.onExitCallback(code);
 
         if (whenToResolve == "onExit") resolve(code);
       });
+
+      if (whenToResolve == "onOpen") resolve("started");
     });
   }
 
@@ -116,19 +121,19 @@ export default class FFmpeg {
    */
   private async getFFmpeg(installDir: string): Promise<{ ffmpegPath: string; ffprobePath: string }> {
     const downloader = new Downloader();
-    const ffmpegPath = Path.join(installDir, FFmpeg.ffmpegExeName);
-    const ffprobePath = Path.join(installDir, FFmpeg.ffprobeExeName);
+    const ffmpegPath = path.join(installDir, FFmpeg.ffmpegExeName);
+    const ffprobePath = path.join(installDir, FFmpeg.ffprobeExeName);
 
     // If ffmpeg or ffprobe does not exist, go download it
-    if (!(await PathHelper.exists(ffmpegPath)) || !(await PathHelper.exists(ffprobePath))) {
+    if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
       const popupName = "ffmpegDownloadProgress";
       const downloadTo = ffmpegPath + ".zip";
       let dlURL: string;
 
       // Set downloadURL depending on users platform
-      if (Process.platform == "win32") {
+      if (process.platform == "win32") {
         dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421932";
-      } else if (Process.platform == "linux") {
+      } else if (process.platform == "linux") {
         dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421938";
       } else {
         throw new Error("Unsupported platform");
@@ -138,30 +143,30 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        // Notifications.popup(popupName, "Fetching Recording Utilities", { percentage: progress });
+        Notifications.popup(popupName, "Fetching Recording Utilities", { percentage: progress });
       });
 
       // Update popup to extracting phase
-      // Notifications.popup(popupName, "Extracting Recording Utilities", undefined);
+      Notifications.popup(popupName, "Extracting Recording Utilities", undefined);
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
-      // Notifications.deletePopup(popupName);
+      Notifications.deletePopup(popupName);
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     // Make sure screen-capture-recorder is installed, for windows machines.
-    if (Process.platform == "win32") await this.getSCR(installDir);
+    if (process.platform == "win32") await this.getSCR(installDir);
 
     // Get exec perms for ff binaries.
     // Do this even if we didn't just download them so there
     // is no reason for it to fail with 'no perms' error.
-    await FS.chmod(ffmpegPath, 0o111);
-    await FS.chmod(ffprobePath, 0o111);
+    fs.chmodSync(ffmpegPath, 0o111);
+    fs.chmodSync(ffprobePath, 0o111);
 
     return { ffmpegPath: ffmpegPath, ffprobePath: ffprobePath };
   }
@@ -174,33 +179,30 @@ export default class FFmpeg {
 
     // Don't run if dlls already installed.
     // Currently this is only checking if the dll exists in the tools folder.
-    if (
-      (await PathHelper.exists(Path.join(installDir, dlls[0]))) &&
-      (await PathHelper.exists(Path.join(installDir, dlls[1])))
-    ) {
+    if (fs.existsSync(path.join(installDir, dlls[0])) && fs.existsSync(path.join(installDir, dlls[1]))) {
       return;
     }
 
     const downloader = new Downloader();
     const dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421931";
-    const dlTo = Path.join(installDir, "scr-vac.zip");
+    const dlTo = path.join(installDir, "scr-vac.zip");
     const popupName = "scrDownloadProgress";
 
     // Download zip
     downloader.accept = "application/octet-stream";
     await downloader.get(dlURL, dlTo, (progress) => {
       // Keep updating popup with new progress %
-      // Notifications.popup(popupName, "Fetching Recording Devices", { percentage: progress });
+      Notifications.popup(popupName, "Fetching Recording Devices", { percentage: progress });
     });
 
     // Extract
-    // Notifications.popup(popupName, "Extracting Recording Devices", undefined);
+    Notifications.popup(popupName, "Extracting Recording Devices", undefined);
     await PathHelper.extract(dlTo, installDir, dlls);
 
     // Register as service
     await new Promise((resolve, reject) => {
-      const cmd = `regsvr32 /s "${Path.join(installDir, dlls[0])}" "${Path.join(installDir, dlls[1])}"`;
-      const registerProcess = ChildProcess.exec(
+      const cmd = `regsvr32 /s "${path.join(installDir, dlls[0])}" "${path.join(installDir, dlls[1])}"`;
+      const registerProcess = childProcess.exec(
         `powershell -command "Start-Process PowerShell -Verb RunAs -WindowStyle Hidden -PassThru -Wait -ArgumentList '${cmd}'"`
       );
 
@@ -213,6 +215,6 @@ export default class FFmpeg {
       });
     });
 
-    // Notifications.deletePopup(popupName);
+    Notifications.deletePopup(popupName);
   }
 }

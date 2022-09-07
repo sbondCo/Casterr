@@ -1,9 +1,12 @@
+import os from "os";
+import Path from "path";
+import { promises as fs, constants as fsconstants } from "fs";
 import childProcess from "child_process";
-import { OS, Path, FS, Process } from "../node";
+import jsZip from "jszip";
 
 export default class PathHelper {
   public static get mainFolderPath() {
-    return Path.join(window.node.os.homedir(), "Documents", "CasterrNew");
+    return Path.join(os.homedir(), "Documents", "CasterrNew");
   }
 
   public static get toolsPath() {
@@ -11,15 +14,15 @@ export default class PathHelper {
   }
 
   public static get homeFolderPath() {
-    return OS.homedir();
+    return os.homedir();
   }
 
   /**
-   * Get the path to a file used by Casterr. If doesn't exist, will create it.
+   * Get the path to a file used by Casterr.
    * Paths are hardcoded, only supported files that are listed here will work.
    * @param name Name of file with extension
    */
-  public static async getFile(name: "settings" | "recordings" | "clips") {
+  public static getFile(name: "settings" | "recordings" | "clips") {
     let path: string[];
 
     switch (name) {
@@ -36,11 +39,12 @@ export default class PathHelper {
 
     // Join `mainFolderPath` and `path` to create the
     // full path that we should make sure exists then return
-    return await this.ensureExists(Path.join(this.mainFolderPath, ...path));
+    return this.ensureExists(Path.join(this.mainFolderPath, ...path));
   }
 
   public static async exists(path: string): Promise<boolean> {
-    return FS.access(path, FS.constants.F_OK)
+    return fs
+      .access(path, fsconstants.F_OK)
       .then(() => true)
       .catch(() => false);
   }
@@ -63,12 +67,12 @@ export default class PathHelper {
       // Recursively create all folders.
       // If `!isDir`, get dirname from path first, so we don't
       // create a folder for the file.
-      await FS.mkdir(isDir ? path : Path.dirname(path), { recursive: true });
+      await fs.mkdir(isDir ? path : Path.dirname(path), { recursive: true });
 
       // Only write a file if `!isDir`.
       // Needs to be after making dirs since this method
       // will fail if the dir the file is being written in doesn't exist.
-      if (!isDir) await FS.writeFile(path, "", { flag: "wx" });
+      if (!isDir) await fs.writeFile(path, "", { flag: "wx" });
 
       if (options != undefined) {
         if (options.hidden) {
@@ -96,7 +100,7 @@ export default class PathHelper {
       }
 
       // If on windows, run `attrib` command to hide folder
-      if (Process.platform == "win32") {
+      if (process.platform == "win32") {
         const cp = childProcess.exec(`attrib +h ${path}`);
 
         cp.on("exit", (code) => {
@@ -127,11 +131,12 @@ export default class PathHelper {
    * @param path
    */
   public static async removeDir(path: string) {
-    return FS.readdir(path)
+    return fs
+      .readdir(path)
       .then((files) => {
-        if (files) files.forEach((f) => FS.unlink(Path.join(path, f)));
+        if (files) files.forEach((f) => fs.unlink(Path.join(path, f)));
 
-        FS.rmdir(path);
+        fs.rmdir(path);
       })
       .catch((e) => {
         throw Error(`Error removing dir: ${e}`);
@@ -143,7 +148,7 @@ export default class PathHelper {
    * @param path Path to file that should be deleted.
    */
   public static async removeFile(path: string) {
-    return FS.unlink(path).catch((e) => {
+    return fs.unlink(path).catch((e) => {
       throw Error(`Unable to remove file: ${e}`);
     });
   }
@@ -162,9 +167,54 @@ export default class PathHelper {
     deleteAfter: boolean = true
   ) {
     return new Promise((resolve, reject) => {
-      window.api
-        .unzip(zipPath, destFolder, filesToExtract, deleteAfter)
-        .then(() => resolve(""))
+      fs.readFile(zipPath)
+        .then((data) => {
+          const zip = new jsZip();
+
+          zip.loadAsync(data).then((contents: jsZip) => {
+            const files = contents.files;
+
+            // Delete directories from object
+            for (const f in files) {
+              if (files[f].dir == true) delete files[f];
+            }
+
+            Object.keys(files).forEach(async (filename: string, i) => {
+              const filenameWithoutFolder = Path.basename(filename);
+
+              // Write zip file to destination folder
+              const unzip = () => {
+                return new Promise((resolve) => {
+                  zip
+                    .file(filename)!
+                    .async("nodebuffer")
+                    .then((content: any) => {
+                      fs.writeFile(Path.join(destFolder, filenameWithoutFolder), content).then(() => resolve(""));
+                    });
+                });
+              };
+
+              // If filesToExtract is empty just unzip all files
+              // If filesToExtract isn't empty, if it includes filename then unzip
+              if (filesToExtract.length == 0) await unzip();
+              else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
+
+              // Resolve if index (+1) equals amount of files since this means all files have been processed
+              if (i + 1 == Object.keys(files).length) {
+                // Delete zip file if asked to.
+                // Don't wait for file to delete before resolving the promise,
+                // theres no reason to make the user wait for it to finish deleting the zip.
+                if (deleteAfter) {
+                  fs.unlink(zipPath).catch((e) => {
+                    throw e;
+                  });
+                }
+
+                resolve("");
+              }
+            });
+          });
+        })
         .catch((e) => reject(e));
     });
   }

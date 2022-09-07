@@ -1,4 +1,5 @@
 import Icon, { Icons } from "@/common/Icon";
+import { ipcRenderer } from "electron";
 import React from "react";
 
 export default function Dragger() {
@@ -18,7 +19,7 @@ function DraggerItem(props: { icon: Icons }) {
   const { icon } = props;
 
   const manageWindow = () => {
-    window.api.send("manage-window", icon);
+    ipcRenderer.send("manage-window", icon);
   };
 
   return (

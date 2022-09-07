@@ -51,8 +51,6 @@ async function start() {
     }
   };
 
-  // TODO: Make this restart app automatically preload or background script changed
-  watchFile("entry/preload.ts", (curr, prev) => restart(curr, prev, "preload.ts"));
   watchFile("entry/background.ts", (curr, prev) => restart(curr, prev, "background.ts"));
 }
 

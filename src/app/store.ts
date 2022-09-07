@@ -3,7 +3,7 @@ import videosSlice from "@/videos/videosSlice";
 import settingsSlice from "@/settings/settingsSlice";
 import recorderSlice from "@/libs/recorder/recorderSlice";
 import PathHelper from "@/libs/helpers/pathHelper";
-import { FS } from "@/libs/node";
+import { promises as fs } from "fs";
 import { DEFAULT_SETTINGS } from "./constants";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
@@ -20,7 +20,7 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       delete settingsState.app;
 
       const settingsFile = await PathHelper.getFile("settings");
-      FS.writeFile(settingsFile, JSON.stringify(settingsState, null, 2)).catch((e) => {
+      fs.writeFile(settingsFile, JSON.stringify(settingsState, null, 2)).catch((e) => {
         throw new Error(`Error writing updated settings to ${settingsFile}: ${e}`);
       });
     }
@@ -42,7 +42,7 @@ const rehydrated = async () => {
 
     // If settings file exists - read it and add to `reh.settings`.
     const stgsFile = await PathHelper.getFile("settings");
-    const r = await FS.readFile(stgsFile, "utf-8");
+    const r = await fs.readFile(stgsFile, "utf-8");
     if (r) Object.assign(reh.settings, JSON.parse(r));
 
     return reh;

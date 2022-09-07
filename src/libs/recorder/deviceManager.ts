@@ -1,7 +1,6 @@
 import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
-import { Display } from "electron";
-import { Process } from "@/libs/node";
+import { ipcRenderer, Display } from "electron";
 
 export interface Devices {
   /**
@@ -49,8 +48,8 @@ export default class DeviceManager {
    * Automatically gets correct devices depending on current OS.
    */
   public static getDevices() {
-    if (Process.platform == "win32") return this.getWindowsDevices();
-    else if (Process.platform == "linux") return this.getLinuxDevices();
+    if (process.platform == "win32") return this.getWindowsDevices();
+    else if (process.platform == "linux") return this.getLinuxDevices();
 
     throw new Error("Could not get devices for current system. It isn't supported.");
   }
@@ -88,7 +87,10 @@ export default class DeviceManager {
                 // Add input devices to audioDevices array
                 audioDevices.push({
                   id: sourceNumber,
-                  name: l.replace("alsa.card_name = ", "").replaceAll('"', "").replaceAll("\t", ""),
+                  name: l
+                    .replace("alsa.card_name = ", "")
+                    .replaceAll('"', "")
+                    .replaceAll("\t", ""),
                   isInput: isInputDevice
                 });
               }
@@ -184,7 +186,7 @@ export default class DeviceManager {
    * Get all monitors.
    */
   public static async getMonitors(): Promise<Display[]> {
-    return window.api.invoke("get-screens");
+    return ipcRenderer.invoke("get-screens");
   }
 
   /**
@@ -199,6 +201,6 @@ export default class DeviceManager {
    * Get primary monitor.
    */
   public static async getPrimaryMonitor(): Promise<Display> {
-    return window.api.invoke("get-primary-screen");
+    return ipcRenderer.invoke("get-primary-screen");
   }
 }

@@ -1,5 +1,4 @@
-import PathHelper from "@/libs/helpers/pathHelper";
-import { FS } from "@/libs/node";
+import { ipcRenderer } from "electron";
 import { useState } from "react";
 
 type TextBoxProps = {
@@ -32,7 +31,7 @@ export default function TextBox(props: TextBoxProps) {
   };
 
   const selectFolder = () => {
-    window.api
+    ipcRenderer
       .invoke("show-open-dialog", {
         title: `Select save folder`,
         defaultPath: curVal,

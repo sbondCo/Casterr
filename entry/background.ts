@@ -1,6 +1,6 @@
 // // import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
-import * as path from "path";
+import path from "path";
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -24,11 +24,10 @@ async function createWindow() {
     minHeight: 500,
     frame: false,
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
       nodeIntegrationInWorker: false,
       nodeIntegrationInSubFrames: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, "preload.js")
+      contextIsolation: false
     }
   });
 
@@ -94,11 +93,10 @@ function registerChannels(win: BrowserWindow) {
       focusable: false,
       show: false,
       webPreferences: {
-        nodeIntegration: false,
+        nodeIntegration: true,
         nodeIntegrationInWorker: false,
         nodeIntegrationInSubFrames: false,
-        contextIsolation: true,
-        preload: path.join(__dirname, "preload.js")
+        contextIsolation: false
       }
     });
 

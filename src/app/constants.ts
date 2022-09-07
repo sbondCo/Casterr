@@ -3,8 +3,8 @@
  * Initial states defined here so we can reuse them as defaults.
  */
 
+import path from "path";
 import PathHelper from "@/libs/helpers/pathHelper";
-import { Path } from "@/libs/node";
 import { Settings } from "@/settings/types";
 
 // App settings, not user editable.
@@ -22,8 +22,8 @@ export const DEFAULT_SETTINGS = {
     deleteVideosFromDisk: false
   },
   recording: {
-    thumbSaveFolder: Path.join(PathHelper.mainFolderPath, "Thumbs"),
-    videoSaveFolder: Path.join(PathHelper.homeFolderPath, "Videos", "Casterr"),
+    thumbSaveFolder: path.join(PathHelper.mainFolderPath, "Thumbs"),
+    videoSaveFolder: path.join(PathHelper.homeFolderPath, "Videos", "Casterr"),
     videoSaveName: "%d.%m.%Y - %H.%i.%s",
     videoDevice: "Default",
     monitorToRecord: {

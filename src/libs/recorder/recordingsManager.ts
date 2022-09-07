@@ -1,7 +1,7 @@
 import FFmpeg from "./ffmpeg";
 import PathHelper from "./../helpers/pathHelper";
-import * as fs from "fs";
-import * as path from "path";
+import fs from "fs";
+import path from "path";
 import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
@@ -138,7 +138,6 @@ export default class RecordingsManager {
    */
   public static async clip(videoPath: string, timestamps: number[]) {
     const videoSaveFolder = store.getState().settings.recording.videoSaveFolder;
-
     // Make sure .processing folder exists and is hidden
     PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing`, true, {
       hidden: true
@@ -153,7 +152,6 @@ export default class RecordingsManager {
     const popupName = "clipVideo";
 
     Notifications.popup(popupName, "Clipping Your Video", { loader: true, showCancel: true }).then((popup) => {
-      if (!popup) return;
       if (popup.action == "cancel") {
         Notifications.popup(popupName, "Cancelling Processing Of Your Video");
 
