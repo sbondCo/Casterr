@@ -35,7 +35,7 @@ export default function Videos() {
                 <div className="flex items-center absolute bottom-0 w-full px-3 py-2 bg-quaternary-100/60">
                   {/* TODO: test this with very long names - clip them */}
                   <span className="font-bold">{v.name}</span>
-                  <span className="ml-auto mr-3 text-sm">{v.duration}</span>
+                  <span className="ml-auto mr-3 text-sm">{v.duration?.toReadableTimeFromSeconds()}</span>
                   <span className="text-sm">{v.fileSize?.toReadableFileSize()}</span>
                 </div>
               </div>
