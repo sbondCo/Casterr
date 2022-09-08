@@ -3,14 +3,14 @@ import { VideosState, Video } from "./types";
 
 const videosSlice = createSlice({
   name: "videos",
-  initialState: { videos: [] } as VideosState,
+  initialState: { recordings: [], clips: [] } as VideosState,
   reducers: {
-    addVideos: (state, action: PayloadAction<Video[]>) => {
-      state.videos.push(...action.payload);
+    addVideo: (state, action: PayloadAction<Video[]>) => {
+      // state.videos.push(...action.payload);
     }
   }
 });
 
-export const { addVideos } = videosSlice.actions;
+export const { addVideo } = videosSlice.actions;
 
 export default videosSlice.reducer;

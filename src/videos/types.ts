@@ -1,5 +1,6 @@
 export interface VideosState {
-  videos: Video[];
+  recordings: Video[];
+  clips: Video[];
 }
 
 export interface Video {
