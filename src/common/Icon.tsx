@@ -6,7 +6,7 @@ interface IconProps {
   wh?: number;
 
   // Icon direction
-  direction?: "up" | "down" | "left" | "right";
+  direction?: IconDirection;
 
   className?: string;
 }
@@ -29,6 +29,8 @@ export type Icons =
   | "clips"
   | "time"
   | "edit";
+
+export type IconDirection = "up" | "down" | "left" | "right";
 
 export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   const icon = getIcon(i);

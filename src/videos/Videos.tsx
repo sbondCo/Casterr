@@ -3,7 +3,7 @@ import Icon from "@/common/Icon";
 import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
 import { useSelector } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, Link } from "react-router-dom";
 
 export default function Videos() {
   const state = useSelector((store: RootState) => store.videos);
@@ -19,7 +19,11 @@ export default function Videos() {
       <div className="flex flex-wrap gap-3">
         {videos.map((v) => {
           return (
-            <div
+            <Link
+              to={{
+                pathname: `/editor`,
+                state: v.videoPath
+              }}
               key={v.videoPath}
               className="group flex-grow basis-[100%] md:basis-[40%] lg:basis-[30%] w-3/12 h-64 relative rounded-md overflow-hidden cursor-pointer"
             >
@@ -39,7 +43,7 @@ export default function Videos() {
                   <span className="text-sm">{v.fileSize?.toReadableFileSize()}</span>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

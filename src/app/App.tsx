@@ -8,6 +8,7 @@ import React, { Suspense } from "react";
 
 function App() {
   const Videos = React.lazy(() => import("@/videos"));
+  const Editor = React.lazy(() => import("@/editor"));
   const Settings = React.lazy(() => import("@/settings"));
   const path = window.location.pathname;
   const isDNotifRoute = path.includes("/dnotif");
@@ -35,6 +36,10 @@ function App() {
 
               <Route path="/videos">
                 <Videos />
+              </Route>
+
+              <Route path="/editor">
+                <Editor />
               </Route>
 
               <Route path="/settings">
