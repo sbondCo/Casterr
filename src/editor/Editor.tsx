@@ -11,7 +11,8 @@ export default function VideoEditor() {
     <div>
       <div className="flex gap-5 m-5">
         <Button text="im a boutin" />
-        <Button icon="play" />
+        <Button icon="play" onClick={() => console.log("this logs also we play now 4 u")} />
+        <Button icon="play" text="I disable" disabled={true} onClick={() => console.log("this wont log")} />
       </div>
     </div>
   );
