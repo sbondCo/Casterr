@@ -93,3 +93,27 @@ ul::-webkit-scrollbar-thumb {
 .tickBox:hover input:not(:checked) ~ span:after {
   opacity: 0.5;
 }
+
+/**
+ * Range Input Styling
+ */
+
+input[type="range"] {
+  @apply appearance-none bg-transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none cursor-pointer h-3 w-3 mt-[-2px] bg-quaternary-100 rounded border border-white-100 border-solid;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply h-2 bg-quaternary-100 rounded;
+}
+
+/**
+ * Button Slider open/close styling
+ */
+
+.btn-slider-closed input[type="range"]::-webkit-slider-thumb {
+  visibility: hidden;
+}
