@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Icon, { IconDirection, Icons } from "./Icon";
 import Slider, { SliderProps } from "./Slider";
+import { CommonComponentProps } from "./types";
 
-interface ButtonProps {
+interface ButtonProps extends CommonComponentProps {
   icon?: Icons;
   iconDirection?: IconDirection;
   text?: string;
@@ -13,7 +14,7 @@ interface ButtonProps {
 }
 
 export default function Button(props: ButtonProps) {
-  const { icon, iconDirection, text, disabled = false, outlined = false, slider, onClick } = props;
+  const { icon, iconDirection, text, disabled = false, outlined = false, slider, onClick, className } = props;
 
   if (!text && !icon) console.error("Button component requires atleast of one 'text' or 'icon' prop to be functional.");
 
@@ -23,7 +24,7 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
-      className="flex items-center p-1.5 bg-secondary-100 rounded border-2 border-secondary-100 transition-colors enabled:hover:bg-transparent disabled:bg-tertiary-100 disabled:cursor-not-allowed"
+      className={`flex items-center p-1.5 bg-secondary-100 rounded border-2 border-secondary-100 transition-colors enabled:hover:bg-transparent disabled:bg-tertiary-100 disabled:cursor-not-allowed ${className}`}
       onClick={onClick}
       onMouseEnter={() => setSliderClasses(sliderOpenClasses)}
       onMouseLeave={() => setSliderClasses(sliderClosedClasses)}

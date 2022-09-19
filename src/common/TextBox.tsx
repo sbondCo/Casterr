@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import { useState } from "react";
+import { CommonComponentProps } from "./types";
 
 type TextBoxProps = {
   value: string | number;
@@ -15,10 +16,11 @@ type TextBoxProps = {
       folderSelect?: false;
       onChange: (newValue: number) => void;
     }
-);
+) &
+  CommonComponentProps;
 
 export default function TextBox(props: TextBoxProps) {
-  const { value, placeholder, type, folderSelect = false, onChange } = props;
+  const { value, placeholder, type, folderSelect = false, onChange, className } = props;
 
   const [curVal, setCurVal] = useState(value);
 
@@ -51,7 +53,7 @@ export default function TextBox(props: TextBoxProps) {
   };
 
   return (
-    <div className="flex flex-row rounded border-separate overflow-hidden">
+    <div className={`flex flex-row rounded border-separate overflow-hidden ${className}`}>
       <input
         value={curVal}
         type={type}

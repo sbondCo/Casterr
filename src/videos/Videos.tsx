@@ -3,7 +3,7 @@ import Icon from "@/common/Icon";
 import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
 import { useSelector } from "react-redux";
-import { Redirect, Route, Switch, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 
 export default function Videos() {
   const state = useSelector((store: RootState) => store.videos);
@@ -20,10 +20,12 @@ export default function Videos() {
         {videos.map((v) => {
           return (
             <Link
-              to={{
-                pathname: `/editor`,
-                state: v.videoPath
-              }}
+              // to={{
+              //   pathname: `/editor`,
+              //   state: v.videoPath
+              // }}
+              to="/editor"
+              state={v.videoPath}
               key={v.videoPath}
               className="group flex-grow basis-[100%] md:basis-[40%] lg:basis-[30%] w-3/12 h-64 relative rounded-md overflow-hidden cursor-pointer"
             >
@@ -57,20 +59,11 @@ export default function Videos() {
         <SubNavItem text="Clips" />
       </SubNav>
 
-      <Switch>
-        <Route exact path="/videos">
-          {/* Redirect to recordings - the default */}
-          <Redirect to="/videos/recordings" />
-        </Route>
-
-        <Route path="/videos/recordings">
-          <VideosGrid type="recordings" />
-        </Route>
-
-        <Route path="/videos/clips">
-          <VideosGrid type="clips" />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path="" element={<Navigate replace to="recordings" />} />
+        <Route path="recordings" element={<VideosGrid type="recordings" />} />
+        <Route path="clips" element={<VideosGrid type="clips" />} />
+      </Routes>
     </PageLayout>
   );
 }

@@ -1,6 +1,6 @@
 import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
-import { Redirect, Route, Switch } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import General from "./pages/General";
 import Recording from "./pages/Recording";
 
@@ -13,24 +13,13 @@ export default function Settings() {
         <SubNavItem text="Key Bindings" />
       </SubNav>
 
-      <Switch>
-        <Route exact path="/settings">
-          {/* Redirect to general settings - the default */}
-          <Redirect to="/settings/general" />
-        </Route>
-
-        <Route path="/settings/general">
-          <General />
-        </Route>
-
-        <Route path="/settings/recording">
-          <Recording />
-        </Route>
-
-        <Route path="/settings/keybindings">
-          <span>Key Bindings Not Implemented</span>
-        </Route>
-      </Switch>
+      <Routes>
+        {/* Redirect to general settings - the default */}
+        <Route path="" element={<Navigate replace to="general" />} />
+        <Route path="general" element={<General />} />
+        <Route path="recording" element={<Recording />} />
+        <Route path="keybindings" element={<span>Key Bindings Not Implemented</span>} />
+      </Routes>
     </PageLayout>
   );
 }
