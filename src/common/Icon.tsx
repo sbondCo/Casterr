@@ -48,8 +48,6 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   );
 }
 
-// TODO: Create interface with all Icons, so we have a proper type instead of accepting just any string.
-
 function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
   switch (name) {
     case "play":
