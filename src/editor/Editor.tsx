@@ -12,7 +12,6 @@ export default function VideoEditor() {
   if (!videoPath) console.error("TODO: No Video Path in state, return to home or show error");
 
   const [error, setError] = useState<string>();
-  const [volume, setVolume] = useState<number>(0.8);
 
   useEffect(() => {
     PathHelper.exists(videoPath).then((v) => {
@@ -26,7 +25,7 @@ export default function VideoEditor() {
   }
 
   let playerRef = useRef<HTMLVideoElement>(null);
-  const { playPause, playBtnIcon } = useEditor(playerRef);
+  const { playPause, playBtnIcon, volume, volumeIcon, updateVolume, toggleMute } = useEditor(playerRef);
 
   return (
     <div className="flex flex-col">
@@ -40,18 +39,19 @@ export default function VideoEditor() {
 
       <div className="flex gap-5 m-5">
         <Button icon={playBtnIcon} onClick={playPause} />
-        <Button icon="play" text="I disable" disabled={true} onClick={() => console.log("this wont log")} />
         <Button
-          icon="volumeMax"
+          icon={volumeIcon}
           slider={{
             value: volume,
             min: 0,
             max: 1,
             step: 0.01,
-            onChange: (ev) => {
-              setVolume(Number(ev.target.value));
+            wheelStep: 0.1,
+            onChange: (val) => {
+              updateVolume(val);
             }
           }}
+          onClick={toggleMute}
         />
       </div>
     </div>

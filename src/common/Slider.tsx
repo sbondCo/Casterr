@@ -3,11 +3,35 @@ export interface SliderProps {
   min?: number;
   max?: number;
   step?: number;
-  onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void;
+  wheelStep?: number;
+  onChange: (newVal: number) => void;
 }
 
 export default function Slider(props: SliderProps) {
-  let { value = 0, min = 0, max = 100, step = 1, onChange } = props;
+  let { value = 0, min = 0, max = 100, step = 1, wheelStep = 1, onChange } = props;
 
-  return <input type="range" value={value} min={min} max={max} step={step} onChange={onChange} className="w-full" />;
+  const onWheel = (ev: React.WheelEvent<HTMLInputElement>) => {
+    if (ev.deltaY < 0) {
+      let newVal = Number((value + wheelStep).toFixed(2));
+      if (newVal < 1) onChange(newVal);
+      else onChange(max);
+    } else {
+      let newVal = Number((value - wheelStep).toFixed(2));
+      if (newVal >= 0) onChange(newVal);
+      else onChange(min);
+    }
+  };
+
+  return (
+    <input
+      type="range"
+      value={value}
+      min={min}
+      max={max}
+      step={step}
+      onChange={(ev) => onChange(Number(ev.target.value))}
+      onWheel={onWheel}
+      className="w-full"
+    />
+  );
 }

@@ -18,20 +18,21 @@ export default function Button(props: ButtonProps) {
 
   if (!text && !icon) console.error("Button component requires atleast of one 'text' or 'icon' prop to be functional.");
 
-  const sliderOpenClasses = "ml-3";
+  const sliderOpenClasses = "ml-1.5 mr-2";
   const sliderClosedClasses = "btn-slider-closed w-0";
   const [sliderClasses, setSliderClasses] = useState(sliderClosedClasses);
 
   return (
     <button
-      className={`flex items-center p-1.5 bg-secondary-100 rounded border-2 border-secondary-100 transition-colors enabled:hover:bg-transparent disabled:bg-tertiary-100 disabled:cursor-not-allowed ${className}`}
-      onClick={onClick}
+      className={`flex items-center bg-secondary-100 rounded border-2 border-secondary-100 transition-colors enabled:hover:bg-transparent disabled:bg-tertiary-100 disabled:cursor-not-allowed ${className}`}
       onMouseEnter={() => setSliderClasses(sliderOpenClasses)}
       onMouseLeave={() => setSliderClasses(sliderClosedClasses)}
       disabled={disabled}
     >
-      {icon && <Icon i={icon} direction={iconDirection} wh={20} className={text && "mr-2"} />}
-      {text && <span>{text}</span>}
+      <div onClick={onClick} className="p-1.5">
+        {icon && <Icon i={icon} direction={iconDirection} wh={20} className={text && "mr-2"} />}
+        {text && <span>{text}</span>}
+      </div>
       {slider && (
         <div className={`flex items-center transition-all ${sliderClasses}`}>
           <Slider
@@ -39,6 +40,7 @@ export default function Button(props: ButtonProps) {
             min={slider.min}
             max={slider.max}
             step={slider.step}
+            wheelStep={slider.wheelStep}
             onChange={slider.onChange}
           />
         </div>
