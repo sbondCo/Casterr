@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/**
- * Default Scrollbar Styling
- */
+/* Default Scrollbar Styling */
 
 /* Main Default */
 ::-webkit-scrollbar {
@@ -34,9 +32,7 @@ ul::-webkit-scrollbar-thumb {
   border-radius: 1ex;
 }
 
-/**
- * CheckBox Styling
- */
+/* CheckBox Styling */
 
 .tickBox {
   position: relative;
@@ -94,9 +90,7 @@ ul::-webkit-scrollbar-thumb {
   opacity: 0.5;
 }
 
-/**
- * Range Input Styling
- */
+/* Range Input Styling */
 
 input[type="range"] {
   @apply appearance-none bg-transparent;
@@ -110,10 +104,23 @@ input[type="range"]::-webkit-slider-runnable-track {
   @apply h-2 bg-quaternary-100 rounded;
 }
 
-/**
- * Button Slider open/close styling
- */
+/* Button Slider open/close styling */
 
 .btn-slider-closed input[type="range"]::-webkit-slider-thumb {
   visibility: hidden;
+}
+
+/* Button Connector */
+
+.btn-connector {
+  @apply rounded;
+  overflow: hidden;
+}
+
+.btn-connector * {
+  border-radius: 0;
+}
+
+.btn-connector *:not(:last-child) {
+  border-right: unset;
 }
