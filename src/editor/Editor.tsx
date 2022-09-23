@@ -1,4 +1,6 @@
 import Button from "@/common/Button";
+import ButtonConnector from "@/common/ButtonConnector";
+import Icon from "@/common/Icon";
 import TextBox from "@/common/TextBox";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { useEffect, useRef, useState } from "react";
@@ -37,7 +39,7 @@ export default function VideoEditor() {
 
       <video ref={playerRef} src={"secfile://" + videoPath} controls></video>
 
-      <div className="flex gap-5 m-5">
+      <div className="flex gap-1.5 m-1.5">
         <Button icon={playBtnIcon} onClick={playPause} />
         <Button
           icon={volumeIcon}
@@ -53,6 +55,25 @@ export default function VideoEditor() {
           }}
           onClick={toggleMute}
         />
+        <Button text="00:00 / 00:00" outlined={true} />
+        <Button text="Add Clip" />
+        <Button icon="add" />
+        <Button icon="min2" />
+        <div className="ml-auto"></div>
+        <ButtonConnector>
+          <Button outlined={true}>
+            <div className="flex gap-1.5 items-center">
+              <Icon i="clips" wh={18} />
+              <span>0</span>
+            </div>
+
+            <div className="flex gap-1.5 items-center">
+              <Icon i="time" wh={18} />
+              <span>00:00</span>
+            </div>
+          </Button>
+          <Button icon="arrow" />
+        </ButtonConnector>
       </div>
     </div>
   );

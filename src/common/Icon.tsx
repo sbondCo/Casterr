@@ -42,7 +42,12 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
   };
 
   return (
-    <svg width={wh} height={wh} viewBox={icon.viewBox} className={`${className} ${dirClass()} transition-transform`}>
+    <svg
+      width={wh}
+      height={wh}
+      viewBox={icon.viewBox}
+      className={`${className || ""} ${dirClass() || ""} transition-transform`}
+    >
       {icon.el}
     </svg>
   );
