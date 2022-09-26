@@ -1,0 +1,111 @@
+.timeline {
+  @apply bg-secondary-100;
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+}
+.timeline .progressBar {
+  @apply bg-secondary-100;
+  height: 100%;
+}
+.timeline .progressBar .noUi-handle {
+  top: 0;
+  height: 40px;
+}
+.timeline .progressBar .noUi-tooltip {
+  transition: left 100ms ease-in;
+}
+.timeline .progressBar .noUi-pips {
+  top: 12px;
+  height: unset;
+  padding: unset;
+}
+.timeline .progressBar .noUi-pips .noUi-marker {
+  display: none;
+}
+.timeline .progressBar .noUi-pips .noUi-value {
+  transform: translateX(-50%);
+}
+.timeline .progressBar .noUi-pips .noUi-value:nth-child(2) {
+  transform: translateX(-10%);
+}
+.timeline .progressBar .noUi-pips .noUi-value:last-child {
+  transform: translateX(-90%);
+  margin-right: 1px;
+}
+.timeline .clipsBar {
+  position: relative;
+  top: -100%;
+  height: 100%;
+  background-color: transparent;
+}
+.timeline .clipsBar .noUi-origin:nth-child(even) .noUi-handle {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-right: unset;
+}
+.timeline .clipsBar .noUi-origin:nth-child(odd) .noUi-handle {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: unset;
+}
+.timeline .clipsBar .noUi-base {
+  pointer-events: none;
+}
+.timeline .clipsBar .noUi-draggable {
+  background-color: transparent;
+  border-radius: unset;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  top: 7px;
+  height: 25px;
+  pointer-events: all;
+}
+.timeline .clipsBar .noUi-handle {
+  top: 7px;
+  height: 25px;
+  border-radius: 0px;
+  pointer-events: all;
+}
+.timeline .clipsBar .noUi-tooltip {
+  display: none;
+  bottom: 165%;
+  pointer-events: none;
+}
+
+/* DEFAULT NOUISLIDER STYLING OVERRIDE */
+
+.noUi-target {
+  border: unset;
+  box-shadow: unset;
+  outline: unset;
+}
+
+.noUi-target * {
+  box-shadow: unset;
+  outline: unset;
+}
+
+.noUi-target .noUi-handle {
+  @apply bg-quaternary-100;
+  top: 0;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  cursor: grab;
+}
+
+.noUi-target .noUi-handle::before,
+.noUi-target .noUi-handle::after {
+  display: none;
+}
+
+.noUi-target .noUi-handle:active {
+  cursor: grabbing;
+}
+
+.noUi-target .noUi-tooltip {
+  @apply bg-quaternary-100 text-white-100;
+  /* color: $textPrimary; */
+  box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.1);
+}

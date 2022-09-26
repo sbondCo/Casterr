@@ -6,6 +6,8 @@ import PathHelper from "@/libs/helpers/pathHelper";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useEditor from "./useEditor";
+import "nouislider/dist/nouislider.min.css";
+import "./editor.css";
 
 export default function VideoEditor() {
   const location = useLocation();
@@ -27,19 +29,34 @@ export default function VideoEditor() {
   }
 
   let playerRef = useRef<HTMLVideoElement>(null);
-  const { playPause, playBtnIcon, volume, volumeIcon, updateVolume, toggleMute } = useEditor(playerRef);
+  let progressBarRef = useRef<HTMLDivElement>(null);
+  const {
+    playPause,
+    playBtnIcon,
+    volume,
+    volumeIcon,
+    updateVolume,
+    toggleMute,
+    videoTimeReadable,
+    toggleShowTimeAsElapsed
+  } = useEditor(playerRef, progressBarRef);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex gap-1.5 m-1.5">
+    <div className="flex flex-col gap-1.5 my-1.5">
+      <div className="flex gap-1.5 mx-1.5">
         <Button icon="arrow" iconDirection="left" />
         <TextBox value="" placeholder="name" className="w-full" onChange={() => {}} />
         <Button icon="close" />
       </div>
 
-      <video ref={playerRef} src={"secfile://" + videoPath} controls></video>
+      <video ref={playerRef} src={"secfile://" + videoPath} onClick={playPause}></video>
 
-      <div className="flex gap-1.5 m-1.5">
+      <div className="timeline">
+        <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
+        <div id="clipsBar" className="clipsBar"></div>
+      </div>
+
+      <div className="flex gap-1.5 mx-1.5">
         <Button icon={playBtnIcon} onClick={playPause} />
         <Button
           icon={volumeIcon}
@@ -55,7 +72,7 @@ export default function VideoEditor() {
           }}
           onClick={toggleMute}
         />
-        <Button text="00:00 / 00:00" outlined={true} />
+        <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" />
         <Button icon="add" />
         <Button icon="min2" />
