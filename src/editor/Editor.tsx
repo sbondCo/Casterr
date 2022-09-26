@@ -42,14 +42,19 @@ export default function VideoEditor() {
   } = useEditor(playerRef, progressBarRef);
 
   return (
-    <div className="flex flex-col gap-1.5 my-1.5">
+    <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
         <Button icon="arrow" iconDirection="left" />
         <TextBox value="" placeholder="name" className="w-full" onChange={() => {}} />
         <Button icon="close" />
       </div>
 
-      <video ref={playerRef} src={"secfile://" + videoPath} onClick={playPause}></video>
+      <video
+        className="flex-1 overflow-auto bg-[#000]"
+        ref={playerRef}
+        src={"secfile://" + videoPath}
+        onClick={playPause}
+      ></video>
 
       <div className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
@@ -89,7 +94,7 @@ export default function VideoEditor() {
               <span>00:00</span>
             </div>
           </Button>
-          <Button icon="arrow" />
+          <Button icon="arrow" disabled={true} />
         </ButtonConnector>
       </div>
     </div>

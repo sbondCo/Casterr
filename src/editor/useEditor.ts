@@ -106,7 +106,6 @@ export default function useEditor(
   const videoTimeUpdate = () => {
     setPlayerCurTime(player.currentTime);
     updateProgressBarTime();
-    console.log("videoTimeUpdate()", showTimeAsElapsed);
   };
 
   const currentVideoTime = () => player.currentTime || 0;
