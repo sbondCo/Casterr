@@ -473,6 +473,7 @@ export default function useEditor(
     numberOfClips,
     lengthOfClips,
     renderBtnDisabled,
+    addClip,
     playClips,
     isPlayingClips
   };

@@ -43,6 +43,7 @@ export default function VideoEditor() {
     numberOfClips,
     lengthOfClips,
     renderBtnDisabled,
+    addClip,
     playClips,
     isPlayingClips
   } = useEditor(playerRef, progressBarRef, clipsBarRef);
@@ -84,7 +85,7 @@ export default function VideoEditor() {
           onClick={toggleMute}
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
-        <Button text="Add Clip" />
+        <Button text="Add Clip" onClick={addClip} />
         <Button icon="add" />
         <Button icon="min2" />
         <div className="ml-auto"></div>
