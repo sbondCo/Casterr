@@ -30,6 +30,7 @@ export default function VideoEditor() {
 
   let playerRef = useRef<HTMLVideoElement>(null);
   let progressBarRef = useRef<HTMLDivElement>(null);
+  let clipsBarRef = useRef<HTMLDivElement>(null);
   const {
     playPause,
     playBtnIcon,
@@ -38,8 +39,13 @@ export default function VideoEditor() {
     updateVolume,
     toggleMute,
     videoTimeReadable,
-    toggleShowTimeAsElapsed
-  } = useEditor(playerRef, progressBarRef);
+    toggleShowTimeAsElapsed,
+    numberOfClips,
+    lengthOfClips,
+    renderBtnDisabled,
+    playClips,
+    isPlayingClips
+  } = useEditor(playerRef, progressBarRef, clipsBarRef);
 
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
@@ -58,7 +64,7 @@ export default function VideoEditor() {
 
       <div className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
-        <div id="clipsBar" className="clipsBar"></div>
+        <div ref={clipsBarRef} id="clipsBar" className="clipsBar"></div>
       </div>
 
       <div className="flex gap-1.5 mx-1.5">
@@ -83,18 +89,24 @@ export default function VideoEditor() {
         <Button icon="min2" />
         <div className="ml-auto"></div>
         <ButtonConnector>
-          <Button outlined={true}>
+          <Button outlined={true} onClick={playClips} className="relative">
+            {isPlayingClips && (
+              <div className="flex left-0 top-0 items-center justify-center absolute w-full h-full bg-primary-100 bg-opacity-90">
+                <Icon i="pause" wh={16} />
+              </div>
+            )}
+
             <div className="flex gap-1.5 items-center">
               <Icon i="clips" wh={18} />
-              <span>0</span>
+              <span>{numberOfClips}</span>
             </div>
 
             <div className="flex gap-1.5 items-center">
               <Icon i="time" wh={18} />
-              <span>00:00</span>
+              <span>{lengthOfClips.toReadableTimeFromSeconds()}</span>
             </div>
           </Button>
-          <Button icon="arrow" disabled={true} />
+          <Button icon="arrow" disabled={renderBtnDisabled} />
         </ButtonConnector>
       </div>
     </div>
