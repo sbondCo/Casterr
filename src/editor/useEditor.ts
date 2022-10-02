@@ -3,6 +3,7 @@ import noUiSlider, { PipsMode, target } from "nouislider";
 
 export default function useEditor(
   playerRef: React.RefObject<HTMLVideoElement>,
+  timelineRef: React.RefObject<HTMLDivElement>,
   progressBarRef: React.RefObject<HTMLDivElement>,
   clipsBarRef: React.RefObject<HTMLDivElement>
 ) {
@@ -16,15 +17,18 @@ export default function useEditor(
   const [lengthOfClips, setLengthOfClips] = useState<number>(0);
   const [renderBtnDisabled, setRenderBtnDisabled] = useState<boolean>(true);
   const [isPlayingClips, setIsPlayingClips] = useState<boolean>(false); // Setting this to false will ensure clip playing stops
+  const [timelineZoom, setTimelineZoom] = useState<number>(100);
 
   let player = playerRef.current!;
+  let timeline = timelineRef.current!;
   let progressBar = progressBarRef.current! as target;
   let clipsBar = clipsBarRef.current! as target;
 
   useEffect(() => {
     player = playerRef.current!;
+    timeline = timelineRef.current!;
     progressBar = progressBarRef.current!;
-    clipsBar = clipsBarRef.current! as target;
+    clipsBar = clipsBarRef.current!;
 
     if (player && progressBar) {
       player.addEventListener("loadedmetadata", videoLoaded);
@@ -58,10 +62,19 @@ export default function useEditor(
     }
   }, [isPlayingClips]);
 
+  useEffect(() => {
+    timeline.addEventListener("wheel", timelineWheel);
+
+    return () => {
+      timeline.removeEventListener("wheel", timelineWheel);
+    };
+  }, [timelineZoom]);
+
   /**
    * EV HANDLER
    */
   const videoLoaded = () => {
+    console.log("VIDEO LOADED");
     // TODO volume should be stored in state (settings?) and restored - volume being reset to default when looking at diff clips is not nice
     updateVolume(0.8); // Set default volume and icon
 
@@ -120,6 +133,30 @@ export default function useEditor(
   };
 
   /**
+   * Timeline wheel event handler.
+   */
+  const timelineWheel = (e: WheelEvent) => {
+    const wheelUp = e.deltaY < 0;
+
+    // If holding control, adjust zoom instead of scrolling
+    if (e.ctrlKey) {
+      if (wheelUp) {
+        adjustZoom(true);
+      } else {
+        adjustZoom(false);
+      }
+
+      return;
+    }
+
+    if (wheelUp) {
+      timeline.scrollBy(-50, 0);
+    } else {
+      timeline.scrollBy(50, 0);
+    }
+  };
+
+  /**
    * (Re)create clips bar with events.
    * @param starts Starts for slider. If set to an empty array, clipsBar is just destroyed.
    * @param connects Connects for slider.
@@ -130,6 +167,7 @@ export default function useEditor(
     if (clipsBar.noUiSlider) clipsBar.noUiSlider.destroy();
 
     if (starts.length > 0) {
+      console.log("createClipsBar", starts, connects, tooltips);
       // Create new clipsBar with passed args
       noUiSlider.create(clipsBar, {
         start: starts,
@@ -461,6 +499,40 @@ export default function useEditor(
     }
   };
 
+  /**
+   * Adjust zoom up or down.
+   * @param increase If should increase or decrease zoom.
+   */
+  const adjustZoom = (increase: boolean) => {
+    const min = 100;
+    const max = 1000;
+    let newZoom;
+
+    // Increase/decrease `timelineZoom`
+    if (increase && timelineZoom != max) {
+      newZoom = timelineZoom + 50;
+      setTimelineZoom(newZoom);
+    } else if (!increase && timelineZoom != min) {
+      newZoom = timelineZoom - 50;
+      setTimelineZoom(newZoom);
+    }
+
+    console.log(increase, newZoom, timelineZoom);
+
+    if (newZoom) {
+      // Adjust width of bars
+      progressBar.style.width = `${newZoom}%`;
+      clipsBar.style.width = `${newZoom}%`;
+
+      // Add/remove `zoomed` class on progressBar
+      if (newZoom > min) {
+        timeline.classList.add("zoomed");
+      } else {
+        timeline.classList.remove("zoomed");
+      }
+    }
+  };
+
   return {
     playBtnIcon,
     playPause,
@@ -475,6 +547,7 @@ export default function useEditor(
     renderBtnDisabled,
     addClip,
     playClips,
-    isPlayingClips
+    isPlayingClips,
+    adjustZoom
   };
 }

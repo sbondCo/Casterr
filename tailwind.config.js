@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     colors: {
       primary: {
@@ -12,7 +12,8 @@ module.exports = {
         100: "#333440"
       },
       quaternary: {
-        100: "#1e1e25"
+        100: "#1e1e25",
+        200: "#19181f" // old darkAccentColor
       },
       white: {
         100: "#e1e1e1",

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useEditor from "./useEditor";
 import "nouislider/dist/nouislider.min.css";
-import "./editor.css";
+import "./editor.scss";
 
 export default function VideoEditor() {
   const location = useLocation();
@@ -29,6 +29,7 @@ export default function VideoEditor() {
   }
 
   let playerRef = useRef<HTMLVideoElement>(null);
+  let timelineRef = useRef<HTMLDivElement>(null);
   let progressBarRef = useRef<HTMLDivElement>(null);
   let clipsBarRef = useRef<HTMLDivElement>(null);
   const {
@@ -45,8 +46,9 @@ export default function VideoEditor() {
     renderBtnDisabled,
     addClip,
     playClips,
-    isPlayingClips
-  } = useEditor(playerRef, progressBarRef, clipsBarRef);
+    isPlayingClips,
+    adjustZoom
+  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef);
 
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
@@ -63,7 +65,7 @@ export default function VideoEditor() {
         onClick={playPause}
       ></video>
 
-      <div className="timeline">
+      <div ref={timelineRef} className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
         <div ref={clipsBarRef} id="clipsBar" className="clipsBar"></div>
       </div>
@@ -86,8 +88,8 @@ export default function VideoEditor() {
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" onClick={addClip} />
-        <Button icon="add" />
-        <Button icon="min2" />
+        <Button icon="add" onClick={() => adjustZoom(true)} />
+        <Button icon="min2" onClick={() => adjustZoom(false)} />
         <div className="ml-auto"></div>
         <ButtonConnector>
           <Button outlined={true} onClick={playClips} className="relative">
