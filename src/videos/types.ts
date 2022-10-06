@@ -10,5 +10,5 @@ export interface Video {
   fileSize?: number;
   fps?: string;
   duration?: number;
-  // isClip: boolean;
+  isClip: boolean;
 }

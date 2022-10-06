@@ -8,21 +8,23 @@ import { useNavigate, useLocation } from "react-router-dom";
 import useEditor from "./useEditor";
 import "nouislider/dist/nouislider.min.css";
 import "./editor.scss";
+import { Video } from "@/videos/types";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
   const location = useLocation();
-  const videoPath = location.state as string;
+  const video = location.state as Video;
 
-  if (!videoPath) console.error("TODO: No Video Path in state, return to home or show error");
+  if (!video.videoPath) console.error("TODO: No Video Path in state, return to home or show error");
 
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    PathHelper.exists(videoPath).then((v) => {
+    PathHelper.exists(video.videoPath).then((v) => {
       if (!v) setError("Video file does not exist!");
     });
-  }, [videoPath]);
+  }, [video.videoPath]);
 
   // TODO add to below return so we can still show top bar with back/delete btns
   if (error) {
@@ -54,15 +56,23 @@ export default function VideoEditor() {
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
+        <span>{video.isClip ? "true" : "false"}</span>
         <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
-        <TextBox value="" placeholder="name" className="w-full" onChange={() => {}} />
+        <TextBox
+          value={video.name}
+          placeholder="Name"
+          className="w-full"
+          onChange={(newName) => {
+            RecordingsManager.rename(video.videoPath, newName, video.isClip);
+          }}
+        />
         <Button icon="close" />
       </div>
 
       <video
         className="flex-1 overflow-auto bg-[#000]"
         ref={playerRef}
-        src={"secfile://" + videoPath}
+        src={"secfile://" + video.videoPath}
         onClick={playPause}
       ></video>
 

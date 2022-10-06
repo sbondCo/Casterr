@@ -5,15 +5,7 @@ import path from "path";
 import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
-
-export interface Recording {
-  name: string;
-  videoPath: string;
-  thumbPath: string | undefined;
-  fileSize: number | undefined;
-  fps: string | undefined;
-  duration: number | undefined;
-}
+import { Video } from "@/videos/types";
 
 export default class RecordingsManager {
   /**
@@ -21,7 +13,7 @@ export default class RecordingsManager {
    * @param clips If should fetch clips, instead of recordings.
    * @returns All recordings | clips.
    */
-  public static async get(clips: boolean = false): Promise<Array<Recording>> {
+  public static async get(clips: boolean = false): Promise<Array<Video>> {
     return (await this.getVideos(clips)).reverse();
   }
 
@@ -35,7 +27,7 @@ export default class RecordingsManager {
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
     const ffprobe = new FFmpeg("ffprobe");
-    const recording = {} as Recording;
+    const recording = {} as Video;
 
     recording.name = path.basename(videoPath);
     recording.videoPath = videoPath;
@@ -253,7 +245,7 @@ export default class RecordingsManager {
    * @returns All videos from specified file.
    */
   private static async getVideos(clips: boolean) {
-    const videos = new Array<Recording>();
+    const videos = new Array<Video>();
 
     // Get all videos from appropriate json file
     const data = fs.readFileSync(await this.getVideoFile(clips), "utf8");

@@ -19,7 +19,7 @@ export default function VideosGrid({ type }: { type: "recordings" | "clips" }) {
         return (
           <Link
             to="/editor"
-            state={v.videoPath}
+            state={v}
             key={v.videoPath}
             className="group flex-grow basis-[100%] md:basis-[40%] lg:basis-[30%] w-3/12 h-64 relative rounded-md overflow-hidden cursor-pointer"
           >
