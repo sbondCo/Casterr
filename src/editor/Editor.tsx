@@ -4,12 +4,13 @@ import Icon from "@/common/Icon";
 import TextBox from "@/common/TextBox";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useEditor from "./useEditor";
 import "nouislider/dist/nouislider.min.css";
 import "./editor.scss";
 
 export default function VideoEditor() {
+  const navigate = useNavigate();
   const location = useLocation();
   const videoPath = location.state as string;
 
@@ -53,7 +54,7 @@ export default function VideoEditor() {
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
-        <Button icon="arrow" iconDirection="left" />
+        <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
         <TextBox value="" placeholder="name" className="w-full" onChange={() => {}} />
         <Button icon="close" />
       </div>
