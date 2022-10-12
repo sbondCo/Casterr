@@ -56,7 +56,6 @@ export default function VideoEditor() {
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
-        <span>{video.isClip ? "true" : "false"}</span>
         <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
         <TextBox
           value={video.name}

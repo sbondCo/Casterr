@@ -255,7 +255,12 @@ export default class RecordingsManager {
     // before writing to it, we need to prepare the data in the file before it is parsable JSON.
     // 1. Make into array by wrapping [square brackets] around it.
     // 2. If last letter in data is a ',' then remove it.
-    Object.assign(videos, JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`));
+    Object.assign(
+      videos,
+      (JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`) as Video[]).map((v) => {
+        return { ...v, isClip: clips };
+      })
+    );
 
     return videos;
   }
