@@ -6,7 +6,11 @@ const videosSlice = createSlice({
   initialState: { recordings: [], clips: [] } as VideosState,
   reducers: {
     videoAdded: (state, action: PayloadAction<Video>) => {
-      // state.videos.push(...action.payload);
+      if (action.payload.isClip) {
+        state.clips.push(action.payload);
+      } else {
+        state.recordings.push(action.payload);
+      }
     },
     videoRenamed: (state, action: PayloadAction<{ videoPath: string; newName: string }>) => {
       state.recordings = state.recordings.map((v) => {
