@@ -10,11 +10,14 @@ import "nouislider/dist/nouislider.min.css";
 import "./editor.scss";
 import { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
+import { useDispatch } from "react-redux";
+import { videoRenamed } from "@/videos/videosSlice";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
   const location = useLocation();
   const video = location.state as Video;
+  const dispatch = useDispatch();
 
   if (!video.videoPath) console.error("TODO: No Video Path in state, return to home or show error");
 
@@ -62,7 +65,8 @@ export default function VideoEditor() {
           placeholder="Name"
           className="w-full"
           onChange={(newName) => {
-            RecordingsManager.rename(video.videoPath, newName, video.isClip);
+            console.log("Changing video name to:", newName);
+            dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName }));
           }}
         />
         <Button icon="close" />

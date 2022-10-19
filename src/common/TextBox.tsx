@@ -28,8 +28,8 @@ export default function TextBox(props: TextBoxProps) {
   // from onBlur event (e.target.value), which returns as only string.
   // So no point having union type to include numbers as well.
   const callOnChangeCallback = (newVal: string) => {
-    if (type === "text") onChange(newVal);
-    else if (type === "number") onChange(Number(newVal));
+    if (type === "number") onChange(Number(newVal));
+    else onChange(newVal);
   };
 
   const selectFolder = () => {

@@ -26,6 +26,20 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       });
     }
 
+    if (action.type.includes("videos/")) {
+      console.log("Video state changed, writing changes to file.");
+      if (action.type.includes("videos/videoAdded")) {
+        // Actions where should append to file instead of replace all
+        fs.appendFile(await PathHelper.getFile("recordings"), RecordingsManager.toWritingReady(action.payload, true));
+      } else {
+        // Default to replace file
+        fs.writeFile(
+          await PathHelper.getFile("recordings"),
+          RecordingsManager.toWritingReady(store.getState().videos.recordings, false)
+        );
+      }
+    }
+
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.
     return returnValue;

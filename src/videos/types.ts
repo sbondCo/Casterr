@@ -6,9 +6,10 @@ export interface VideosState {
 export interface Video {
   name: string;
   videoPath: string;
+  isClip: boolean;
+  time?: number;
   thumbPath?: string;
   fileSize?: number;
   fps?: string;
   duration?: number;
-  isClip: boolean;
 }

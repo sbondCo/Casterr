@@ -6,17 +6,9 @@ import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
 import { Video } from "@/videos/types";
+import { selectVideos, videoAdded, videoRenamed } from "@/videos/videosSlice";
 
 export default class RecordingsManager {
-  /**
-   * Get all user's past recordings in order ready for viewing.
-   * @param clips If should fetch clips, instead of recordings.
-   * @returns All recordings | clips.
-   */
-  public static async get(clips: boolean = false): Promise<Array<Video>> {
-    return (await this.getVideos(clips)).reverse();
-  }
-
   /**
    * Add video to user's recordings file.
    * @param videoPath Path to video that should be added.
@@ -33,6 +25,7 @@ export default class RecordingsManager {
     recording.videoPath = videoPath;
     recording.thumbPath = await this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
+    recording.time = Date.now();
 
     // Get video info from ffprobe
     ffprobe.run(
@@ -66,13 +59,7 @@ export default class RecordingsManager {
               }
             });
 
-          // Append recording to recordings file
-          // JSON string is appended with a ',' at the end. If you are going to use
-          // the data in this file, always remove the last letter (the ',') first.
-          // This is done so that we don't have to read the whole file first to append it properly.
-          fs.appendFile(await this.getVideoFile(isClip), this.toWritingReady(recording), (err: any) => {
-            if (err) throw err;
-          });
+          store.dispatch(videoAdded(recording));
         }
       }
     );
@@ -85,25 +72,22 @@ export default class RecordingsManager {
    * @param removeFromDisk If should also remove from disk.
    */
   public static async delete(videoPath: string, isClip: boolean, removeFromDisk: boolean = false) {
-    let videos = await this.getVideos(isClip);
-    const vidIdx = videos.findIndex((e) => e.videoPath == videoPath);
-    const video = videos[vidIdx];
-
-    if (video?.videoPath) {
-      // Delete video file from disk
-      if (removeFromDisk) {
-        if (video.videoPath) fs.rmSync(video.videoPath, { force: true });
-        if (video.thumbPath) fs.rmSync(video.thumbPath, { force: true });
-      }
-
-      // Remove video from videos array
-      videos = videos.filter((e) => e.videoPath !== video.videoPath);
-
-      // Rewrite video file
-      fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
-        if (err) throw err;
-      });
-    }
+    // let videos = await this.getVideos(isClip);
+    // const vidIdx = videos.findIndex((e) => e.videoPath == videoPath);
+    // const video = videos[vidIdx];
+    // if (video?.videoPath) {
+    //   // Delete video file from disk
+    //   if (removeFromDisk) {
+    //     if (video.videoPath) fs.rmSync(video.videoPath, { force: true });
+    //     if (video.thumbPath) fs.rmSync(video.thumbPath, { force: true });
+    //   }
+    //   // Remove video from videos array
+    //   videos = videos.filter((e) => e.videoPath !== video.videoPath);
+    //   // Rewrite video file
+    //   fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+    //     if (err) throw err;
+    //   });
+    // }
   }
 
   /**
@@ -202,16 +186,16 @@ export default class RecordingsManager {
    * @param isClip If video is a clip.
    */
   public static async rename(videoPath: string, to: string, isClip: boolean) {
-    const videos = await this.getVideos(isClip);
-    const video = videos.find((v) => v.videoPath == videoPath);
-
-    if (!video) throw new Error("Couldn't find video to rename.");
-
-    video.name = to;
-
-    fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
-      if (err) throw err;
-    });
+    // const videos = await this.getVideos(isClip);
+    // const video = videos.find((v) => v.videoPath == videoPath);
+    // const videos = selectVideos(store.getState().videos, isClip);
+    // const video = videos.find((v) => v.videoPath == videoPath);
+    // if (!video) throw new Error("Couldn't find video to rename.");
+    // video.name = to;
+    // fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
+    // if (err) throw err;
+    // store.dispatch(videoRenamed({ videoPath: videoPath, newName: to }));
+    // });
   }
 
   /**
@@ -220,7 +204,7 @@ export default class RecordingsManager {
    * @param forAppending If get ready for appending and not replacing the file.
    * @returns Same object, but ready for writing to video file.
    */
-  private static toWritingReady(obj: Object, forAppending: boolean = true) {
+  public static toWritingReady(obj: Video | Video[], forAppending: boolean = true) {
     let w = JSON.stringify(obj);
 
     if (!forAppending) {
@@ -231,20 +215,12 @@ export default class RecordingsManager {
   }
 
   /**
-   * Get correct video file name.
-   * @param clips If should get clips file.
-   * @returns Name of file including videos.
-   */
-  private static getVideoFile(clips: boolean) {
-    return PathHelper.getFile(clips ? "clips" : "recordings");
-  }
-
-  /**
    * Read and return videos from file.
+   * Only used by store to get videos for rehydration.
    * @param clips If should return clips instead of recordings.
    * @returns All videos from specified file.
    */
-  private static async getVideos(clips: boolean) {
+  public static async get(clips: boolean) {
     const videos = new Array<Video>();
 
     // Get all videos from appropriate json file
@@ -263,5 +239,14 @@ export default class RecordingsManager {
     );
 
     return videos;
+  }
+
+  /**
+   * Get correct video file name.
+   * @param clips If should get clips file.
+   * @returns Name of file including videos.
+   */
+  private static getVideoFile(clips: boolean) {
+    return PathHelper.getFile(clips ? "clips" : "recordings");
   }
 }
