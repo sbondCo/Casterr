@@ -20,12 +20,13 @@ export default class Recorder {
         return;
       }
 
+      store.dispatch(isRecording(true));
+
       // Create args from user's settings
       this.args = await ArgumentBuilder.createArgs();
       console.log("Recorder.Start Args:", this.args);
 
       await this.ffmpeg.run(this.args.args, "onOpen");
-      store.dispatch(isRecording(true));
 
       // Notifications.desktop("Started Recording", "play");
     } catch (err) {

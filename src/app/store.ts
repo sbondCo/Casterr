@@ -6,6 +6,8 @@ import PathHelper from "@/libs/helpers/pathHelper";
 import { promises as fs } from "fs";
 import { DEFAULT_SETTINGS } from "./constants";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
+import File from "@/libs/helpers/file";
+import { Video } from "@/videos/types";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
@@ -66,15 +68,23 @@ const rehydrated = async () => {
       console.error("Couldn't restore settings:", err);
     }
 
+    const readVideoFile = async (clips: boolean): Promise<Video[]> => {
+      return (
+        (await File.readContinuousJsonFile(await PathHelper.getFile(clips ? "clips" : "recordings"))) as Video[]
+      ).map((v) => {
+        return { ...v, isClip: clips };
+      });
+    };
+
     try {
-      const recordings = await RecordingsManager.get(false);
+      const recordings = await readVideoFile(false);
       if (recordings && recordings.length > 0) Object.assign(reh.videos.recordings, recordings);
     } catch (err) {
       console.error("Couldn't restore past recordings:", err);
     }
 
     try {
-      const clips = await RecordingsManager.get(true);
+      const clips = await readVideoFile(true);
       if (clips && clips.length > 0) Object.assign(reh.videos.clips, clips);
     } catch (err) {
       console.error("Couldn't restore clips:", err);

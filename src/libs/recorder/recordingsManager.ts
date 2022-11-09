@@ -6,7 +6,7 @@ import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
 import { Video } from "@/videos/types";
-import { selectVideos, videoAdded, videoRenamed } from "@/videos/videosSlice";
+import { videoAdded } from "@/videos/videosSlice";
 
 export default class RecordingsManager {
   /**
@@ -180,25 +180,6 @@ export default class RecordingsManager {
   }
 
   /**
-   * Rename a video and update it in the correct video file.
-   * @param videoPath Path to video. Used to search for correct video.
-   * @param to What to rename video to.
-   * @param isClip If video is a clip.
-   */
-  public static async rename(videoPath: string, to: string, isClip: boolean) {
-    // const videos = await this.getVideos(isClip);
-    // const video = videos.find((v) => v.videoPath == videoPath);
-    // const videos = selectVideos(store.getState().videos, isClip);
-    // const video = videos.find((v) => v.videoPath == videoPath);
-    // if (!video) throw new Error("Couldn't find video to rename.");
-    // video.name = to;
-    // fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
-    // if (err) throw err;
-    // store.dispatch(videoRenamed({ videoPath: videoPath, newName: to }));
-    // });
-  }
-
-  /**
    * Get JSON object ready for writing to a video file.
    * @param obj Video(s) object to write to file.
    * @param forAppending If get ready for appending and not replacing the file.
@@ -212,41 +193,5 @@ export default class RecordingsManager {
     }
 
     return `${w},`;
-  }
-
-  /**
-   * Read and return videos from file.
-   * Only used by store to get videos for rehydration.
-   * @param clips If should return clips instead of recordings.
-   * @returns All videos from specified file.
-   */
-  public static async get(clips: boolean) {
-    const videos = new Array<Video>();
-
-    // Get all videos from appropriate json file
-    const data = fs.readFileSync(await this.getVideoFile(clips), "utf8");
-
-    // Parse JSON from file and assign it to recordings variable.
-    // Because it is stored in a way so that we don't have to read the file
-    // before writing to it, we need to prepare the data in the file before it is parsable JSON.
-    // 1. Make into array by wrapping [square brackets] around it.
-    // 2. If last letter in data is a ',' then remove it.
-    Object.assign(
-      videos,
-      (JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`) as Video[]).map((v) => {
-        return { ...v, isClip: clips };
-      })
-    );
-
-    return videos;
-  }
-
-  /**
-   * Get correct video file name.
-   * @param clips If should get clips file.
-   * @returns Name of file including videos.
-   */
-  private static getVideoFile(clips: boolean) {
-    return PathHelper.getFile(clips ? "clips" : "recordings");
   }
 }

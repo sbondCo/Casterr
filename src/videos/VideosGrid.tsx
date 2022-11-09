@@ -5,7 +5,7 @@ import VideosGridItem from "./VideosGridItem";
 
 export default function VideosGrid({ type }: { type: "recordings" | "clips" }) {
   const state = useSelector((store: RootState) => store.videos);
-  const videos = type === "clips" ? state.clips : state.recordings;
+  const videos = type === "clips" ? [...state.clips] : [...state.recordings];
   videos.sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
 
   // TODO only render videos being looked at / infinity scroll not loading all at once but when scrolled to bottom

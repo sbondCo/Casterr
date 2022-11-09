@@ -3,8 +3,6 @@ import { AudioDevice } from "@/libs/recorder/deviceManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Page, MonitorToRecord } from "./types";
 
-// TODO: save settings state to file when updated
-
 const settingsSlice = createSlice({
   name: "settings",
   initialState: DEFAULT_SETTINGS,
