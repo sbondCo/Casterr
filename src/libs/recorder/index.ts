@@ -26,9 +26,10 @@ export default class Recorder {
       this.args = await ArgumentBuilder.createArgs();
       console.log("Recorder.Start Args:", this.args);
 
+      // Start the recording
       await this.ffmpeg.run(this.args.args, "onOpen");
 
-      // Notifications.desktop("Started Recording", "play");
+      Notifications.desktop("Started Recording", "play");
     } catch (err) {
       console.error("Couldn't start recording:", err);
       store.dispatch(isRecording(false));

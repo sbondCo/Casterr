@@ -82,7 +82,7 @@ function registerChannels(win: BrowserWindow) {
       width: 400,
       height: 80,
       x: screenWithCursor.bounds.x + screenWithCursor.bounds.width / 2 - 400 / 2, // Middle of screen horizontally
-      y: 50,
+      y: screenWithCursor.bounds.y + 50,
       frame: false,
       skipTaskbar: true,
       alwaysOnTop: true,
