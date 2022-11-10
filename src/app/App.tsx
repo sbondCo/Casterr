@@ -5,6 +5,9 @@ import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import DesktopNotification from "@/common/DesktopNotification";
 import React, { Suspense } from "react";
+import Popup from "@/common/Popup";
+import Notifications from "@/libs/helpers/notifications";
+import Init from "./Init";
 
 export default function App() {
   const Videos = React.lazy(() => import("@/videos"));
@@ -23,6 +26,7 @@ export default function App() {
         <Router>
           {!isDNotifRoute && (
             <>
+              <Init />
               <Dragger />
               <Nav />
             </>

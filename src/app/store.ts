@@ -1,4 +1,5 @@
 import { AnyAction, configureStore, Dispatch } from "@reduxjs/toolkit";
+import appSlice from "./appSlice";
 import videosSlice from "@/videos/videosSlice";
 import settingsSlice from "@/settings/settingsSlice";
 import recorderSlice from "@/libs/recorder/recorderSlice";
@@ -104,6 +105,7 @@ const rehydrated = async () => {
 
 export const store = configureStore({
   reducer: {
+    app: appSlice,
     videos: videosSlice,
     settings: settingsSlice,
     recorder: recorderSlice
