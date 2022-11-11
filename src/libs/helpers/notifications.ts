@@ -1,4 +1,4 @@
-import { popupCreated } from "@/app/appSlice";
+import { popupCreated, popupRemoved } from "@/app/appSlice";
 import { store } from "@/app/store";
 import { ipcRenderer } from "electron";
 
@@ -74,9 +74,11 @@ export default class Notifications {
 
   /**
    * Delete existing popup notification.
-   * @param name Name of notification.
+   * @param id Id of notification.
    */
-  public static deletePopup(name: string) {}
+  public static rmPopup(id: string | number) {
+    store.dispatch(popupRemoved(id));
+  }
 
   /**
    * Create custom desktop notification.

@@ -20,10 +20,16 @@ const appSlice = createSlice({
           return p;
         });
       }
+    },
+    /**
+     * Remove popup from state. Accepts popup id.
+     */
+    popupRemoved: (state, action: PayloadAction<string | number>) => {
+      state.popups = state.popups.filter((p) => p.id !== action.payload);
     }
   }
 });
 
-export const { popupCreated } = appSlice.actions;
+export const { popupCreated, popupRemoved } = appSlice.actions;
 
 export default appSlice.reducer;
