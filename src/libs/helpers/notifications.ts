@@ -1,11 +1,19 @@
 import { popupCreated } from "@/app/appSlice";
 import { store } from "@/app/store";
-import Popup from "@/common/Popup";
 import { ipcRenderer } from "electron";
-import React from "react";
-import { createRoot } from "react-dom/client";
 
 export interface PopupOptions {
+  /**
+   * Purely used for locating the popup in state array.
+   * Import so we can locate it for updating.
+   *
+   * DO **NOT** INCLUDE SPACES. We can trust ourselves right?
+   */
+  id: string | number;
+
+  /**
+   * Popup title/header to be shown.
+   */
   title: string;
 
   /**
@@ -51,23 +59,24 @@ export default class Notifications {
    * @param options Optional popup options for things such as displaying button, percentage, etc.
    * @returns
    */
-  public static popup(options: PopupOptions) {
-    store.dispatch(popupCreated(options));
+  public static popup(opts: PopupOptions) {
+    store.dispatch(popupCreated(opts));
+
+    return new Promise((resolve, reject) => {
+      const listnr = ((ev: CustomEvent) => {
+        document.removeEventListener(`${opts.id}-el-clicked`, listnr);
+        resolve({ action: ev.detail.elClicked, tickBoxesChecked: ev.detail.tickBoxesChecked });
+      }) as EventListener;
+
+      document.addEventListener(`${opts.id}-el-clicked`, listnr);
+    });
   }
 
   /**
    * Delete existing popup notification.
    * @param name Name of notification.
    */
-  public static deletePopup(name: string) {
-    // // Get Notifier from activeNotifs map
-    // const i = this.activePopups.get(name);
-    // // Cleanup component and remove from DOM
-    // i?.$destroy();
-    // i?.$el.remove();
-    // // Delete from activeNotifcs
-    // this.activePopups.delete(name);
-  }
+  public static deletePopup(name: string) {}
 
   /**
    * Create custom desktop notification.

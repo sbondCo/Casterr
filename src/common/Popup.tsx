@@ -15,14 +15,25 @@ export default function Popup(props: PopupProps) {
 
   const [tbc, setTbc] = useState<string[]>([]);
 
+  const elClicked = (el: string) => {
+    document.dispatchEvent(
+      new CustomEvent(`${props.id}-el-clicked`, {
+        detail: { elClicked: el, tickBoxesChecked: tbc }
+      })
+    );
+  };
+
   return (
-    <div className="flex flex-col gap-5 justify-center items-center relative min-w-[500px] min-h-[150px] px-4 py-5 bg-quaternary-100 rounded-xl">
+    <div
+      id={`${props.id}`}
+      className="flex flex-col gap-5 justify-center items-center relative min-w-[500px] min-h-[150px] px-4 py-5 bg-quaternary-100 rounded-xl"
+    >
       {showCancel && (
         <Icon
-          className="absolute top-3 right-3 text-white-100 transition-all cursor-pointer hover:text-white-50"
+          className="absolute top-3 right-3 text-white-100 cursor-pointer hover:text-white-50"
           i="close"
           wh={16}
-          onClick={() => console.log("p")}
+          onClick={() => elClicked("cancel")}
         />
       )}
       <span className="p-1.5 text-xl font-bold capitalize">{title}</span>
@@ -50,7 +61,7 @@ export default function Popup(props: PopupProps) {
       {buttons && buttons.length > 0 && (
         <div className="flex flex-row gap-3 justify-center items-center">
           {buttons.map((b) => (
-            <Button key={b} text={b} />
+            <Button key={b} text={b} onClick={() => elClicked(b)} />
           ))}
         </div>
       )}
