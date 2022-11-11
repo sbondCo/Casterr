@@ -9,6 +9,7 @@ interface IconProps {
   direction?: IconDirection;
 
   className?: string;
+  onClick?: () => void;
 }
 
 export type Icons =
@@ -32,7 +33,7 @@ export type Icons =
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
-export default function Icon({ i, wh = 24, direction, className }: IconProps) {
+export default function Icon({ i, wh = 24, direction, className, onClick }: IconProps) {
   const icon = getIcon(i);
 
   const dirClass = () => {
@@ -47,6 +48,7 @@ export default function Icon({ i, wh = 24, direction, className }: IconProps) {
       height={wh}
       viewBox={icon.viewBox}
       className={`${className || ""} ${dirClass() || ""} transition-transform`}
+      onClick={onClick}
     >
       {icon.el}
     </svg>

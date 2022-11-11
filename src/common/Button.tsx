@@ -31,7 +31,7 @@ export default function Button(props: ButtonProps) {
       onMouseLeave={() => setSliderClasses(sliderClosedClasses)}
       disabled={disabled}
     >
-      <div onClick={onClick} className="flex">
+      <div onClick={onClick} className="flex capitalize">
         {icon && <Icon i={icon} direction={iconDirection} wh={20} className={text && "mr-2"} />}
         {text && <span className="text-sm">{text}</span>}
         {children && <div className="flex gap-3 text-sm">{children}</div>}
