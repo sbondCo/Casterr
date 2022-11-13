@@ -59,7 +59,7 @@ export default class Notifications {
    * @param options Optional popup options for things such as displaying button, percentage, etc.
    * @returns
    */
-  public static popup(opts: PopupOptions) {
+  public static popup(opts: PopupOptions): Promise<{ action: string; tickBoxesChecked: string[] }> {
     store.dispatch(popupCreated(opts));
 
     return new Promise((resolve, reject) => {

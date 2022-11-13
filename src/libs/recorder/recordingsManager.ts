@@ -127,23 +127,25 @@ export default class RecordingsManager {
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
     const popupName = "clipVideo";
 
-    Notifications.popup(popupName, "Clipping Your Video", { loader: true, showCancel: true }).then((popup) => {
-      if (popup.action == "cancel") {
-        Notifications.popup(popupName, "Cancelling Processing Of Your Video");
+    Notifications.popup({ id: popupName, title: "Clipping Your Video", loader: true, showCancel: true }).then(
+      (popup) => {
+        if (popup.action == "cancel") {
+          Notifications.popup({ id: popupName, title: "Cancelling Processing Of Your Video" });
 
-        // Stop ffmpeg and destroy manifestStream
-        ffmpeg.kill();
-        manifestStream.destroy();
+          // Stop ffmpeg and destroy manifestStream
+          ffmpeg.kill();
+          manifestStream.destroy();
 
-        // Remove associated files/folders if they exist
-        PathHelper.removeDir(tmpOutFolder);
-        PathHelper.removeFile(clipOutPath);
+          // Remove associated files/folders if they exist
+          PathHelper.removeDir(tmpOutFolder);
+          PathHelper.removeFile(clipOutPath);
 
-        // When FFmpeg is closed, popup is also deleted below, but FFmpeg won't always
-        // be open when user is cancelling so also delete it here just incase.
-        Notifications.deletePopup(popupName);
+          // When FFmpeg is closed, popup is also deleted below, but FFmpeg won't always
+          // be open when user is cancelling so also delete it here just incase.
+          Notifications.rmPopup(popupName);
+        }
       }
-    });
+    );
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
@@ -170,7 +172,7 @@ export default class RecordingsManager {
         onExitCallback: () => {
           // Remove temp dir and files inside it
           PathHelper.removeDir(tmpOutFolder);
-          Notifications.deletePopup(popupName);
+          Notifications.rmPopup(popupName);
 
           // Add clip to clips file
           this.add(clipOutPath, true);
