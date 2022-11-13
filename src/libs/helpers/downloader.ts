@@ -28,7 +28,7 @@ export default class Downloader {
    * @param uri URI to download file from
    * @param dest Destination path for downloaded file
    */
-  public get(uri: string, dest: string, callback?: (percentage: string) => void) {
+  public get(uri: string, dest: string, callback?: (percentage: number) => void) {
     return new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
       const reqOptions: RequestOptions = {
@@ -51,7 +51,7 @@ export default class Downloader {
           chunksCompleted += chunk.length;
 
           // Call callback function if its set and pass percentage to it
-          if (callback != undefined) callback(((100.0 * chunksCompleted) / contentLength).toFixed(0));
+          if (callback != undefined) callback(Number(((100.0 * chunksCompleted) / contentLength).toFixed(0)));
         });
 
         // When connection is closed, resolve promise
