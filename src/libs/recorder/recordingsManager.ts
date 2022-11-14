@@ -171,6 +171,14 @@ export default class RecordingsManager {
    * @returns Same object, but ready for writing to video file.
    */
   public static toWritingReady(obj: Video | Video[], forAppending: boolean = true) {
+    if (!obj) return "";
+
+    if (obj instanceof Array) {
+      if (obj.length <= 0) {
+        return "";
+      }
+    }
+
     let w = JSON.stringify(obj);
 
     if (!forAppending) {
