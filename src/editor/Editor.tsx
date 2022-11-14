@@ -29,11 +29,6 @@ export default function VideoEditor() {
     });
   }, [video.videoPath]);
 
-  // TODO add to below return so we can still show top bar with back/delete btns
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   let playerRef = useRef<HTMLVideoElement>(null);
   let timelineRef = useRef<HTMLDivElement>(null);
   let progressBarRef = useRef<HTMLDivElement>(null);
@@ -72,12 +67,18 @@ export default function VideoEditor() {
         <Button icon="close" />
       </div>
 
-      <video
-        className="flex-1 overflow-auto bg-[#000]"
-        ref={playerRef}
-        src={"secfile://" + video.videoPath}
-        onClick={playPause}
-      ></video>
+      {!error ? (
+        <video
+          className="flex-1 overflow-auto bg-[#000]"
+          ref={playerRef}
+          src={"secfile://" + video.videoPath}
+          onClick={playPause}
+        ></video>
+      ) : (
+        <div className="flex flex-1 overflow-auto items-center justify-center bg-[#000] text-xl">
+          <span>{error}</span>
+        </div>
+      )}
 
       <div ref={timelineRef} className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
