@@ -64,7 +64,13 @@ export default function VideoEditor() {
             dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName }));
           }}
         />
-        <Button icon="close" />
+        <Button
+          icon="close"
+          onClick={() => {
+            RecordingsManager.delete(video);
+            navigate(-1);
+          }}
+        />
       </div>
 
       {!error ? (

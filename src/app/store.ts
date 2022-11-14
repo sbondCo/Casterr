@@ -35,7 +35,7 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
         // Actions where should append to file instead of replace all
         fs.appendFile(await PathHelper.getFile("recordings"), RecordingsManager.toWritingReady(action.payload, true));
       } else {
-        // Default to replace file
+        // Default to replace file for all other actions
         fs.writeFile(
           await PathHelper.getFile("recordings"),
           RecordingsManager.toWritingReady(store.getState().videos.recordings, false)

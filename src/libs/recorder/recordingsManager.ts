@@ -6,7 +6,7 @@ import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
 import { Video } from "@/videos/types";
-import { videoAdded } from "@/videos/videosSlice";
+import { videoAdded, videoRemoved } from "@/videos/videosSlice";
 
 export default class RecordingsManager {
   /**
@@ -67,27 +67,10 @@ export default class RecordingsManager {
 
   /**
    * Delete a video.
-   * @param videoPath Path to video to be deleted.
-   * @param isClip If video is a clip.
-   * @param removeFromDisk If should also remove from disk.
+   * @param video Video to be deleted.
    */
-  public static async delete(videoPath: string, isClip: boolean, removeFromDisk: boolean = false) {
-    // let videos = await this.getVideos(isClip);
-    // const vidIdx = videos.findIndex((e) => e.videoPath == videoPath);
-    // const video = videos[vidIdx];
-    // if (video?.videoPath) {
-    //   // Delete video file from disk
-    //   if (removeFromDisk) {
-    //     if (video.videoPath) fs.rmSync(video.videoPath, { force: true });
-    //     if (video.thumbPath) fs.rmSync(video.thumbPath, { force: true });
-    //   }
-    //   // Remove video from videos array
-    //   videos = videos.filter((e) => e.videoPath !== video.videoPath);
-    //   // Rewrite video file
-    //   fs.writeFile(await this.getVideoFile(isClip), this.toWritingReady(videos, false), (err) => {
-    //     if (err) throw err;
-    //   });
-    // }
+  public static async delete(video: Video) {
+    store.dispatch(videoRemoved(video));
   }
 
   /**

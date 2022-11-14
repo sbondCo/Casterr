@@ -12,6 +12,17 @@ const videosSlice = createSlice({
         state.recordings.push(action.payload);
       }
     },
+    /**
+     *
+     * @param action.payload Path to video removed.
+     */
+    videoRemoved: (state, action: PayloadAction<Video>) => {
+      if (action.payload.isClip) {
+        state.clips = state.clips.filter((v) => v.videoPath !== action.payload.videoPath);
+      } else {
+        state.recordings = state.recordings.filter((v) => v.videoPath !== action.payload.videoPath);
+      }
+    },
     videoRenamed: (state, action: PayloadAction<{ videoPath: string; newName: string }>) => {
       state.recordings = state.recordings.map((v) => {
         if (v.videoPath === action.payload.videoPath) {
@@ -23,7 +34,7 @@ const videosSlice = createSlice({
   }
 });
 
-export const { videoAdded, videoRenamed } = videosSlice.actions;
+export const { videoAdded, videoRemoved, videoRenamed } = videosSlice.actions;
 
 export const selectVideos = (state: VideosState, isClip: boolean) => (isClip ? state.clips : state.recordings);
 
