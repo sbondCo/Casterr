@@ -13,7 +13,14 @@ interface PopupProps extends PopupOptions {
 export default function Popup(props: PopupProps) {
   const { title, percentage, loader, showCancel = false, buttons, tickBoxes, tickBoxesChecked } = props;
 
-  const [tbc, setTbc] = useState<string[]>([]);
+  const [tbc, setTbc] = useState<string[]>(
+    tickBoxes
+      ? tickBoxes.flatMap((t) => {
+          if (t.ticked) return t.name;
+          return [];
+        })
+      : []
+  );
 
   const elClicked = (el: string) => {
     document.dispatchEvent(

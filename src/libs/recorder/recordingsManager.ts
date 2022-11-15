@@ -68,9 +68,15 @@ export default class RecordingsManager {
   /**
    * Delete a video.
    * @param video Video to be deleted.
+   * @param rmFromDisk Remove video from disk.
    */
-  public static async delete(video: Video) {
+  public static async delete(video: Video, rmFromDisk: boolean) {
     store.dispatch(videoRemoved(video));
+
+    if (rmFromDisk) {
+      if (video.videoPath) fs.rmSync(video.videoPath, { force: true });
+      if (video.thumbPath) fs.rmSync(video.thumbPath, { force: true });
+    }
   }
 
   /**

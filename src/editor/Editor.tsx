@@ -10,14 +10,17 @@ import "nouislider/dist/nouislider.min.css";
 import "./editor.scss";
 import { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { videoRenamed } from "@/videos/videosSlice";
+import Notifications from "@/libs/helpers/notifications";
+import { RootState } from "@/app/store";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
   const location = useLocation();
   const video = location.state as Video;
   const dispatch = useDispatch();
+  const genState = useSelector((store: RootState) => store.settings.general);
 
   if (!video.videoPath) console.error("TODO: No Video Path in state, return to home or show error");
 
@@ -67,8 +70,28 @@ export default function VideoEditor() {
         <Button
           icon="close"
           onClick={() => {
-            RecordingsManager.delete(video);
-            navigate(-1);
+            const rm = (rmFromDsk: boolean) => {
+              RecordingsManager.delete(video, rmFromDsk);
+              navigate(-1);
+            };
+
+            if (genState.deleteVideoConfirmationDisabled) {
+              rm(genState.deleteVideosFromDisk);
+            } else {
+              Notifications.popup({
+                id: "DELETE-VIDEO",
+                title: "Delete Video",
+                showCancel: true,
+                tickBoxes: [{ name: "Also remove from disk", ticked: genState.deleteVideosFromDisk }],
+                buttons: ["cancel", "delete"]
+              }).then((popup) => {
+                if (popup.action == "delete") {
+                  rm(popup.tickBoxesChecked.includes("Also remove from disk"));
+                }
+
+                Notifications.rmPopup("DELETE-VIDEO");
+              });
+            }
           }}
         />
       </div>
