@@ -37,6 +37,7 @@ export default function VideoEditor() {
   let progressBarRef = useRef<HTMLDivElement>(null);
   let clipsBarRef = useRef<HTMLDivElement>(null);
   const {
+    clipsBar,
     playPause,
     playBtnIcon,
     volume,
@@ -153,7 +154,13 @@ export default function VideoEditor() {
               <span>{lengthOfClips.toReadableTimeFromSeconds()}</span>
             </div>
           </Button>
-          <Button icon="arrow" disabled={renderBtnDisabled} />
+          <Button
+            icon="arrow"
+            onClick={() =>
+              RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider!.get() as string[]).map(Number))
+            }
+            disabled={renderBtnDisabled}
+          />
         </ButtonConnector>
       </div>
     </div>

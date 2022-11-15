@@ -12,16 +12,17 @@ export interface Arguments {
 }
 
 export default class ArgumentBuilder {
-  private static rs: RecordingSettings;
   private static scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
+
+  private static get rs(): RecordingSettings {
+    return store.getState().settings.recording;
+  }
 
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
   public static async createArgs(): Promise<Arguments> {
-    this.rs = store.getState().settings.recording;
-
     // Build and return args differently depending on OS
     if (process.platform == "win32") {
       return ArgumentBuilder.buildWindowsArgs();

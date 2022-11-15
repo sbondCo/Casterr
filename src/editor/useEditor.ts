@@ -536,6 +536,7 @@ export default function useEditor(
   };
 
   return {
+    clipsBar,
     playBtnIcon,
     playPause,
     volume,
