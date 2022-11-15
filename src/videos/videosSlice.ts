@@ -23,13 +23,19 @@ const videosSlice = createSlice({
         state.recordings = state.recordings.filter((v) => v.videoPath !== action.payload.videoPath);
       }
     },
-    videoRenamed: (state, action: PayloadAction<{ videoPath: string; newName: string }>) => {
-      state.recordings = state.recordings.map((v) => {
+    videoRenamed: (state, action: PayloadAction<{ videoPath: string; newName: string; isClip: boolean }>) => {
+      const updt = (v: Video) => {
         if (v.videoPath === action.payload.videoPath) {
           v.name = action.payload.newName;
         }
         return v;
-      });
+      };
+
+      if (action.payload.isClip) {
+        state.clips = state.clips.map(updt);
+      } else {
+        state.recordings = state.recordings.map(updt);
+      }
     }
   }
 });

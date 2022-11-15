@@ -64,7 +64,7 @@ export default function VideoEditor() {
           className="w-full"
           onChange={(newName) => {
             console.log("Changing video name to:", newName);
-            dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName }));
+            dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName, isClip: video.isClip }));
           }}
         />
         <Button

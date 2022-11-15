@@ -26,6 +26,7 @@ export default class RecordingsManager {
     recording.thumbPath = await this.createThumbnail(videoPath);
     recording.fileSize = fs.statSync(videoPath).size;
     recording.time = Date.now();
+    recording.isClip = isClip;
 
     // Get video info from ffprobe
     ffprobe.run(

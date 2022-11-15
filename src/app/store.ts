@@ -30,15 +30,29 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
     }
 
     if (action.type.includes("videos/")) {
-      console.log("Video state changed, writing changes to file.");
-      if (action.type.includes("videos/videoAdded")) {
-        // Actions where should append to file instead of replace all
-        fs.appendFile(await PathHelper.getFile("recordings"), RecordingsManager.toWritingReady(action.payload, true));
+      // HACK sorta.. might need to change how this works if there is
+      // ever an action that doesn't have isClip accessible like this
+      const isClip = action.payload.isClip;
+      console.log("Video state changed, writing changes to file. isClip:", isClip);
+      if (isClip === true || isClip === false) {
+        if (action.type.includes("videos/videoAdded")) {
+          // Actions where should append to file instead of replace all
+          fs.appendFile(
+            await PathHelper.getFile(isClip ? "clips" : "recordings"),
+            RecordingsManager.toWritingReady(action.payload, true)
+          );
+        } else {
+          const vidState = store.getState().videos;
+          // Default to replace file for all other actions
+          fs.writeFile(
+            await PathHelper.getFile(isClip ? "clips" : "recordings"),
+            RecordingsManager.toWritingReady(isClip ? vidState.clips : vidState.recordings, false)
+          );
+        }
       } else {
-        // Default to replace file for all other actions
-        fs.writeFile(
-          await PathHelper.getFile("recordings"),
-          RecordingsManager.toWritingReady(store.getState().videos.recordings, false)
+        console.error(
+          "Video action payload does not include accessible `isClip` property! Skipping save!",
+          action.payload
         );
       }
     }
