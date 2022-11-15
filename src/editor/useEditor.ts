@@ -392,6 +392,8 @@ export default function useEditor(
       // If promise above was cancelled, return as to not continue playing clips.
       if (cp == "cancelled") return;
     }
+
+    setIsPlayingClips(false);
   };
 
   /**
