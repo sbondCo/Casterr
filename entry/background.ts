@@ -1,6 +1,6 @@
 // // import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
-import * as path from "path";
+import path from "path";
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
 const isDev = process.env.NODE_ENV !== "production";
@@ -25,6 +25,8 @@ async function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: false,
+      nodeIntegrationInSubFrames: false,
       contextIsolation: false
     }
   });
@@ -54,14 +56,14 @@ function registerChannels(win: BrowserWindow) {
    */
   ipcMain.on("manage-window", (_, args) => {
     switch (args) {
-      case "maximize":
+      case "max":
         if (win.isMaximized()) {
           win.unmaximize();
         } else {
           win.maximize();
         }
         break;
-      case "minimize":
+      case "min":
         win.minimize();
         break;
       case "close":
@@ -74,12 +76,13 @@ function registerChannels(win: BrowserWindow) {
    * Create desktop notification window and display correct message to user.
    */
   ipcMain.on("create-desktop-notification", async (_, args: { desc: string; icon: string; duration: number }) => {
+    const screenWithCursor = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
     const notifWin = new BrowserWindow({
       parent: win,
       width: 400,
       height: 80,
-      x: screen.getPrimaryDisplay().bounds.width / 2 - 400 / 2, // Middle of screen horizontally
-      y: 50,
+      x: screenWithCursor.bounds.x + screenWithCursor.bounds.width / 2 - 400 / 2, // Middle of screen horizontally
+      y: screenWithCursor.bounds.y + 50,
       frame: false,
       skipTaskbar: true,
       alwaysOnTop: true,
@@ -91,22 +94,21 @@ function registerChannels(win: BrowserWindow) {
       show: false,
       webPreferences: {
         nodeIntegration: true,
+        nodeIntegrationInWorker: false,
+        nodeIntegrationInSubFrames: false,
         contextIsolation: false
       }
     });
 
     // Show window when ready to show
-    notifWin.once("ready-to-show", notifWin.show);
+    notifWin.once("ready-to-show", () => notifWin.show());
 
-    // Load desktopNotification view
-    const page = `desktopNotification/${args.desc}/${args.icon}`;
-
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Use dev server in development
-      await notifWin.loadURL(`${process.env.WEBPACK_DEV_SERVER_URL}#/${page}`);
+    if (isDev && process.env.SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await notifWin.loadURL(`${process.env.SERVER_URL}/dnotif/${args.icon}/${args.desc}`);
     } else {
       // Load the index.html when not in development
-      notifWin.loadURL(`file://${__dirname}/index.html#${page}`);
+      notifWin.loadURL(`file://${path.join(__dirname, `index.html#dnotif/${args.icon}/${args.desc}`)}`); // TEST THIS IN A BUILD
     }
 
     // Close window after defined duration
@@ -119,18 +121,23 @@ function registerChannels(win: BrowserWindow) {
    * Show open dialog with args passed through.
    */
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
-    return dialog.showOpenDialog(win, args);
+    return new Promise((resolve, reject) => {
+      dialog
+        .showOpenDialog(win, { ...args })
+        .then((v) => resolve(v))
+        .catch(reject);
+    });
   });
 
   /**
-   * Get all of user's monitors.
+   * Get all monitors.
    */
   ipcMain.handle("get-screens", async () => {
     return screen.getAllDisplays();
   });
 
   /**
-   * Get all of user's monitors.
+   * Get primary monitor.
    */
   ipcMain.handle("get-primary-screen", async () => {
     return screen.getPrimaryDisplay();

@@ -1,7 +1,7 @@
-import * as childProcess from "child_process";
+import childProcess from "child_process";
 
 export default class Pulse {
-  private pulseProcess: childProcess.ChildProcess;
+  private pulseProcess?: childProcess.ChildProcess;
 
   /**
    * Run pactl and send arguments to it.

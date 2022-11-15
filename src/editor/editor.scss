@@ -1,0 +1,150 @@
+// Default nouislider styling - should probs be moved elsewhere if nouisliders are to be used in more than one place
+.noUi-target {
+  border: unset;
+
+  &,
+  * {
+    box-shadow: unset;
+    outline: unset;
+  }
+
+  .noUi-handle {
+    @apply bg-quaternary-200 border-y-[1px] border-white-100 border-solid;
+    top: 0;
+    right: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    cursor: grab;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  .noUi-tooltip {
+    @apply text-white-100 bg-quaternary-200 shadow-[0px_0px_8px] shadow-quaternary-200;
+  }
+}
+
+// Editor timeline styling
+
+.timeline {
+  @apply bg-secondary-100;
+  width: 100%;
+  height: 40px;
+  padding: 0 10px;
+
+  &.zoomed {
+    height: 45px;
+    overflow-y: hidden;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-primary-100;
+    }
+
+    .clipsBar {
+      .noUi-tooltip {
+        @apply bg-white-100 bg-opacity-10 py-[1px] px-1.5;
+        bottom: -5%;
+        height: 25px;
+        border: unset;
+        box-shadow: unset;
+        font-weight: bold;
+        text-shadow: 1px 1px black;
+      }
+    }
+  }
+
+  .progressBar {
+    @apply bg-secondary-100;
+    height: 100%;
+
+    .noUi-handle {
+      top: 0;
+      height: 40px;
+    }
+
+    .noUi-tooltip {
+      transition: left 100ms ease-in;
+    }
+
+    .noUi-pips {
+      top: 12px;
+      height: unset;
+      padding: unset;
+
+      .noUi-marker {
+        display: none;
+      }
+
+      .noUi-value {
+        transform: translateX(-50%);
+
+        &:nth-child(2) {
+          transform: translateX(-10%);
+        }
+
+        &:last-child {
+          transform: translateX(-90%);
+          margin-right: 1px;
+        }
+      }
+    }
+  }
+
+  .clipsBar {
+    position: relative;
+    top: -100%;
+    height: 100%;
+    background-color: transparent;
+
+    .noUi-origin {
+      &:nth-child(even) .noUi-handle {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-right: unset;
+      }
+
+      &:nth-child(odd) .noUi-handle {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-left: unset;
+      }
+    }
+
+    .noUi-base {
+      pointer-events: none;
+    }
+
+    .noUi-draggable {
+      @apply border-y-[1px] border-white-100 border-solid;
+      background-color: transparent;
+      border-radius: unset;
+      top: 8px;
+      height: 25px;
+      pointer-events: all;
+    }
+
+    .noUi-handle {
+      top: 8px;
+      height: 25px;
+      border-radius: 0px;
+      pointer-events: all;
+    }
+
+    .noUi-tooltip {
+      display: none;
+      bottom: 165%;
+      pointer-events: none;
+    }
+  }
+}

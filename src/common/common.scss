@@ -1,0 +1,70 @@
+.spinner {
+  $wh: 18px;
+  $animationDuration: 1150ms;
+  display: flex;
+  align-items: center;
+
+  /* 
+   * Make min-height of container big enough so the
+   * cubes (becos animation) don't go outside the .spinner div.
+   */
+  min-height: calc(#{$wh} * 2.6);
+
+  .item {
+    width: $wh;
+    height: $wh;
+    margin: 0 3px;
+    border-radius: 25%;
+    border: 2px solid;
+    @apply border-white-100;
+    animation: throwBalls $animationDuration ease-in-out infinite;
+
+    &:nth-child(1) {
+      animation-delay: calc(#{$animationDuration} / 6 * -1);
+    }
+
+    &:nth-child(2) {
+      animation-delay: calc(#{$animationDuration} / 6 * -2);
+    }
+
+    &:nth-child(3) {
+      animation-delay: calc(#{$animationDuration} / 6 * -3);
+    }
+
+    @keyframes throwBalls {
+      0%,
+      100% {
+        transform: translateY(75%);
+      }
+      50% {
+        transform: translateY(-75%);
+      }
+    }
+  }
+}
+
+.progress-bar {
+  // Conveyor
+  & > div {
+    height: 100%;
+    border-radius: 4px;
+    @apply bg-tertiary-100;
+    background: -webkit-linear-gradient(
+        -45deg,
+        transparent 33%,
+        theme("colors.quaternary.200") 33%,
+        theme("colors.quaternary.200") 66%,
+        transparent 66%
+      ),
+      -webkit-linear-gradient(theme("colors.tertiary.100"), theme("colors.tertiary.100"));
+    background-size: 40px 20px, 100% 100%, 100% 100%;
+    transition: width 150ms ease-in-out;
+    animation: progressConveyor 50s linear infinite;
+
+    @keyframes progressConveyor {
+      100% {
+        background-position: 2000px 0;
+      }
+    }
+  }
+}

@@ -1,13 +1,25 @@
-import Vue from "vue";
-import { CombinedVueInstance } from "vue/types/vue";
+import { popupCreated, popupRemoved } from "@/app/appSlice";
+import { store } from "@/app/store";
 import { ipcRenderer } from "electron";
-import Notifier from "@/components/Notifier.vue";
 
-interface PopupOptions {
+export interface PopupOptions {
+  /**
+   * Purely used for locating the popup in state array.
+   * Import so we can locate it for updating.
+   *
+   * DO **NOT** INCLUDE SPACES. We can trust ourselves right?
+   */
+  id: string | number;
+
+  /**
+   * Popup title/header to be shown.
+   */
+  title: string;
+
   /**
    * If should show a percentage bar.
    */
-  percentage?: string | number;
+  percentage?: number;
 
   /**
    * If should show an infinite loader.
@@ -31,20 +43,15 @@ interface PopupOptions {
    * Method will resolve after a button is clicked with a list of tickbox
    * names that have been ticked.
    */
-  tickBoxes?: string[] | TickBoxInfo[];
+  tickBoxes?: TickBoxInfo[];
 }
 
 interface TickBoxInfo {
   name: string;
-  ticked: boolean;
+  ticked?: boolean;
 }
 
 export default class Notifications {
-  private static activePopups = new Map<
-    string,
-    CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>
-  >();
-
   /**
    * Create or modify an existing popup notification.
    * @param name Name of notification.
@@ -52,80 +59,25 @@ export default class Notifications {
    * @param options Optional popup options for things such as displaying button, percentage, etc.
    * @returns
    */
-  public static popup(name: string, desc: string, options?: PopupOptions) {
-    return new Promise<{ action: string; tickBoxesChecked?: string[] }>((resolve, reject) => {
-      // Update or create popup depending on if it is in activePopups
-      if (this.activePopups.has(name)) {
-        const i = this.activePopups.get(name);
+  public static popup(opts: PopupOptions): Promise<{ action: string; tickBoxesChecked: string[] }> {
+    store.dispatch(popupCreated(opts));
 
-        // Update popup data everytime, incase of updated data sent to func
-        if (i != undefined) i.$data.desc = desc;
-        if (i != undefined) i.$data.percent = options?.percentage;
-      } else {
-        const tickBoxNames = new Array<string>();
-        const tickBoxesChecked = new Array<string>();
+    return new Promise((resolve, reject) => {
+      const listnr = ((ev: CustomEvent) => {
+        document.removeEventListener(`${opts.id}-el-clicked`, listnr);
+        resolve({ action: ev.detail.elClicked, tickBoxesChecked: ev.detail.tickBoxesChecked });
+      }) as EventListener;
 
-        if (options?.tickBoxes != undefined) {
-          // Loop over tickboxes array passed adding to tickBoxNames/Checked
-          for (let i = 0; i < options.tickBoxes.length; i++) {
-            // If tickBoxes is passed in as TickBoxInfo[]
-            // also add to tickBoxesChecked depending on `ticked` value passed in it.
-            if ((options.tickBoxes[i] as TickBoxInfo).name !== undefined) {
-              const el = options.tickBoxes[i] as TickBoxInfo;
-
-              tickBoxNames.push(el.name);
-              if ((el as TickBoxInfo).ticked) tickBoxesChecked.push(el.name);
-            } else {
-              const el = options.tickBoxes[i] as string;
-
-              tickBoxNames.push(el);
-            }
-          }
-        }
-
-        // Create Notifier instance
-        const notifier = Vue.extend(Notifier);
-        const instance = new notifier({
-          propsData: {
-            description: desc,
-            percentage: options?.percentage,
-            loader: options?.loader,
-            showCancel: options?.showCancel ?? true,
-            buttons: options?.buttons,
-            tickBoxes: tickBoxNames,
-            tickBoxesChecked: tickBoxesChecked
-          }
-        });
-
-        // Mount and append to DOM in notifications section
-        instance.$mount();
-        document.getElementById("notifications")?.appendChild(instance.$el);
-
-        // Listen for an element clicked then resolve method with it's value
-        instance.$on("element-clicked", (elClicked: string, tickBoxesChecked?: string[]) => {
-          resolve({ action: elClicked, tickBoxesChecked: tickBoxesChecked });
-        });
-
-        // Add to activePopups
-        this.activePopups.set(name, instance);
-      }
+      document.addEventListener(`${opts.id}-el-clicked`, listnr);
     });
   }
 
   /**
    * Delete existing popup notification.
-   * @param name Name of notification.
+   * @param id Id of notification.
    */
-  public static deletePopup(name: string) {
-    // Get Notifier from activeNotifs map
-    const i = this.activePopups.get(name);
-
-    // Cleanup component and remove from DOM
-    i?.$destroy();
-    i?.$el.remove();
-
-    // Delete from activeNotifcs
-    this.activePopups.delete(name);
+  public static rmPopup(id: string | number) {
+    store.dispatch(popupRemoved(id));
   }
 
   /**

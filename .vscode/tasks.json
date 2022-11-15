@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "Serve app",
-      "command": "yarn run serve",
+      "command": "npm run serve",
       "type": "shell",
       "problemMatcher": "$msCompile",
       "group": {
@@ -13,7 +13,7 @@
     },
     {
       "label": "Format all",
-      "command": "yarn run prettier:formatall",
+      "command": "npm run prettier:formatall",
       "type": "shell",
       "problemMatcher": "$msCompile"
     }
