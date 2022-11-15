@@ -6,7 +6,7 @@ import jsZip from "jszip";
 
 export default class PathHelper {
   public static get mainFolderPath() {
-    return Path.join(os.homedir(), "Documents", "CasterrNew");
+    return Path.join(os.homedir(), "Documents", "Casterr");
   }
 
   public static get toolsPath() {
