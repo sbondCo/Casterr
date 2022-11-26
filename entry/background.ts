@@ -1,9 +1,9 @@
-// // import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
 import path from "path";
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV === "dev";
+
+console.log("Running Casterr. Dev Mode:", isDev);
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
@@ -39,10 +39,8 @@ async function createWindow() {
 
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
-    // createProtocol("app");
-
     // Load the index.html when not in development
-    win.loadURL(`file://${path.join(__dirname, "index.html")}`);
+    win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
   }
 }
 
@@ -175,6 +173,11 @@ app.on("activate", () => {
 app.on("ready", async () => {
   // Install devtools if in development mode
   if (isDev && !process.env.IS_TEST) {
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+      REDUX_DEVTOOLS
+    } = await import("electron-devtools-installer");
     await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], true)
       .then((name) => console.log(`Added Extension: ${name}`))
       .catch((err) => console.log("An error occurred: ", err));
