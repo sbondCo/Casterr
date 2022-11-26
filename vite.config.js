@@ -67,5 +67,15 @@ export default defineConfig({
         replacement: path.resolve(__dirname, "/src")
       }
     ]
-  }
+  },
+  build: {
+    sourcemap: true,
+    target: "chrome98",
+    outDir: "./dist/vi",
+    emptyOutDir: true,
+    assetsDir: "./"
+  },
+  // The script/style src paths need to be relative.
+  // Removing the default '/' at start by setting base to empty.
+  base: ""
 });
