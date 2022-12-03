@@ -68,12 +68,13 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
 const rehydrated = async () => {
   try {
     // Create reh var and clone default values into it.
-    let reh = {} as any;
-    reh.settings = {};
-    Object.assign(reh.settings, DEFAULT_SETTINGS);
-    reh.videos = {};
-    reh.videos.recordings = [];
-    reh.videos.clips = [];
+    const reh = {
+      settings: DEFAULT_SETTINGS,
+      videos: {
+        recordings: [],
+        clips: []
+      }
+    };
 
     try {
       const stgsFile = await PathHelper.getFile("settings");

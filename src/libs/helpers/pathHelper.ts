@@ -188,7 +188,7 @@ export default class PathHelper {
                   zip
                     .file(filename)!
                     .async("nodebuffer")
-                    .then((content: any) => {
+                    .then((content) => {
                       fs.writeFile(Path.join(destFolder, filenameWithoutFolder), content).then(() => resolve(""));
                     });
                 });
