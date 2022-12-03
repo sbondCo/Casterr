@@ -1,66 +1,47 @@
 {
   "name": "casterr",
-  "version": "0.1.8-alpha",
+  "version": "1.0.0",
   "private": true,
   "description": "Easy screen recording and sharing",
   "author": {
     "name": "sbondCo",
     "url": "https://sbond.co"
   },
+  "main": "./entry/out/background.js",
   "scripts": {
-    "serve": "vue-cli-service electron:serve",
-    "build": "vue-cli-service electron:build",
-    "lint": "vue-cli-service lint",
+    "serve": "npm run build:entry-scripts && node ./entry/out/serve.js",
+    "build:entry-scripts": "tsc --project tsconfig.entry.json",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "prettier:formatall": "prettier --write '**/*.{ts,js,vue,json}'",
-    "prettier:check": "prettier --check '**/*.{ts,js,vue,json}'"
+    "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",
+    "prettier:check": "prettier --check '**/*.{ts,js,tsx,json}'",
+    "build": "npm run build:entry-scripts && vite build && electron-builder build --config builder.config.js"
   },
-  "main": "background.js",
   "dependencies": {
-    "core-js": "^3.18.3",
-    "jszip": "^3.7.1",
-    "nouislider": "15.5.0",
-    "vue": "^2.6.12",
-    "vue-class-component": "^7.2.6",
-    "vue-property-decorator": "^9.1.2",
-    "vue-router": "^3.5.1"
+    "@reduxjs/toolkit": "^1.8.5",
+    "nouislider": "^15.6.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.4.0"
   },
   "devDependencies": {
-    "@types/electron-devtools-installer": "^2.2.0",
-    "@types/node": "^16.11.1",
-    "@typescript-eslint/eslint-plugin": "^5.1.0",
-    "@typescript-eslint/parser": "^5.1.0",
-    "@vue/cli-plugin-babel": "^4.5.14",
-    "@vue/cli-plugin-eslint": "^4.5.14",
-    "@vue/cli-plugin-router": "^4.5.14",
-    "@vue/cli-plugin-typescript": "^4.5.14",
-    "@vue/cli-service": "^4.5.14",
-    "@vue/eslint-config-typescript": "^8.0.0",
-    "electron": "^15.2.0",
-    "electron-devtools-installer": "^3.1.1",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^7.19.1",
-    "sass": "^1.32.8",
-    "sass-loader": "^10.1.1",
+    "@types/node": "^16.11.3",
+    "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.0",
+    "autoprefixer": "^10.4.7",
+    "cross-env": "^7.0.3",
+    "electron": "^20.1.1",
+    "electron-builder": "^23.6.0",
+    "electron-devtools-installer": "^3.2.0",
+    "postcss": "^8.4.14",
+    "prettier": "^2.8.0",
+    "sass": "^1.55.0",
+    "tailwindcss": "^3.1.2",
     "typescript": "^4.4.4",
-    "vue-cli-plugin-electron-builder": "~2.1.1",
-    "vue-template-compiler": "^2.6.14"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript"
-    ],
-    "parserOptions": {
-      "parser": "@typescript-eslint/parser"
-    },
-    "rules": {}
+    "vite": "^3.0.3",
+    "vite-plugin-commonjs-externals": "^0.1.1"
   },
   "browserslist": [
     "> 1%",

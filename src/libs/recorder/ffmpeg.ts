@@ -1,6 +1,6 @@
-import * as path from "path";
-import * as fs from "fs";
-import * as childProcess from "child_process";
+import path from "path";
+import fs from "fs";
+import childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
@@ -50,30 +50,34 @@ export default class FFmpeg {
   ) {
     // Get FFmpeg path
     const ffPath = await this.getPath();
+    console.log("FF Process starting:", ffPath);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       // Create child process and send args to it
       this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
-      if (whenToResolve == "onOpen") resolve("started");
-
       // Run stdoutCallback when recieving stdout
       this.ffProcess.stdout!.on("data", (data) => {
+        console.log("FFProcess stdout:", data.toString());
         if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
       });
 
       // Run stderrCallback when recieving stderr
       this.ffProcess.stderr!.on("data", (data) => {
+        console.log("FFProcess stderr:", data.toString());
         if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
       });
 
       // When ffProcess exits
       this.ffProcess.on("close", (code) => {
+        console.info("FFProcess exited with code", code);
         // Call onExitCallback if set to do so
         if (outputs?.onExitCallback != undefined) outputs?.onExitCallback(code);
 
         if (whenToResolve == "onExit") resolve(code);
       });
+
+      if (whenToResolve == "onOpen") resolve("started");
     });
   }
 
@@ -101,7 +105,7 @@ export default class FFmpeg {
    * If FFmpeg/probe doesn't exist, download it first then return its path.
    */
   public async getPath() {
-    const toolsDir = PathHelper.ensureExists(PathHelper.toolsPath, true);
+    const toolsDir = await PathHelper.ensureExists(PathHelper.toolsPath, true);
 
     const { ffmpegPath, ffprobePath } = await this.getFFmpeg(toolsDir);
 
@@ -122,7 +126,7 @@ export default class FFmpeg {
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
-      const popupName = "ffmpegDownloadProgress";
+      const popupId = "ffmpegDownloadProgress";
       const downloadTo = ffmpegPath + ".zip";
       let dlURL: string;
 
@@ -139,17 +143,17 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        Notifications.popup(popupName, "Fetching Recording Utilities", { percentage: progress });
+        Notifications.popup({ id: popupId, title: "Fetching Recording Utilities", percentage: progress });
       });
 
       // Update popup to extracting phase
-      Notifications.popup(popupName, "Extracting Recording Utilities", undefined);
+      Notifications.popup({ id: popupId, title: "Fetching Recording Utilities" });
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
 
       // Delete popup
-      Notifications.deletePopup(popupName);
+      Notifications.rmPopup(popupId);
 
       // Temporary - sleep for 1 second to give enough time for file to be able to be accessed
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -182,17 +186,17 @@ export default class FFmpeg {
     const downloader = new Downloader();
     const dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421931";
     const dlTo = path.join(installDir, "scr-vac.zip");
-    const popupName = "scrDownloadProgress";
+    const popupId = "scrDownloadProgress";
 
     // Download zip
     downloader.accept = "application/octet-stream";
     await downloader.get(dlURL, dlTo, (progress) => {
       // Keep updating popup with new progress %
-      Notifications.popup(popupName, "Fetching Recording Devices", { percentage: progress });
+      Notifications.popup({ id: popupId, title: "Fetching Recording Devices", percentage: progress });
     });
 
     // Extract
-    Notifications.popup(popupName, "Extracting Recording Devices", undefined);
+    Notifications.popup({ id: popupId, title: "Extracting Recording Devices" });
     await PathHelper.extract(dlTo, installDir, dlls);
 
     // Register as service
@@ -211,6 +215,6 @@ export default class FFmpeg {
       });
     });
 
-    Notifications.deletePopup(popupName);
+    Notifications.rmPopup(popupId);
   }
 }
