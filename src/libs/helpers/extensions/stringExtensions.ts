@@ -9,7 +9,7 @@ interface String {
   equalsAnyOf(toCompareWith: Array<any>): boolean;
 }
 
-String.prototype.toReadableDateTime = function(this): string {
+String.prototype.toReadableDateTime = function (this): string {
   let rdt = this;
   const now = new Date();
 
@@ -106,6 +106,6 @@ String.prototype.toReadableDateTime = function(this): string {
   return rdt.toString();
 };
 
-String.prototype.equalsAnyOf = function(this, toCompareWith: Array<any>): boolean {
+String.prototype.equalsAnyOf = function (this, toCompareWith: Array<any>): boolean {
   return toCompareWith.some((rdtw) => rdtw === this);
 };

@@ -6,12 +6,16 @@
 import { get } from "http";
 import { ChildProcess, exec } from "child_process";
 import { Stats, watchFile } from "fs";
+import path from "path";
 
 type LogPrefix = "srve" | "elec" | "vite";
 
-const NODE_BIN = "./node_modules/.bin";
-const ATTEMPTS = Infinity;
-const DELAY = 500;
+const NODE_BIN = path.join("./", "node_modules", ".bin"),
+  VITE_PATH = path.join(NODE_BIN, "vite"),
+  ELECTRON_PATH = path.join(NODE_BIN, "electron"),
+  CROSSENV_PATH = path.join(NODE_BIN, "cross-env"),
+  ATTEMPTS = Infinity,
+  DELAY = 500;
 
 let electron: ChildProcess | undefined;
 let vite: ChildProcess;
@@ -20,7 +24,7 @@ let restarting: boolean = false;
 async function start() {
   log("Starting tasks");
 
-  vite = exec(`${NODE_BIN}/vite`);
+  vite = exec(VITE_PATH);
   listen(vite, "vite");
 
   electron = await openElectron();
@@ -66,7 +70,7 @@ function openElectron() {
         // If was able to get main.tsx, then vite has
         // launched the react app, so we can now open Electron
         if (resp.statusCode == 200) {
-          resolve(exec(`NODE_ENV=dev SERVER_URL=${viteBase} ${NODE_BIN}/electron .`));
+          resolve(exec(`${CROSSENV_PATH} NODE_ENV=dev SERVER_URL=${viteBase} ${ELECTRON_PATH} .`));
         } else {
           log(`Recieved HTTP code ${resp.statusCode} from vite!`);
         }

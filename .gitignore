@@ -6,3 +6,6 @@ node_modules
 
 # Built Entry scripts
 entry/out
+
+# App build folder
+dist
