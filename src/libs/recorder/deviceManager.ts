@@ -87,10 +87,7 @@ export default class DeviceManager {
                 // Add input devices to audioDevices array
                 audioDevices.push({
                   id: sourceNumber,
-                  name: l
-                    .replace("alsa.card_name = ", "")
-                    .replaceAll('"', "")
-                    .replaceAll("\t", ""),
+                  name: l.replace("alsa.card_name = ", "").replaceAll('"', "").replaceAll("\t", ""),
                   isInput: isInputDevice
                 });
               }

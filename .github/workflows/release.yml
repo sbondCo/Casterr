@@ -15,20 +15,20 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: 15
+          node-version: "18"
+          cache: "npm"
 
       - name: Get dependencies
-        run: yarn
+        run: npm i
 
       - name: Build app
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          use_vue_cli: true
           github_token: ${{ secrets.github_token }}
 
           # If tag on commit starts with 'v' then also release build

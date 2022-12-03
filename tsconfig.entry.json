@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "esModuleInterop": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "removeComments": true,
+    "outDir": "entry/out"
+  },
+  "include": ["entry/background.ts", "entry/preload.ts", "entry/serve.ts"]
+}

@@ -3,3 +3,9 @@ dist_electron
 
 # Node modules
 node_modules
+
+# Built Entry scripts
+entry/out
+
+# App build folder
+dist

@@ -1,71 +1,83 @@
-import Vue from "vue";
-import { CombinedVueInstance } from "vue/types/vue";
+import { popupCreated, popupRemoved } from "@/app/appSlice";
+import { store } from "@/app/store";
 import { ipcRenderer } from "electron";
-import Notifier from "@/components/Notifier.vue";
+
+export interface PopupOptions {
+  /**
+   * Purely used for locating the popup in state array.
+   * Import so we can locate it for updating.
+   *
+   * DO **NOT** INCLUDE SPACES. We can trust ourselves right?
+   */
+  id: string | number;
+
+  /**
+   * Popup title/header to be shown.
+   */
+  title: string;
+
+  /**
+   * If should show a percentage bar.
+   */
+  percentage?: number;
+
+  /**
+   * If should show an infinite loader.
+   */
+  loader?: boolean;
+
+  /**
+   * If should show a cancel icon in popup.
+   * Method will resolve with an `action` of "cancel".
+   */
+  showCancel?: boolean;
+
+  /**
+   * String array of button names.
+   * Method will resolve with an `action` of the name of the button clicked.
+   */
+  buttons?: string[];
+
+  /**
+   * String array of tickbox names.
+   * Method will resolve after a button is clicked with a list of tickbox
+   * names that have been ticked.
+   */
+  tickBoxes?: TickBoxInfo[];
+}
+
+interface TickBoxInfo {
+  name: string;
+  ticked?: boolean;
+}
 
 export default class Notifications {
-  private static activePopups = new Map<
-    string,
-    CombinedVueInstance<Record<never, any> & Vue, object, object, object, Record<never, any>>
-  >();
-
   /**
    * Create or modify an existing popup notification.
    * @param name Name of notification.
    * @param desc Description for notification to display.
-   * @param percentage Percentage for notifications requiring a percentage bar.
-   * @param cancelRequested Callback func called when a cancel is requested by user clicking `close` on notifier.
+   * @param options Optional popup options for things such as displaying button, percentage, etc.
+   * @returns
    */
-  public static popup(name: string, desc: string, percentage?: string | number, cancelRequested?: CallableFunction) {
-    // Update or create notification depending on if it is in activeNotifs
-    if (this.activePopups.has(name)) {
-      const i = this.activePopups.get(name);
+  public static popup(opts: PopupOptions): Promise<{ action: string; tickBoxesChecked: string[] }> {
+    store.dispatch(popupCreated(opts));
 
-      // Update notification data everytime, incase of updated data sent to func
-      if (i != undefined) i.$data.desc = desc;
-      if (i != undefined) i.$data.percent = percentage;
-    } else {
-      // Create Notifier instance
-      const notifier = Vue.extend(Notifier);
-      const instance = new notifier({
-        propsData: {
-          description: desc,
-          percentage: percentage,
-          showCancel: cancelRequested ? true : false
-        }
-      });
+    return new Promise((resolve, reject) => {
+      const listnr = ((ev: CustomEvent) => {
+        document.removeEventListener(`${opts.id}-el-clicked`, listnr);
+        resolve({ action: ev.detail.elClicked, tickBoxesChecked: ev.detail.tickBoxesChecked });
+      }) as EventListener;
 
-      // Mount and append to DOM in notifications section
-      instance.$mount();
-      document.getElementById("notifications")?.appendChild(instance.$el);
-
-      // If cancelRequested callback is filled out, then
-      // listen to `cancel-requested` on Notifier and call callback it is heard.
-      if (cancelRequested) {
-        instance.$on("cancel-requested", () => {
-          cancelRequested();
-        });
-      }
-
-      // Add to activeNotifs
-      this.activePopups.set(name, instance);
-    }
+      document.addEventListener(`${opts.id}-el-clicked`, listnr);
+    });
   }
 
   /**
    * Delete existing popup notification.
-   * @param name Name of notification.
+   * @param id Id of notification.
    */
-  public static deletePopup(name: string) {
-    // Get Notifier from activeNotifs map
-    const i = this.activePopups.get(name);
-
-    // Cleanup component and remove from DOM
-    i?.$destroy();
-    i?.$el.remove();
-
-    // Delete from activeNotifcs
-    this.activePopups.delete(name);
+  public static rmPopup(id: string | number) {
+    store.dispatch(popupRemoved(id));
   }
 
   /**

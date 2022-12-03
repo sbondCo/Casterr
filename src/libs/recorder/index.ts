@@ -1,28 +1,38 @@
 import FFmpeg from "./ffmpeg";
-import ArgumentBuilder from "./argumentBuilder";
+import ArgumentBuilder, { Arguments } from "./argumentBuilder";
 import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
-import * as events from "events";
+import { store } from "@/app/store";
+import { isRecording } from "./recorderSlice";
 
 export default class Recorder {
   private static ffmpeg = new FFmpeg();
-  private static args: ReturnType<typeof ArgumentBuilder.createArgs>;
-  private static _isRecording: boolean = false;
-  public static readonly recordingStatus = new events.EventEmitter();
+  private static args: Arguments;
 
   /**
    * Start recording.
    */
   public static async start() {
-    // Create args from user's settings
-    this.args = ArgumentBuilder.createArgs();
+    try {
+      // If already recording, return before doing anything
+      if (store.getState().recorder.isRecording === true) {
+        console.log("Recorder.start called, but already recording. Ignoring..");
+        return;
+      }
 
-    // Only start recording if not currently doing so
-    if (this.isRecording == false) {
-      await this.ffmpeg.run((await this.args).args.toString(), "onOpen");
-      this.isRecording = true;
+      store.dispatch(isRecording(true));
+
+      // Create args from user's settings
+      this.args = await ArgumentBuilder.createArgs();
+      console.log("Recorder.Start Args:", this.args);
+
+      // Start the recording
+      await this.ffmpeg.run(this.args.args, "onOpen");
 
       Notifications.desktop("Started Recording", "play");
+    } catch (err) {
+      console.error("Couldn't start recording:", err);
+      store.dispatch(isRecording(false));
     }
   }
 
@@ -30,13 +40,24 @@ export default class Recorder {
    * Stop recording.
    */
   public static async stop() {
-    this.isRecording = false;
+    // If not recording ignore
+    if (store.getState().recorder.isRecording === false) {
+      console.log("Recorder.stop called, but not recording. Ignoring..");
+      return;
+    }
+
+    store.dispatch(isRecording(false));
 
     // Wait for ffmpeg to exit
     await this.ffmpeg.kill();
 
     // Add recording to recordings file
-    RecordingsManager.add((await this.args).videoPath);
+    if (this.args?.videoPath) RecordingsManager.add(this.args.videoPath);
+    else
+      console.error(
+        "Couldn't add recorded video via RecordingsManager to pastRecordings. args.videoPath not defined:",
+        this.args
+      );
   }
 
   /**
@@ -44,30 +65,10 @@ export default class Recorder {
    * recording depending on if currently recording or not.
    */
   public static async auto() {
-    if (!this.isRecording) {
+    if (!store.getState().recorder.isRecording) {
       this.start();
     } else {
       await this.stop();
     }
-  }
-
-  /**
-   * isRecording getter.
-   */
-  private static get isRecording() {
-    return this._isRecording;
-  }
-
-  /**
-   * isRecording setter.
-   * Emits recordingStatus event when changed.
-   */
-  private static set isRecording(recording: boolean) {
-    // Only emit event if isRecording value has actually changed
-    if (this.isRecording != recording) {
-      this.recordingStatus.emit("changed", recording);
-    }
-
-    this._isRecording = recording;
   }
 }

@@ -16,16 +16,16 @@ interface Array<T> {
   replace(toReplace: string | object, replaceWith: string | object): string[];
 }
 
-Array.prototype.remove = function(this, toRemove: string | number | object): any[] {
+Array.prototype.remove = function (this, toRemove: string | number | object): any[] {
   return this.filter((e) => JSON.stringify(e) !== JSON.stringify(toRemove));
 };
 
-Array.prototype.removeFirst = function(this, toRemove: string | number | object): any[] {
+Array.prototype.removeFirst = function (this, toRemove: string | number | object): any[] {
   this.splice(this.indexOf(toRemove), 1);
   return this;
 };
 
-Array.prototype.replace = function(this, toReplace: string | object, replaceWith: string | object): string[] {
+Array.prototype.replace = function (this, toReplace: string | object, replaceWith: string | object): string[] {
   this[this.findIndex((e) => e == toReplace)] = replaceWith;
 
   return this;
