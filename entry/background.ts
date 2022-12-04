@@ -35,7 +35,7 @@ async function createWindow() {
 
   if (isDev && process.env.SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.SERVER_URL);
+    win.loadURL(process.env.SERVER_URL);
 
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
