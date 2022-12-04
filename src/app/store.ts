@@ -69,12 +69,15 @@ const rehydrated = async () => {
   try {
     // Create reh var and clone default values into it.
     const reh = {
-      settings: DEFAULT_SETTINGS,
+      settings: {},
       videos: {
         recordings: [],
         clips: []
       }
     };
+
+    // Assigning directly above causes unoverridable error.
+    Object.assign(reh.settings, DEFAULT_SETTINGS);
 
     try {
       const stgsFile = await PathHelper.getFile("settings");
