@@ -10,12 +10,12 @@ import path from "path";
 
 type LogPrefix = "srve" | "elec" | "vite";
 
-const NODE_BIN = path.join("./", "node_modules", ".bin"),
-  VITE_PATH = path.join(NODE_BIN, "vite"),
-  ELECTRON_PATH = path.join(NODE_BIN, "electron"),
-  CROSSENV_PATH = path.join(NODE_BIN, "cross-env"),
-  ATTEMPTS = Infinity,
-  DELAY = 500;
+const NODE_BIN = path.join("./", "node_modules", ".bin");
+const VITE_PATH = path.join(NODE_BIN, "vite");
+const ELECTRON_PATH = path.join(NODE_BIN, "electron");
+const CROSSENV_PATH = path.join(NODE_BIN, "cross-env");
+const ATTEMPTS = Infinity;
+const DELAY = 500;
 
 let electron: ChildProcess | undefined;
 let vite: ChildProcess;
@@ -25,10 +25,10 @@ async function start() {
   log("Starting tasks");
 
   vite = exec(VITE_PATH);
-  listen(vite, "vite");
+  listen(vite, "vite").catch((e) => log("Failed to attach listener to vite process."));
 
   electron = await openElectron();
-  listen(electron, "elec");
+  listen(electron, "elec").catch((e) => log("Failed to attach listener to electron process."));
 
   const restart = async (curr: Stats, prev: Stats, f: string) => {
     // If already restarting return
@@ -38,8 +38,8 @@ async function start() {
       log(`Detected changes in ${f}, restarting Electron.`);
 
       restarting = true;
-      electron!.kill("SIGTERM");
-      await new Promise((r) => setTimeout(r, DELAY));
+      electron?.kill("SIGTERM");
+      await new Promise((resolve) => setTimeout(resolve, DELAY));
 
       log(`Building entry scripts.`);
 
@@ -47,7 +47,7 @@ async function start() {
       buildProc.on("exit", async () => {
         electron = undefined;
         electron = await openElectron();
-        listen(electron, "elec");
+        listen(electron, "elec").catch((e) => log("Failed to attach listener to electron process."));
 
         restarting = false;
         log(`Done.`);
@@ -55,11 +55,12 @@ async function start() {
     }
   };
 
-  watchFile("entry/background.ts", (curr, prev) => restart(curr, prev, "background.ts"));
+  watchFile("entry/background.ts", async (curr, prev) => await restart(curr, prev, "background.ts"));
 }
 
-function openElectron() {
-  return new Promise<ChildProcess>(async (resolve) => {
+async function openElectron() {
+  // eslint-disable-next-line no-async-promise-executor
+  return await new Promise<ChildProcess>(async (resolve) => {
     const viteBase = "http://localhost:3060";
 
     for (let i = 0; i < ATTEMPTS; i++) {
@@ -69,16 +70,15 @@ function openElectron() {
       get(`${viteBase}/src/main.tsx`, (resp) => {
         // If was able to get main.tsx, then vite has
         // launched the react app, so we can now open Electron
-        if (resp.statusCode == 200) {
+        if (resp.statusCode === 200) {
           resolve(exec(`${CROSSENV_PATH} NODE_ENV=dev SERVER_URL=${viteBase} ${ELECTRON_PATH} .`));
         } else {
-          log(`Recieved HTTP code ${resp.statusCode} from vite!`);
+          log(`Recieved HTTP code ${resp.statusCode ?? "UNDEFINED"} from vite!`);
         }
       }).on("error", () => {
         log(`App not available yet, retrying in ${DELAY}ms`);
       });
-
-      await new Promise((r) => setTimeout(r, DELAY));
+      await new Promise((resolve) => setTimeout(resolve, DELAY));
     }
   });
 }
@@ -96,7 +96,7 @@ async function listen(proc: ChildProcess, prefix: LogPrefix) {
   });
 }
 
-async function log(msg: string, prefix: LogPrefix = "srve") {
+function log(msg: string, prefix: LogPrefix = "srve") {
   const text = msg.split("\n").map((line) => {
     return `[${coloured(prefix)}] ${line}`;
   });
@@ -119,4 +119,4 @@ function coloured(prefix: string) {
   return `${colour}${prefix}\x1b[0m`;
 }
 
-start();
+start().catch((e) => console.error("Failed to start serve:", e));

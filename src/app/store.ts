@@ -25,7 +25,7 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
 
       const settingsFile = await PathHelper.getFile("settings");
       fs.writeFile(settingsFile, JSON.stringify(settingsState, null, 2)).catch((e) => {
-        throw new Error(`Error writing updated settings to ${settingsFile}: ${e}`);
+        throw new Error(`Error writing updated settings to ${settingsFile}:`, e);
       });
     }
 
@@ -37,14 +37,14 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       if (isClip === true || isClip === false) {
         if (action.type.includes("videos/videoAdded")) {
           // Actions where should append to file instead of replace all
-          fs.appendFile(
+          await fs.appendFile(
             await PathHelper.getFile(isClip ? "clips" : "recordings"),
             RecordingsManager.toWritingReady(action.payload, true)
           );
         } else {
           const vidState = store.getState().videos;
           // Default to replace file for all other actions
-          fs.writeFile(
+          await fs.writeFile(
             await PathHelper.getFile(isClip ? "clips" : "recordings"),
             RecordingsManager.toWritingReady(isClip ? vidState.clips : vidState.recordings, false)
           );
@@ -60,8 +60,8 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
     // This will likely be the action itself, unless
     // a middleware further in chain changed it.
     return returnValue;
-  } catch (e) {
-    throw Error(`Error saving updated state ${e}`);
+  } catch (e: any) {
+    throw Error(`Error saving updated state`, e);
   }
 };
 
@@ -69,12 +69,15 @@ const rehydrated = async () => {
   try {
     // Create reh var and clone default values into it.
     const reh = {
-      settings: DEFAULT_SETTINGS,
+      settings: {},
       videos: {
         recordings: [],
         clips: []
       }
     };
+
+    // Assigning directly above causes unoverridable error.
+    Object.assign(reh.settings, DEFAULT_SETTINGS);
 
     try {
       const stgsFile = await PathHelper.getFile("settings");
@@ -113,8 +116,8 @@ const rehydrated = async () => {
     console.groupEnd();
 
     return reh;
-  } catch (e) {
-    throw Error(`Error fetching saved state ${e}`);
+  } catch (e: any) {
+    throw Error(`Error fetching saved state`, e);
   }
 };
 

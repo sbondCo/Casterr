@@ -3,12 +3,12 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "./store";
 import Recorder from "@/libs/recorder";
-import "@/libs/helpers/extensions";
+import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 
 export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
 
-  let statusColClasses = state.isRecording
+  const statusColClasses = state.isRecording
     ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
     : "bg-white-100 shadow-[_0_0_8px_theme('colors.white.100')]";
 
@@ -21,11 +21,11 @@ export default function Nav() {
 
       {/* Recording Status */}
       <ul className="absolute right-5 flex flex-row flex-nowrap items-center gap-3">
-        {state.isRecording && <div title="Recording duration">{state.timeElapsed.toReadableTimeFromSeconds()}</div>}
+        {state.isRecording && <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>}
         <div
           className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
-          onClick={() => Recorder.auto()}
+          onClick={async () => await Recorder.auto()}
         ></div>
       </ul>
     </nav>
@@ -42,7 +42,7 @@ function NavItem(props: { text: string; icon: Icons }) {
     <li>
       <Link
         to={`/${text}`}
-        className="flex flex-row items-center justify-center py-2 sm:py-0.5 px-4 mx-1.5 
+        className="flex flex-row items-center justify-center py-2 sm:py-0.5 px-4 mx-1.5
           bg-primary-100 rounded text-white-100 fill-current hover:bg-tertiary-100
           transition-colors ease-in-out duration-250 text-xl"
       >

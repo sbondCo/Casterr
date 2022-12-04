@@ -11,7 +11,7 @@ interface PopupProps extends PopupOptions {
 }
 
 export default function Popup(props: PopupProps) {
-  const { title, percentage, loader, showCancel = false, buttons, tickBoxes, tickBoxesChecked } = props;
+  const { title, percentage, loader, showCancel = false, buttons, tickBoxes } = props;
 
   const [tbc, setTbc] = useState<string[]>(
     tickBoxes

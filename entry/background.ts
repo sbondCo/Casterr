@@ -40,7 +40,7 @@ async function createWindow() {
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     // Load the index.html when not in development
-    win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
+    await win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
   }
 }
 
@@ -103,10 +103,10 @@ function registerChannels(win: BrowserWindow) {
 
     if (isDev && process.env.SERVER_URL) {
       // Load the url of the dev server if in development mode
-      await notifWin.loadURL(`${process.env.SERVER_URL}/dnotif/${args.icon}/${args.desc}`);
+      await notifWin.loadURL(`${process.env.SERVER_URL}/index.html#/dnotif/${args.icon}/${args.desc}`);
     } else {
       // Load the index.html when not in development
-      notifWin.loadURL(`file://${path.join(__dirname, `index.html#dnotif/${args.icon}/${args.desc}`)}`); // TEST THIS IN A BUILD
+      await notifWin.loadURL(`file://${path.join(__dirname, `index.html#dnotif/${args.icon}/${args.desc}`)}`); // TEST THIS IN A BUILD
     }
 
     // Close window after defined duration
@@ -119,7 +119,7 @@ function registerChannels(win: BrowserWindow) {
    * Show open dialog with args passed through.
    */
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       dialog
         .showOpenDialog(win, { ...args })
         .then((v) => resolve(v))
@@ -161,10 +161,10 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", async () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) await createWindow();
 });
 
 /**
@@ -195,7 +195,7 @@ app.on("ready", async () => {
     }
   });
 
-  createWindow();
+  await createWindow();
 });
 
 /**

@@ -6,13 +6,13 @@ import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
 
 export default class FFmpeg {
-  constructor(private which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
+  constructor(private readonly which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
 
   /**
    * FFmpeg exe name which is dependent on the user's platform.
    */
   public static get ffmpegExeName() {
-    if (process.platform == "win32") {
+    if (process.platform === "win32") {
       return "ffmpeg.exe";
     } else {
       return "ffmpeg";
@@ -23,7 +23,7 @@ export default class FFmpeg {
    * FFprobe exe name which is dependent on the user's platform.
    */
   public static get ffprobeExeName() {
-    if (process.platform == "win32") {
+    if (process.platform === "win32") {
       return "ffprobe.exe";
     } else {
       return "ffprobe";
@@ -52,32 +52,32 @@ export default class FFmpeg {
     const ffPath = await this.getPath();
     console.log("FF Process starting:", ffPath);
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       // Create child process and send args to it
       this.ffProcess = childProcess.exec(`${ffPath} ${args}`);
 
       // Run stdoutCallback when recieving stdout
-      this.ffProcess.stdout!.on("data", (data) => {
+      this.ffProcess.stdout?.on("data", (data) => {
         console.log("FFProcess stdout:", data.toString());
-        if (outputs?.stdoutCallback != undefined) outputs?.stdoutCallback(data);
+        if (outputs?.stdoutCallback !== undefined) outputs?.stdoutCallback(data);
       });
 
       // Run stderrCallback when recieving stderr
-      this.ffProcess.stderr!.on("data", (data) => {
+      this.ffProcess.stderr?.on("data", (data) => {
         console.log("FFProcess stderr:", data.toString());
-        if (outputs?.stderrCallback != undefined) outputs?.stderrCallback(data);
+        if (outputs?.stderrCallback !== undefined) outputs?.stderrCallback(data);
       });
 
       // When ffProcess exits
       this.ffProcess.on("close", (code) => {
         console.info("FFProcess exited with code", code);
         // Call onExitCallback if set to do so
-        if (outputs?.onExitCallback != undefined) outputs?.onExitCallback(code);
+        if (outputs?.onExitCallback !== undefined) outputs?.onExitCallback(code);
 
-        if (whenToResolve == "onExit") resolve(code);
+        if (whenToResolve === "onExit") resolve(code);
       });
 
-      if (whenToResolve == "onOpen") resolve("started");
+      if (whenToResolve === "onOpen") resolve("started");
     });
   }
 
@@ -85,8 +85,8 @@ export default class FFmpeg {
    * Kill FF process.
    */
   public async kill() {
-    return new Promise((resolve) => {
-      if (this.ffProcess != undefined) {
+    return await new Promise((resolve) => {
+      if (this.ffProcess !== undefined) {
         // FFmpeg gracefully stops recording when you press q
         this.ffProcess.stdin?.write("q");
 
@@ -110,7 +110,7 @@ export default class FFmpeg {
     const { ffmpegPath, ffprobePath } = await this.getFFmpeg(toolsDir);
 
     // Return path to correct executable depending on 'which' constructor arg
-    if (this.which == "ffprobe") return ffprobePath;
+    if (this.which === "ffprobe") return ffprobePath;
     else return ffmpegPath;
   }
 
@@ -131,9 +131,9 @@ export default class FFmpeg {
       let dlURL: string;
 
       // Set downloadURL depending on users platform
-      if (process.platform == "win32") {
+      if (process.platform === "win32") {
         dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421932";
-      } else if (process.platform == "linux") {
+      } else if (process.platform === "linux") {
         dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421938";
       } else {
         throw new Error("Unsupported platform");
@@ -143,11 +143,15 @@ export default class FFmpeg {
       downloader.accept = "application/octet-stream";
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
-        Notifications.popup({ id: popupId, title: "Fetching Recording Utilities", percentage: progress });
+        Notifications.popup({ id: popupId, title: "Fetching Recording Utilities", percentage: progress }).catch((e) => {
+          console.error(`Failed to update ${popupId} popup with progress.`, e);
+        });
       });
 
       // Update popup to extracting phase
-      Notifications.popup({ id: popupId, title: "Fetching Recording Utilities" });
+      Notifications.popup({ id: popupId, title: "Fetching Recording Utilities" }).catch((e) =>
+        console.error(`Failed to update ${popupId} popup with new title (Going on to utilities phase)`, e)
+      );
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
@@ -160,7 +164,7 @@ export default class FFmpeg {
     }
 
     // Make sure screen-capture-recorder is installed, for windows machines.
-    if (process.platform == "win32") await this.getSCR(installDir);
+    if (process.platform === "win32") await this.getSCR(installDir);
 
     // Get exec perms for ff binaries.
     // Do this even if we didn't just download them so there
@@ -168,7 +172,7 @@ export default class FFmpeg {
     fs.chmodSync(ffmpegPath, 0o111);
     fs.chmodSync(ffprobePath, 0o111);
 
-    return { ffmpegPath: ffmpegPath, ffprobePath: ffprobePath };
+    return { ffmpegPath, ffprobePath };
   }
 
   /**
@@ -192,11 +196,15 @@ export default class FFmpeg {
     downloader.accept = "application/octet-stream";
     await downloader.get(dlURL, dlTo, (progress) => {
       // Keep updating popup with new progress %
-      Notifications.popup({ id: popupId, title: "Fetching Recording Devices", percentage: progress });
+      Notifications.popup({ id: popupId, title: "Fetching Recording Devices", percentage: progress }).catch((e) =>
+        console.error(`Failed to update ${popupId} popup with new progress`, e)
+      );
     });
 
     // Extract
-    Notifications.popup({ id: popupId, title: "Extracting Recording Devices" });
+    Notifications.popup({ id: popupId, title: "Extracting Recording Devices" }).catch((e) =>
+      console.error(`Failed to update ${popupId} popup with new title (Going on to extracting phase)`, e)
+    );
     await PathHelper.extract(dlTo, installDir, dlls);
 
     // Register as service
@@ -207,10 +215,10 @@ export default class FFmpeg {
       );
 
       registerProcess.on("exit", (code) => {
-        if (code == 0) {
+        if (code === 0) {
           resolve("registerProcess successful.");
         } else {
-          reject("registerProcess failed.");
+          reject(new Error("registerProcess failed."));
         }
       });
     });

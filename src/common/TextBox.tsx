@@ -49,11 +49,14 @@ export default function TextBox(props: TextBoxProps) {
           setCurVal(folder);
           callOnChangeCallback(folder);
         }
+      })
+      .catch((e) => {
+        console.error("show-open-dialog call failed!", e);
       });
   };
 
   return (
-    <div className={`flex flex-row rounded border-separate overflow-hidden ${className}`}>
+    <div className={`flex flex-row rounded border-separate overflow-hidden ${className ?? ""}`}>
       <input
         value={curVal}
         type={type}

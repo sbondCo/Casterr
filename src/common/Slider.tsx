@@ -8,15 +8,15 @@ export interface SliderProps {
 }
 
 export default function Slider(props: SliderProps) {
-  let { value = 0, min = 0, max = 100, step = 1, wheelStep = 1, onChange } = props;
+  const { value = 0, min = 0, max = 100, step = 1, wheelStep = 1, onChange } = props;
 
   const onWheel = (ev: React.WheelEvent<HTMLInputElement>) => {
     if (ev.deltaY < 0) {
-      let newVal = Number((value + wheelStep).toFixed(2));
+      const newVal = Number((value + wheelStep).toFixed(2));
       if (newVal < 1) onChange(newVal);
       else onChange(max);
     } else {
-      let newVal = Number((value - wheelStep).toFixed(2));
+      const newVal = Number((value - wheelStep).toFixed(2));
       if (newVal >= 0) onChange(newVal);
       else onChange(min);
     }

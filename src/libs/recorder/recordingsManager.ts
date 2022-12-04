@@ -29,41 +29,45 @@ export default class RecordingsManager {
     recording.isClip = isClip;
 
     // Get video info from ffprobe
-    ffprobe.run(
-      `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
-      "onExit",
-      {
-        stdoutCallback: async (out: string) => {
-          // Loop over each line in response from ffprobe, removing empty lines
-          out
-            .toLowerCase()
-            .split(/\r\n|\r|\n/g)
-            .filter((l) => l !== "")
-            .forEach((l: string) => {
-              // Get framerate
-              if (l.includes("avg_frame_rate=")) {
-                // Framerate is returned like: '60/1', '30/1', '30000/1001', etc
-                // We need to do the math to get the framerate to avoid
-                // returning something like 30000, so split the response by the slash
-                const fps = l.replace("avg_frame_rate=", "").split("/");
+    ffprobe
+      .run(
+        `-v error -select_streams v:0 -show_entries format=duration:stream=avg_frame_rate -of default=noprint_wrappers=1 "${videoPath}"`,
+        "onExit",
+        {
+          stdoutCallback: async (out: string) => {
+            // Loop over each line in response from ffprobe, removing empty lines
+            out
+              .toLowerCase()
+              .split(/\r\n|\r|\n/g)
+              .filter((l) => l !== "")
+              .forEach((l: string) => {
+                // Get framerate
+                if (l.includes("avg_frame_rate=")) {
+                  // Framerate is returned like: '60/1', '30/1', '30000/1001', etc
+                  // We need to do the math to get the framerate to avoid
+                  // returning something like 30000, so split the response by the slash
+                  const fps = l.replace("avg_frame_rate=", "").split("/");
 
-                // If fps array has more than 1 items, then divide
-                // the first by the second and round to nearest whole number
-                if (fps.length > 1) {
-                  recording.fps = (parseInt(fps[0], 10) / parseInt(fps[1], 10)).toFixed(0);
+                  // If fps array has more than 1 items, then divide
+                  // the first by the second and round to nearest whole number
+                  if (fps.length > 1) {
+                    recording.fps = (parseInt(fps[0], 10) / parseInt(fps[1], 10)).toFixed(0);
+                  }
                 }
-              }
 
-              // Get duration (in seconds)
-              if (l.includes("duration=")) {
-                recording.duration = parseFloat(l.replace("duration=", ""));
-              }
-            });
+                // Get duration (in seconds)
+                if (l.includes("duration=")) {
+                  recording.duration = parseFloat(l.replace("duration=", ""));
+                }
+              });
 
-          store.dispatch(videoAdded(recording));
+            store.dispatch(videoAdded(recording));
+          }
         }
-      }
-    );
+      )
+      .catch((e) => {
+        throw new Error("Failed to probe recording for information.", e);
+      });
   }
 
   /**
@@ -92,7 +96,7 @@ export default class RecordingsManager {
       path.basename(videoPath) + ".png"
     );
 
-    ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
+    await ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
 
     return thumbPath;
   }
@@ -105,7 +109,7 @@ export default class RecordingsManager {
   public static async clip(videoPath: string, timestamps: number[]) {
     const videoSaveFolder = store.getState().settings.recording.videoSaveFolder;
     // Make sure .processing folder exists and is hidden
-    PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing`, true, {
+    await PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing`, true, {
       hidden: true
     });
 
@@ -117,25 +121,29 @@ export default class RecordingsManager {
     const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
     const popupName = "clipVideo";
 
-    Notifications.popup({ id: popupName, title: "Clipping Your Video", loader: true, showCancel: true }).then(
-      (popup) => {
-        if (popup.action == "cancel") {
-          Notifications.popup({ id: popupName, title: "Cancelling Processing Of Your Video" });
+    Notifications.popup({ id: popupName, title: "Clipping Your Video", loader: true, showCancel: true })
+      .then(async (popup) => {
+        if (popup.action === "cancel") {
+          Notifications.popup({ id: popupName, title: "Cancelling Processing Of Your Video" }).catch((e) => {
+            console.error("Failed to update cancel clipping process notification", e);
+          });
 
           // Stop ffmpeg and destroy manifestStream
-          ffmpeg.kill();
+          await ffmpeg.kill();
           manifestStream.destroy();
 
           // Remove associated files/folders if they exist
-          PathHelper.removeDir(tmpOutFolder);
-          PathHelper.removeFile(clipOutPath);
+          await PathHelper.removeDir(tmpOutFolder);
+          await PathHelper.removeFile(clipOutPath);
 
           // When FFmpeg is closed, popup is also deleted below, but FFmpeg won't always
           // be open when user is cancelling so also delete it here just incase.
           Notifications.rmPopup(popupName);
         }
-      }
-    );
+      })
+      .catch((e) => {
+        console.error("Failed to show cancel clipping process notification", e);
+      });
 
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
@@ -154,18 +162,18 @@ export default class RecordingsManager {
     manifestStream.end();
 
     // Concatenate all seperate clips into one video
-    ffmpeg.run(
+    await ffmpeg.run(
       `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
       "onExit",
       {
         // After creating final clip...
-        onExitCallback: () => {
+        onExitCallback: async () => {
           // Remove temp dir and files inside it
-          PathHelper.removeDir(tmpOutFolder);
+          await PathHelper.removeDir(tmpOutFolder);
           Notifications.rmPopup(popupName);
 
           // Add clip to clips file
-          this.add(clipOutPath, true);
+          await this.add(clipOutPath, true);
         }
       }
     );

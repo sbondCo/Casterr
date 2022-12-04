@@ -2,7 +2,7 @@ import { PopupOptions } from "@/libs/helpers/notifications";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AppState {
-  popups: Array<PopupOptions>;
+  popups: PopupOptions[];
 }
 
 const appSlice = createSlice({

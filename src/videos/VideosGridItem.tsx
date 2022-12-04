@@ -1,4 +1,5 @@
 import Icon from "@/common/Icon";
+import { toReadableFileSize, toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { useEffect, useState } from "react";
 import { Video } from "./types";
@@ -9,15 +10,19 @@ export default function VideosGridItem({ video }: { video: Video }) {
 
   useEffect(() => {
     if (!thumbPath) return;
-    PathHelper.exists(thumbPath).then((exists) => {
-      if (exists) setImg(thumbPath);
-    });
+    PathHelper.exists(thumbPath)
+      .then((exists) => {
+        if (exists) setImg(thumbPath);
+      })
+      .catch((e) => {
+        console.error(`Unable to verify existence of thumbnail (${thumbPath}).`, e);
+      });
   });
 
   return (
     <div className="h-full">
-      {img ? (
-        <img className="w-full h-full object-cover" src={"secfile://" + thumbPath} alt="" />
+      {img && thumbPath ? (
+        <img className="w-full h-full object-cover" src={`secfile://${thumbPath}`} alt="" />
       ) : (
         <div className="flex items-center justify-center w-full h-full bg-secondary-100 text-2xl">
           No Thumbnail Found
@@ -33,8 +38,8 @@ export default function VideosGridItem({ video }: { video: Video }) {
       <div className="flex items-center absolute bottom-0 w-full px-3 py-2 bg-quaternary-100/60">
         {/* TODO: test this with very long names - clip them */}
         <span className="font-bold">{name}</span>
-        <span className="ml-auto mr-3 text-sm">{duration?.toReadableTimeFromSeconds()}</span>
-        <span className="text-sm">{fileSize?.toReadableFileSize()}</span>
+        <span className="ml-auto mr-3 text-sm">{duration ? toReadableTimeFromSeconds(duration) : ""}</span>
+        <span className="text-sm">{fileSize ? toReadableFileSize(fileSize) : ""}</span>
       </div>
     </div>
   );
