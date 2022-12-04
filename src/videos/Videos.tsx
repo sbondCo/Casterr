@@ -4,15 +4,17 @@ import SubNav, { SubNavItem } from "@/common/SubNav";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useRef } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import VideosGrid from "./VideosGrid";
 
 export default function Videos() {
-  let pageRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const { dropZoneShown, dropZoneFLen } = useDragAndDrop(pageRef, (f: File) => {
     if (f.type.includes("video")) {
       // TODO when on `clips` sub page, add dropped videos as clips
-      RecordingsManager.add(f.path);
+      RecordingsManager.add(f.path).catch((e) => {
+        console.error("Drag&Drop handler failed to add recording via RecordsManager.", e);
+      });
     }
   });
 

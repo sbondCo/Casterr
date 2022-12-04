@@ -47,7 +47,7 @@ export interface RecordingSettings {
   format: string;
   zeroLatency: boolean;
   ultraFast: boolean;
-  audioDevicesToRecord: Array<AudioDevice>;
+  audioDevicesToRecord: AudioDevice[];
 
   /**
    * If audio devices should be recorded on
@@ -65,4 +65,7 @@ export interface KeyBindingSettings {
 
 export type Page = "Videos" | "Settings";
 
-export type MonitorToRecord = { id: string; name: string };
+export interface MonitorToRecord {
+  id: string;
+  name: string;
+}

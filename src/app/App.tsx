@@ -8,16 +8,16 @@ import React, { Suspense } from "react";
 import Init from "./Init";
 
 export default function App() {
-  const Videos = React.lazy(() => import("@/videos"));
-  const Editor = React.lazy(() => import("@/editor"));
-  const Settings = React.lazy(() => import("@/settings"));
+  const Videos = React.lazy(async () => await import("@/videos"));
+  const Editor = React.lazy(async () => await import("@/editor"));
+  const Settings = React.lazy(async () => await import("@/settings"));
   const path = window.location.pathname;
   const isDNotifRoute = path.includes("/dnotif");
 
   return (
     <div
       className={`App bg-primary-100 text-white-100 min-h-screen max-h-screen overflow-hidden ${
-        isDNotifRoute && "rounded-xl"
+        isDNotifRoute ? "rounded-xl" : ""
       }`}
     >
       <Provider store={store}>

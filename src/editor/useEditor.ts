@@ -1,5 +1,9 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import React, { useEffect, useState } from "react";
 import noUiSlider, { PipsMode, target } from "nouislider";
+import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
+import { removeFirst } from "@/libs/helpers/extensions/array";
 
 export default function useEditor(
   playerRef: React.RefObject<HTMLVideoElement>,
@@ -95,7 +99,7 @@ export default function useEditor(
           format: {
             to: (value: number) => {
               // Show readable time on pip values
-              return value.toReadableTimeFromSeconds();
+              return toReadableTimeFromSeconds(value);
             },
             from: (value: string) => {
               return Number(value);
@@ -173,7 +177,7 @@ export default function useEditor(
         start: starts,
         behaviour: "drag",
         connect: connects,
-        tooltips: tooltips,
+        tooltips,
         range: {
           min: 0,
           max: player.duration
@@ -197,7 +201,7 @@ export default function useEditor(
     // First remove all events
     clipsBar.noUiSlider!.off("");
 
-    let connectElements = document.querySelectorAll(".clipsBar .noUi-connect");
+    const connectElements = document.querySelectorAll(".clipsBar .noUi-connect");
 
     for (let i = 0, ii = 0; i < connectElements.length; ++i, ii += 2) {
       connectElements[i].addEventListener("dblclick", () => {
@@ -210,7 +214,7 @@ export default function useEditor(
 
       // Update length of clips state
       let totalLength = 0;
-      let v = values.map(Number);
+      const v = values.map(Number);
       // Loop over values in pairs
       for (let i = 0, n = v.length; i < n; i += 2) {
         // Update totalLength after calculating current pairs length
@@ -256,10 +260,10 @@ export default function useEditor(
     let starts = new Array<number>();
     let connects = new Array<boolean>();
     let tooltips = new Array<boolean>();
-    let currentProgress = Number(progressBar.noUiSlider!.get());
+    const currentProgress = Number(progressBar.noUiSlider!.get());
 
     // If noUiSlider exists on clipsBar then update vars with actual values
-    if (clipsBar.noUiSlider != undefined) {
+    if (clipsBar.noUiSlider !== undefined) {
       starts = (clipsBar.noUiSlider.get() as string[]).map(Number);
       connects = clipsBar.noUiSlider.options.connect! as boolean[];
       tooltips = clipsBar.noUiSlider.options.tooltips as boolean[];
@@ -290,8 +294,8 @@ export default function useEditor(
    *                     to the first handle bars value on the clip being removed.
    */
   const removeClip = (connectIndex: number) => {
-    let allHandleValues = (clipsBar.noUiSlider!.get() as string[]).map(Number);
-    let handleValues = [allHandleValues[connectIndex], allHandleValues[connectIndex + 1]];
+    const allHandleValues = (clipsBar.noUiSlider!.get() as string[]).map(Number);
+    const handleValues = [allHandleValues[connectIndex], allHandleValues[connectIndex + 1]];
 
     let starts = (clipsBar.noUiSlider!.get() as string[]).map(Number);
     let connects = clipsBar.noUiSlider!.options.connect! as boolean[];
@@ -299,10 +303,10 @@ export default function useEditor(
 
     // Remove all clips normally unless there is only one left,
     // in that case, reset starts, connects & tooltips so clipsBar gets destoryed.
-    if (connects.length != 3) {
+    if (connects.length !== 3) {
       // Remove starts from clip being removes
-      starts = starts.removeFirst(handleValues[0]);
-      starts = starts.removeFirst(handleValues[1]);
+      starts = removeFirst(starts, handleValues[0]);
+      starts = removeFirst(starts, handleValues[1]);
 
       // Remove last 3 connects then add false
       connects = connects.slice(0, connects.length - 3);
@@ -328,12 +332,12 @@ export default function useEditor(
    * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
    */
   const getAllClips = () => {
-    let clips = [];
+    const clips = [];
 
-    if (clipsBar.noUiSlider != undefined) {
-      let clipsBarValues = (clipsBar.noUiSlider!.get() as string[]).map(Number);
+    if (clipsBar.noUiSlider !== undefined) {
+      const clipsBarValues = (clipsBar.noUiSlider.get() as string[]).map(Number);
       let i = 0;
-      let n = clipsBarValues.length;
+      const n = clipsBarValues.length;
 
       while (i < n) {
         clips.push(clipsBarValues.slice(i, (i += 2)));
@@ -356,23 +360,23 @@ export default function useEditor(
 
     setIsPlayingClips(true);
 
-    let clips = getAllClips();
+    const clips = getAllClips();
 
     for (let i = 0, n = clips.length; i < n; ++i) {
       // Clip start and end times
-      let start = clips[i][0];
-      let end = clips[i][1];
+      const start = clips[i][0];
+      const end = clips[i][1];
 
       // Skip to start of clip and play
       updateVideoTime(start);
-      player.play();
+      await player.play();
 
       // Play clip until we reach `end` or playing is cancelled.
-      let cp = await new Promise((resolve) => {
+      const cp = await new Promise((resolve) => {
         const u = () => {
           // If an action somewhere else has changed `isPlayingAllClips` to false,
           // then don't continue.
-          if (player.getAttribute("is-playing-clips") == "false") {
+          if (player.getAttribute("is-playing-clips") === "false") {
             player.removeEventListener("timeupdate", u);
             resolve("cancelled");
           }
@@ -390,7 +394,7 @@ export default function useEditor(
       });
 
       // If promise above was cancelled, return as to not continue playing clips.
-      if (cp == "cancelled") return;
+      if (cp === "cancelled") return;
     }
 
     setIsPlayingClips(false);
@@ -402,15 +406,15 @@ export default function useEditor(
    * values returned by are not altered by using the formatter.
    */
   const updateTooltip = (values: any, handle: any) => {
-    let pair = getPairFromHandle(handle);
+    const pair = getPairFromHandle(handle);
 
     // Set tooltip position
     pair.tooltip.style.left = `${(pair.connect.getBoundingClientRect().width + 8) / 2}px`;
 
     // Set tooltip value to clip length
-    pair.tooltip.innerHTML = Number(
-      (parseFloat(values[pair.handle + 1]) - parseFloat(values[pair.handle])).toFixed(0)
-    ).toReadableTimeFromSeconds();
+    pair.tooltip.innerHTML = toReadableTimeFromSeconds(
+      Number((parseFloat(values[pair.handle + 1]) - parseFloat(values[pair.handle])).toFixed(0))
+    );
   };
 
   /**
@@ -418,7 +422,7 @@ export default function useEditor(
    * @param handle Handle that is connected to pair
    */
   const getPairFromHandle = (handle: number) => {
-    let tooltips: Array<HTMLElement | Boolean> = clipsBar.noUiSlider!.getTooltips() as [HTMLElement | Boolean];
+    const tooltips: Array<HTMLElement | Boolean> = clipsBar.noUiSlider!.getTooltips() as [HTMLElement | Boolean];
     let tooltip: HTMLElement;
 
     if (tooltips[handle] instanceof HTMLElement) {
@@ -428,26 +432,24 @@ export default function useEditor(
       tooltip = tooltips[handle] as HTMLElement;
     }
 
-    let connects = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-connect");
-    let connect = connects.item(tooltips.filter((e: any) => e != false).indexOf(tooltip));
+    const connects = document.querySelectorAll<HTMLElement>(".clipsBar .noUi-connect");
+    const connect = connects.item(tooltips.filter((e: any) => e !== false).indexOf(tooltip));
 
     return {
-      tooltip: tooltip,
-      connect: connect,
-      handle: handle
+      tooltip,
+      connect,
+      handle
     };
   };
 
   const toggleShowTimeAsElapsed = () => setShowTimeAsElapsed(!showTimeAsElapsed);
 
   const updateVideoTimeReadable = () => {
-    let maxVideoTime = player.duration;
+    const maxVideoTime = player.duration;
     if (showTimeAsElapsed) {
-      setVideoTimeReadable(`${(maxVideoTime - playerCurTime).toReadableTimeFromSeconds()} Left`);
+      setVideoTimeReadable(`${toReadableTimeFromSeconds(maxVideoTime - playerCurTime)} Left`);
     } else {
-      setVideoTimeReadable(
-        `${playerCurTime.toReadableTimeFromSeconds()} / ${maxVideoTime.toReadableTimeFromSeconds()}`
-      );
+      setVideoTimeReadable(`${toReadableTimeFromSeconds(playerCurTime)} / ${toReadableTimeFromSeconds(maxVideoTime)}`);
     }
   };
 
@@ -473,7 +475,7 @@ export default function useEditor(
 
   const playPause = () => {
     if (player.paused) {
-      player.play();
+      void player.play();
     } else {
       player.pause();
     }
@@ -484,7 +486,7 @@ export default function useEditor(
     player.volume = vol;
 
     // Change volume icon depending on volume
-    if (vol == 0) {
+    if (vol === 0) {
       setVolumeIcon("volumeMute");
     } else if (vol < 0.5) {
       setVolumeIcon("volumeMed");
@@ -511,10 +513,10 @@ export default function useEditor(
     let newZoom;
 
     // Increase/decrease `timelineZoom`
-    if (increase && timelineZoom != max) {
+    if (increase && timelineZoom !== max) {
       newZoom = timelineZoom + 50;
       setTimelineZoom(newZoom);
-    } else if (!increase && timelineZoom != min) {
+    } else if (!increase && timelineZoom !== min) {
       newZoom = timelineZoom - 50;
       setTimelineZoom(newZoom);
     }

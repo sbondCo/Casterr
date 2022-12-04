@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { RootState } from "@/app/store";
+import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
@@ -27,15 +28,17 @@ export default function VideoEditor() {
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    PathHelper.exists(video.videoPath).then((v) => {
-      if (!v) setError("Video file does not exist!");
-    });
+    PathHelper.exists(video.videoPath)
+      .then((v) => {
+        if (!v) setError("Video file does not exist!");
+      })
+      .catch((e) => console.error("Unable to verify video files existence.", e));
   }, [video.videoPath]);
 
-  let playerRef = useRef<HTMLVideoElement>(null);
-  let timelineRef = useRef<HTMLDivElement>(null);
-  let progressBarRef = useRef<HTMLDivElement>(null);
-  let clipsBarRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLVideoElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const clipsBarRef = useRef<HTMLDivElement>(null);
   const {
     clipsBar,
     playPause,
@@ -65,14 +68,16 @@ export default function VideoEditor() {
           className="w-full"
           onChange={(newName) => {
             console.log("Changing video name to:", newName);
-            dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName, isClip: video.isClip }));
+            dispatch(videoRenamed({ videoPath: video.videoPath, newName, isClip: video.isClip }));
           }}
         />
         <Button
           icon="close"
           onClick={() => {
             const rm = (rmFromDsk: boolean) => {
-              RecordingsManager.delete(video, rmFromDsk);
+              RecordingsManager.delete(video, rmFromDsk).catch((e) =>
+                console.error("Failed to delete video from video editor!", e)
+              );
               navigate(-1);
             };
 
@@ -85,13 +90,17 @@ export default function VideoEditor() {
                 showCancel: true,
                 tickBoxes: [{ name: "Also remove from disk", ticked: genState.deleteVideosFromDisk }],
                 buttons: ["cancel", "delete"]
-              }).then((popup) => {
-                if (popup.action == "delete") {
-                  rm(popup.tickBoxesChecked.includes("Also remove from disk"));
-                }
+              })
+                .then((popup) => {
+                  if (popup.action === "delete") {
+                    rm(popup.tickBoxesChecked.includes("Also remove from disk"));
+                  }
 
-                Notifications.rmPopup("DELETE-VIDEO");
-              });
+                  Notifications.rmPopup("DELETE-VIDEO");
+                })
+                .catch((e) => {
+                  console.error("Failed to show DELETE-VIDEO popup!", e);
+                });
             }
           }}
         />
@@ -151,13 +160,13 @@ export default function VideoEditor() {
 
             <div className="flex gap-1.5 items-center">
               <Icon i="time" wh={18} />
-              <span>{lengthOfClips.toReadableTimeFromSeconds()}</span>
+              <span>{toReadableTimeFromSeconds(lengthOfClips)}</span>
             </div>
           </Button>
           <Button
             icon="arrow"
-            onClick={() =>
-              RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider!.get() as string[]).map(Number))
+            onClick={async () =>
+              await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number))
             }
             disabled={renderBtnDisabled}
           />

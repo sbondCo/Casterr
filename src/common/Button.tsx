@@ -25,7 +25,7 @@ export default function Button(props: ButtonProps) {
   return (
     <button
       className={`flex items-center justify-center p-1.5 ${btnClasses} w-auto rounded border-2 border-secondary-100 ${
-        className || ""
+        className ?? ""
       } transition-colors disabled:bg-tertiary-100 disabled:cursor-not-allowed`}
       onMouseEnter={() => setSliderClasses(sliderOpenClasses)}
       onMouseLeave={() => setSliderClasses(sliderClosedClasses)}

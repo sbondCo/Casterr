@@ -11,7 +11,7 @@ export default function useDragAndDrop(elRef: React.RefObject<HTMLElement>, file
   let dragEnterTarget: EventTarget | null;
 
   useEffect(() => {
-    let el = elRef.current;
+    const el = elRef.current;
 
     if (el) {
       el.addEventListener("drop", handleDrop);
@@ -38,7 +38,7 @@ export default function useDragAndDrop(elRef: React.RefObject<HTMLElement>, file
 
     // Add dropped files to recordings
     if (ev.dataTransfer != null) {
-      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+      for (let i = 0; i < ev.dataTransfer.items.length; i++) {
         const item = ev.dataTransfer.items[i];
         const f = item.getAsFile();
 
@@ -74,7 +74,7 @@ export default function useDragAndDrop(elRef: React.RefObject<HTMLElement>, file
 
     // Only act as if drag has actually ended
     // if dragEnterTarget is the same as event.target.
-    if (dragEnterTarget == ev.target) {
+    if (dragEnterTarget === ev.target) {
       setDropZoneShown(false);
     }
   };

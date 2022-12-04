@@ -47,7 +47,7 @@ export default function Icon({ i, wh = 24, direction, className, onClick }: Icon
       width={wh}
       height={wh}
       viewBox={icon.viewBox}
-      className={`${className || ""} ${dirClass() || ""} transition-all`}
+      className={`${className ?? ""} ${dirClass() ?? ""} transition-all`}
       onClick={onClick}
     >
       {icon.el}
