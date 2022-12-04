@@ -6,7 +6,7 @@ import { store } from "@/app/store";
 import { isRecording } from "./recorderSlice";
 
 export default class Recorder {
-  private static ffmpeg = new FFmpeg();
+  private static readonly ffmpeg = new FFmpeg();
   private static args: Arguments;
 
   /**
@@ -15,7 +15,7 @@ export default class Recorder {
   public static async start() {
     try {
       // If already recording, return before doing anything
-      if (store.getState().recorder.isRecording === true) {
+      if (store.getState().recorder.isRecording) {
         console.log("Recorder.start called, but already recording. Ignoring..");
         return;
       }
@@ -29,7 +29,9 @@ export default class Recorder {
       // Start the recording
       await this.ffmpeg.run(this.args.args, "onOpen");
 
-      Notifications.desktop("Started Recording", "play");
+      Notifications.desktop("Started Recording", "play").catch((e) =>
+        console.error("Failed to show started recording desktop notification", e)
+      );
     } catch (err) {
       console.error("Couldn't start recording:", err);
       store.dispatch(isRecording(false));
@@ -41,7 +43,7 @@ export default class Recorder {
    */
   public static async stop() {
     // If not recording ignore
-    if (store.getState().recorder.isRecording === false) {
+    if (!store.getState().recorder.isRecording) {
       console.log("Recorder.stop called, but not recording. Ignoring..");
       return;
     }
@@ -52,12 +54,19 @@ export default class Recorder {
     await this.ffmpeg.kill();
 
     // Add recording to recordings file
-    if (this.args?.videoPath) RecordingsManager.add(this.args.videoPath);
-    else
+    if (this.args?.videoPath) {
+      RecordingsManager.add(this.args.videoPath).catch((e) => {
+        console.error(
+          "Failed to add recorded video to file via RecordingsManager! If you are seeing this error, your recording should be safe and accessible in your normal recordings folder, you can try dragging it back into the app to get it to show here.",
+          e
+        );
+      });
+    } else {
       console.error(
         "Couldn't add recorded video via RecordingsManager to pastRecordings. args.videoPath not defined:",
         this.args
       );
+    }
   }
 
   /**
@@ -66,7 +75,7 @@ export default class Recorder {
    */
   public static async auto() {
     if (!store.getState().recorder.isRecording) {
-      this.start();
+      await this.start();
     } else {
       await this.stop();
     }

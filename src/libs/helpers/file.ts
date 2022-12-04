@@ -19,6 +19,6 @@ export default class File {
     // before writing to it, we need to prepare the data in the file before it is parsable JSON.
     // 1. Make into array by wrapping [square brackets] around it.
     // 2. If last letter in data is a ',' then remove it.
-    return JSON.parse(`[${data.slice(-1) == "," ? data.slice(0, -1) : data}]`);
+    return JSON.parse(`[${data.slice(-1) === "," ? data.slice(0, -1) : data}]`);
   }
 }

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "./store";
 import Recorder from "@/libs/recorder";
-import "@/libs/helpers/extensions";
+import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 
 export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
@@ -21,7 +21,7 @@ export default function Nav() {
 
       {/* Recording Status */}
       <ul className="absolute right-5 flex flex-row flex-nowrap items-center gap-3">
-        {state.isRecording && <div title="Recording duration">{state.timeElapsed.toReadableTimeFromSeconds()}</div>}
+        {state.isRecording && <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>}
         <div
           className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}

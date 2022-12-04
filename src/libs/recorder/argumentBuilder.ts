@@ -4,7 +4,8 @@ import Registry from "../helpers/registry";
 import path from "path";
 import { store } from "@/app/store";
 import { RecordingSettings } from "@/settings/types";
-import "../helpers/extensions";
+import { equalsAnyOf, toReadableDateTime } from "../helpers/extensions/string";
+import { toHexTwosComplement } from "../helpers/extensions/number";
 
 export interface Arguments {
   args: string;
@@ -12,7 +13,7 @@ export interface Arguments {
 }
 
 export default class ArgumentBuilder {
-  private static scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
+  private static readonly scrRegistry = new Registry("HKCU\\Software\\screen-capture-recorder");
 
   private static get rs(): RecordingSettings {
     return store.getState().settings.recording;
@@ -24,10 +25,10 @@ export default class ArgumentBuilder {
    */
   public static async createArgs(): Promise<Arguments> {
     // Build and return args differently depending on OS
-    if (process.platform == "win32") {
-      return ArgumentBuilder.buildWindowsArgs();
-    } else if (process.platform == "linux") {
-      return ArgumentBuilder.buildLinuxArgs();
+    if (process.platform === "win32") {
+      return await ArgumentBuilder.buildWindowsArgs();
+    } else if (process.platform === "linux") {
+      return await ArgumentBuilder.buildLinuxArgs();
     }
 
     throw new Error("Could not build args for current system. It isn't supported.");
@@ -85,7 +86,7 @@ export default class ArgumentBuilder {
 
     // Video device
     if (
-      this.rs.videoDevice.toLowerCase().equalsAnyOf(["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
+      equalsAnyOf(this.rs.videoDevice.toLowerCase(), ["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
     ) {
       args.push(`-i video=${DeviceManager.winDesktopVideoDevice}`);
     } else {
@@ -170,7 +171,7 @@ export default class ArgumentBuilder {
         break;
     }
 
-    if (process.platform == "win32") {
+    if (process.platform === "win32") {
       await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
       await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
     }
@@ -179,8 +180,8 @@ export default class ArgumentBuilder {
   }
 
   private static get ffmpegDevice(): string {
-    if (process.platform == "win32") return "dshow";
-    else if (process.platform == "linux") return "x11grab";
+    if (process.platform === "win32") return "dshow";
+    else if (process.platform === "linux") return "x11grab";
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
@@ -189,20 +190,20 @@ export default class ArgumentBuilder {
     const monitorToRecord = this.rs.monitorToRecord.id.toLowerCase();
 
     // Get monitor
-    if (monitorToRecord == "primary") {
+    if (monitorToRecord === "primary") {
       monitor = await DeviceManager.getPrimaryMonitor();
     } else {
       monitor = await DeviceManager.findMonitor(monitorToRecord);
     }
 
     // Return different format depending on OS
-    if (process.platform == "win32") {
-      await this.scrRegistry.add("start_x", `0x${monitor.bounds.x.toHexTwosComplement()}`, "REG_DWORD");
-      await this.scrRegistry.add("start_y", `0x${monitor.bounds.y.toHexTwosComplement()}`, "REG_DWORD");
+    if (process.platform === "win32") {
+      await this.scrRegistry.add("start_x", `0x${toHexTwosComplement(monitor.bounds.x)}`, "REG_DWORD");
+      await this.scrRegistry.add("start_y", `0x${toHexTwosComplement(monitor.bounds.y)}`, "REG_DWORD");
 
       // Return offsets as string anyway
       return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
-    } else if (process.platform == "linux") {
+    } else if (process.platform === "linux") {
       return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
     } else {
       throw new Error("Can't get recording region for unsupported platform.");
@@ -239,7 +240,7 @@ export default class ArgumentBuilder {
   }
 
   public static get videoOutputName(): string {
-    return `${this.rs.videoSaveName.toReadableDateTime()}.${this.rs.format}`;
+    return `${toReadableDateTime(this.rs.videoSaveName)}.${this.rs.format}`;
   }
 
   private static async videoOutputPath(): Promise<string> {

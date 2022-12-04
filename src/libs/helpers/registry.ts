@@ -5,18 +5,18 @@ import childProcess from "child_process";
  * TODO: Throw error if initialised on non-windows machine.
  */
 export default class Registry {
-  constructor(private path: string) {}
+  constructor(private readonly path: string) {}
 
   public async add(name: string, value: string | number, type: keyof RegistryTypes, overwrite: boolean = true) {
     await this.run(`add ${this.path} /v ${name} /t ${type} /d ${value} ${overwrite ? "/f" : ""}`);
   }
 
   private async run(cmd: string) {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const cp = childProcess.exec(`reg ${cmd}`);
 
       cp.on("exit", (code) => {
-        if (code == 0) {
+        if (code === 0) {
           resolve(code);
         } else {
           reject(code);
