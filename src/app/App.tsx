@@ -3,7 +3,6 @@ import Nav from "@/app/Nav";
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { store } from "@/app/store";
 import { Provider } from "react-redux";
-import DesktopNotification from "@/common/DesktopNotification";
 import React, { Suspense } from "react";
 import Init from "./Init";
 
@@ -11,7 +10,10 @@ export default function App() {
   const Videos = React.lazy(async () => await import("@/videos"));
   const Editor = React.lazy(async () => await import("@/editor"));
   const Settings = React.lazy(async () => await import("@/settings"));
-  const path = window.location.pathname;
+  const DesktopNotification = React.lazy(async () => await import("@/common/DesktopNotification"));
+
+  // Can't use react-router hooks here, fallingback on using window.location
+  const path = window.location.hash;
   const isDNotifRoute = path.includes("/dnotif");
 
   return (
@@ -36,7 +38,7 @@ export default function App() {
               <Route path="/videos/*" element={<Videos />} />
               <Route path="/editor" element={<Editor />} />
               <Route path="/settings/*" element={<Settings />} />
-              <Route path={"/dnotif/:icon/:desc"} element={<DesktopNotification />} />
+              <Route path="/dnotif/:icon/:desc" element={<DesktopNotification />} />
             </Routes>
           </Suspense>
         </Router>
