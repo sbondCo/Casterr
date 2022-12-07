@@ -1,7 +1,7 @@
 import { RootState } from "@/app/store";
+import FilterBar from "@/common/FilterBar";
 import Icon from "@/common/Icon";
 import PageLayout from "@/common/PageLayout";
-import SubNav, { SubNavItem } from "@/common/SubNav";
 import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
@@ -23,6 +23,7 @@ export default function Videos() {
   const state = useSelector((store: RootState) => store.videos);
   const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
   const [videos, setVideos] = useState(allVideos);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   const search = (query: string) => {
     if (!query) {
@@ -51,11 +52,15 @@ export default function Videos() {
         </div>
       )}
 
-      <div className="flex flex-row">
-        <SubNav>
-          <SubNavItem text="Recordings" />
-          <SubNavItem text="Clips" />
-        </SubNav>
+      <div className="flex flex-row mb-3.5">
+        <FilterBar
+          options={["Recordings", "Clips"]}
+          activeOptions={activeFilters}
+          optionClicked={(opt) => {
+            if (!activeFilters.includes(opt)) setActiveFilters([...activeFilters, opt]);
+            else setActiveFilters(activeFilters.filter((f) => f !== opt));
+          }}
+        />
 
         <TextBox
           className="h-full ml-auto"
