@@ -1,10 +1,12 @@
+import { RootState } from "@/app/store";
 import Icon from "@/common/Icon";
 import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
+import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
-import { useRef } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import VideosGrid from "./VideosGrid";
 
 export default function Videos() {
@@ -17,6 +19,21 @@ export default function Videos() {
       });
     }
   });
+
+  const state = useSelector((store: RootState) => store.videos);
+  const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
+  const [videos, setVideos] = useState(allVideos);
+
+  const search = (query: string) => {
+    if (!query) {
+      setVideos(allVideos);
+      return;
+    }
+
+    query = query.toLowerCase();
+
+    setVideos(allVideos.filter((v) => v.name.toLowerCase().includes(query)));
+  };
 
   return (
     <PageLayout smPageWidth={false} ref={pageRef}>
@@ -34,16 +51,24 @@ export default function Videos() {
         </div>
       )}
 
-      <SubNav>
-        <SubNavItem text="Recordings" />
-        <SubNavItem text="Clips" />
-      </SubNav>
+      <div className="flex flex-row">
+        <SubNav>
+          <SubNavItem text="Recordings" />
+          <SubNavItem text="Clips" />
+        </SubNav>
 
-      <Routes>
-        <Route path="" element={<Navigate replace to="recordings" />} />
-        <Route path="recordings" element={<VideosGrid type="recordings" />} />
-        <Route path="clips" element={<VideosGrid type="clips" />} />
-      </Routes>
+        <TextBox
+          className="h-full ml-auto"
+          type="text"
+          value=""
+          placeholder="Search All Videos"
+          icon="search"
+          debounce={250}
+          onChange={(e) => search(e)}
+        />
+      </div>
+
+      <VideosGrid videos={videos} />
     </PageLayout>
   );
 }

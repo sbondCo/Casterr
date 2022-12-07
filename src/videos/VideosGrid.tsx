@@ -1,17 +1,10 @@
-import { RootState } from "@/app/store";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { Video } from "./types";
 import VideosGridItem from "./VideosGridItem";
 
-export default function VideosGrid({ type }: { type: "recordings" | "clips" }) {
-  const state = useSelector((store: RootState) => store.videos);
-  const videos = type === "clips" ? [...state.clips] : [...state.recordings];
-  videos.sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
-
-  // TODO only render videos being looked at / infinity scroll not loading all at once but when scrolled to bottom
-
+export default function VideosGrid({ videos }: { videos: Video[] }) {
   if (!videos || videos.length <= 0) {
-    return <div className="flex justify-center mt-8 font-bold text-xl capitalize">You have no {type} yet!</div>;
+    return <div className="flex justify-center mt-8 font-bold text-xl capitalize">No Videos Found!</div>;
   }
 
   return (
