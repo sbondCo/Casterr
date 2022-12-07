@@ -93,7 +93,7 @@ export default function TextBox(props: TextBoxProps) {
         }`}
       />
 
-      {icon && <Icon className="absolute top-[5px] right-2 cursor-pointer" i={icon} wh={22} />}
+      {icon && <Icon className="absolute top-[5px] right-2 pointer-events-none" i={icon} wh={22} />}
 
       {folderSelect && (
         <button
