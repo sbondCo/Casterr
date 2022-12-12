@@ -5,8 +5,9 @@ import PageLayout from "@/common/PageLayout";
 import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { Video } from "./types";
 import VideosGrid from "./VideosGrid";
 
 export default function Videos() {
@@ -21,20 +22,30 @@ export default function Videos() {
   });
 
   const state = useSelector((store: RootState) => store.videos);
-  const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
-  const [videos, setVideos] = useState(allVideos);
+  const [videos, setVideos] = useState<Video[]>();
+  const [searchQuery, setSearchQuery] = useState<string>();
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  const search = (query: string) => {
-    if (!query) {
-      setVideos(allVideos);
-      return;
+  useEffect(() => {
+    const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
+    let filteredVids = allVideos;
+
+    // Apply filters
+    if (activeFilters.length <= 0 || (activeFilters.includes("Recordings") && activeFilters.includes("Clips"))) {
+      filteredVids = allVideos;
+    } else if (activeFilters.includes("Clips")) {
+      filteredVids = allVideos.filter((v) => v.isClip);
+    } else if (activeFilters.includes("Recordings")) {
+      filteredVids = allVideos.filter((v) => !v.isClip);
     }
 
-    query = query.toLowerCase();
+    // Apply search query
+    if (searchQuery) {
+      filteredVids = filteredVids.filter((v) => v.name.toLowerCase().includes(searchQuery.toLocaleLowerCase()));
+    }
 
-    setVideos(allVideos.filter((v) => v.name.toLowerCase().includes(query)));
-  };
+    setVideos(filteredVids);
+  }, [activeFilters, searchQuery]);
 
   return (
     <PageLayout smPageWidth={false} ref={pageRef}>
@@ -69,7 +80,7 @@ export default function Videos() {
           placeholder="Search All Videos"
           icon="search"
           debounce={250}
-          onChange={(e) => search(e)}
+          onChange={(e) => setSearchQuery(e)}
         />
       </div>
 

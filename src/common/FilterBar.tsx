@@ -8,7 +8,7 @@ export default function FilterBar({ options, activeOptions, optionClicked }: Fil
   const isActive = (opt: string) => activeOptions.includes(opt);
 
   return (
-    <ul className="flex gap-2.5 row justify-center items-center text-2xl">
+    <ul className="flex gap-2.5 row justify-center items-center text-2xl select-none">
       {options.map((opt) => (
         <div
           key={opt}

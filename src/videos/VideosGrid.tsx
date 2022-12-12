@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Video } from "./types";
 import VideosGridItem from "./VideosGridItem";
 
-export default function VideosGrid({ videos }: { videos: Video[] }) {
+export default function VideosGrid({ videos }: { videos?: Video[] }) {
   if (!videos || videos.length <= 0) {
     return <div className="flex justify-center mt-8 font-bold text-xl capitalize">No Videos Found!</div>;
   }
