@@ -5,7 +5,7 @@ import React from "react";
 export default function Dragger() {
   return (
     <div
-      className="flex flex-row-reverse h-4 bg-primary-100"
+      className="flex flex-row-reverse h-4 bg-quaternary-100"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
     >
       <DraggerItem icon="close" />

@@ -29,7 +29,8 @@ export type Icons =
   | "chevron"
   | "clips"
   | "time"
-  | "edit";
+  | "edit"
+  | "search";
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
@@ -254,6 +255,29 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
             15.002 0 0017.48 17.482l117.512-21.763-113.231-113.24zM333.407
             55.274L38.198 350.506l123.284 123.293 295.209-295.231z"
           ></path>
+        )
+      };
+    case "search":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M221.09 64a157.09 157.09 0 10157.09 157.09A157.1 157.1 0 00221.09 64z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+              d="M338.29 338.29L448 448"
+            />
+          </g>
         )
       };
     default:

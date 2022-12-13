@@ -1,10 +1,25 @@
+import useDebouncer from "@/hooks/useDebouncer";
 import { ipcRenderer } from "electron";
 import { useState } from "react";
+import Icon, { Icons } from "./Icon";
 import { CommonComponentProps } from "./types";
 
 type TextBoxProps = {
   value: string | number;
   placeholder: string | number;
+  icon?: Icons;
+
+  /**
+   * With this unset, we call the onChange callback when
+   * onBlur is called.
+   *
+   * With this set (to a number as milliseconds) we will
+   * debounce the onChange callback to whatever is passed.
+   *
+   * @example If we pass 250, we will only call the onChange
+   * callback 250ms after the last change.
+   */
+  debounce?: number;
 } & (
   | {
       type?: "text";
@@ -20,8 +35,9 @@ type TextBoxProps = {
   CommonComponentProps;
 
 export default function TextBox(props: TextBoxProps) {
-  const { value, placeholder, type, folderSelect = false, onChange, className } = props;
+  const { value, placeholder, type, folderSelect = false, onChange, debounce, className, icon } = props;
 
+  const { doDebounce } = useDebouncer(debounce);
   const [curVal, setCurVal] = useState(value);
 
   // newVal param set as string becuase we get input value
@@ -56,15 +72,28 @@ export default function TextBox(props: TextBoxProps) {
   };
 
   return (
-    <div className={`flex flex-row rounded border-separate overflow-hidden ${className ?? ""}`}>
+    <div className={`flex flex-row rounded border-separate overflow-hidden relative ${className ?? ""}`}>
       <input
         value={curVal}
         type={type}
         placeholder={String(placeholder)}
-        onChange={(e) => setCurVal(e.target.value)}
-        onBlur={(e) => callOnChangeCallback(e.target.value)}
-        className="h-full w-full py-1.5 px-3 bg-secondary-100 hover:bg-tertiary-100 transition-colors"
+        onChange={(e) => {
+          setCurVal(e.target.value);
+
+          if (debounce !== undefined) {
+            doDebounce(() => callOnChangeCallback(e.target.value));
+          }
+        }}
+        onBlur={(e) => {
+          if (debounce) return;
+          callOnChangeCallback(e.target.value);
+        }}
+        className={`h-full w-full py-1.5 px-3 bg-secondary-100 hover:bg-tertiary-100 transition-colors ${
+          icon ? "pr-9" : ""
+        }`}
       />
+
+      {icon && <Icon className="absolute top-[5px] right-2 pointer-events-none" i={icon} wh={22} />}
 
       {folderSelect && (
         <button
