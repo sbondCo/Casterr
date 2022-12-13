@@ -56,7 +56,12 @@ export default function Videos() {
   const infiniteLoadHandler = (ev: Event) => {
     const el = ev.target as HTMLDivElement;
     // If scrolled to bottom load more videos
-    if (allFilteredVideos && videos && el?.scrollHeight - el?.scrollTop - 200 <= el?.clientHeight) {
+    if (
+      allFilteredVideos &&
+      videos &&
+      videos.length !== allFilteredVideos.length &&
+      el?.scrollHeight - el?.scrollTop - 200 <= el?.clientHeight
+    ) {
       console.log("Loading 30 more videos.");
       setVideos([...videos, ...allFilteredVideos.slice(videos.length, videos.length + 30)]);
     }
