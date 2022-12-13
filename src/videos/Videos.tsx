@@ -1,6 +1,7 @@
 import { RootState } from "@/app/store";
 import FilterBar from "@/common/FilterBar";
 import Icon from "@/common/Icon";
+import Loader from "@/common/Loader";
 import PageLayout from "@/common/PageLayout";
 import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
@@ -22,11 +23,14 @@ export default function Videos() {
   });
 
   const state = useSelector((store: RootState) => store.videos);
+  const [allFilteredVideos, setFilteredAllVideos] = useState<Video[]>();
   const [videos, setVideos] = useState<Video[]>();
   const [searchQuery, setSearchQuery] = useState<string>();
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
 
   useEffect(() => {
+    setVideosLoading(true);
     const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
     let filteredVids = allVideos;
 
@@ -44,8 +48,27 @@ export default function Videos() {
       filteredVids = filteredVids.filter((v) => v.name.toLowerCase().includes(searchQuery.toLocaleLowerCase()));
     }
 
-    setVideos(filteredVids);
+    setFilteredAllVideos(filteredVids);
+    setVideos(filteredVids.slice(0, 15));
+    setVideosLoading(false);
   }, [activeFilters, searchQuery]);
+
+  const infiniteLoadHandler = (ev: Event) => {
+    const el = ev.target as HTMLDivElement;
+    // If scrolled to bottom load more videos
+    if (allFilteredVideos && videos && el?.scrollHeight - el?.scrollTop - 200 <= el?.clientHeight) {
+      console.log("Loading 30 more videos.");
+      setVideos([...videos, ...allFilteredVideos.slice(videos.length, videos.length + 30)]);
+    }
+  };
+
+  useEffect(() => {
+    pageRef.current?.addEventListener("scroll", infiniteLoadHandler);
+
+    return () => {
+      pageRef.current?.removeEventListener("scroll", infiniteLoadHandler);
+    };
+  });
 
   return (
     <PageLayout smPageWidth={false} ref={pageRef}>
@@ -84,7 +107,7 @@ export default function Videos() {
         />
       </div>
 
-      <VideosGrid videos={videos} />
+      {videosLoading ? <Loader /> : <VideosGrid videos={videos} />}
     </PageLayout>
   );
 }
