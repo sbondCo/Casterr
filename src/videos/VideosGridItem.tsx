@@ -35,10 +35,11 @@ export default function VideosGridItem({ video }: { video: Video }) {
 
       <p className="absolute right-3 top-2 italic font-bold [text_shadow:_1px_1px_black]">{fps} FPS</p>
 
-      <div className="flex items-center absolute bottom-0 w-full px-3 py-2 bg-quaternary-100/60">
-        {/* TODO: test this with very long names - clip them */}
-        <span className="font-bold">{name}</span>
-        <span className="ml-auto mr-3 text-sm">{duration ? toReadableTimeFromSeconds(duration) : ""}</span>
+      <div className="flex gap-2 items-center absolute bottom-0 w-full px-3 py-2 bg-quaternary-100/60">
+        <span className="font-bold flex-1 overflow-hidden whitespace-nowrap text-ellipsis" title={name}>
+          {name}
+        </span>
+        <span className="ml-auto text-sm">{duration ? toReadableTimeFromSeconds(duration) : ""}</span>
         <span className="text-sm">{fileSize ? toReadableFileSize(fileSize) : ""}</span>
       </div>
     </div>
