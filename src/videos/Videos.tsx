@@ -107,7 +107,13 @@ export default function Videos() {
         />
       </div>
 
-      {videosLoading ? <Loader /> : <VideosGrid videos={videos} />}
+      {videosLoading ? (
+        <div className="flex justify-center mt-14">
+          <Loader />
+        </div>
+      ) : (
+        <VideosGrid videos={videos} />
+      )}
     </PageLayout>
   );
 }
