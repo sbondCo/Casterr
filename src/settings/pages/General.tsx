@@ -3,7 +3,7 @@ import { RootState } from "@/app/store";
 import DropDown from "@/common/DropDown";
 import TickBox from "@/common/TickBox";
 import { useDispatch, useSelector } from "react-redux";
-import SettingsItem from "../SettingsItem";
+import NamedContainer from "../../common/NamedContainer";
 import { Page } from "../types";
 import {
   setDeleteVideoConfirmationDisabled,
@@ -19,7 +19,7 @@ export default function General() {
 
   return (
     <>
-      <SettingsItem title="Startup Page">
+      <NamedContainer title="Startup Page">
         <DropDown
           activeItem={state.startupPage}
           items={APP_SETTINGS.pages}
@@ -27,26 +27,26 @@ export default function General() {
             dispatch(setStartupPage(s as Page));
           }}
         />
-      </SettingsItem>
+      </NamedContainer>
 
-      <SettingsItem title="Recording Status Also Stop/Start Recording" row>
+      <NamedContainer title="Recording Status Also Stop/Start Recording" row>
         <TickBox ticked={state.rcStatusAlsoStopStart} onChange={(t) => dispatch(setRcStatusAlsoStopStart(t))} />
-      </SettingsItem>
+      </NamedContainer>
 
-      <SettingsItem title="Recording Status Double Click To Record" row>
+      <NamedContainer title="Recording Status Double Click To Record" row>
         <TickBox ticked={state.rcStatusDblClkToRecord} onChange={(t) => dispatch(setRcStatusDblClkToRecord(t))} />
-      </SettingsItem>
+      </NamedContainer>
 
-      <SettingsItem title="Disable Delete Video Confirmation" row>
+      <NamedContainer title="Disable Delete Video Confirmation" row>
         <TickBox
           ticked={state.deleteVideoConfirmationDisabled}
           onChange={(t) => dispatch(setDeleteVideoConfirmationDisabled(t))}
         />
-      </SettingsItem>
+      </NamedContainer>
 
-      <SettingsItem title="Delete Videos From Disk By Default" row>
+      <NamedContainer title="Delete Videos From Disk By Default" row>
         <TickBox ticked={state.deleteVideosFromDisk} onChange={(t) => dispatch(setDeleteVideosFromDisk(t))} />
-      </SettingsItem>
+      </NamedContainer>
     </>
   );
 }
