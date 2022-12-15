@@ -13,10 +13,10 @@ export interface ListBoxItem {
 
 export default function ListBox({ options, enabled }: ListBoxProps) {
   return (
-    <div className="flex flex-col gap-3 px-4 py-4 bg-secondary-100 rounded">
+    <div className="flex flex-col gap-3 p-3.5 bg-secondary-100 rounded">
       {options ? (
         options.map((lb) => (
-          <NamedContainer key={lb.id} title={lb.name} row className="pb-0">
+          <NamedContainer key={lb.id} title={lb.name} row className="!pb-0">
             <TickBox ticked={enabled.includes(lb.id)} onChange={(t) => {}} />
           </NamedContainer>
         ))
