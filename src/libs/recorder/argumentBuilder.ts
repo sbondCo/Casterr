@@ -42,7 +42,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     this.rs.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f pulse -i ${ad.id}`);
+      args.push(`-f pulse -i ${ad}`);
     });
 
     // Recording FPS
@@ -78,7 +78,7 @@ export default class ArgumentBuilder {
 
     // Audio devices
     this.rs.audioDevicesToRecord.forEach((ad) => {
-      args.push(`-f dshow -i audio="${ad.id}"`);
+      args.push(`-f dshow -i audio="${ad}"`);
     });
 
     // FFmpeg video device

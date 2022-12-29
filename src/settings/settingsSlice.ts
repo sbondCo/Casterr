@@ -1,5 +1,4 @@
 import { DEFAULT_SETTINGS } from "@/app/constants";
-import { AudioDevice } from "@/libs/recorder/deviceManager";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Page, MonitorToRecord } from "./types";
 
@@ -59,11 +58,14 @@ const settingsSlice = createSlice({
     setUltraFast(state, action: PayloadAction<boolean>) {
       state.recording.ultraFast = action.payload;
     },
-    addAudioDevicesToRecord(state, action: PayloadAction<AudioDevice>) {
-      state.recording.audioDevicesToRecord.push(action.payload);
-    },
-    delAudioDevicesToRecord(state, action: PayloadAction<AudioDevice>) {
-      state.recording.audioDevicesToRecord.filter((a) => a.id !== action.payload.id);
+    toggleAudioDeviceToRecord(state, action: PayloadAction<{ id: string; isEnabled: boolean }>) {
+      if (action.payload.isEnabled) {
+        state.recording.audioDevicesToRecord = [...state.recording.audioDevicesToRecord, action.payload.id];
+      } else {
+        state.recording.audioDevicesToRecord = state.recording.audioDevicesToRecord.filter(
+          (id) => id !== action.payload.id
+        );
+      }
     },
     setSeperateAudioTracks(state, action: PayloadAction<boolean>) {
       state.recording.seperateAudioTracks = action.payload;
@@ -88,8 +90,7 @@ export const {
   setFormat,
   setZeroLatency,
   setUltraFast,
-  addAudioDevicesToRecord,
-  delAudioDevicesToRecord,
+  toggleAudioDeviceToRecord,
   setSeperateAudioTracks
 } = settingsSlice.actions;
 

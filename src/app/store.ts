@@ -71,8 +71,8 @@ const rehydrated = async () => {
     const reh = {
       settings: {},
       videos: {
-        recordings: [],
-        clips: []
+        recordings: [] as Video[],
+        clips: [] as Video[]
       }
     };
 

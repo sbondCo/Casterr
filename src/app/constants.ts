@@ -6,7 +6,6 @@
 import path from "path";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { Settings } from "@/settings/types";
-import { AudioDevice } from "@/libs/recorder/deviceManager";
 
 // App settings, not user editable.
 export const APP_SETTINGS = {
@@ -36,7 +35,7 @@ export const DEFAULT_SETTINGS = {
     format: "mp4",
     zeroLatency: true,
     ultraFast: true,
-    audioDevicesToRecord: [] as AudioDevice[],
+    audioDevicesToRecord: [] as string[],
     seperateAudioTracks: false
   }
 } as Settings;

@@ -1,5 +1,3 @@
-import { AudioDevice } from "@/libs/recorder/deviceManager";
-
 export interface Settings {
   general: GeneralSettings;
   recording: RecordingSettings;
@@ -47,7 +45,7 @@ export interface RecordingSettings {
   format: string;
   zeroLatency: boolean;
   ultraFast: boolean;
-  audioDevicesToRecord: AudioDevice[];
+  audioDevicesToRecord: string[];
 
   /**
    * If audio devices should be recorded on

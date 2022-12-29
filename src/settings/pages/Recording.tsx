@@ -17,7 +17,8 @@ import {
   setThumbSaveFolder,
   setVideoDevice,
   setVideoSaveFolder,
-  setVideoSaveName
+  setVideoSaveName,
+  toggleAudioDeviceToRecord
 } from "../settingsSlice";
 
 export default function Recording() {
@@ -25,7 +26,6 @@ export default function Recording() {
   const dispatch = useDispatch();
 
   const [audioDevicesToRecord, setAudioDevicesToRecord] = useState<ListBoxItem[]>();
-  const [audioDevicesToRecordEnabled, setAudioDevicesToRecordEnabled] = useState<string[]>([]);
 
   const videoDevices = ["Default"];
   const monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
@@ -36,7 +36,7 @@ export default function Recording() {
       .then((devices) => {
         setAudioDevicesToRecord(
           devices.audio.map((ad) => {
-            return { id: String(ad.id), name: ad.name, ticked: false };
+            return { id: String(ad.id), name: ad.name };
           })
         );
       })
@@ -81,11 +81,20 @@ export default function Recording() {
       </NamedContainer>
 
       <NamedContainer title="Separate Audio Tracks" row>
-        <TickBox ticked={state.seperateAudioTracks} onChange={(t) => setSeperateAudioTracks(t)} />
+        <TickBox ticked={state.seperateAudioTracks} onChange={(t) => dispatch(setSeperateAudioTracks(t))} />
       </NamedContainer>
 
       <NamedContainer title="Audio Devices To Record">
-        <ListBox options={audioDevicesToRecord} enabled={audioDevicesToRecordEnabled} />
+        <ListBox
+          options={audioDevicesToRecord}
+          enabled={state.audioDevicesToRecord.map((ad) => {
+            return ad;
+          })}
+          onChange={(isEnabled, aId) => {
+            console.log("onchange toggl", isEnabled, aId);
+            dispatch(toggleAudioDeviceToRecord({ id: aId, isEnabled }));
+          }}
+        />
       </NamedContainer>
 
       <NamedContainer title="Thumbnail Save Folder">
@@ -93,7 +102,7 @@ export default function Recording() {
           value={state.thumbSaveFolder}
           placeholder={DEFAULT_SETTINGS.recording.thumbSaveFolder}
           folderSelect
-          onChange={(s) => setThumbSaveFolder(s)}
+          onChange={(s) => dispatch(setThumbSaveFolder(s))}
         />
       </NamedContainer>
 
@@ -102,7 +111,7 @@ export default function Recording() {
           value={state.videoSaveFolder}
           placeholder={DEFAULT_SETTINGS.recording.videoSaveFolder}
           folderSelect
-          onChange={(s) => setVideoSaveFolder(s)}
+          onChange={(s) => dispatch(setVideoSaveFolder(s))}
         />
       </NamedContainer>
 
@@ -110,7 +119,7 @@ export default function Recording() {
         <TextBox
           value={state.videoSaveName}
           placeholder={DEFAULT_SETTINGS.recording.videoSaveName}
-          onChange={(s) => setVideoSaveName(s)}
+          onChange={(s) => dispatch(setVideoSaveName(s))}
         />
       </NamedContainer>
     </>
