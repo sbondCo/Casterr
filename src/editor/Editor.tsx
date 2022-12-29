@@ -55,7 +55,9 @@ export default function VideoEditor() {
     addClip,
     playClips,
     isPlayingClips,
-    adjustZoom
+    adjustZoom,
+    lockOnScrubber,
+    setLockOnScrubber
   } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef);
 
   return (
@@ -144,6 +146,7 @@ export default function VideoEditor() {
         <Button text="Add Clip" onClick={addClip} />
         <Button icon="add" onClick={() => adjustZoom(true)} />
         <Button icon="min2" onClick={() => adjustZoom(false)} />
+        <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
         <div className="ml-auto"></div>
         <ButtonConnector>
           <Button outlined={true} onClick={playClips} className="relative">

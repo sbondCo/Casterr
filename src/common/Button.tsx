@@ -9,13 +9,25 @@ interface ButtonProps extends CommonComponentProps {
   text?: string;
   disabled?: boolean;
   outlined?: boolean;
+  active?: boolean;
   slider?: SliderProps;
   children?: React.ReactNode;
   onClick?: () => void;
 }
 
 export default function Button(props: ButtonProps) {
-  const { icon, iconDirection, text, disabled = false, outlined = false, slider, children, onClick, className } = props;
+  const {
+    icon,
+    iconDirection,
+    text,
+    disabled = false,
+    outlined = false,
+    slider,
+    children,
+    onClick,
+    className,
+    active = true
+  } = props;
 
   const btnClasses = !outlined ? "bg-secondary-100 enabled:hover:bg-transparent" : "enabled:hover:bg-secondary-100";
   const sliderOpenClasses = "ml-1.5 mr-2";
@@ -24,9 +36,11 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
-      className={`flex items-center justify-center p-1.5 ${btnClasses} w-auto rounded border-2 border-secondary-100 ${
+      className={`flex items-center justify-center p-1.5 w-auto rounded border-2 border-secondary-100 ${
         className ?? ""
-      } transition-colors disabled:bg-tertiary-100 disabled:cursor-not-allowed`}
+      } transition-colors disabled:bg-tertiary-100 disabled:cursor-not-allowed ${
+        active ? btnClasses : "bg-tertiary-100"
+      }`}
       onMouseEnter={() => setSliderClasses(sliderOpenClasses)}
       onMouseLeave={() => setSliderClasses(sliderClosedClasses)}
       disabled={disabled}
