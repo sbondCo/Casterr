@@ -36,7 +36,7 @@ export default function Recording() {
       .then((devices) => {
         setAudioDevicesToRecord(
           devices.audio.map((ad) => {
-            return { id: String(ad.id), name: ad.name };
+            return { id: String(ad.id), name: `${ad.name} (${ad.isInput ? "microphone" : "speaker"})` };
           })
         );
       })
