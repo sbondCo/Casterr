@@ -40,12 +40,14 @@ export default function useEditor(
       player.addEventListener("play", updatePlayBtnIcon);
       player.addEventListener("pause", updatePlayBtnIcon);
       player.addEventListener("timeupdate", videoTimeUpdate);
+      timeline.addEventListener("click", timelineClick);
 
       return () => {
         player.removeEventListener("loadedmetadata", videoLoaded);
         player.removeEventListener("play", updatePlayBtnIcon);
         player.removeEventListener("pause", updatePlayBtnIcon);
         player.removeEventListener("timeupdate", videoTimeUpdate);
+        timeline.removeEventListener("click", timelineClick);
       };
     }
   }, []);
@@ -136,6 +138,13 @@ export default function useEditor(
         addClip();
       });
     }
+  };
+
+  /**
+   * Disable lock on scrubber if user clicks on timeline.
+   */
+  const timelineClick = () => {
+    setLockOnScrubber(false);
   };
 
   /**
