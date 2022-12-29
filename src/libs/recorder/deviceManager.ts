@@ -34,7 +34,7 @@ export interface AudioDevice {
   name: string;
 
   /**
-   * If device is an input
+   * If device is an input (microphone) or output (speaker).
    */
   isInput?: boolean;
 }
