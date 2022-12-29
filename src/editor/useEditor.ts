@@ -22,6 +22,7 @@ export default function useEditor(
   const [renderBtnDisabled, setRenderBtnDisabled] = useState<boolean>(true);
   const [isPlayingClips, setIsPlayingClips] = useState<boolean>(false); // Setting this to false will ensure clip playing stops
   const [timelineZoom, setTimelineZoom] = useState<number>(100);
+  const [lockOnScrubber, setLockOnScrubber] = useState<boolean>(false);
 
   let player = playerRef.current!;
   let timeline = timelineRef.current!;
@@ -39,20 +40,31 @@ export default function useEditor(
       player.addEventListener("play", updatePlayBtnIcon);
       player.addEventListener("pause", updatePlayBtnIcon);
       player.addEventListener("timeupdate", videoTimeUpdate);
+      timeline.addEventListener("click", timelineClick);
 
       return () => {
         player.removeEventListener("loadedmetadata", videoLoaded);
         player.removeEventListener("play", updatePlayBtnIcon);
         player.removeEventListener("pause", updatePlayBtnIcon);
         player.removeEventListener("timeupdate", videoTimeUpdate);
+        timeline.removeEventListener("click", timelineClick);
       };
     }
   }, []);
 
   // Update when playerCurTime/showTimeAsElapsed changes.
-  // Currently just updates the readable video time.
+  // Currently updates the readable video time and includes lockOnScrubber functionality.
   useEffect(() => {
     updateVideoTimeReadable();
+
+    if (!player.paused && lockOnScrubber) {
+      const scrubber = progressBar.noUiSlider?.getOrigins()[0].querySelector(".noUi-handle");
+      if (scrubber) {
+        timeline.scrollTo({
+          left: timeline.scrollLeft + scrubber.getBoundingClientRect().x - timeline.getBoundingClientRect().width / 2
+        });
+      }
+    }
   }, [playerCurTime, showTimeAsElapsed]);
 
   useEffect(() => {
@@ -126,6 +138,13 @@ export default function useEditor(
         addClip();
       });
     }
+  };
+
+  /**
+   * Disable lock on scrubber if user clicks on timeline.
+   */
+  const timelineClick = () => {
+    if (!player.paused) setLockOnScrubber(false);
   };
 
   /**
@@ -553,6 +572,8 @@ export default function useEditor(
     addClip,
     playClips,
     isPlayingClips,
-    adjustZoom
+    adjustZoom,
+    lockOnScrubber,
+    setLockOnScrubber
   };
 }

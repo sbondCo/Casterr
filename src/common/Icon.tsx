@@ -30,7 +30,8 @@ export type Icons =
   | "clips"
   | "time"
   | "edit"
-  | "search";
+  | "search"
+  | "pin";
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
@@ -276,6 +277,28 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
               strokeMiterlimit="10"
               strokeWidth="32"
               d="M338.29 338.29L448 448"
+            />
+          </g>
+        )
+      };
+    case "pin":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <circle
+              cx="256"
+              cy="96"
+              r="64"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path
+              fill="currentColor"
+              d="M272 164a9 9 0 00-9-9h-14a9 9 0 00-9 9v293.56a32.09 32.09 0 002.49 12.38l10.07 24a3.92 3.92 0 006.88 0l10.07-24a32.09 32.09 0 002.49-12.38z"
             />
           </g>
         )
