@@ -57,7 +57,7 @@ export default function useEditor(
   useEffect(() => {
     updateVideoTimeReadable();
 
-    if (lockOnScrubber) {
+    if (!player.paused && lockOnScrubber) {
       const scrubber = progressBar.noUiSlider?.getOrigins()[0].querySelector(".noUi-handle");
       if (scrubber) {
         timeline.scrollTo({
@@ -144,7 +144,7 @@ export default function useEditor(
    * Disable lock on scrubber if user clicks on timeline.
    */
   const timelineClick = () => {
-    setLockOnScrubber(false);
+    if (!player.paused) setLockOnScrubber(false);
   };
 
   /**
