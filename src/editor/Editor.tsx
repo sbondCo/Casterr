@@ -15,6 +15,7 @@ import { videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
+import Tooltip from "@/common/Tooltip";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
@@ -63,7 +64,9 @@ export default function VideoEditor() {
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
-        <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
+        <Tooltip text="Back To Videos">
+          <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
+        </Tooltip>
         <TextBox
           value={video.name}
           placeholder="Name"
@@ -144,35 +147,45 @@ export default function VideoEditor() {
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" onClick={addClip} />
-        <Button icon="add" onClick={() => adjustZoom(true)} />
-        <Button icon="min2" onClick={() => adjustZoom(false)} />
-        <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
+        <Tooltip text="Zoom In">
+          <Button icon="add" onClick={() => adjustZoom(true)} />
+        </Tooltip>
+        <Tooltip text="Zoom Out">
+          <Button icon="min2" onClick={() => adjustZoom(false)} />
+        </Tooltip>
+        <Tooltip text="Toggle Lock On Scrubber">
+          <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
+        </Tooltip>
         <div className="ml-auto"></div>
         <ButtonConnector>
-          <Button outlined={true} onClick={playClips} className="relative">
-            {isPlayingClips && (
-              <div className="flex left-0 top-0 items-center justify-center absolute w-full h-full bg-primary-100 bg-opacity-90">
-                <Icon i="pause" wh={16} />
+          <Tooltip text="Play All Clips">
+            <Button outlined={true} onClick={playClips} className="relative">
+              {isPlayingClips && (
+                <div className="flex left-0 top-0 items-center justify-center absolute w-full h-full bg-primary-100 bg-opacity-90">
+                  <Icon i="pause" wh={16} />
+                </div>
+              )}
+
+              <div className="flex gap-1.5 items-center">
+                <Icon i="clips" wh={18} />
+                <span>{numberOfClips}</span>
               </div>
-            )}
 
-            <div className="flex gap-1.5 items-center">
-              <Icon i="clips" wh={18} />
-              <span>{numberOfClips}</span>
-            </div>
-
-            <div className="flex gap-1.5 items-center">
-              <Icon i="time" wh={18} />
-              <span>{toReadableTimeFromSeconds(lengthOfClips)}</span>
-            </div>
-          </Button>
-          <Button
-            icon="arrow"
-            onClick={async () =>
-              await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number))
-            }
-            disabled={renderBtnDisabled}
-          />
+              <div className="flex gap-1.5 items-center">
+                <Icon i="time" wh={18} />
+                <span>{toReadableTimeFromSeconds(lengthOfClips)}</span>
+              </div>
+            </Button>
+          </Tooltip>
+          <Tooltip text="Continue">
+            <Button
+              icon="arrow"
+              onClick={async () =>
+                await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number))
+              }
+              disabled={renderBtnDisabled}
+            />
+          </Tooltip>
         </ButtonConnector>
       </div>
     </div>
