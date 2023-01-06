@@ -1,6 +1,6 @@
 {
   "name": "casterr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Easy screen recording and sharing",
   "author": {
@@ -16,7 +16,8 @@
     "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",
     "prettier:check": "prettier --check '**/*.{ts,js,tsx,json}'",
     "lint": "eslint .",
-    "build": "npm run build:entry-scripts && vite build && electron-builder build --config builder.config.js"
+    "compile": "npm run build:entry-scripts && vite build",
+    "build": "npm run compile && electron-builder build --config builder.config.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",

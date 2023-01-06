@@ -32,6 +32,8 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-
+          build_script_name: "compile"
+          # Extra electron-builder args.. adding config location
+          args: "--config builder.config.js"
           # If tag on commit starts with 'v' then also release build
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
