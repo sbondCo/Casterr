@@ -147,13 +147,13 @@ export default function VideoEditor() {
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" onClick={addClip} />
-        <Tooltip text="Zoom In">
+        <Tooltip text="Zoom In (Z)">
           <Button icon="add" onClick={() => adjustZoom(true)} />
         </Tooltip>
-        <Tooltip text="Zoom Out">
+        <Tooltip text="Zoom Out (X)">
           <Button icon="min2" onClick={() => adjustZoom(false)} />
         </Tooltip>
-        <Tooltip text="Toggle Lock On Scrubber">
+        <Tooltip text="Toggle Lock On Scrubber (S)">
           <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
         </Tooltip>
         <div className="ml-auto"></div>
