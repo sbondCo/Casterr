@@ -44,7 +44,7 @@ export default function Tooltip({ text, children }: TooltipProps) {
       <div ref={childRef}>{children}</div>
       <span
         ref={tooltipRef}
-        className="opacity-0 absolute top-[-35px] px-2 py-1 whitespace-nowrap bg-quaternary-200 rounded shadow transition-[transform,opacity] transition-opacity"
+        className="opacity-0 absolute top-[-35px] px-2 py-1 whitespace-nowrap bg-quaternary-200 rounded shadow transition-[transform,opacity] transition-opacity z-40"
       >
         {text}
       </span>
