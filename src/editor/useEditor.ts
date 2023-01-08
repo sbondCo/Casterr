@@ -52,6 +52,14 @@ export default function useEditor(
     }
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("keyup", keybindHandler);
+
+    return () => {
+      window.removeEventListener("keyup", keybindHandler);
+    };
+  }, [timelineZoom, volume, lockOnScrubber]);
+
   // Update when playerCurTime/showTimeAsElapsed changes.
   // Currently updates the readable video time and includes lockOnScrubber functionality.
   useEffect(() => {
@@ -176,6 +184,67 @@ export default function useEditor(
       timeline.scrollBy(-50, 0);
     } else {
       timeline.scrollBy(50, 0);
+    }
+  };
+
+  const keybindHandler = (e: KeyboardEvent) => {
+    // If target is any element other than an input, then let keybind work
+    if (!(e.target instanceof HTMLInputElement)) {
+      switch (e.code) {
+        case "Space": {
+          playPause();
+          break;
+        }
+
+        case "ArrowRight": {
+          skipVideo(5);
+          break;
+        }
+
+        case "ArrowLeft": {
+          skipVideo(-5);
+          break;
+        }
+
+        case "ArrowUp": {
+          updateVolume(player.volume + 0.1);
+          break;
+        }
+
+        case "ArrowDown": {
+          updateVolume(player.volume - 0.1);
+          break;
+        }
+
+        case "KeyC": {
+          if (e.ctrlKey) {
+            removeClipAtScrubber();
+          } else {
+            addClip();
+          }
+          break;
+        }
+
+        case "KeyM": {
+          toggleMute();
+          break;
+        }
+
+        case "KeyS": {
+          setLockOnScrubber(!lockOnScrubber);
+          break;
+        }
+
+        case "KeyX": {
+          adjustZoom(false);
+          break;
+        }
+
+        case "KeyZ": {
+          adjustZoom(true);
+          break;
+        }
+      }
     }
   };
 
@@ -348,6 +417,30 @@ export default function useEditor(
   };
 
   /**
+   * Remove clip at scrubber.
+   */
+  const removeClipAtScrubber = () => {
+    // Get handle closest to currentTime on player
+    const handles = (clipsBar.noUiSlider!.get() as string[]).map(Number);
+    const target = player.currentTime;
+    let closest = 0; // index
+    if (handles) {
+      for (let i = 0; i < handles.length; i++) {
+        const handle = handles[i];
+        if (Math.abs(handles[closest] - target) > Math.abs(handle - target)) {
+          closest = i;
+        }
+      }
+    }
+
+    // Get first handle value to give to removeClip()
+    const firstHandle = closest % 2 ? closest - 1 : closest;
+
+    // Make sure scrubber is between clip start and end bounds
+    if (target > handles[firstHandle] && target < handles[firstHandle + 1]) removeClip(firstHandle);
+  };
+
+  /**
    * Return values from clipsBar in a multidimensional array, each being a clip start and end values.
    */
   const getAllClips = () => {
@@ -481,6 +574,14 @@ export default function useEditor(
   };
 
   /**
+   * Skip video forward or back.
+   * @param s Time in seconds to skip forwards or backwards (negative number for backwards).
+   */
+  const skipVideo = (s: number) => {
+    updateVideoTime(player.currentTime + s);
+  };
+
+  /**
    * Update time on progress bar with current time on video.
    */
   const updateProgressBarTime = () => {
@@ -501,6 +602,10 @@ export default function useEditor(
   };
 
   const updateVolume = (vol: number) => {
+    // Don't allow number to be smaller than 0 or bigger than 1
+    if (vol < 0) vol = 0;
+    else if (vol > 1) vol = 1;
+
     setVolume(vol);
     player.volume = vol;
 
