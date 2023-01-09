@@ -26,7 +26,7 @@ Casterr eases the process of sharing your best moments in and out game.
 
 We're currently still under development and working towards a first release with all the main features included.
 
-Feel free to [test Casterr out](https://github.com/sbondCo/Casterr/releases) or [track our progress to 1.0](https://github.com/orgs/sbondCo/projects/2).
+Feel free to [test Casterr out](https://github.com/sbondCo/Casterr/releases) or [track our progress to the next release](https://github.com/orgs/sbondCo/projects/8).
 
 ## Contributing
 
