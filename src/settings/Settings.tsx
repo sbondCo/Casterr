@@ -2,6 +2,7 @@ import PageLayout from "@/common/PageLayout";
 import SubNav, { SubNavItem } from "@/common/SubNav";
 import { Routes, Route, Navigate } from "react-router";
 import General from "./pages/General";
+import KeyBindings from "./keybind/KeyBindings";
 import Recording from "./pages/Recording";
 
 export default function Settings() {
@@ -18,7 +19,7 @@ export default function Settings() {
         <Route path="" element={<Navigate replace to="general" />} />
         <Route path="general" element={<General />} />
         <Route path="recording" element={<Recording />} />
-        <Route path="keybindings" element={<span>Key Bindings Not Implemented</span>} />
+        <Route path="keybindings" element={<KeyBindings />} />
       </Routes>
     </PageLayout>
   );

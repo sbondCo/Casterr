@@ -54,9 +54,6 @@ export interface RecordingSettings {
   seperateAudioTracks: boolean;
 }
 
-/**
- * Not yet implemented.
- */
 export interface KeyBindingSettings {
   startStopRecording: string;
 }
