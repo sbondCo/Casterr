@@ -1,4 +1,4 @@
-import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions, globalShortcut } from "electron";
 import path from "path";
 
 const isDev = process.env.NODE_ENV === "dev";
@@ -139,6 +139,25 @@ function registerChannels(win: BrowserWindow) {
    */
   ipcMain.handle("get-primary-screen", async () => {
     return screen.getPrimaryDisplay();
+  });
+
+  /**
+   * Register a keybind.
+   * @param bind The bind to register.
+   * @param oldBind If provided, will first unbind the old bind. Useful for when updating a bind and we want to unbind the old one first.
+   */
+  ipcMain.handle("register-keybind", (_, name: string, bind: string, oldBind: string | undefined) => {
+    if (oldBind) {
+      globalShortcut.unregister(oldBind);
+    }
+    return globalShortcut.register(bind, () => win.webContents.send(`${name}-pressed`));
+  });
+
+  /**
+   * Unregister all keybinds.
+   */
+  ipcMain.on("unregister-all-keybinds", () => {
+    globalShortcut.unregisterAll();
   });
 }
 

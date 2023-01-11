@@ -69,6 +69,13 @@ const settingsSlice = createSlice({
     },
     setSeperateAudioTracks(state, action: PayloadAction<boolean>) {
       state.recording.seperateAudioTracks = action.payload;
+    },
+
+    //
+    // Key Binding Settings
+    //
+    setStartStopRecording(state, action: PayloadAction<string>) {
+      state.key.startStopRecording = action.payload;
     }
   }
 });
@@ -91,7 +98,9 @@ export const {
   setZeroLatency,
   setUltraFast,
   toggleAudioDeviceToRecord,
-  setSeperateAudioTracks
+  setSeperateAudioTracks,
+
+  setStartStopRecording
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

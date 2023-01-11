@@ -44,6 +44,8 @@ export interface PopupOptions {
    * names that have been ticked.
    */
   tickBoxes?: TickBoxInfo[];
+
+  tickBoxesChecked?: string[];
 }
 
 interface TickBoxInfo {

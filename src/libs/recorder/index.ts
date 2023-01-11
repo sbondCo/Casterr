@@ -4,6 +4,11 @@ import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
 import { isRecording } from "./recorderSlice";
+import { ipcRenderer } from "electron";
+
+ipcRenderer.on("startStopRecording-pressed", async () => {
+  await Recorder.auto();
+});
 
 export default class Recorder {
   private static readonly ffmpeg = new FFmpeg();
