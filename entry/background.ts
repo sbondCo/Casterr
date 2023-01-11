@@ -150,7 +150,7 @@ function registerChannels(win: BrowserWindow) {
     if (oldBind) {
       globalShortcut.unregister(oldBind);
     }
-    return globalShortcut.register(bind, () => win.webContents.send("bind-pressed", name));
+    return globalShortcut.register(bind, () => win.webContents.send(`${name}-pressed`));
   });
 
   /**

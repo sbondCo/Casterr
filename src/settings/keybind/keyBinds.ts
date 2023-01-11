@@ -27,8 +27,6 @@ export function registerAllBinds() {
         .catch((err) => console.error("Error registering keybind", key, "to", bind, ":", err));
     }
   }
-
-  startBindPressedListener();
 }
 
 /**
@@ -36,10 +34,4 @@ export function registerAllBinds() {
  */
 export async function updateBind(name: string, newBind: string, oldBind: string) {
   return await ipcRenderer.invoke("register-keybind", name, newBind, oldBind);
-}
-
-function startBindPressedListener() {
-  ipcRenderer.on("bind-pressed", (_, name: string) => {
-    console.log("Bind for", name, "pressed");
-  });
 }
