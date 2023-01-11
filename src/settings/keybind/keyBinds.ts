@@ -2,9 +2,6 @@ import { store } from "@/app/store";
 import { ipcRenderer } from "electron";
 import { KeyBindingSettings } from "./../types";
 
-// !!! Make sure this works always! When you have no config, it may not be created with default key binds in it.
-// Either make sure its populated on launch or combine it with DEFAULT_SETTINGS
-
 /**
  * For run on startup to register all keybinds.
  */
