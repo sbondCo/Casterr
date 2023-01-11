@@ -34,7 +34,6 @@ export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonPro
   }, [inEditMode, newKeys]);
 
   const recordNewKeyBind = (e: KeyboardEvent) => {
-    console.log(e.key);
     e.preventDefault();
 
     if (e.key === "Backspace" && newKeys.length > 0) {
