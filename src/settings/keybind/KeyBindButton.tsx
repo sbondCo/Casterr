@@ -54,6 +54,7 @@ export default function KeyBindButton({ bind, onUpdate }: KeyBindButtonProps) {
 
     let key = e.key;
 
+    // If one length, probs a letter so just upper case it
     if (key.length === 1) key = key.toUpperCase();
 
     switch (e.key) {
@@ -73,6 +74,11 @@ export default function KeyBindButton({ bind, onUpdate }: KeyBindButtonProps) {
   const saveNewKeyBind = () => {
     if (newKeys.length > 0) onUpdate(newKeys.join("+"));
     cancelNewKeyBind();
+
+    btnRef.current?.classList.add("bg-green-100");
+    setTimeout(() => {
+      btnRef.current?.classList.remove("bg-green-100");
+    }, 250);
   };
 
   return (
