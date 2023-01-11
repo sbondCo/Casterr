@@ -1,5 +1,4 @@
 import { RootState } from "@/app/store";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NamedContainer from "../../common/NamedContainer";
 import { setStartStopRecording } from "../settingsSlice";
@@ -13,6 +12,7 @@ export default function KeyBindings() {
     <>
       <NamedContainer title="Start/Stop Recording">
         <KeyBindButton
+          name="startStopRecording"
           bind={state.startStopRecording}
           onUpdate={(newBind) => {
             dispatch(setStartStopRecording(newBind));

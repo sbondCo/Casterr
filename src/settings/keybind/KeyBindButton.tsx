@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import KeyBindKeys from "./KeyBindKeys";
+import { updateBind } from "./keyBinds";
 
 interface KeyBindButtonProps {
+  name: string;
   bind: string;
   onUpdate: (newBind: string) => void;
 }
 
-export default function KeyBindButton({ bind, onUpdate }: KeyBindButtonProps) {
+export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonProps) {
   const [inEditMode, setInEditMode] = useState(false);
   const [newKeys, setNewKeys] = useState<string[]>([]);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -72,13 +74,30 @@ export default function KeyBindButton({ bind, onUpdate }: KeyBindButtonProps) {
   };
 
   const saveNewKeyBind = () => {
-    if (newKeys.length > 0) onUpdate(newKeys.join("+"));
-    cancelNewKeyBind();
+    if (newKeys.length > 0) {
+      const flashBtn = (success: boolean) => {
+        const colorClass = success ? "!bg-green-100" : "!bg-red-100";
+        btnRef.current?.classList.add(colorClass);
+        setTimeout(() => {
+          btnRef.current?.classList.remove(colorClass);
+        }, 250);
+      };
 
-    btnRef.current?.classList.add("bg-green-100");
-    setTimeout(() => {
-      btnRef.current?.classList.remove("bg-green-100");
-    }, 250);
+      updateBind(name, newKeys.join("+"), bind)
+        .then((success) => {
+          if (success) {
+            onUpdate(newKeys.join("+"));
+          }
+
+          flashBtn(success);
+        })
+        .catch((err) => {
+          console.error("Error saving new keybind!", err);
+          flashBtn(false);
+        });
+    }
+
+    cancelNewKeyBind();
   };
 
   return (
