@@ -14,7 +14,6 @@ const recorderSlice = createSlice({
   initialState: { isRecording: false, timeElapsed: 0 } as RecordingState,
   reducers: {
     isRecording(state, action: PayloadAction<boolean>) {
-      // TODO Depending on new state, start/stop a interval incrementing elapsed time
       state.isRecording = action.payload;
     },
     /**
@@ -22,10 +21,16 @@ const recorderSlice = createSlice({
      */
     incrementElapsed(state) {
       state.timeElapsed += 1;
+    },
+    /**
+     * Reset recording timeElapsed back to 0.
+     */
+    resetElapsed(state) {
+      state.timeElapsed = 0;
     }
   }
 });
 
-export const { isRecording, incrementElapsed } = recorderSlice.actions;
+export const { isRecording, incrementElapsed, resetElapsed } = recorderSlice.actions;
 
 export default recorderSlice.reducer;
