@@ -34,7 +34,8 @@ export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonPro
   }, [inEditMode, newKeys]);
 
   const recordNewKeyBind = (e: KeyboardEvent) => {
-    console.log(e);
+    console.log(e.key);
+    e.preventDefault();
 
     if (e.key === "Backspace" && newKeys.length > 0) {
       setNewKeys([...newKeys.slice(0, -1)]);
@@ -43,11 +44,7 @@ export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonPro
       cancelNewKeyBind();
       return;
     } else if (e.key === "Enter") {
-      e.preventDefault(); // Stop enter from casuing a btn click
       saveNewKeyBind();
-      return;
-    } else if (e.code === "Space") {
-      e.preventDefault(); // Stop space from casuing a btn click
       return;
     }
 
@@ -62,6 +59,9 @@ export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonPro
     switch (e.key) {
       case "Control":
         key = "Ctrl";
+        break;
+      case " ":
+        key = "Space";
         break;
     }
 
