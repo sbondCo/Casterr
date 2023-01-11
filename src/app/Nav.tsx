@@ -1,16 +1,35 @@
 import Icon, { Icons } from "@/common/Icon";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "./store";
 import Recorder from "@/libs/recorder";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
+import { useEffect } from "react";
+import { incrementElapsed, resetElapsed } from "@/libs/recorder/recorderSlice";
 
 export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
-
+  const dispatch = useDispatch();
   const statusColClasses = state.isRecording
     ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
     : "bg-white-100 shadow-[_0_0_8px_theme('colors.white.100')]";
+
+  useEffect(() => {
+    let timeElapsedSI: NodeJS.Timer | undefined;
+
+    if (state.isRecording) {
+      timeElapsedSI = setInterval(() => {
+        dispatch(incrementElapsed());
+      }, 1000);
+    } else {
+      dispatch(resetElapsed());
+      if (timeElapsedSI !== undefined) clearInterval(timeElapsedSI);
+    }
+
+    return () => {
+      clearInterval(timeElapsedSI);
+    };
+  }, [state.isRecording]);
 
   return (
     <nav className="relative flex items-center justify-center h-12 min-h-full bg-secondary-100">
