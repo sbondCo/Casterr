@@ -7,6 +7,10 @@
     "name": "sbondCo",
     "url": "https://sbond.co"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbondCo/Casterr.git"
+  },
   "main": "./entry/out/background.js",
   "scripts": {
     "serve": "npm run build:entry-scripts && node ./entry/out/serve.js",
