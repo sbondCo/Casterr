@@ -5,6 +5,7 @@ import { store } from "@/app/store";
 import { Provider } from "react-redux";
 import React, { Suspense } from "react";
 import Init from "./Init";
+import UpdateBar from "@/common/UpdateBar";
 
 export default function App() {
   const Videos = React.lazy(async () => await import("@/videos"));
@@ -29,6 +30,7 @@ export default function App() {
               <Init />
               <Dragger />
               <Nav />
+              <UpdateBar />
             </>
           )}
 

@@ -1,4 +1,5 @@
 import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions, globalShortcut } from "electron";
+import { autoUpdater } from "electron-updater";
 import path from "path";
 
 const isDev = process.env.NODE_ENV === "dev";
@@ -42,6 +43,8 @@ async function createWindow() {
     // Load the index.html when not in development
     await win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
   }
+
+  return win;
 }
 
 /**
@@ -159,6 +162,54 @@ function registerChannels(win: BrowserWindow) {
   ipcMain.on("unregister-all-keybinds", () => {
     globalShortcut.unregisterAll();
   });
+
+  /**
+   * Quit and install update.
+   */
+  ipcMain.on("install-update", () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  /**
+   * Check for updates again.
+   */
+  ipcMain.on("update-check", () => {
+    autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
+  });
+}
+
+function runUpdateCheck(win: BrowserWindow) {
+  autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
+
+  const winWC = win.webContents;
+
+  autoUpdater.on("checking-for-update", () => {
+    console.log("UPDATER: checking-for-update");
+  });
+
+  autoUpdater.on("update-available", (info) => {
+    console.log("UPDATER: update-available", info);
+    winWC.send("update-available", info);
+  });
+
+  autoUpdater.on("update-not-available", (info) => {
+    console.log("UPDATER: update-not-available", info);
+  });
+
+  autoUpdater.on("error", (err) => {
+    console.log("UPDATER: error", err);
+    winWC.send("update-error", err);
+  });
+
+  autoUpdater.on("download-progress", (progressObj) => {
+    console.log("UPDATER: download-progress", progressObj);
+    winWC.send("update-download-progress", progressObj);
+  });
+
+  autoUpdater.on("update-downloaded", (info) => {
+    console.log("UPDATER: update-downloaded", info);
+    winWC.send("update-downloaded", info);
+  });
 }
 
 /**
@@ -214,7 +265,8 @@ app.on("ready", async () => {
     }
   });
 
-  await createWindow();
+  const window = await createWindow();
+  runUpdateCheck(window);
 });
 
 /**
