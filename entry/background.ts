@@ -176,6 +176,13 @@ function registerChannels(win: BrowserWindow) {
   ipcMain.on("update-check", () => {
     autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
   });
+
+  /**
+   * Return app version info.
+   */
+  ipcMain.handle("get-version", () => {
+    return app.getVersion();
+  });
 }
 
 function runUpdateCheck(win: BrowserWindow) {
