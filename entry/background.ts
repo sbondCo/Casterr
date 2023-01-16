@@ -4,7 +4,7 @@ import path from "path";
 
 const isDev = process.env.NODE_ENV === "dev";
 
-console.log("Running Casterr. Dev Mode:", isDev);
+console.log(`Running Casterr ${app.getVersion()}. Dev Mode:`, isDev);
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
