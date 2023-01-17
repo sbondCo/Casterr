@@ -186,12 +186,11 @@ function registerChannels(win: BrowserWindow) {
 }
 
 function runUpdateCheck(win: BrowserWindow) {
-  autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
-
   const winWC = win.webContents;
 
   autoUpdater.on("checking-for-update", () => {
     console.log("UPDATER: checking-for-update");
+    winWC.send("checking-for-update");
   });
 
   autoUpdater.on("update-available", (info) => {
@@ -201,6 +200,7 @@ function runUpdateCheck(win: BrowserWindow) {
 
   autoUpdater.on("update-not-available", (info) => {
     console.log("UPDATER: update-not-available", info);
+    winWC.send("update-not-available");
   });
 
   autoUpdater.on("error", (err) => {
@@ -217,6 +217,8 @@ function runUpdateCheck(win: BrowserWindow) {
     console.log("UPDATER: update-downloaded", info);
     winWC.send("update-downloaded", info);
   });
+
+  autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
 }
 
 /**
