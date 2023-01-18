@@ -1,9 +1,12 @@
 import { ProgressInfo, UpdateDownloadedEvent } from "electron-updater";
 import { ipcRenderer } from "electron/renderer";
 import React, { useEffect, useState } from "react";
+import Icon from "./Icon";
+import Spinner from "./Spinner";
 
 export default function UpdateBar() {
   const [barMemo, setBarMemo] = useState<React.ReactElement>();
+  const [spinner, setSpinner] = useState<boolean>(false);
 
   useEffect(() => {
     ipcRenderer.on("checking-for-update", checkingForUpdate);
@@ -25,18 +28,22 @@ export default function UpdateBar() {
 
   const checkingForUpdate = () => {
     setBarMemo(<span>Checking for updates...</span>);
+    setSpinner(true);
   };
 
   const updateAvailable = () => {
     setBarMemo(<span>An update is available.. starting download.</span>);
+    setSpinner(true);
   };
 
   const updateNotAvailable = () => {
     setBarMemo(<span>Casterr is up to date.</span>);
+    setSpinner(false);
   };
 
   const progressing = (_: any, info: ProgressInfo) => {
     setBarMemo(<span>Update downloading: {info.percent.toFixed(2)}%</span>);
+    setSpinner(true);
   };
 
   const downloaded = (_: any, info: UpdateDownloadedEvent) => {
@@ -49,26 +56,45 @@ export default function UpdateBar() {
         .
       </span>
     );
+    setSpinner(false);
   };
 
   const error = () => {
     setBarMemo(
-      <span>
-        Failed to download update,{" "}
-        <span
-          className="underline font-bold cursor-pointer"
-          onClick={() => {
-            setBarMemo(<span>Retrying update check...</span>);
-            ipcRenderer.send("update-check");
-          }}
-        >
-          retry
+      <>
+        <span>
+          Failed to download update,{" "}
+          <span
+            className="underline font-bold cursor-pointer"
+            onClick={() => {
+              setBarMemo(<span>Retrying update check...</span>);
+              setSpinner(true);
+              ipcRenderer.send("update-check");
+            }}
+          >
+            retry
+          </span>
+          .
         </span>
-        .
-      </span>
+        <Icon
+          i="close"
+          wh={12}
+          className="ml-auto cursor-pointer"
+          onClick={() => {
+            setBarMemo(undefined);
+          }}
+        />
+      </>
     );
+    setSpinner(false);
   };
 
-  if (barMemo) return <div className="text-sm bg-secondary-100 px-3 pb-1">{barMemo}</div>;
+  if (barMemo)
+    return (
+      <div className="flex items-center text-sm bg-secondary-100 pb-1 px-2 gap-2">
+        {spinner ? <Spinner scale={0.25} /> : <></>}
+        {barMemo}
+      </div>
+    );
   else return <></>;
 }
