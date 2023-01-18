@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router";
 import General from "./pages/General";
 import KeyBindings from "./keybind/KeyBindings";
 import Recording from "./pages/Recording";
+import About from "./pages/About";
 
 export default function Settings() {
   return (
@@ -12,6 +13,7 @@ export default function Settings() {
         <SubNavItem text="General" />
         <SubNavItem text="Recording" />
         <SubNavItem text="Key Bindings" />
+        <SubNavItem text="About" />
       </SubNav>
 
       <Routes>
@@ -20,6 +22,7 @@ export default function Settings() {
         <Route path="general" element={<General />} />
         <Route path="recording" element={<Recording />} />
         <Route path="keybindings" element={<KeyBindings />} />
+        <Route path="about" element={<About />} />
       </Routes>
     </PageLayout>
   );
