@@ -36,9 +36,16 @@ export default function UpdateBar() {
     setSpinner(true);
   };
 
-  const updateNotAvailable = () => {
-    setBarMemo(<span>Casterr is up to date.</span>);
-    setSpinner(false);
+  const updateNotAvailable = (_: any, triggeredManually: boolean) => {
+    if (triggeredManually) {
+      // Only show this memo if user manually checks for update (by clicking Run Update Check in settings).
+      // We don't want to show this on a normal startup after auto checking for updates.
+      setBarMemo(<span>Casterr is up to date.</span>);
+      setSpinner(false);
+      setTimeout(() => {
+        setBarMemo(undefined);
+      }, 800);
+    }
   };
 
   const progressing = (_: any, info: ProgressInfo) => {

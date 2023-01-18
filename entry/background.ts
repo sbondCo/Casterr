@@ -3,6 +3,7 @@ import { autoUpdater } from "electron-updater";
 import path from "path";
 
 const isDev = process.env.NODE_ENV === "dev";
+let updateCheckTriggeredManually = false;
 
 console.log(`Running Casterr ${app.getVersion()}. Dev Mode:`, isDev);
 
@@ -171,9 +172,10 @@ function registerChannels(win: BrowserWindow) {
   });
 
   /**
-   * Check for updates again.
+   * Check for updates again **user triggered**.
    */
   ipcMain.on("update-check", () => {
+    updateCheckTriggeredManually = true;
     autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
   });
 
@@ -200,7 +202,7 @@ function runUpdateCheck(win: BrowserWindow) {
 
   autoUpdater.on("update-not-available", (info) => {
     console.log("UPDATER: update-not-available", info);
-    winWC.send("update-not-available");
+    winWC.send("update-not-available", updateCheckTriggeredManually);
   });
 
   autoUpdater.on("error", (err) => {
@@ -218,6 +220,7 @@ function runUpdateCheck(win: BrowserWindow) {
     winWC.send("update-downloaded", info);
   });
 
+  updateCheckTriggeredManually = false;
   autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
 }
 
