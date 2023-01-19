@@ -10,8 +10,8 @@ const config = {
   appId: "sbondCo.Casterr",
   productName: "Casterr",
   copyright: "Copyright © 2022 sbondCo",
-  compression: "maximum",
   linux: {
+    // Not using compression since it makes the AppImage open so much slower. Worth the extra size for some of your life back.
     target: ["AppImage"],
     icon: "assets/icons",
     category: "Utility",
@@ -21,7 +21,8 @@ const config = {
   win: {
     target: "NSIS",
     artifactName: "${productName} ${version} Setup.${ext}",
-    icon: "assets/icons/256x256.ico"
+    icon: "assets/icons/256x256.ico",
+    compression: "maximum"
   },
   files: ["./dist/vi/**", "./entry/out/**"],
   extraFiles: [
