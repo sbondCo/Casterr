@@ -13,6 +13,10 @@ export default class PathHelper {
     return Path.join(this.mainFolderPath, "tools");
   }
 
+  public static get logsPath() {
+    return Path.join(this.mainFolderPath, "logs");
+  }
+
   public static get homeFolderPath() {
     return os.homedir();
   }

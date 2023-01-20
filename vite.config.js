@@ -50,7 +50,9 @@ const commonjsPackages = [
   "vm",
   "wasi",
   "worker_threads",
-  "zlib"
+  "zlib",
+  // Custom
+  "winston"
 ];
 
 // https://vitejs.dev/config/

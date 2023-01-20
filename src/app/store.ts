@@ -9,10 +9,11 @@ import { DEFAULT_SETTINGS } from "./constants";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import File from "@/libs/helpers/file";
 import { Video } from "@/videos/types";
+import { logger } from "@/libs/logger";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
-    console.log("saver:", action);
+    logger.debug("saver", action);
 
     // Call the next dispatch method in the middleware chain.
     const returnValue = next(action);
