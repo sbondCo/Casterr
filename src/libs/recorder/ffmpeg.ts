@@ -39,14 +39,14 @@ export default class FFmpeg {
     this.logger = createLogger({
       transports: [
         new DailyRotateFile({
-          format: format.combine(
-            format.splat(),
-            format.printf(({ message, ...meta }) => {
-              // @ts-expect-error
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              return `${message} ${meta[Symbol("splat")]}`;
-            })
-          ),
+          format: format.printf((info) => {
+            const { message, ...meta } = info;
+            // @ts-expect-error
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            return `${message} ${meta[Symbol.for("splat")]
+              .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
+              .join(" ")}`;
+          }),
           filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),
           datePattern: "YYYY-MM-DD-HH",
           maxFiles: 12

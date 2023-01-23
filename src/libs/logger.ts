@@ -12,7 +12,7 @@ const fileFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
   // @ts-expect-error
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
-    .map((v: any) => (typeof v === "object" ? JSON.stringify(v) : v))
+    .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
     .join(" ")}`;
 });
 
@@ -34,6 +34,7 @@ export const logger = createLogger({
       filename: path.join(Paths.logsPath, "casterr-%DATE%.log"),
       datePattern: "YYYY-MM-DD",
       maxFiles: "2d",
+      maxSize: "30m",
       format: format.combine(format.timestamp(), fileFormat)
     })
   ]
