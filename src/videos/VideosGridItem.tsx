@@ -1,6 +1,7 @@
 import Icon from "@/common/Icon";
 import { toReadableFileSize, toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import PathHelper from "@/libs/helpers/pathHelper";
+import { logger } from "@/libs/logger";
 import { useEffect, useState } from "react";
 import { Video } from "./types";
 
@@ -15,7 +16,7 @@ export default function VideosGridItem({ video }: { video: Video }) {
         if (exists) setImg(thumbPath);
       })
       .catch((e) => {
-        console.error(`Unable to verify existence of thumbnail (${thumbPath}).`, e);
+        logger.error("VideosGridItem", `Unable to verify existence of thumbnail (${thumbPath}).`, e);
       });
   });
 

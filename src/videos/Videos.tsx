@@ -5,6 +5,7 @@ import Loader from "@/common/Loader";
 import PageLayout from "@/common/PageLayout";
 import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
+import { logger } from "@/libs/logger";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -17,7 +18,7 @@ export default function Videos() {
     if (f.type.includes("video")) {
       // TODO when on `clips` sub page, add dropped videos as clips
       RecordingsManager.add(f.path).catch((e) => {
-        console.error("Drag&Drop handler failed to add recording via RecordsManager.", e);
+        logger.error("Videos", "Drag&Drop handler failed to add recording via RecordsManager.", e);
       });
     }
   });
@@ -62,7 +63,7 @@ export default function Videos() {
       videos.length !== allFilteredVideos.length &&
       el?.scrollHeight - el?.scrollTop - 200 <= el?.clientHeight
     ) {
-      console.log("Loading 30 more videos.");
+      logger.log("Videos", "Loading 30 more videos.");
       setVideos([...videos, ...allFilteredVideos.slice(videos.length, videos.length + 30)]);
     }
   };

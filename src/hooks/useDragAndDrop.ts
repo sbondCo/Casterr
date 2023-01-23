@@ -1,3 +1,4 @@
+import { logger } from "@/libs/logger";
 import React, { useEffect, useState } from "react";
 
 /**
@@ -43,7 +44,7 @@ export default function useDragAndDrop(elRef: React.RefObject<HTMLElement>, file
         const f = item.getAsFile();
 
         if (item.kind === "file" && f) {
-          console.log("Running callback for dropped file:", f);
+          logger.info("DragAndDrop", "Running callback for dropped file:", f);
           fileDropped(f);
         }
       }

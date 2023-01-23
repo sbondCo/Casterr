@@ -1,4 +1,5 @@
 import useDebouncer from "@/hooks/useDebouncer";
+import { logger } from "@/libs/logger";
 import { ipcRenderer } from "electron";
 import { useState } from "react";
 import Icon, { Icons } from "./Icon";
@@ -67,7 +68,7 @@ export default function TextBox(props: TextBoxProps) {
         }
       })
       .catch((e) => {
-        console.error("show-open-dialog call failed!", e);
+        logger.error("textbox", "show-open-dialog call failed!", e);
       });
   };
 

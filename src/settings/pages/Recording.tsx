@@ -4,6 +4,7 @@ import DropDown, { DropDownItem } from "@/common/DropDown";
 import ListBox, { ListBoxItem } from "@/common/ListBox";
 import TextBox from "@/common/TextBox";
 import TickBox from "@/common/TickBox";
+import { logger } from "@/libs/logger";
 import DeviceManager from "@/libs/recorder/deviceManager";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,7 +41,7 @@ export default function Recording() {
           })
         );
       })
-      .catch((err) => console.error("Failed to get audio devices!", err));
+      .catch((err) => logger.error("Recording", "Failed to get audio devices!", err));
   });
 
   return (
@@ -91,7 +92,6 @@ export default function Recording() {
             return ad;
           })}
           onChange={(isEnabled, aId) => {
-            console.log("onchange toggl", isEnabled, aId);
             dispatch(toggleAudioDeviceToRecord({ id: aId, isEnabled }));
           }}
         />

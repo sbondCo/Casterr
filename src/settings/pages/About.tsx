@@ -1,4 +1,5 @@
 import Button from "@/common/Button";
+import { logger } from "@/libs/logger";
 import { ipcRenderer, shell } from "electron";
 import { useEffect, useState } from "react";
 
@@ -12,7 +13,7 @@ export default function About() {
       .then((v) => {
         setVersion(v);
       })
-      .catch((err) => console.error("Failed to get version info:", err));
+      .catch((err) => logger.error("About", "Failed to get version info:", err));
   });
 
   return (

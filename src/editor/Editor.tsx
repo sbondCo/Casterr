@@ -16,6 +16,7 @@ import Notifications from "@/libs/helpers/notifications";
 import { RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import Tooltip from "@/common/Tooltip";
+import { logger } from "@/libs/logger";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function VideoEditor() {
   const dispatch = useDispatch();
   const genState = useSelector((store: RootState) => store.settings.general);
 
-  if (!video.videoPath) console.error("TODO: No Video Path in state, return to home or show error");
+  if (!video.videoPath) logger.error("Editor", "TODO: No Video Path in state, return to home or show error");
 
   const [error, setError] = useState<string>();
 
@@ -33,7 +34,7 @@ export default function VideoEditor() {
       .then((v) => {
         if (!v) setError("Video file does not exist!");
       })
-      .catch((e) => console.error("Unable to verify video files existence.", e));
+      .catch((e) => logger.error("Editor", "Unable to verify video files existence.", e));
   }, [video.videoPath]);
 
   const playerRef = useRef<HTMLVideoElement>(null);
@@ -72,7 +73,7 @@ export default function VideoEditor() {
           placeholder="Name"
           className="w-full"
           onChange={(newName) => {
-            console.log("Changing video name to:", newName);
+            logger.info("Editor", "Changing video name to:", newName);
             dispatch(videoRenamed({ videoPath: video.videoPath, newName, isClip: video.isClip }));
           }}
         />
@@ -81,7 +82,7 @@ export default function VideoEditor() {
           onClick={() => {
             const rm = (rmFromDsk: boolean) => {
               RecordingsManager.delete(video, rmFromDsk).catch((e) =>
-                console.error("Failed to delete video from video editor!", e)
+                logger.error("Editor", "Failed to delete video from video editor!", e)
               );
               navigate(-1);
             };
@@ -104,7 +105,7 @@ export default function VideoEditor() {
                   Notifications.rmPopup("DELETE-VIDEO");
                 })
                 .catch((e) => {
-                  console.error("Failed to show DELETE-VIDEO popup!", e);
+                  logger.error("Editor", "Failed to show DELETE-VIDEO popup!", e);
                 });
             }
           }}

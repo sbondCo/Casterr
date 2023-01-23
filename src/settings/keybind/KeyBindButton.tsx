@@ -1,3 +1,4 @@
+import { logger } from "@/libs/logger";
 import { useEffect, useRef, useState } from "react";
 import KeyBindKeys from "./KeyBindKeys";
 import { updateBind } from "./keyBinds";
@@ -91,7 +92,7 @@ export default function KeyBindButton({ name, bind, onUpdate }: KeyBindButtonPro
           flashBtn(success);
         })
         .catch((err) => {
-          console.error("Error saving new keybind!", err);
+          logger.error("KeyBindButton", "Error saving new keybind!", err);
           flashBtn(false);
         });
     }

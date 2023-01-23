@@ -4,7 +4,7 @@
  */
 
 import path from "path";
-import PathHelper from "@/libs/helpers/pathHelper";
+import Paths from "@/libs/helpers/paths";
 import { Settings } from "@/settings/types";
 
 // App settings, not user editable.
@@ -22,8 +22,8 @@ export const DEFAULT_SETTINGS = {
     deleteVideosFromDisk: false
   },
   recording: {
-    thumbSaveFolder: path.join(PathHelper.mainFolderPath, "Thumbs"),
-    videoSaveFolder: path.join(PathHelper.homeFolderPath, "Videos", "Casterr"),
+    thumbSaveFolder: path.join(Paths.mainFolderPath, "Thumbs"),
+    videoSaveFolder: path.join(Paths.homeFolderPath, "Videos", "Casterr"),
     videoSaveName: "%d.%m.%Y - %H.%i.%s",
     videoDevice: "Default",
     monitorToRecord: {

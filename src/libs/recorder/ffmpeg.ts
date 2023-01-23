@@ -4,10 +4,11 @@ import childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
+import Paths from "../helpers/paths";
+import { createLogger, format, Logger } from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
 export default class FFmpeg {
-  constructor(private readonly which: "ffmpeg" | "ffprobe" = "ffmpeg") {}
-
   /**
    * FFmpeg exe name which is dependent on the user's platform.
    */
@@ -32,6 +33,20 @@ export default class FFmpeg {
 
   // FFmpeg/probe process
   private ffProcess: childProcess.ChildProcess | undefined;
+  private readonly logger: Logger;
+
+  constructor(private readonly which: "ffmpeg" | "ffprobe" = "ffmpeg") {
+    this.logger = createLogger({
+      transports: [
+        new DailyRotateFile({
+          format: format.combine(format.timestamp(), format.simple()),
+          filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),
+          datePattern: "YYYY-MM-DD-HH:mm:ss",
+          maxFiles: 5
+        })
+      ]
+    });
+  }
 
   /**
    * Run FF process and send args to it.
@@ -50,7 +65,7 @@ export default class FFmpeg {
   ) {
     // Get FFmpeg path
     const ffPath = await this.getPath();
-    console.log("FF Process starting:", ffPath);
+    this.logger.info("FF Process starting:", ffPath);
 
     return await new Promise((resolve, reject) => {
       // Create child process and send args to it
@@ -58,19 +73,19 @@ export default class FFmpeg {
 
       // Run stdoutCallback when recieving stdout
       this.ffProcess.stdout?.on("data", (data) => {
-        console.log("FFProcess stdout:", data.toString());
+        this.logger.info("FFProcess stdout:", data.toString());
         if (outputs?.stdoutCallback !== undefined) outputs?.stdoutCallback(data);
       });
 
       // Run stderrCallback when recieving stderr
       this.ffProcess.stderr?.on("data", (data) => {
-        console.log("FFProcess stderr:", data.toString());
+        this.logger.info("FFProcess stderr:", data.toString());
         if (outputs?.stderrCallback !== undefined) outputs?.stderrCallback(data);
       });
 
       // When ffProcess exits
       this.ffProcess.on("close", (code) => {
-        console.info("FFProcess exited with code", code);
+        this.logger.info("FFProcess exited with code", code);
         // Call onExitCallback if set to do so
         if (outputs?.onExitCallback !== undefined) outputs?.onExitCallback(code);
 
@@ -105,7 +120,7 @@ export default class FFmpeg {
    * If FFmpeg/probe doesn't exist, download it first then return its path.
    */
   public async getPath() {
-    const toolsDir = await PathHelper.ensureExists(PathHelper.toolsPath, true);
+    const toolsDir = await PathHelper.ensureExists(Paths.toolsPath, true);
 
     const { ffmpegPath, ffprobePath } = await this.getFFmpeg(toolsDir);
 
@@ -144,13 +159,13 @@ export default class FFmpeg {
       await downloader.get(dlURL, downloadTo, (progress) => {
         // Keep updating popup with new progress %
         Notifications.popup({ id: popupId, title: "Fetching Recording Utilities", percentage: progress }).catch((e) => {
-          console.error(`Failed to update ${popupId} popup with progress.`, e);
+          this.logger.error(`Failed to update ${popupId} popup with progress.`, e);
         });
       });
 
       // Update popup to extracting phase
       Notifications.popup({ id: popupId, title: "Fetching Recording Utilities" }).catch((e) =>
-        console.error(`Failed to update ${popupId} popup with new title (Going on to utilities phase)`, e)
+        this.logger.error(`Failed to update ${popupId} popup with new title (Going on to utilities phase)`, e)
       );
 
       // Extract zip
@@ -197,13 +212,13 @@ export default class FFmpeg {
     await downloader.get(dlURL, dlTo, (progress) => {
       // Keep updating popup with new progress %
       Notifications.popup({ id: popupId, title: "Fetching Recording Devices", percentage: progress }).catch((e) =>
-        console.error(`Failed to update ${popupId} popup with new progress`, e)
+        this.logger.error(`Failed to update ${popupId} popup with new progress`, e)
       );
     });
 
     // Extract
     Notifications.popup({ id: popupId, title: "Extracting Recording Devices" }).catch((e) =>
-      console.error(`Failed to update ${popupId} popup with new title (Going on to extracting phase)`, e)
+      this.logger.error(`Failed to update ${popupId} popup with new title (Going on to extracting phase)`, e)
     );
     await PathHelper.extract(dlTo, installDir, dlls);
 
