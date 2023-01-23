@@ -13,7 +13,7 @@ import { logger } from "@/libs/logger";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
-    logger.debug("saver", action);
+    logger.info("saver", action);
 
     // Call the next dispatch method in the middleware chain.
     const returnValue = next(action);

@@ -16,7 +16,7 @@ export function registerAllBinds() {
   for (const key in keyBinds) {
     if (Object.prototype.hasOwnProperty.call(keyBinds, key)) {
       const bind = keyBinds[key as keyof KeyBindingSettings];
-      logger.debug("KeyBinds", key, ":", bind);
+      logger.info("KeyBinds", key, ":", bind);
       ipcRenderer
         .invoke("register-keybind", key, bind)
         .then((success) => {

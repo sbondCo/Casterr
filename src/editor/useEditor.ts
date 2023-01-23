@@ -260,7 +260,7 @@ export default function useEditor(
     if (clipsBar.noUiSlider) clipsBar.noUiSlider.destroy();
 
     if (starts.length > 0) {
-      logger.debug("Editor", "createClipsBar", starts, connects, tooltips);
+      logger.info("Editor", "createClipsBar", starts, connects, tooltips);
       // Create new clipsBar with passed args
       noUiSlider.create(clipsBar, {
         start: starts,
