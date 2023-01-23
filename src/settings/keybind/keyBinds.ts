@@ -1,4 +1,5 @@
 import { store } from "@/app/store";
+import { logger } from "@/libs/logger";
 import { ipcRenderer } from "electron";
 import { KeyBindingSettings } from "./../types";
 
@@ -6,7 +7,7 @@ import { KeyBindingSettings } from "./../types";
  * For run on startup to register all keybinds.
  */
 export function registerAllBinds() {
-  console.log("Registering all key binds.");
+  logger.info("KeyBinds", "Registering all key binds.");
   const keyBinds = store.getState().settings.key;
 
   // Unregister all keybinds first, useful incase refresh occurs and binds are still applied already.
@@ -15,13 +16,13 @@ export function registerAllBinds() {
   for (const key in keyBinds) {
     if (Object.prototype.hasOwnProperty.call(keyBinds, key)) {
       const bind = keyBinds[key as keyof KeyBindingSettings];
-      console.log(key, ":", bind);
+      logger.info("KeyBinds", key, ":", bind);
       ipcRenderer
         .invoke("register-keybind", key, bind)
         .then((success) => {
-          if (!success) console.error("Failed to register", key, "to", bind);
+          if (!success) logger.error("KeyBinds", "Failed to register", key, "to", bind);
         })
-        .catch((err) => console.error("Error registering keybind", key, "to", bind, ":", err));
+        .catch((err) => logger.error("KeyBinds", "Error registering keybind", key, "to", bind, ":", err));
     }
   }
 }

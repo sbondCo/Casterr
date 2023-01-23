@@ -1,4 +1,6 @@
 import Button from "@/common/Button";
+import Paths from "@/libs/helpers/paths";
+import { logger } from "@/libs/logger";
 import { ipcRenderer, shell } from "electron";
 import { useEffect, useState } from "react";
 
@@ -12,7 +14,7 @@ export default function About() {
       .then((v) => {
         setVersion(v);
       })
-      .catch((err) => console.error("Failed to get version info:", err));
+      .catch((err) => logger.error("About", "Failed to get version info:", err));
   });
 
   return (
@@ -24,7 +26,8 @@ export default function About() {
       </div>
 
       <div className="flex flex-row gap-3">
-        <Button text="Run Update Check" onClick={() => ipcRenderer.send("update-check")} />
+        <Button text="Update Check" onClick={() => ipcRenderer.send("update-check")} />
+        <Button text="View Logs" onClick={async () => await shell.openPath(Paths.logsPath)} />
         <Button
           text="Open GitHub Repo"
           onClick={async () => await shell.openExternal("https://github.com/sbondCo/Casterr")}

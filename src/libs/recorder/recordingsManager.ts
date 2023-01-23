@@ -7,6 +7,7 @@ import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
 import { Video } from "@/videos/types";
 import { videoAdded, videoRemoved } from "@/videos/videosSlice";
+import { logger } from "../logger";
 
 export default class RecordingsManager {
   /**
@@ -125,7 +126,7 @@ export default class RecordingsManager {
       .then(async (popup) => {
         if (popup.action === "cancel") {
           Notifications.popup({ id: popupName, title: "Cancelling Processing Of Your Video" }).catch((e) => {
-            console.error("Failed to update cancel clipping process notification", e);
+            logger.error("RecordingsManager", "Failed to update cancel clipping process notification", e);
           });
 
           // Stop ffmpeg and destroy manifestStream
@@ -142,7 +143,7 @@ export default class RecordingsManager {
         }
       })
       .catch((e) => {
-        console.error("Failed to show cancel clipping process notification", e);
+        logger.error("RecordingsManager", "Failed to show cancel clipping process notification", e);
       });
 
     // Create clips from video.

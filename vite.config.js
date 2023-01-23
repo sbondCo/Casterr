@@ -50,7 +50,10 @@ const commonjsPackages = [
   "vm",
   "wasi",
   "worker_threads",
-  "zlib"
+  "zlib",
+  // Custom
+  "winston",
+  "winston-daily-rotate-file"
 ];
 
 // https://vitejs.dev/config/

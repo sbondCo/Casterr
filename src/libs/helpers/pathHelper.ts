@@ -1,22 +1,11 @@
-import os from "os";
 import Path from "path";
 import { promises as fs, constants as fsconstants } from "fs";
 import childProcess from "child_process";
 import JSZip from "jszip";
+import Paths from "./paths";
+import { logger } from "../logger";
 
 export default class PathHelper {
-  public static get mainFolderPath() {
-    return Path.join(os.homedir(), "Documents", "Casterr");
-  }
-
-  public static get toolsPath() {
-    return Path.join(this.mainFolderPath, "tools");
-  }
-
-  public static get homeFolderPath() {
-    return os.homedir();
-  }
-
   /**
    * Get the path to a file used by Casterr.
    * Paths are hardcoded, only supported files that are listed here will work.
@@ -39,7 +28,7 @@ export default class PathHelper {
 
     // Join `mainFolderPath` and `path` to create the
     // full path that we should make sure exists then return
-    return await this.ensureExists(Path.join(this.mainFolderPath, ...path));
+    return await this.ensureExists(Path.join(Paths.mainFolderPath, ...path));
   }
 
   public static async exists(path: string): Promise<boolean> {
@@ -77,7 +66,7 @@ export default class PathHelper {
       if (options !== undefined) {
         if (options.hidden) {
           this.hide(path).catch((e) => {
-            console.error("Failed to hide file", path, e);
+            logger.error("PathHelper", "Failed to hide file", path, e);
           });
         }
       }
@@ -142,7 +131,7 @@ export default class PathHelper {
       .then(async (files) => {
         for (const f of files) {
           fs.unlink(Path.join(path, f)).catch((e) => {
-            console.error("Failed to rm file before removing directory", f, e);
+            logger.error("PathHelper", "Failed to rm file before removing directory", f, e);
           });
         }
 

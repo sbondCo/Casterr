@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import noUiSlider, { PipsMode, target } from "nouislider";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import { removeFirst } from "@/libs/helpers/extensions/array";
+import { logger } from "@/libs/logger";
 
 export default function useEditor(
   playerRef: React.RefObject<HTMLVideoElement>,
@@ -98,7 +99,7 @@ export default function useEditor(
    * EV HANDLER
    */
   const videoLoaded = () => {
-    console.log("VIDEO LOADED");
+    logger.info("Editor", "VIDEO LOADED");
     // TODO volume should be stored in state (settings?) and restored - volume being reset to default when looking at diff clips is not nice
     updateVolume(0.8); // Set default volume and icon
 
@@ -259,7 +260,7 @@ export default function useEditor(
     if (clipsBar.noUiSlider) clipsBar.noUiSlider.destroy();
 
     if (starts.length > 0) {
-      console.log("createClipsBar", starts, connects, tooltips);
+      logger.info("Editor", "createClipsBar", starts, connects, tooltips);
       // Create new clipsBar with passed args
       noUiSlider.create(clipsBar, {
         start: starts,
@@ -645,7 +646,7 @@ export default function useEditor(
       setTimelineZoom(newZoom);
     }
 
-    console.log(increase, newZoom, timelineZoom);
+    logger.info("Editor", increase, newZoom, timelineZoom);
 
     if (newZoom) {
       // Adjust width of bars

@@ -9,10 +9,11 @@ import { DEFAULT_SETTINGS } from "./constants";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import File from "@/libs/helpers/file";
 import { Video } from "@/videos/types";
+import { logger } from "@/libs/logger";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
-    console.log("saver:", action);
+    logger.info("saver", action);
 
     // Call the next dispatch method in the middleware chain.
     const returnValue = next(action);
@@ -33,7 +34,7 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       // HACK sorta.. might need to change how this works if there is
       // ever an action that doesn't have isClip accessible like this
       const isClip = action.payload.isClip;
-      console.log("Video state changed, writing changes to file. isClip:", isClip);
+      logger.info("saver", "Video state changed, writing changes to file. isClip:", isClip);
       if (isClip === true || isClip === false) {
         if (action.type.includes("videos/videoAdded")) {
           // Actions where should append to file instead of replace all
@@ -50,7 +51,8 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
           );
         }
       } else {
-        console.error(
+        logger.error(
+          "saver",
           "Video action payload does not include accessible `isClip` property! Skipping save!",
           action.payload
         );
@@ -84,7 +86,7 @@ const rehydrated = async () => {
       const r = await fs.readFile(stgsFile, "utf-8");
       if (r) Object.assign(reh.settings, JSON.parse(r));
     } catch (err) {
-      console.error("Couldn't restore settings:", err);
+      logger.error("rehydrate", "Couldn't restore settings:", err);
     }
 
     const readVideoFile = async (clips: boolean): Promise<Video[]> => {
@@ -99,20 +101,20 @@ const rehydrated = async () => {
       const recordings = await readVideoFile(false);
       if (recordings && recordings.length > 0) Object.assign(reh.videos.recordings, recordings);
     } catch (err) {
-      console.error("Couldn't restore past recordings:", err);
+      logger.error("rehydrate", "Couldn't restore past recordings:", err);
     }
 
     try {
       const clips = await readVideoFile(true);
       if (clips && clips.length > 0) Object.assign(reh.videos.clips, clips);
     } catch (err) {
-      console.error("Couldn't restore clips:", err);
+      logger.error("rehydrate", "Couldn't restore clips:", err);
     }
 
     console.groupCollapsed("Restored State");
-    console.log("Settings", reh.settings);
-    console.log("Recordings", reh.videos.recordings);
-    console.log("Clips", reh.videos.clips);
+    logger.info("rehydrate", "Settings", reh.settings);
+    logger.info("rehydrate", "Recordings", reh.videos.recordings);
+    logger.info("rehydrate", "Clips", reh.videos.clips);
     console.groupEnd();
 
     return reh;
