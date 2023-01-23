@@ -41,9 +41,10 @@ export default class FFmpeg {
         new DailyRotateFile({
           format: format.combine(
             format.splat(),
-            format.printf((info) => {
-              const { message, ...meta } = info;
-              return `${message} ${meta[Symbol.for("splat")]}`;
+            format.printf(({ message, ...meta }) => {
+              // @ts-expect-error
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              return `${message} ${meta[Symbol("splat")]}`;
             })
           ),
           filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),

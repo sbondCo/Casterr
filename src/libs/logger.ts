@@ -10,6 +10,7 @@ import Paths from "./helpers/paths";
 
 const fileFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
+  // @ts-expect-error
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
     .map((v: any) => (typeof v === "object" ? JSON.stringify(v) : v))
     .join(" ")}`;
@@ -17,6 +18,7 @@ const fileFormat = format.printf((info) => {
 
 const consoleFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
+  // @ts-expect-error
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
     .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
     .join("")}`;
