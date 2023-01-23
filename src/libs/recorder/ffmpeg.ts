@@ -39,10 +39,16 @@ export default class FFmpeg {
     this.logger = createLogger({
       transports: [
         new DailyRotateFile({
-          format: format.combine(format.timestamp(), format.simple()),
+          format: format.combine(
+            format.splat(),
+            format.printf((info) => {
+              const { message, ...meta } = info;
+              return `${message} ${meta[Symbol.for("splat")]}`;
+            })
+          ),
           filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),
-          datePattern: "YYYY-MM-DD-HH:mm:ss",
-          maxFiles: 5
+          datePattern: "YYYY-MM-DD-HH",
+          maxFiles: 12
         })
       ]
     });
