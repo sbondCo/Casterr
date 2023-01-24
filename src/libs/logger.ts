@@ -8,11 +8,22 @@ import Paths from "./helpers/paths";
  * `Message` will be used as AREA of code (eg Recorder is an area).
  */
 
+const formatMap = (v: any) => {
+  if (v instanceof Error) {
+    if (v.stack) return v.stack;
+    else return v;
+  } else if (typeof v === "object") {
+    return JSON.stringify(v, undefined, 2);
+  } else {
+    return v;
+  }
+};
+
 const fileFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
   // @ts-expect-error
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
-    .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
+    .map(formatMap)
     .join(" ")}`;
 });
 
@@ -20,8 +31,8 @@ const consoleFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
   // @ts-expect-error
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
-    .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
-    .join("")}`;
+    .map(formatMap)
+    .join(" ")}`;
 });
 
 export const logger = createLogger({
