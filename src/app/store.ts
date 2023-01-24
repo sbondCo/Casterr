@@ -114,7 +114,7 @@ const rehydrated = async () => {
     }
 
     console.groupCollapsed("Restored State");
-    logger.info("rehydrate", "General", reh.settings.general);
+    logger.info("rehydrate", "Settings", reh.settings);
     logger.info("rehydrate", "Recordings", reh.videos.recordings);
     logger.info("rehydrate", "Clips", reh.videos.clips);
     console.groupEnd();
