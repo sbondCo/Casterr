@@ -71,20 +71,22 @@ const rehydrated = async () => {
   try {
     // Create reh var and clone default values into it.
     const reh = {
-      settings: {},
+      settings: { ...DEFAULT_SETTINGS },
       videos: {
         recordings: [] as Video[],
         clips: [] as Video[]
       }
     };
 
-    // Assigning directly above causes unoverridable error.
-    Object.assign(reh.settings, DEFAULT_SETTINGS);
-
     try {
       const stgsFile = await PathHelper.getFile("settings");
       const r = await fs.readFile(stgsFile, "utf-8");
-      if (r) Object.assign(reh.settings, JSON.parse(r));
+      if (r) {
+        const rjson = JSON.parse(r);
+        reh.settings.general = { ...DEFAULT_SETTINGS.general, ...rjson.general };
+        reh.settings.recording = { ...DEFAULT_SETTINGS.recording, ...rjson.recording };
+        reh.settings.key = { ...DEFAULT_SETTINGS.key, ...rjson.key };
+      }
     } catch (err) {
       logger.error("rehydrate", "Couldn't restore settings:", err);
     }
