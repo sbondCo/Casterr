@@ -24,6 +24,9 @@ const settingsSlice = createSlice({
     setDeleteVideosFromDisk(state, action: PayloadAction<boolean>) {
       state.general.deleteVideosFromDisk = action.payload;
     },
+    setVideoEditorVolume(state, action: PayloadAction<number>) {
+      state.general.videoEditorVolume = action.payload;
+    },
 
     //
     // Recording Settings
@@ -86,6 +89,7 @@ export const {
   setRcStatusDblClkToRecord,
   setDeleteVideoConfirmationDisabled,
   setDeleteVideosFromDisk,
+  setVideoEditorVolume,
 
   setThumbSaveFolder,
   setVideoSaveFolder,

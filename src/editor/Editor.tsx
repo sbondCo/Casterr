@@ -17,6 +17,7 @@ import { RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import Tooltip from "@/common/Tooltip";
 import { logger } from "@/libs/logger";
+import { setVideoEditorVolume } from "@/settings/settingsSlice";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export default function VideoEditor() {
     adjustZoom,
     lockOnScrubber,
     setLockOnScrubber
-  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef);
+  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, genState.videoEditorVolume);
 
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
@@ -142,9 +143,15 @@ export default function VideoEditor() {
             wheelStep: 0.1,
             onChange: (val) => {
               updateVolume(val);
+            },
+            onFinishedChanging: (val) => {
+              dispatch(setVideoEditorVolume(val));
             }
           }}
-          onClick={toggleMute}
+          onClick={() => {
+            const newVol = toggleMute();
+            dispatch(setVideoEditorVolume(newVol));
+          }}
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" onClick={addClip} />

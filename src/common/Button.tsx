@@ -59,6 +59,7 @@ export default function Button(props: ButtonProps) {
             step={slider.step}
             wheelStep={slider.wheelStep}
             onChange={slider.onChange}
+            onFinishedChanging={slider.onFinishedChanging}
           />
         </div>
       )}

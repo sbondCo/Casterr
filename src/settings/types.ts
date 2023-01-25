@@ -32,6 +32,11 @@ export interface GeneralSettings {
    * in Casterr.
    */
   deleteVideosFromDisk: boolean;
+
+  /**
+   * Video editor volume.
+   */
+  videoEditorVolume: number;
 }
 
 export interface RecordingSettings {

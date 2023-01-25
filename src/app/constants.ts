@@ -19,7 +19,8 @@ export const DEFAULT_SETTINGS = {
     rcStatusAlsoStopStart: true,
     rcStatusDblClkToRecord: false,
     deleteVideoConfirmationDisabled: false,
-    deleteVideosFromDisk: false
+    deleteVideosFromDisk: false,
+    videoEditorVolume: 0.8
   },
   recording: {
     thumbSaveFolder: path.join(Paths.mainFolderPath, "Thumbs"),

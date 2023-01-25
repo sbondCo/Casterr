@@ -10,7 +10,8 @@ export default function useEditor(
   playerRef: React.RefObject<HTMLVideoElement>,
   timelineRef: React.RefObject<HTMLDivElement>,
   progressBarRef: React.RefObject<HTMLDivElement>,
-  clipsBarRef: React.RefObject<HTMLDivElement>
+  clipsBarRef: React.RefObject<HTMLDivElement>,
+  initialVolume: number
 ) {
   const [playBtnIcon, setPlayBtnIcon] = useState<"play" | "pause">("play");
   const [volume, setVolume] = useState<number>(0.8);
@@ -100,9 +101,7 @@ export default function useEditor(
    */
   const videoLoaded = () => {
     logger.info("Editor", "VIDEO LOADED");
-    // TODO volume should be stored in state (settings?) and restored - volume being reset to default when looking at diff clips is not nice
-    updateVolume(0.8); // Set default volume and icon
-
+    updateVolume(initialVolume); // Set default volume and icon
     updateVideoTimeReadable();
 
     if (!progressBar.classList.contains("noUi-target")) {
@@ -623,8 +622,10 @@ export default function useEditor(
   const toggleMute = () => {
     if (volume > 0) {
       updateVolume(0);
+      return 0;
     } else {
       updateVolume(0.5);
+      return 0.5;
     }
   };
 
