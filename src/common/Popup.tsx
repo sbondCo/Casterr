@@ -6,12 +6,8 @@ import Loader from "./Loader";
 import Progress from "./Progress";
 import TickBox from "./TickBox";
 
-interface PopupProps extends PopupOptions {
-  tickBoxesChecked?: string[];
-}
-
-export default function Popup(props: PopupProps) {
-  const { title, percentage, loader, showCancel = false, buttons, tickBoxes, tickBoxesChecked } = props;
+export default function Popup(props: PopupOptions) {
+  const { title, percentage, loader, showCancel = false, buttons, tickBoxes } = props;
 
   const [tbc, setTbc] = useState<string[]>(
     tickBoxes

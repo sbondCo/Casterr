@@ -4,7 +4,7 @@
  */
 
 import path from "path";
-import PathHelper from "@/libs/helpers/pathHelper";
+import Paths from "@/libs/helpers/paths";
 import { Settings } from "@/settings/types";
 
 // App settings, not user editable.
@@ -19,11 +19,12 @@ export const DEFAULT_SETTINGS = {
     rcStatusAlsoStopStart: true,
     rcStatusDblClkToRecord: false,
     deleteVideoConfirmationDisabled: false,
-    deleteVideosFromDisk: false
+    deleteVideosFromDisk: false,
+    videoEditorVolume: 0.8
   },
   recording: {
-    thumbSaveFolder: path.join(PathHelper.mainFolderPath, "Thumbs"),
-    videoSaveFolder: path.join(PathHelper.homeFolderPath, "Videos", "Casterr"),
+    thumbSaveFolder: path.join(Paths.mainFolderPath, "Thumbs"),
+    videoSaveFolder: path.join(Paths.homeFolderPath, "Videos", "Casterr"),
     videoSaveName: "%d.%m.%Y - %H.%i.%s",
     videoDevice: "Default",
     monitorToRecord: {
@@ -35,7 +36,10 @@ export const DEFAULT_SETTINGS = {
     format: "mp4",
     zeroLatency: true,
     ultraFast: true,
-    audioDevicesToRecord: new Array(),
+    audioDevicesToRecord: [] as string[],
     seperateAudioTracks: false
+  },
+  key: {
+    startStopRecording: "F9"
   }
 } as Settings;

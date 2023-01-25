@@ -1,19 +1,79 @@
+import { RootState } from "@/app/store";
+import FilterBar from "@/common/FilterBar";
 import Icon from "@/common/Icon";
+import Loader from "@/common/Loader";
 import PageLayout from "@/common/PageLayout";
-import SubNav, { SubNavItem } from "@/common/SubNav";
+import TextBox from "@/common/TextBox";
 import useDragAndDrop from "@/hooks/useDragAndDrop";
+import { logger } from "@/libs/logger";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
-import { useRef } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { Video } from "./types";
 import VideosGrid from "./VideosGrid";
 
 export default function Videos() {
-  let pageRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const { dropZoneShown, dropZoneFLen } = useDragAndDrop(pageRef, (f: File) => {
     if (f.type.includes("video")) {
       // TODO when on `clips` sub page, add dropped videos as clips
-      RecordingsManager.add(f.path);
+      RecordingsManager.add(f.path).catch((e) => {
+        logger.error("Videos", "Drag&Drop handler failed to add recording via RecordsManager.", e);
+      });
     }
+  });
+
+  const state = useSelector((store: RootState) => store.videos);
+  const [allFilteredVideos, setFilteredAllVideos] = useState<Video[]>();
+  const [videos, setVideos] = useState<Video[]>();
+  const [searchQuery, setSearchQuery] = useState<string>();
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
+
+  useEffect(() => {
+    setVideosLoading(true);
+    const allVideos = [...state.recordings, ...state.clips].sort((a, b) => (a.time && b.time ? b.time - a.time : -1));
+    let filteredVids = allVideos;
+
+    // Apply filters
+    if (activeFilters.length <= 0 || (activeFilters.includes("Recordings") && activeFilters.includes("Clips"))) {
+      filteredVids = allVideos;
+    } else if (activeFilters.includes("Clips")) {
+      filteredVids = allVideos.filter((v) => v.isClip);
+    } else if (activeFilters.includes("Recordings")) {
+      filteredVids = allVideos.filter((v) => !v.isClip);
+    }
+
+    // Apply search query
+    if (searchQuery) {
+      filteredVids = filteredVids.filter((v) => v.name.toLowerCase().includes(searchQuery.toLocaleLowerCase()));
+    }
+
+    setFilteredAllVideos(filteredVids);
+    setVideos(filteredVids.slice(0, 15));
+    setVideosLoading(false);
+  }, [activeFilters, searchQuery, state.recordings, state.clips]);
+
+  const infiniteLoadHandler = (ev: Event) => {
+    const el = ev.target as HTMLDivElement;
+    // If scrolled to bottom load more videos
+    if (
+      allFilteredVideos &&
+      videos &&
+      videos.length !== allFilteredVideos.length &&
+      el?.scrollHeight - el?.scrollTop - 200 <= el?.clientHeight
+    ) {
+      logger.log("Videos", "Loading 30 more videos.");
+      setVideos([...videos, ...allFilteredVideos.slice(videos.length, videos.length + 30)]);
+    }
+  };
+
+  useEffect(() => {
+    pageRef.current?.addEventListener("scroll", infiniteLoadHandler);
+
+    return () => {
+      pageRef.current?.removeEventListener("scroll", infiniteLoadHandler);
+    };
   });
 
   return (
@@ -32,16 +92,34 @@ export default function Videos() {
         </div>
       )}
 
-      <SubNav>
-        <SubNavItem text="Recordings" />
-        <SubNavItem text="Clips" />
-      </SubNav>
+      <div className="flex flex-row mb-3.5">
+        <FilterBar
+          options={["Recordings", "Clips"]}
+          activeOptions={activeFilters}
+          optionClicked={(opt) => {
+            if (!activeFilters.includes(opt)) setActiveFilters([...activeFilters, opt]);
+            else setActiveFilters(activeFilters.filter((f) => f !== opt));
+          }}
+        />
 
-      <Routes>
-        <Route path="" element={<Navigate replace to="recordings" />} />
-        <Route path="recordings" element={<VideosGrid type="recordings" />} />
-        <Route path="clips" element={<VideosGrid type="clips" />} />
-      </Routes>
+        <TextBox
+          className="h-full ml-auto"
+          type="text"
+          value=""
+          placeholder="Search All Videos"
+          icon="search"
+          debounce={250}
+          onChange={(e) => setSearchQuery(e)}
+        />
+      </div>
+
+      {videosLoading ? (
+        <div className="flex justify-center mt-14">
+          <Loader />
+        </div>
+      ) : (
+        <VideosGrid videos={videos} />
+      )}
     </PageLayout>
   );
 }

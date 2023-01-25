@@ -1,4 +1,4 @@
-.spinner {
+.loader {
   $wh: 18px;
   $animationDuration: 1150ms;
   display: flex;
@@ -6,7 +6,7 @@
 
   /* 
    * Make min-height of container big enough so the
-   * cubes (becos animation) don't go outside the .spinner div.
+   * cubes (becos animation) don't go outside the .loader div.
    */
   min-height: calc(#{$wh} * 2.6);
 
@@ -38,6 +38,32 @@
       }
       50% {
         transform: translateY(-75%);
+      }
+    }
+  }
+}
+
+.spinner {
+  display: inline-block;
+  transform-origin: top left;
+
+  &:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: spinner 1.2s linear infinite;
+
+    @keyframes spinner {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
       }
     }
   }

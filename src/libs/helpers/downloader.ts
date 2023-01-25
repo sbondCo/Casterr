@@ -28,8 +28,8 @@ export default class Downloader {
    * @param uri URI to download file from
    * @param dest Destination path for downloaded file
    */
-  public get(uri: string, dest: string, callback?: (percentage: number) => void) {
-    return new Promise((resolve, reject) => {
+  public async get(uri: string, dest: string, callback?: (percentage: number) => void) {
+    return await new Promise((resolve, reject) => {
       const file = fs.createWriteStream(dest);
       const reqOptions: RequestOptions = {
         headers: {
@@ -40,18 +40,18 @@ export default class Downloader {
 
       https.get(uri, reqOptions, (resp: IncomingMessage) => {
         // If redirect, download from location in headers.
-        if (resp.statusCode == 302) {
-          resolve(this.get(resp.headers.location!, dest, callback));
+        if (resp.statusCode === 302 && resp.headers.location) {
+          resolve(this.get(resp.headers.location, dest, callback));
         }
 
-        const contentLength = parseInt(resp.headers["content-length"]!, 10);
+        const contentLength = parseInt(resp.headers["content-length"] ?? "0", 10);
         let chunksCompleted = 0;
 
         resp.on("data", (chunk) => {
-          chunksCompleted += chunk.length;
+          chunksCompleted += chunk.length as number;
 
           // Call callback function if its set and pass percentage to it
-          if (callback != undefined) callback(Number(((100.0 * chunksCompleted) / contentLength).toFixed(0)));
+          if (callback !== undefined) callback(Number(((100.0 * chunksCompleted) / contentLength).toFixed(0)));
         });
 
         // When connection is closed, resolve promise

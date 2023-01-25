@@ -1,3 +1,3 @@
 export { default } from "./Settings";
 
-export * from "./SettingsItem";
+export * from "../common/NamedContainer";

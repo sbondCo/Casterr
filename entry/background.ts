@@ -1,9 +1,11 @@
-import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions } from "electron";
+import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions, globalShortcut } from "electron";
+import { autoUpdater } from "electron-updater";
 import path from "path";
 
 const isDev = process.env.NODE_ENV === "dev";
+let updateCheckTriggeredManually = false;
 
-console.log("Running Casterr. Dev Mode:", isDev);
+console.log(`Running Casterr ${app.getVersion()}. Dev Mode:`, isDev);
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
@@ -40,8 +42,10 @@ async function createWindow() {
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     // Load the index.html when not in development
-    win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
+    await win.loadURL(`file://${path.join(__dirname, "../../dist/vi/index.html")}`);
   }
+
+  return win;
 }
 
 /**
@@ -103,10 +107,12 @@ function registerChannels(win: BrowserWindow) {
 
     if (isDev && process.env.SERVER_URL) {
       // Load the url of the dev server if in development mode
-      await notifWin.loadURL(`${process.env.SERVER_URL}/dnotif/${args.icon}/${args.desc}`);
+      await notifWin.loadURL(`${process.env.SERVER_URL}/index.html#/dnotif/${args.icon}/${args.desc}`);
     } else {
       // Load the index.html when not in development
-      notifWin.loadURL(`file://${path.join(__dirname, `index.html#dnotif/${args.icon}/${args.desc}`)}`); // TEST THIS IN A BUILD
+      await notifWin.loadURL(
+        `file://${path.join(__dirname, `../../dist/vi/index.html#/dnotif/${args.icon}/${args.desc}`)}`
+      );
     }
 
     // Close window after defined duration
@@ -119,7 +125,7 @@ function registerChannels(win: BrowserWindow) {
    * Show open dialog with args passed through.
    */
   ipcMain.handle("show-open-dialog", async (_, args: OpenDialogOptions) => {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       dialog
         .showOpenDialog(win, { ...args })
         .then((v) => resolve(v))
@@ -140,6 +146,84 @@ function registerChannels(win: BrowserWindow) {
   ipcMain.handle("get-primary-screen", async () => {
     return screen.getPrimaryDisplay();
   });
+
+  /**
+   * Register a keybind.
+   * @param bind The bind to register.
+   * @param oldBind If provided, will first unbind the old bind. Useful for when updating a bind and we want to unbind the old one first.
+   */
+  ipcMain.handle("register-keybind", (_, name: string, bind: string, oldBind: string | undefined) => {
+    if (oldBind) {
+      globalShortcut.unregister(oldBind);
+    }
+    return globalShortcut.register(bind, () => win.webContents.send(`${name}-pressed`));
+  });
+
+  /**
+   * Unregister all keybinds.
+   */
+  ipcMain.on("unregister-all-keybinds", () => {
+    globalShortcut.unregisterAll();
+  });
+
+  /**
+   * Quit and install update.
+   */
+  ipcMain.on("install-update", () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  /**
+   * Check for updates again **user triggered**.
+   */
+  ipcMain.on("update-check", () => {
+    updateCheckTriggeredManually = true;
+    autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
+  });
+
+  /**
+   * Return app version info.
+   */
+  ipcMain.handle("get-version", () => {
+    return app.getVersion();
+  });
+}
+
+function runUpdateCheck(win: BrowserWindow) {
+  const winWC = win.webContents;
+
+  autoUpdater.on("checking-for-update", () => {
+    console.log("UPDATER: checking-for-update");
+    winWC.send("checking-for-update");
+  });
+
+  autoUpdater.on("update-available", (info) => {
+    console.log("UPDATER: update-available", info);
+    winWC.send("update-available", info);
+  });
+
+  autoUpdater.on("update-not-available", (info) => {
+    console.log("UPDATER: update-not-available", info);
+    winWC.send("update-not-available", updateCheckTriggeredManually);
+  });
+
+  autoUpdater.on("error", (err) => {
+    console.log("UPDATER: error", err);
+    winWC.send("update-error", err);
+  });
+
+  autoUpdater.on("download-progress", (progressObj) => {
+    console.log("UPDATER: download-progress", progressObj);
+    winWC.send("update-download-progress", progressObj);
+  });
+
+  autoUpdater.on("update-downloaded", (info) => {
+    console.log("UPDATER: update-downloaded", info);
+    winWC.send("update-downloaded", info);
+  });
+
+  updateCheckTriggeredManually = false;
+  autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
 }
 
 /**
@@ -161,10 +245,10 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
+app.on("activate", async () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) await createWindow();
 });
 
 /**
@@ -195,7 +279,8 @@ app.on("ready", async () => {
     }
   });
 
-  createWindow();
+  const window = await createWindow();
+  runUpdateCheck(window);
 });
 
 /**

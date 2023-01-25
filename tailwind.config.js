@@ -23,6 +23,9 @@ module.exports = {
       red: {
         100: "#c10000"
       },
+      green: {
+        100: "#469d45"
+      },
       transparent: "rgba(0, 0, 0, 0)"
     },
     extend: {}

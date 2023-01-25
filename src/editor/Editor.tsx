@@ -14,6 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { RootState } from "@/app/store";
+import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
+import Tooltip from "@/common/Tooltip";
+import { logger } from "@/libs/logger";
+import { setVideoEditorVolume } from "@/settings/settingsSlice";
 
 export default function VideoEditor() {
   const navigate = useNavigate();
@@ -22,20 +26,22 @@ export default function VideoEditor() {
   const dispatch = useDispatch();
   const genState = useSelector((store: RootState) => store.settings.general);
 
-  if (!video.videoPath) console.error("TODO: No Video Path in state, return to home or show error");
+  if (!video.videoPath) logger.error("Editor", "TODO: No Video Path in state, return to home or show error");
 
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    PathHelper.exists(video.videoPath).then((v) => {
-      if (!v) setError("Video file does not exist!");
-    });
+    PathHelper.exists(video.videoPath)
+      .then((v) => {
+        if (!v) setError("Video file does not exist!");
+      })
+      .catch((e) => logger.error("Editor", "Unable to verify video files existence.", e));
   }, [video.videoPath]);
 
-  let playerRef = useRef<HTMLVideoElement>(null);
-  let timelineRef = useRef<HTMLDivElement>(null);
-  let progressBarRef = useRef<HTMLDivElement>(null);
-  let clipsBarRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLVideoElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const clipsBarRef = useRef<HTMLDivElement>(null);
   const {
     clipsBar,
     playPause,
@@ -52,27 +58,33 @@ export default function VideoEditor() {
     addClip,
     playClips,
     isPlayingClips,
-    adjustZoom
-  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef);
+    adjustZoom,
+    lockOnScrubber,
+    setLockOnScrubber
+  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, genState.videoEditorVolume);
 
   return (
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
-        <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
+        <Tooltip text="Back To Videos">
+          <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
+        </Tooltip>
         <TextBox
           value={video.name}
           placeholder="Name"
           className="w-full"
           onChange={(newName) => {
-            console.log("Changing video name to:", newName);
-            dispatch(videoRenamed({ videoPath: video.videoPath, newName: newName, isClip: video.isClip }));
+            logger.info("Editor", "Changing video name to:", newName);
+            dispatch(videoRenamed({ videoPath: video.videoPath, newName, isClip: video.isClip }));
           }}
         />
         <Button
           icon="close"
           onClick={() => {
             const rm = (rmFromDsk: boolean) => {
-              RecordingsManager.delete(video, rmFromDsk);
+              RecordingsManager.delete(video, rmFromDsk).catch((e) =>
+                logger.error("Editor", "Failed to delete video from video editor!", e)
+              );
               navigate(-1);
             };
 
@@ -85,13 +97,17 @@ export default function VideoEditor() {
                 showCancel: true,
                 tickBoxes: [{ name: "Also remove from disk", ticked: genState.deleteVideosFromDisk }],
                 buttons: ["cancel", "delete"]
-              }).then((popup) => {
-                if (popup.action == "delete") {
-                  rm(popup.tickBoxesChecked.includes("Also remove from disk"));
-                }
+              })
+                .then((popup) => {
+                  if (popup.action === "delete") {
+                    rm(popup.tickBoxesChecked.includes("Also remove from disk"));
+                  }
 
-                Notifications.rmPopup("DELETE-VIDEO");
-              });
+                  Notifications.rmPopup("DELETE-VIDEO");
+                })
+                .catch((e) => {
+                  logger.error("Editor", "Failed to show DELETE-VIDEO popup!", e);
+                });
             }
           }}
         />
@@ -127,40 +143,57 @@ export default function VideoEditor() {
             wheelStep: 0.1,
             onChange: (val) => {
               updateVolume(val);
+            },
+            onFinishedChanging: (val) => {
+              dispatch(setVideoEditorVolume(val));
             }
           }}
-          onClick={toggleMute}
+          onClick={() => {
+            const newVol = toggleMute();
+            dispatch(setVideoEditorVolume(newVol));
+          }}
         />
         <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
         <Button text="Add Clip" onClick={addClip} />
-        <Button icon="add" onClick={() => adjustZoom(true)} />
-        <Button icon="min2" onClick={() => adjustZoom(false)} />
+        <Tooltip text="Zoom In (Z)">
+          <Button icon="add" onClick={() => adjustZoom(true)} />
+        </Tooltip>
+        <Tooltip text="Zoom Out (X)">
+          <Button icon="min2" onClick={() => adjustZoom(false)} />
+        </Tooltip>
+        <Tooltip text="Toggle Lock On Scrubber (S)">
+          <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
+        </Tooltip>
         <div className="ml-auto"></div>
         <ButtonConnector>
-          <Button outlined={true} onClick={playClips} className="relative">
-            {isPlayingClips && (
-              <div className="flex left-0 top-0 items-center justify-center absolute w-full h-full bg-primary-100 bg-opacity-90">
-                <Icon i="pause" wh={16} />
+          <Tooltip text="Play All Clips">
+            <Button outlined={true} onClick={playClips} className="relative">
+              {isPlayingClips && (
+                <div className="flex left-0 top-0 items-center justify-center absolute w-full h-full bg-primary-100 bg-opacity-90">
+                  <Icon i="pause" wh={16} />
+                </div>
+              )}
+
+              <div className="flex gap-1.5 items-center">
+                <Icon i="clips" wh={18} />
+                <span>{numberOfClips}</span>
               </div>
-            )}
 
-            <div className="flex gap-1.5 items-center">
-              <Icon i="clips" wh={18} />
-              <span>{numberOfClips}</span>
-            </div>
-
-            <div className="flex gap-1.5 items-center">
-              <Icon i="time" wh={18} />
-              <span>{lengthOfClips.toReadableTimeFromSeconds()}</span>
-            </div>
-          </Button>
-          <Button
-            icon="arrow"
-            onClick={() =>
-              RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider!.get() as string[]).map(Number))
-            }
-            disabled={renderBtnDisabled}
-          />
+              <div className="flex gap-1.5 items-center">
+                <Icon i="time" wh={18} />
+                <span>{toReadableTimeFromSeconds(lengthOfClips)}</span>
+              </div>
+            </Button>
+          </Tooltip>
+          <Tooltip text="Continue">
+            <Button
+              icon="arrow"
+              onClick={async () =>
+                await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number))
+              }
+              disabled={renderBtnDisabled}
+            />
+          </Tooltip>
         </ButtonConnector>
       </div>
     </div>

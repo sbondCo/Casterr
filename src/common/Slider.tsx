@@ -5,21 +5,30 @@ export interface SliderProps {
   step?: number;
   wheelStep?: number;
   onChange: (newVal: number) => void;
+
+  /**
+   * When the user is done changing the volume (mouse up, wheel events).
+   * This can be used kind of like onBlur, so we know when we can do an intensive operation on the new value.
+   */
+  onFinishedChanging: (newVal: number) => void;
 }
 
 export default function Slider(props: SliderProps) {
-  let { value = 0, min = 0, max = 100, step = 1, wheelStep = 1, onChange } = props;
+  const { value = 0, min = 0, max = 100, step = 1, wheelStep = 1, onChange, onFinishedChanging } = props;
 
   const onWheel = (ev: React.WheelEvent<HTMLInputElement>) => {
+    let newVolume = max;
     if (ev.deltaY < 0) {
-      let newVal = Number((value + wheelStep).toFixed(2));
-      if (newVal < 1) onChange(newVal);
-      else onChange(max);
+      const newVal = Number((value + wheelStep).toFixed(2));
+      if (newVal < 1) newVolume = newVal;
+      else newVolume = max;
     } else {
-      let newVal = Number((value - wheelStep).toFixed(2));
-      if (newVal >= 0) onChange(newVal);
-      else onChange(min);
+      const newVal = Number((value - wheelStep).toFixed(2));
+      if (newVal >= 0) newVolume = newVal;
+      else newVolume = min;
     }
+    onChange(newVolume);
+    onFinishedChanging(newVolume);
   };
 
   return (
@@ -31,6 +40,7 @@ export default function Slider(props: SliderProps) {
       step={step}
       onChange={(ev) => onChange(Number(ev.target.value))}
       onWheel={onWheel}
+      onMouseUp={(ev) => onFinishedChanging(Number((ev.target as HTMLInputElement).value))}
       className="w-full"
     />
   );

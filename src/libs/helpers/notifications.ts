@@ -44,6 +44,8 @@ export interface PopupOptions {
    * names that have been ticked.
    */
   tickBoxes?: TickBoxInfo[];
+
+  tickBoxesChecked?: string[];
 }
 
 interface TickBoxInfo {
@@ -59,10 +61,10 @@ export default class Notifications {
    * @param options Optional popup options for things such as displaying button, percentage, etc.
    * @returns
    */
-  public static popup(opts: PopupOptions): Promise<{ action: string; tickBoxesChecked: string[] }> {
+  public static async popup(opts: PopupOptions): Promise<{ action: string; tickBoxesChecked: string[] }> {
     store.dispatch(popupCreated(opts));
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const listnr = ((ev: CustomEvent) => {
         document.removeEventListener(`${opts.id}-el-clicked`, listnr);
         resolve({ action: ev.detail.elClicked, tickBoxesChecked: ev.detail.tickBoxesChecked });

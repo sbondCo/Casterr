@@ -121,6 +121,9 @@ input[type="range"]::-webkit-slider-runnable-track {
   border-radius: 0;
 }
 
-.btn-connector *:not(:last-child) {
+/* Normal Buttons in connector */
+.btn-connector *:not(:last-child),
+/* Buttons with tooltips in connector */
+.btn-connector > div:not(:last-of-type) button {
   border-right: unset;
 }

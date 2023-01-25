@@ -1,5 +1,3 @@
-import { AudioDevice } from "@/libs/recorder/deviceManager";
-
 export interface Settings {
   general: GeneralSettings;
   recording: RecordingSettings;
@@ -34,6 +32,11 @@ export interface GeneralSettings {
    * in Casterr.
    */
   deleteVideosFromDisk: boolean;
+
+  /**
+   * Video editor volume.
+   */
+  videoEditorVolume: number;
 }
 
 export interface RecordingSettings {
@@ -47,7 +50,7 @@ export interface RecordingSettings {
   format: string;
   zeroLatency: boolean;
   ultraFast: boolean;
-  audioDevicesToRecord: Array<AudioDevice>;
+  audioDevicesToRecord: string[];
 
   /**
    * If audio devices should be recorded on
@@ -56,13 +59,13 @@ export interface RecordingSettings {
   seperateAudioTracks: boolean;
 }
 
-/**
- * Not yet implemented.
- */
 export interface KeyBindingSettings {
   startStopRecording: string;
 }
 
 export type Page = "Videos" | "Settings";
 
-export type MonitorToRecord = { id: string; name: string };
+export interface MonitorToRecord {
+  id: string;
+  name: string;
+}

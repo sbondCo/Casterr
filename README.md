@@ -22,11 +22,10 @@
 
 ## The best way to share your moments
 
-Casterr eases the process of sharing your best moments in and out game.
+Casterr eases the process of sharing your best moments in and out game with our easy to use video clipping system.
+[Our website](https://casterr.sbond.co/) provides more detail along with download links for Windows and Linux.
 
-We're currently still under development and working towards a first release with all the main features included.
-
-Feel free to [test Casterr out](https://github.com/sbondCo/Casterr/releases) or [track our progress to 1.0](https://github.com/orgs/sbondCo/projects/2).
+Feel free to [test Casterr out](https://github.com/sbondCo/Casterr/releases), [track our progress to the next release](https://github.com/orgs/sbondCo/projects/8/views/2) or [ask for help](https://github.com/sbondCo/Casterr/issues/new/choose)!
 
 ## Contributing
 

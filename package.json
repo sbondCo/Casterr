@@ -1,11 +1,15 @@
 {
   "name": "casterr",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Easy screen recording and sharing",
   "author": {
     "name": "sbondCo",
     "url": "https://sbond.co"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbondCo/Casterr.git"
   },
   "main": "./entry/out/background.js",
   "scripts": {
@@ -15,31 +19,44 @@
     "postuninstall": "electron-builder install-app-deps",
     "prettier:formatall": "prettier --write '**/*.{ts,js,tsx,json}'",
     "prettier:check": "prettier --check '**/*.{ts,js,tsx,json}'",
-    "build": "npm run build:entry-scripts && vite build && electron-builder build --config builder.config.js"
+    "lint": "eslint .",
+    "compile": "npm run build:entry-scripts && vite build",
+    "build": "npm run compile && electron-builder build --config builder.config.js"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.8.5",
+    "@reduxjs/toolkit": "^1.9.1",
+    "electron-updater": "^5.3.0",
     "nouislider": "^15.6.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
-    "react-router-dom": "^6.4.0"
+    "react-router-dom": "^6.6.2",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
-    "@types/node": "^16.11.3",
+    "@types/node": "^18.11.18",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
-    "@vitejs/plugin-react": "^2.0.0",
-    "autoprefixer": "^10.4.7",
+    "@typescript-eslint/eslint-plugin": "5.45.0",
+    "@vitejs/plugin-react": "^2.2.0",
+    "autoprefixer": "^10.4.13",
     "cross-env": "^7.0.3",
-    "electron": "^20.1.1",
+    "electron": "^22.0.2",
     "electron-builder": "^23.6.0",
     "electron-devtools-installer": "^3.2.0",
-    "postcss": "^8.4.14",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.11",
+    "postcss": "^8.4.20",
     "prettier": "^2.8.0",
     "sass": "^1.55.0",
-    "tailwindcss": "^3.1.2",
-    "typescript": "^4.4.4",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^4.9.4",
     "vite": "^3.0.3",
     "vite-plugin-commonjs-externals": "^0.1.1"
   },

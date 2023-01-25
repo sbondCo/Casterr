@@ -1,28 +1,17 @@
-import os from "os";
 import Path from "path";
 import { promises as fs, constants as fsconstants } from "fs";
 import childProcess from "child_process";
-import jsZip from "jszip";
+import JSZip from "jszip";
+import Paths from "./paths";
+import { logger } from "../logger";
 
 export default class PathHelper {
-  public static get mainFolderPath() {
-    return Path.join(os.homedir(), "Documents", "Casterr");
-  }
-
-  public static get toolsPath() {
-    return Path.join(this.mainFolderPath, "tools");
-  }
-
-  public static get homeFolderPath() {
-    return os.homedir();
-  }
-
   /**
    * Get the path to a file used by Casterr.
    * Paths are hardcoded, only supported files that are listed here will work.
    * @param name Name of file with extension
    */
-  public static getFile(name: "settings" | "recordings" | "clips") {
+  public static async getFile(name: "settings" | "recordings" | "clips") {
     let path: string[];
 
     switch (name) {
@@ -39,11 +28,11 @@ export default class PathHelper {
 
     // Join `mainFolderPath` and `path` to create the
     // full path that we should make sure exists then return
-    return this.ensureExists(Path.join(this.mainFolderPath, ...path));
+    return await this.ensureExists(Path.join(Paths.mainFolderPath, ...path));
   }
 
   public static async exists(path: string): Promise<boolean> {
-    return fs
+    return await fs
       .access(path, fsconstants.F_OK)
       .then(() => true)
       .catch(() => false);
@@ -74,13 +63,15 @@ export default class PathHelper {
       // will fail if the dir the file is being written in doesn't exist.
       if (!isDir) await fs.writeFile(path, "", { flag: "wx" });
 
-      if (options != undefined) {
+      if (options !== undefined) {
         if (options.hidden) {
-          this.hide(path);
+          this.hide(path).catch((e) => {
+            logger.error("PathHelper", "Failed to hide file", path, e);
+          });
         }
       }
-    } catch (e) {
-      throw new Error(`Error ensuring file exists: ${e}`);
+    } catch (e: any) {
+      throw new Error("Error ensuring file exists:", e);
     }
 
     return path;
@@ -90,21 +81,25 @@ export default class PathHelper {
    * Hide file or folder.
    * @param path Path to file/folder that needs to be hidden.
    */
-  public static hide(path: string) {
-    return new Promise((resolve, reject) => {
+  public static async hide(path: string) {
+    return await new Promise((resolve, reject) => {
       // Only allow files that start with a period, this is how we will ensure the path is hidden on linux
       if (!Path.basename(path).startsWith(".")) {
         reject(
-          `Hidden files/folders should start with a '.'! change '${Path.basename(path)}' to '.${Path.basename(path)}'.`
+          new Error(
+            `Hidden files/folders should start with a '.'! change '${Path.basename(path)}' to '.${Path.basename(
+              path
+            )}'.`
+          )
         );
       }
 
       // If on windows, run `attrib` command to hide folder
-      if (process.platform == "win32") {
+      if (process.platform === "win32") {
         const cp = childProcess.exec(`attrib +h ${path}`);
 
         cp.on("exit", (code) => {
-          if (code == 0) {
+          if (code === 0) {
             resolve(code);
           } else {
             reject(code);
@@ -131,15 +126,19 @@ export default class PathHelper {
    * @param path
    */
   public static async removeDir(path: string) {
-    return fs
+    return await fs
       .readdir(path)
-      .then((files) => {
-        if (files) files.forEach((f) => fs.unlink(Path.join(path, f)));
+      .then(async (files) => {
+        for (const f of files) {
+          fs.unlink(Path.join(path, f)).catch((e) => {
+            logger.error("PathHelper", "Failed to rm file before removing directory", f, e);
+          });
+        }
 
-        fs.rmdir(path);
+        await fs.rmdir(path);
       })
       .catch((e) => {
-        throw Error(`Error removing dir: ${e}`);
+        throw Error("Error removing dir:", e);
       });
   }
 
@@ -148,8 +147,8 @@ export default class PathHelper {
    * @param path Path to file that should be deleted.
    */
   public static async removeFile(path: string) {
-    return fs.unlink(path).catch((e) => {
-      throw Error(`Unable to remove file: ${e}`);
+    return await fs.unlink(path).catch((e) => {
+      throw Error("Unable to remove file:", e);
     });
   }
 
@@ -160,60 +159,71 @@ export default class PathHelper {
    * @param filesToExtract String array of file names, only files included in this array will be extracted. Leave empty to extract all files.
    * @param deleteAfter If should delete zip file once finished extracting files.
    */
-  public static extract(
+  public static async extract(
     zipPath: string,
     destFolder: string,
-    filesToExtract: Array<string> = [],
+    filesToExtract: string[] = [],
     deleteAfter: boolean = true
   ) {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       fs.readFile(zipPath)
         .then((data) => {
-          const zip = new jsZip();
+          const zip = new JSZip();
 
-          zip.loadAsync(data).then((contents: jsZip) => {
-            const files = contents.files;
+          zip
+            .loadAsync(data)
+            .then(async (contents: JSZip) => {
+              const files = contents.files;
 
-            // Delete directories from object
-            for (const f in files) {
-              if (files[f].dir == true) delete files[f];
-            }
-
-            Object.keys(files).forEach(async (filename: string, i) => {
-              const filenameWithoutFolder = Path.basename(filename);
-
-              // Write zip file to destination folder
-              const unzip = () => {
-                return new Promise((resolve) => {
-                  zip
-                    .file(filename)!
-                    .async("nodebuffer")
-                    .then((content) => {
-                      fs.writeFile(Path.join(destFolder, filenameWithoutFolder), content).then(() => resolve(""));
-                    });
-                });
-              };
-
-              // If filesToExtract is empty just unzip all files
-              // If filesToExtract isn't empty, if it includes filename then unzip
-              if (filesToExtract.length == 0) await unzip();
-              else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
-
-              // Resolve if index (+1) equals amount of files since this means all files have been processed
-              if (i + 1 == Object.keys(files).length) {
-                // Delete zip file if asked to.
-                // Don't wait for file to delete before resolving the promise,
-                // theres no reason to make the user wait for it to finish deleting the zip.
-                if (deleteAfter) {
-                  fs.unlink(zipPath).catch((e) => {
-                    throw e;
-                  });
-                }
-
-                resolve("");
+              // Delete directories from object
+              for (const f in files) {
+                // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                if (files[f].dir) delete files[f];
               }
-            });
-          });
+
+              // Object.keys(files).forEach((filename: string, i) => {
+              const filesKeys = Object.keys(files);
+              for (let i = 0; i < filesKeys.length; i++) {
+                const filename = filesKeys[i];
+
+                const filenameWithoutFolder = Path.basename(filename);
+
+                // Write zip file to destination folder
+                const unzip = async () => {
+                  return await new Promise((resolve, reject) => {
+                    zip
+                      .file(filename)
+                      ?.async("nodebuffer")
+                      .then(async (content) => {
+                        await fs
+                          .writeFile(Path.join(destFolder, filenameWithoutFolder), content)
+                          .then(() => resolve(""));
+                      })
+                      .catch((e) => reject(e));
+                  });
+                };
+
+                // If filesToExtract is empty just unzip all files
+                // If filesToExtract isn't empty, if it includes filename then unzip
+                if (filesToExtract.length === 0) await unzip();
+                else if (filesToExtract.includes(filenameWithoutFolder)) await unzip();
+
+                // Resolve if index (+1) equals amount of files since this means all files have been processed
+                if (i + 1 === Object.keys(files).length) {
+                  // Delete zip file if asked to.
+                  // Don't wait for file to delete before resolving the promise,
+                  // theres no reason to make the user wait for it to finish deleting the zip.
+                  if (deleteAfter) {
+                    fs.unlink(zipPath).catch((e) => {
+                      throw e;
+                    });
+                  }
+
+                  resolve("");
+                }
+              }
+            })
+            .catch((e) => reject(e));
         })
         .catch((e) => reject(e));
     });
