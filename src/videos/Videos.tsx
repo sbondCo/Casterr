@@ -52,7 +52,7 @@ export default function Videos() {
     setFilteredAllVideos(filteredVids);
     setVideos(filteredVids.slice(0, 15));
     setVideosLoading(false);
-  }, [activeFilters, searchQuery]);
+  }, [activeFilters, searchQuery, state.recordings, state.clips]);
 
   const infiniteLoadHandler = (ev: Event) => {
     const el = ev.target as HTMLDivElement;
