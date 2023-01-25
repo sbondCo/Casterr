@@ -110,7 +110,9 @@ function registerChannels(win: BrowserWindow) {
       await notifWin.loadURL(`${process.env.SERVER_URL}/index.html#/dnotif/${args.icon}/${args.desc}`);
     } else {
       // Load the index.html when not in development
-      await notifWin.loadURL(`file://${path.join(__dirname, `index.html#dnotif/${args.icon}/${args.desc}`)}`); // TEST THIS IN A BUILD
+      await notifWin.loadURL(
+        `file://${path.join(__dirname, `../../dist/vi/index.html#/dnotif/${args.icon}/${args.desc}`)}`
+      );
     }
 
     // Close window after defined duration
