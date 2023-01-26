@@ -9,6 +9,7 @@ import { incrementElapsed, resetElapsed } from "@/libs/recorder/recorderSlice";
 
 export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
+  const genSettingsState = useSelector((store: RootState) => store.settings.general);
   const dispatch = useDispatch();
   const statusColClasses = state.isRecording
     ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
@@ -44,7 +45,14 @@ export default function Nav() {
         <div
           className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
-          onClick={async () => await Recorder.auto()}
+          onClick={async () => {
+            if (genSettingsState.rcStatusAlsoStopStart && !genSettingsState.rcStatusDblClkToRecord)
+              await Recorder.auto();
+          }}
+          onDoubleClick={async () => {
+            if (genSettingsState.rcStatusAlsoStopStart && genSettingsState.rcStatusDblClkToRecord)
+              await Recorder.auto();
+          }}
         ></div>
       </ul>
     </nav>
