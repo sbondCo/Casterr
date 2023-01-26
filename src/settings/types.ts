@@ -6,11 +6,6 @@ export interface Settings {
 
 export interface GeneralSettings {
   /**
-   * Page to load on startup of Casterr.
-   */
-  startupPage: Page;
-
-  /**
    * If the recording status indicator should
    * start/stop recording when clicked.
    */
@@ -62,8 +57,6 @@ export interface RecordingSettings {
 export interface KeyBindingSettings {
   startStopRecording: string;
 }
-
-export type Page = "Videos" | "Settings";
 
 export interface MonitorToRecord {
   id: string;
