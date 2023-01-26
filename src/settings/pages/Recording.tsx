@@ -47,14 +47,18 @@ export default function Recording() {
   return (
     <>
       <NamedContainer title="Video Device">
-        <DropDown activeItem={state.videoDevice} items={videoDevices} onChange={(s) => setVideoDevice(s as string)} />
+        <DropDown
+          activeItem={state.videoDevice}
+          items={videoDevices}
+          onChange={(s) => dispatch(setVideoDevice(s as string))}
+        />
       </NamedContainer>
 
       <NamedContainer title="Monitor To Record">
         <DropDown
           activeItem={state.monitorToRecord}
           items={monitors}
-          onChange={(s) => setMonitorToRecord(s as DropDownItem)}
+          onChange={(s) => dispatch(setMonitorToRecord(s as DropDownItem))}
         />
       </NamedContainer>
 
@@ -70,14 +74,18 @@ export default function Recording() {
       </NamedContainer>
 
       <NamedContainer title="Resolution">
-        <DropDown activeItem={state.resolution} items={resolutions} onChange={(s) => setResolution(s as string)} />
+        <DropDown
+          activeItem={state.resolution}
+          items={resolutions}
+          onChange={(s) => dispatch(setResolution(s as string))}
+        />
       </NamedContainer>
 
       <NamedContainer title="Format">
         <DropDown
           activeItem={state.format}
           items={APP_SETTINGS.supportedRecordingFormats}
-          onChange={(s) => setFormat(s as string)}
+          onChange={(s) => dispatch(setFormat(s as string))}
         />
       </NamedContainer>
 
