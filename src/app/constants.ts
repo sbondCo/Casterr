@@ -9,13 +9,11 @@ import { Settings } from "@/settings/types";
 
 // App settings, not user editable.
 export const APP_SETTINGS = {
-  pages: ["Videos", "Settings"],
   supportedRecordingFormats: ["mp4", "mkv"]
 };
 
 export const DEFAULT_SETTINGS = {
   general: {
-    startupPage: "Videos",
     rcStatusAlsoStopStart: true,
     rcStatusDblClkToRecord: false,
     deleteVideoConfirmationDisabled: false,

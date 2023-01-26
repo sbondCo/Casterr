@@ -1,6 +1,6 @@
 import { DEFAULT_SETTINGS } from "@/app/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Page, MonitorToRecord } from "./types";
+import { MonitorToRecord } from "./types";
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -9,9 +9,6 @@ const settingsSlice = createSlice({
     //
     // General Settings
     //
-    setStartupPage(state, action: PayloadAction<Page>) {
-      state.general.startupPage = action.payload;
-    },
     setRcStatusAlsoStopStart(state, action: PayloadAction<boolean>) {
       state.general.rcStatusAlsoStopStart = action.payload;
     },
@@ -84,7 +81,6 @@ const settingsSlice = createSlice({
 });
 
 export const {
-  setStartupPage,
   setRcStatusAlsoStopStart,
   setRcStatusDblClkToRecord,
   setDeleteVideoConfirmationDisabled,
