@@ -122,7 +122,7 @@ function registerChannels(win: BrowserWindow) {
     } else {
       // Load the index.html when not in development
       await notifWin.loadURL(
-        `file://${path.join(__dirname, `../../dist/vi/index.html#/dnotif/${args.icon}/${args.desc}`)}`
+        `file://${path.join(__dirname, `../../dist/vi/index.html`)}#/dnotif/${args.icon}/${args.desc}`
       );
     }
 
