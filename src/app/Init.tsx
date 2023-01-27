@@ -1,6 +1,6 @@
 import Popup from "@/common/Popup";
 import { useSelector } from "react-redux";
-import { RootState } from "./store";
+import { type RootState } from "./store";
 
 /**
  * Init component for things such as popups, tooltips, etc.

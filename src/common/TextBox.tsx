@@ -2,8 +2,8 @@ import useDebouncer from "@/hooks/useDebouncer";
 import { logger } from "@/libs/logger";
 import { ipcRenderer } from "electron";
 import { useState } from "react";
-import Icon, { Icons } from "./Icon";
-import { CommonComponentProps } from "./types";
+import Icon, { type Icons } from "./Icon";
+import { type CommonComponentProps } from "./types";
 
 type TextBoxProps = {
   value: string | number;
@@ -82,7 +82,9 @@ export default function TextBox(props: TextBoxProps) {
           setCurVal(e.target.value);
 
           if (debounce !== undefined) {
-            doDebounce(() => callOnChangeCallback(e.target.value));
+            doDebounce(() => {
+              callOnChangeCallback(e.target.value);
+            });
           }
         }}
         onBlur={(e) => {
@@ -99,7 +101,9 @@ export default function TextBox(props: TextBoxProps) {
       {folderSelect && (
         <button
           className="flex items-center px-3 bg-quaternary-100 hover:bg-tertiary-100 transition-colors"
-          onClick={() => selectFolder()}
+          onClick={() => {
+            selectFolder();
+          }}
         >
           Select
         </button>

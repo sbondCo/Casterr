@@ -5,7 +5,7 @@ import path from "path";
 import ArgumentBuilder from "./argumentBuilder";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
-import { Video } from "@/videos/types";
+import type { Video } from "@/videos/types";
 import { videoAdded, videoRemoved } from "@/videos/videosSlice";
 import { logger } from "../logger";
 

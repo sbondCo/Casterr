@@ -26,16 +26,25 @@ export default function About() {
       </div>
 
       <div className="flex flex-row gap-3">
-        <Button text="Update Check" onClick={() => ipcRenderer.send("update-check")} />
+        <Button
+          text="Update Check"
+          onClick={() => {
+            ipcRenderer.send("update-check");
+          }}
+        />
         <Button text="View Logs" onClick={async () => await shell.openPath(Paths.logsPath)} />
         <Button
           text="Open GitHub Repo"
-          onClick={async () => await shell.openExternal("https://github.com/sbondCo/Casterr")}
+          onClick={async () => {
+            await shell.openExternal("https://github.com/sbondCo/Casterr");
+          }}
           outlined={true}
         />
         <Button
           text="Open Website"
-          onClick={async () => await shell.openExternal("https://casterr.sbond.co")}
+          onClick={async () => {
+            await shell.openExternal("https://casterr.sbond.co");
+          }}
           outlined={true}
         />
       </div>

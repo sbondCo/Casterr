@@ -1,6 +1,6 @@
 import https from "https";
-import { IncomingMessage } from "http";
-import { RequestOptions } from "node:https";
+import { type IncomingMessage } from "http";
+import { type RequestOptions } from "node:https";
 import fs from "fs";
 
 export default class Downloader {

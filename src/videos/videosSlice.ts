@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { VideosState, Video } from "./types";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { VideosState, Video } from "./types";
 
 const videosSlice = createSlice({
   name: "videos",

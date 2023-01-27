@@ -38,9 +38,13 @@ export default function Slider(props: SliderProps) {
       min={min}
       max={max}
       step={step}
-      onChange={(ev) => onChange(Number(ev.target.value))}
+      onChange={(ev) => {
+        onChange(Number(ev.target.value));
+      }}
       onWheel={onWheel}
-      onMouseUp={(ev) => onFinishedChanging(Number((ev.target as HTMLInputElement).value))}
+      onMouseUp={(ev) => {
+        onFinishedChanging(Number((ev.target as HTMLInputElement).value));
+      }}
       className="w-full"
     />
   );

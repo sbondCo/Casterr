@@ -1,5 +1,5 @@
 import FFmpeg from "./ffmpeg";
-import ArgumentBuilder, { Arguments } from "./argumentBuilder";
+import ArgumentBuilder, { type Arguments } from "./argumentBuilder";
 import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";

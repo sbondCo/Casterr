@@ -1,5 +1,5 @@
-import { PopupOptions } from "@/libs/helpers/notifications";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { type PopupOptions } from "@/libs/helpers/notifications";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface AppState {
   popups: PopupOptions[];

@@ -8,12 +8,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import useEditor from "./useEditor";
 import "nouislider/dist/nouislider.min.css";
 import "./editor.scss";
-import { Video } from "@/videos/types";
+import type { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useDispatch, useSelector } from "react-redux";
 import { videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
-import { RootState } from "@/app/store";
+import { type RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import Tooltip from "@/common/Tooltip";
 import { logger } from "@/libs/logger";
@@ -67,7 +67,13 @@ export default function VideoEditor() {
     <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
       <div className="flex gap-1.5 mx-1.5">
         <Tooltip text="Back To Videos">
-          <Button icon="arrow" iconDirection="left" onClick={() => navigate(-1)} />
+          <Button
+            icon="arrow"
+            iconDirection="left"
+            onClick={() => {
+              navigate(-1);
+            }}
+          />
         </Tooltip>
         <TextBox
           value={video.name}
@@ -153,16 +159,38 @@ export default function VideoEditor() {
             dispatch(setVideoEditorVolume(newVol));
           }}
         />
-        <Button text={videoTimeReadable} outlined={true} onClick={() => toggleShowTimeAsElapsed()} />
+        <Button
+          text={videoTimeReadable}
+          outlined={true}
+          onClick={() => {
+            toggleShowTimeAsElapsed();
+          }}
+        />
         <Button text="Add Clip" onClick={addClip} />
         <Tooltip text="Zoom In (Z)">
-          <Button icon="add" onClick={() => adjustZoom(true)} />
+          <Button
+            icon="add"
+            onClick={() => {
+              adjustZoom(true);
+            }}
+          />
         </Tooltip>
         <Tooltip text="Zoom Out (X)">
-          <Button icon="min2" onClick={() => adjustZoom(false)} />
+          <Button
+            icon="min2"
+            onClick={() => {
+              adjustZoom(false);
+            }}
+          />
         </Tooltip>
         <Tooltip text="Toggle Lock On Scrubber (S)">
-          <Button icon="pin" active={lockOnScrubber} onClick={() => setLockOnScrubber(!lockOnScrubber)} />
+          <Button
+            icon="pin"
+            active={lockOnScrubber}
+            onClick={() => {
+              setLockOnScrubber(!lockOnScrubber);
+            }}
+          />
         </Tooltip>
         <div className="ml-auto"></div>
         <ButtonConnector>
@@ -188,9 +216,9 @@ export default function VideoEditor() {
           <Tooltip text="Continue">
             <Button
               icon="arrow"
-              onClick={async () =>
-                await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number))
-              }
+              onClick={async () => {
+                await RecordingsManager.clip(video.videoPath, (clipsBar.noUiSlider?.get() as string[]).map(Number));
+              }}
               disabled={renderBtnDisabled}
             />
           </Tooltip>

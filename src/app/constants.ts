@@ -5,7 +5,7 @@
 
 import path from "path";
 import Paths from "@/libs/helpers/paths";
-import { Settings } from "@/settings/types";
+import type { Settings } from "@/settings/types";
 
 // App settings, not user editable.
 export const APP_SETTINGS = {
