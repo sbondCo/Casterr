@@ -42,7 +42,7 @@ export default function Recording() {
         );
       })
       .catch((err) => logger.error("Recording", "Failed to get audio devices!", err));
-  });
+  }, []);
 
   return (
     <>
