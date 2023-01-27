@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import React, { useEffect, useState } from "react";
-import noUiSlider, { PipsMode, target } from "nouislider";
+import { useEffect, useState } from "react";
+import noUiSlider, { PipsMode, type target } from "nouislider";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import { removeFirst } from "@/libs/helpers/extensions/array";
 import { logger } from "@/libs/logger";
@@ -534,7 +534,7 @@ export default function useEditor(
    * @param handle Handle that is connected to pair
    */
   const getPairFromHandle = (handle: number) => {
-    const tooltips: Array<HTMLElement | Boolean> = clipsBar.noUiSlider!.getTooltips() as [HTMLElement | Boolean];
+    const tooltips: Array<HTMLElement | boolean> = clipsBar.noUiSlider!.getTooltips() as [HTMLElement | boolean];
     let tooltip: HTMLElement;
 
     if (tooltips[handle] instanceof HTMLElement) {
@@ -554,7 +554,9 @@ export default function useEditor(
     };
   };
 
-  const toggleShowTimeAsElapsed = () => setShowTimeAsElapsed(!showTimeAsElapsed);
+  const toggleShowTimeAsElapsed = () => {
+    setShowTimeAsElapsed(!showTimeAsElapsed);
+  };
 
   const updateVideoTimeReadable = () => {
     const maxVideoTime = player.duration;

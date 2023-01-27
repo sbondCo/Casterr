@@ -1,6 +1,6 @@
-import { ProgressInfo, UpdateDownloadedEvent } from "electron-updater";
+import { type ProgressInfo, type UpdateDownloadedEvent } from "electron-updater";
 import { ipcRenderer } from "electron/renderer";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "./Icon";
 import Spinner from "./Spinner";
 
@@ -57,7 +57,12 @@ export default function UpdateBar() {
     setBarMemo(
       <span>
         Version {info.version} downloaded,{" "}
-        <span className="underline font-bold cursor-pointer" onClick={() => ipcRenderer.send("install-update")}>
+        <span
+          className="underline font-bold cursor-pointer"
+          onClick={() => {
+            ipcRenderer.send("install-update");
+          }}
+        >
           install now
         </span>
         .

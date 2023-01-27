@@ -1,7 +1,7 @@
-import Icon, { Icons } from "@/common/Icon";
+import Icon, { type Icons } from "@/common/Icon";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { RootState } from "./store";
+import { type RootState } from "./store";
 import Recorder from "@/libs/recorder";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import { useEffect } from "react";

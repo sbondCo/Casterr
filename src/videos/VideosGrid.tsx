@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Video } from "./types";
+import { type Video } from "./types";
 import VideosGridItem from "./VideosGridItem";
 
 export default function VideosGrid({ videos }: { videos?: Video[] }) {

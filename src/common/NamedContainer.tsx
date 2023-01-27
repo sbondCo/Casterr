@@ -1,4 +1,4 @@
-import { CommonComponentProps } from "./types";
+import type { CommonComponentProps } from "./types";
 
 type NamedContainerProps = {
   title: string;

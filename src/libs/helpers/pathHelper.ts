@@ -126,7 +126,7 @@ export default class PathHelper {
    * @param path
    */
   public static async removeDir(path: string) {
-    return await fs
+    await fs
       .readdir(path)
       .then(async (files) => {
         for (const f of files) {
@@ -147,7 +147,7 @@ export default class PathHelper {
    * @param path Path to file that should be deleted.
    */
   public static async removeFile(path: string) {
-    return await fs.unlink(path).catch((e) => {
+    await fs.unlink(path).catch((e) => {
       throw Error("Unable to remove file:", e);
     });
   }
@@ -195,11 +195,13 @@ export default class PathHelper {
                       .file(filename)
                       ?.async("nodebuffer")
                       .then(async (content) => {
-                        await fs
-                          .writeFile(Path.join(destFolder, filenameWithoutFolder), content)
-                          .then(() => resolve(""));
+                        await fs.writeFile(Path.join(destFolder, filenameWithoutFolder), content).then(() => {
+                          resolve("");
+                        });
                       })
-                      .catch((e) => reject(e));
+                      .catch((e) => {
+                        reject(e);
+                      });
                   });
                 };
 
@@ -223,9 +225,13 @@ export default class PathHelper {
                 }
               }
             })
-            .catch((e) => reject(e));
+            .catch((e) => {
+              reject(e);
+            });
         })
-        .catch((e) => reject(e));
+        .catch((e) => {
+          reject(e);
+        });
     });
   }
 }

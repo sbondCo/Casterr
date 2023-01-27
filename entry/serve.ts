@@ -4,8 +4,8 @@
  */
 
 import { get } from "http";
-import { ChildProcess, exec } from "child_process";
-import { Stats, watchFile } from "fs";
+import { type ChildProcess, exec } from "child_process";
+import { type Stats, watchFile } from "fs";
 import path from "path";
 
 type LogPrefix = "srve" | "elec" | "vite";
@@ -25,10 +25,14 @@ async function start() {
   log("Starting tasks");
 
   vite = exec(VITE_PATH);
-  listen(vite, "vite").catch((e) => log("Failed to attach listener to vite process."));
+  listen(vite, "vite").catch((e) => {
+    log("Failed to attach listener to vite process.");
+  });
 
   electron = await openElectron();
-  listen(electron, "elec").catch((e) => log("Failed to attach listener to electron process."));
+  listen(electron, "elec").catch((e) => {
+    log("Failed to attach listener to electron process.");
+  });
 
   const restart = async (curr: Stats, prev: Stats, f: string) => {
     // If already restarting return
@@ -47,7 +51,9 @@ async function start() {
       buildProc.on("exit", async () => {
         electron = undefined;
         electron = await openElectron();
-        listen(electron, "elec").catch((e) => log("Failed to attach listener to electron process."));
+        listen(electron, "elec").catch((e) => {
+          log("Failed to attach listener to electron process.");
+        });
 
         restarting = false;
         log(`Done.`);
@@ -55,7 +61,9 @@ async function start() {
     }
   };
 
-  watchFile("entry/background.ts", async (curr, prev) => await restart(curr, prev, "background.ts"));
+  watchFile("entry/background.ts", async (curr, prev) => {
+    await restart(curr, prev, "background.ts");
+  });
 }
 
 async function openElectron() {
@@ -84,8 +92,12 @@ async function openElectron() {
 }
 
 async function listen(proc: ChildProcess, prefix: LogPrefix) {
-  proc.stdout?.on("data", (chunk) => log(chunk, prefix));
-  proc.stderr?.on("data", (chunk) => log(chunk, prefix));
+  proc.stdout?.on("data", (chunk) => {
+    log(chunk, prefix);
+  });
+  proc.stderr?.on("data", (chunk) => {
+    log(chunk, prefix);
+  });
 
   proc.on("close", () => {
     // Only kill main process if we aren't restarting a service.
@@ -119,4 +131,6 @@ function coloured(prefix: string) {
   return `${colour}${prefix}\x1b[0m`;
 }
 
-start().catch((e) => console.error("Failed to start serve:", e));
+start().catch((e) => {
+  console.error("Failed to start serve:", e);
+});

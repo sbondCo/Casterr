@@ -1,4 +1,4 @@
-import { AnyAction, configureStore, Dispatch } from "@reduxjs/toolkit";
+import { type AnyAction, configureStore, type Dispatch } from "@reduxjs/toolkit";
 import appSlice from "./appSlice";
 import videosSlice from "@/videos/videosSlice";
 import settingsSlice from "@/settings/settingsSlice";
@@ -8,7 +8,7 @@ import { promises as fs } from "fs";
 import { DEFAULT_SETTINGS } from "./constants";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import File from "@/libs/helpers/file";
-import { Video } from "@/videos/types";
+import type { Video } from "@/videos/types";
 import { logger } from "@/libs/logger";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {

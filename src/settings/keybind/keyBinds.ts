@@ -1,7 +1,7 @@
 import { store } from "@/app/store";
 import { logger } from "@/libs/logger";
 import { ipcRenderer } from "electron";
-import { KeyBindingSettings } from "./../types";
+import { type KeyBindingSettings } from "./../types";
 
 /**
  * For run on startup to register all keybinds.

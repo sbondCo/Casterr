@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Icon, { IconDirection, Icons } from "./Icon";
-import Slider, { SliderProps } from "./Slider";
-import { CommonComponentProps } from "./types";
+import Icon, { type IconDirection, type Icons } from "./Icon";
+import Slider, { type SliderProps } from "./Slider";
+import type { CommonComponentProps } from "./types";
 
 interface ButtonProps extends CommonComponentProps {
   icon?: Icons;
@@ -41,8 +41,12 @@ export default function Button(props: ButtonProps) {
       } transition-colors disabled:bg-tertiary-100 disabled:cursor-not-allowed ${
         active ? btnClasses : "bg-tertiary-100"
       }`}
-      onMouseEnter={() => setSliderClasses(sliderOpenClasses)}
-      onMouseLeave={() => setSliderClasses(sliderClosedClasses)}
+      onMouseEnter={() => {
+        setSliderClasses(sliderOpenClasses);
+      }}
+      onMouseLeave={() => {
+        setSliderClasses(sliderClosedClasses);
+      }}
       disabled={disabled}
     >
       <div onClick={onClick} className="flex capitalize">
