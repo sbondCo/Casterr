@@ -1,4 +1,4 @@
-import { PopupOptions } from "@/libs/helpers/notifications";
+import { type PopupOptions } from "@/libs/helpers/notifications";
 import { useState } from "react";
 import Button from "./Button";
 import Icon from "./Icon";
@@ -36,7 +36,9 @@ export default function Popup(props: PopupOptions) {
           className="absolute top-3 right-3 text-white-100 cursor-pointer hover:text-white-50"
           i="close"
           wh={16}
-          onClick={() => elClicked("cancel")}
+          onClick={() => {
+            elClicked("cancel");
+          }}
         />
       )}
       <span className="p-1.5 text-xl font-bold capitalize">{title}</span>
@@ -64,7 +66,13 @@ export default function Popup(props: PopupOptions) {
       {buttons && buttons.length > 0 && (
         <div className="flex flex-row gap-3 justify-center items-center">
           {buttons.map((b) => (
-            <Button key={b} text={b} onClick={() => elClicked(b)} />
+            <Button
+              key={b}
+              text={b}
+              onClick={() => {
+                elClicked(b);
+              }}
+            />
           ))}
         </div>
       )}

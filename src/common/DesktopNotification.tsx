@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import Icon, { Icons } from "./Icon";
+import Icon, { type Icons } from "./Icon";
 
 export default function DesktopNotification() {
   const { icon, desc } = useParams<{ icon: Icons; desc: string }>();

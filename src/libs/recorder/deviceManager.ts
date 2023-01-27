@@ -1,6 +1,6 @@
 import Pulse from "./pulse";
 import FFmpeg from "./ffmpeg";
-import { ipcRenderer, Display } from "electron";
+import { ipcRenderer, type Display } from "electron";
 
 export interface Devices {
   /**
@@ -102,7 +102,9 @@ export default class DeviceManager {
             });
           }
         })
-        .catch((e) => reject(e));
+        .catch((e) => {
+          reject(e);
+        });
     });
   }
 
@@ -179,7 +181,9 @@ export default class DeviceManager {
             });
           }
         })
-        .catch((e) => reject(e));
+        .catch((e) => {
+          reject(e);
+        });
     });
   }
 

@@ -1,4 +1,13 @@
-import { app, protocol, BrowserWindow, ipcMain, screen, dialog, OpenDialogOptions, globalShortcut } from "electron";
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  ipcMain,
+  screen,
+  dialog,
+  type OpenDialogOptions,
+  globalShortcut
+} from "electron";
 import { autoUpdater } from "electron-updater";
 import path from "path";
 
@@ -103,7 +112,9 @@ function registerChannels(win: BrowserWindow) {
     });
 
     // Show window when ready to show
-    notifWin.once("ready-to-show", () => notifWin.show());
+    notifWin.once("ready-to-show", () => {
+      notifWin.show();
+    });
 
     if (isDev && process.env.SERVER_URL) {
       // Load the url of the dev server if in development mode
@@ -128,7 +139,9 @@ function registerChannels(win: BrowserWindow) {
     return await new Promise((resolve, reject) => {
       dialog
         .showOpenDialog(win, { ...args })
-        .then((v) => resolve(v))
+        .then((v) => {
+          resolve(v);
+        })
         .catch(reject);
     });
   });
@@ -156,7 +169,9 @@ function registerChannels(win: BrowserWindow) {
     if (oldBind) {
       globalShortcut.unregister(oldBind);
     }
-    return globalShortcut.register(bind, () => win.webContents.send(`${name}-pressed`));
+    return globalShortcut.register(bind, () => {
+      win.webContents.send(`${name}-pressed`);
+    });
   });
 
   /**
@@ -178,7 +193,9 @@ function registerChannels(win: BrowserWindow) {
    */
   ipcMain.on("update-check", () => {
     updateCheckTriggeredManually = true;
-    autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
+    autoUpdater.checkForUpdates().catch((err) => {
+      console.error("Failed to check for updates:", err);
+    });
   });
 
   /**
@@ -223,7 +240,9 @@ function runUpdateCheck(win: BrowserWindow) {
   });
 
   updateCheckTriggeredManually = false;
-  autoUpdater.checkForUpdates().catch((err) => console.error("Failed to check for updates:", err));
+  autoUpdater.checkForUpdates().catch((err) => {
+    console.error("Failed to check for updates:", err);
+  });
 }
 
 /**
@@ -263,8 +282,12 @@ app.on("ready", async () => {
       REDUX_DEVTOOLS
     } = await import("electron-devtools-installer");
     await installExtension([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], true)
-      .then((name) => console.log(`Added Extension: ${name}`))
-      .catch((err) => console.log("An error occurred: ", err));
+      .then((name) => {
+        console.log(`Added Extension: ${name}`);
+      })
+      .catch((err) => {
+        console.log("An error occurred: ", err);
+      });
   }
 
   // Create file protocol, so we can access users files
@@ -272,7 +295,8 @@ app.on("ready", async () => {
   protocol.registerFileProtocol(protocolName, (request, callback) => {
     const url = request.url.replace(`${protocolName}://`, "");
     try {
-      return callback(decodeURIComponent(url));
+      callback(decodeURIComponent(url));
+      return;
     } catch (error) {
       // Handle the error as needed
       console.error(error);

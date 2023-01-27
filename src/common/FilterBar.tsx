@@ -15,7 +15,9 @@ export default function FilterBar({ options, activeOptions, optionClicked }: Fil
           className={`text-[20px] rounded-md py-0.5 px-2 ${
             isActive(opt) ? "text-white-100 bg-quaternary-100" : "text-white-25 hover:text-white-50"
           }`}
-          onClick={() => optionClicked(opt)}
+          onClick={() => {
+            optionClicked(opt);
+          }}
         >
           <span className={`cursor-pointer`}>{opt}</span>
         </div>

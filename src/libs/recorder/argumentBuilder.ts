@@ -3,7 +3,7 @@ import PathHelper from "../helpers/pathHelper";
 import Registry from "../helpers/registry";
 import path from "path";
 import { store } from "@/app/store";
-import { RecordingSettings } from "@/settings/types";
+import type { RecordingSettings } from "@/settings/types";
 import { equalsAnyOf, toReadableDateTime } from "../helpers/extensions/string";
 import { toHexTwosComplement } from "../helpers/extensions/number";
 

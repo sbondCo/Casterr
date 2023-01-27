@@ -1,6 +1,5 @@
-import Icon, { Icons } from "@/common/Icon";
+import Icon, { type Icons } from "@/common/Icon";
 import { ipcRenderer } from "electron";
-import React from "react";
 
 export default function Dragger() {
   return (

@@ -1,5 +1,5 @@
 import { logger } from "@/libs/logger";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Add drag and drop functionality to an element.

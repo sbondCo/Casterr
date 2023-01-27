@@ -5,7 +5,7 @@ import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
 import Paths from "../helpers/paths";
-import { createLogger, format, Logger } from "winston";
+import { createLogger, format, type Logger } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 
 export default class FFmpeg {
@@ -41,7 +41,7 @@ export default class FFmpeg {
         new DailyRotateFile({
           format: format.printf((info) => {
             const { message, ...meta } = info;
-            // @ts-expect-error
+            // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             return `${message} ${meta[Symbol.for("splat")]
               .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))

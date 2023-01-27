@@ -21,7 +21,7 @@ const formatMap = (v: any) => {
 
 const fileFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
-  // @ts-expect-error
+  // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
     .map(formatMap)
     .join(" ")}`;
@@ -29,7 +29,7 @@ const fileFormat = format.printf((info) => {
 
 const consoleFormat = format.printf((info) => {
   const { level, message, ...meta } = info;
-  // @ts-expect-error
+  // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
   return `${meta.timestamp} [${level.toLocaleUpperCase()}] [${message.toLocaleUpperCase()}] ${meta[Symbol.for("splat")]
     .map(formatMap)
     .join(" ")}`;

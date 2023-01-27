@@ -23,7 +23,12 @@ export default function ListBox({ options, enabled, onChange }: ListBoxProps) {
       {options ? (
         options.map((lb) => (
           <NamedContainer key={lb.id} title={lb.name} row className="!pb-0">
-            <TickBox ticked={enabled.includes(lb.id)} onChange={(t) => onChange(t, lb.id)} />
+            <TickBox
+              ticked={enabled.includes(lb.id)}
+              onChange={(t) => {
+                onChange(t, lb.id);
+              }}
+            />
           </NamedContainer>
         ))
       ) : (

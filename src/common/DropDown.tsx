@@ -30,7 +30,9 @@ export default function DropDown({ activeItem, items, onChange }: DropDownProps)
         className={`${
           isOpen ? "rounded-t" : "rounded"
         } flex items-center relative py-1.5 px-3 cursor-pointer hover:bg-tertiary-100 transition-colors`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
       >
         <span>{typeof selected === "object" ? selected.name : selected}</span>
         <Icon i="chevron" direction={isOpen ? "up" : "down"} wh={16} className="absolute right-3 fill-white-100" />

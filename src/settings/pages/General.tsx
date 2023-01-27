@@ -1,4 +1,4 @@
-import { RootState } from "@/app/store";
+import { type RootState } from "@/app/store";
 import TickBox from "@/common/TickBox";
 import { useDispatch, useSelector } from "react-redux";
 import NamedContainer from "../../common/NamedContainer";

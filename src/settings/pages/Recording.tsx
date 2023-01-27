@@ -1,7 +1,7 @@
 import { APP_SETTINGS, DEFAULT_SETTINGS } from "@/app/constants";
-import { RootState } from "@/app/store";
-import DropDown, { DropDownItem } from "@/common/DropDown";
-import ListBox, { ListBoxItem } from "@/common/ListBox";
+import { type RootState } from "@/app/store";
+import DropDown, { type DropDownItem } from "@/common/DropDown";
+import ListBox, { type ListBoxItem } from "@/common/ListBox";
 import TextBox from "@/common/TextBox";
 import TickBox from "@/common/TickBox";
 import { logger } from "@/libs/logger";

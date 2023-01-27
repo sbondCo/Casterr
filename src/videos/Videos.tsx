@@ -1,4 +1,4 @@
-import { RootState } from "@/app/store";
+import { type RootState } from "@/app/store";
 import FilterBar from "@/common/FilterBar";
 import Icon from "@/common/Icon";
 import Loader from "@/common/Loader";
@@ -9,7 +9,7 @@ import { logger } from "@/libs/logger";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Video } from "./types";
+import { type Video } from "./types";
 import VideosGrid from "./VideosGrid";
 
 export default function Videos() {
@@ -109,7 +109,9 @@ export default function Videos() {
           placeholder="Search All Videos"
           icon="search"
           debounce={250}
-          onChange={(e) => setSearchQuery(e)}
+          onChange={(e) => {
+            setSearchQuery(e);
+          }}
         />
       </div>
 

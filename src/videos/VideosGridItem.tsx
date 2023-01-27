@@ -3,7 +3,7 @@ import { toReadableFileSize, toReadableTimeFromSeconds } from "@/libs/helpers/ex
 import PathHelper from "@/libs/helpers/pathHelper";
 import { logger } from "@/libs/logger";
 import { useEffect, useState } from "react";
-import { Video } from "./types";
+import type { Video } from "./types";
 
 export default function VideosGridItem({ video }: { video: Video }) {
   const { name, duration, fileSize, fps, thumbPath } = video;

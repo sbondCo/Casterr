@@ -1,6 +1,6 @@
 import { DEFAULT_SETTINGS } from "@/app/constants";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MonitorToRecord } from "./types";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { type MonitorToRecord } from "./types";
 
 const settingsSlice = createSlice({
   name: "settings",

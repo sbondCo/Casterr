@@ -1,4 +1,4 @@
-import { RootState } from "@/app/store";
+import { type RootState } from "@/app/store";
 import { useDispatch, useSelector } from "react-redux";
 import NamedContainer from "../../common/NamedContainer";
 import { setStartStopRecording } from "../settingsSlice";
