@@ -31,7 +31,10 @@ export type Icons =
   | "time"
   | "edit"
   | "search"
-  | "pin";
+  | "pin"
+  | "info"
+  | "wifi"
+  | "globe";
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
@@ -300,6 +303,79 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
               fill="currentColor"
               d="M272 164a9 9 0 00-9-9h-14a9 9 0 00-9 9v293.56a32.09 32.09 0 002.49 12.38l10.07 24a3.92 3.92 0 006.88 0l10.07-24a32.09 32.09 0 002.49-12.38z"
             />
+          </g>
+        )
+      };
+    case "info":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="40"
+              d="M196 220h64v172"
+            />
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              strokeWidth="40"
+              d="M187 396h138"
+            />
+            <path fill="currentColor" d="M256 160a32 32 0 1132-32 32 32 0 01-32 32z" />
+          </g>
+        )
+      };
+    case "wifi":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M332.41 310.59a115 115 0 00-152.8 0M393.46 249.54a201.26 201.26 0 00-274.92 0M447.72 182.11a288 288 0 00-383.44 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path fill="currentColor" d="M256 416a32 32 0 1132-32 32 32 0 01-32 32z" />
+          </g>
+        )
+      };
+    case "globe":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208 208-93.13 208-208S370.87 48 256 48z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              d="M256 48c-58.07 0-112.67 93.13-112.67 208S197.93 464 256 464s112.67-93.13 112.67-208S314.07 48 256 48z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              d="M117.33 117.33c38.24 27.15 86.38 43.34 138.67 43.34s100.43-16.19 138.67-43.34M394.67 394.67c-38.24-27.15-86.38-43.34-138.67-43.34s-100.43 16.19-138.67 43.34"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32" d="M256 48v416M464 256H48" />
           </g>
         )
       };
