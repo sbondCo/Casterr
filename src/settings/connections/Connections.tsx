@@ -7,15 +7,17 @@ export default function Connections() {
   const state = useSelector((store: RootState) => store.uploaders);
 
   return (
-    <Connection
-      icon="youtube"
-      name="YouTube"
-      connected={state.youtube?.username ? state.youtube.username : state.youtube !== undefined ? true : undefined}
-      onConnectClick={() => {
-        connect().catch((err) => {
-          console.error(err);
-        });
-      }}
-    />
+    <div className="flex flex-col gap-4">
+      <Connection
+        icon="youtube"
+        name="YouTube"
+        connected={state.youtube?.username ? state.youtube.username : state.youtube !== undefined ? true : undefined}
+        onConnectClick={() => {
+          connect().catch((err) => {
+            console.error(err);
+          });
+        }}
+      />
+    </div>
   );
 }

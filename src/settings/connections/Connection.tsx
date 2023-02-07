@@ -1,4 +1,6 @@
+import Button from "@/common/Button";
 import Icon, { type Icons } from "@/common/Icon";
+import Tooltip from "@/common/Tooltip";
 import { useEffect, useState } from "react";
 
 interface ConnectionProps {
@@ -48,6 +50,11 @@ export default function Connection({ name, icon, connected, onConnectClick }: Co
         <span>{name}</span>
         <span className="text-xs">{connectedMsg}</span>
       </div>
+      {connected && (
+        <Tooltip text="Disconnect" className="ml-auto" gap={22}>
+          <Icon i="close" wh={16} />
+        </Tooltip>
+      )}
     </button>
   );
 }
