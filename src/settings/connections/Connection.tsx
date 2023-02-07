@@ -1,4 +1,3 @@
-import Button from "@/common/Button";
 import Icon, { type Icons } from "@/common/Icon";
 import Tooltip from "@/common/Tooltip";
 import { useEffect, useState } from "react";
@@ -25,9 +24,14 @@ interface ConnectionProps {
    * On service connect clicked.
    */
   onConnectClick: () => void;
+
+  /**
+   * On service disconnect clicked.
+   */
+  onDisconnectClick: () => void;
 }
 
-export default function Connection({ name, icon, connected, onConnectClick }: ConnectionProps) {
+export default function Connection({ name, icon, connected, onConnectClick, onDisconnectClick }: ConnectionProps) {
   const [connectedMsg, setConnectedMsg] = useState("Not Connected");
 
   useEffect(() => {
@@ -36,7 +40,7 @@ export default function Connection({ name, icon, connected, onConnectClick }: Co
     } else if (typeof connected === "string") {
       setConnectedMsg(`Connected as ${connected}`);
     } else {
-      useState("Not Connected");
+      setConnectedMsg("Not Connected");
     }
   }, [connected]);
 
@@ -52,7 +56,13 @@ export default function Connection({ name, icon, connected, onConnectClick }: Co
       </div>
       {connected && (
         <Tooltip text="Disconnect" className="ml-auto" gap={22}>
-          <Icon i="close" wh={16} />
+          <Icon
+            i="close"
+            wh={16}
+            onClick={() => {
+              onDisconnectClick();
+            }}
+          />
         </Tooltip>
       )}
     </button>

@@ -10,10 +10,13 @@ const uploadersSlice = createSlice({
     },
     youtubeUserFetched(state, action: PayloadAction<string>) {
       if (action.payload && state.youtube) state.youtube.username = action.payload;
+    },
+    youtubeDisconnected(state) {
+      delete state.youtube;
     }
   }
 });
 
-export const { youtubeConnected, youtubeUserFetched } = uploadersSlice.actions;
+export const { youtubeConnected, youtubeUserFetched, youtubeDisconnected } = uploadersSlice.actions;
 
 export default uploadersSlice.reducer;

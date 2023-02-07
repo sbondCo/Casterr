@@ -4,8 +4,10 @@ import { type AddressInfo } from "net";
 import axios from "axios";
 import crypto from "crypto";
 import { store } from "@/app/store";
-import { youtubeConnected, youtubeUserFetched } from "./uploadersSlice";
+import { youtubeConnected, youtubeDisconnected, youtubeUserFetched } from "./uploadersSlice";
 import type { YouTubeUploader } from "./types";
+import Notifications from "../helpers/notifications";
+import { logger } from "../logger";
 
 // Should be able to split most of this out to a helper method if we use oauth to connect to other services too.
 
@@ -17,6 +19,7 @@ const OAUTH_CLIENT_ID = "";
 const OAUTH_CLIENT_SECRET = "";
 
 export default async function connect() {
+  const popupId = "CONNECTYOUTUBE";
   const verifier = Buffer.from(crypto.randomBytes(32)).toString("base64url");
   const challenge = Buffer.from(crypto.createHash("sha256").update(verifier).digest()).toString("base64url");
 
@@ -60,6 +63,7 @@ export default async function connect() {
             } else {
               console.error("No data returned in exchange request for auth token!");
             }
+            Notifications.rmPopup(popupId);
           } catch (err) {
             console.error("Failed to exchange auth code for token:", err);
           }
@@ -75,6 +79,23 @@ export default async function connect() {
   });
   server.listen(0); // Listening on port 0, the OS should assign us to an available port.
 
+  Notifications.popup({
+    id: popupId,
+    title: "Waiting for YouTube Authorization",
+    loader: true,
+    showCancel: true
+  })
+    .then(async (popup) => {
+      if (popup.action === "cancel") {
+        logger.error("CONNECT-YT", "Cancelled by user, closing server.");
+        Notifications.rmPopup(popupId);
+        server.close();
+      }
+    })
+    .catch((e) => {
+      logger.error("CONNECT-YT", `Failed to update ${popupId} popup with progress.`, e);
+    });
+
   // Pretty sure .address() will always be of type AddressInfo in our use case
   const redirectUri = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   console.log(`Auth listener server started on: ${redirectUri}`);
@@ -85,4 +106,18 @@ export default async function connect() {
       `${OAUTH_ENDPOINT}?client_id=${OAUTH_CLIENT_ID}&scope=${OAUTH_SCOPE}&redirect_uri=${redirectUri}&response_type=code&code_challenge_method=S256&code_challenge=${challenge}`
     )
   );
+}
+
+export async function disconnect() {
+  const ytState = store.getState().uploaders.youtube;
+  if (ytState) {
+    if (ytState.access_token) {
+      axios.post(`https://oauth2.googleapis.com/revoke?token=${ytState.access_token}`).catch((err) => {
+        logger.error("CONNECT-YT", "Failed to revoke youtube access token.", err);
+      });
+    }
+    store.dispatch(youtubeDisconnected());
+  } else {
+    logger.info("CONNECT-YT", "disconnect called, but state doesn't include youtube.. ignoring");
+  }
 }
