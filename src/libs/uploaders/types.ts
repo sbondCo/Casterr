@@ -8,4 +8,5 @@ export interface YouTubeUploader {
   refresh_token: string;
   scope: string;
   token_type: string;
+  username?: string;
 }

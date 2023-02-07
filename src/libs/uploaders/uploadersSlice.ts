@@ -7,10 +7,13 @@ const uploadersSlice = createSlice({
   reducers: {
     youtubeConnected(state, action: PayloadAction<YouTubeUploader>) {
       state.youtube = action.payload;
+    },
+    youtubeUserFetched(state, action: PayloadAction<string>) {
+      if (action.payload && state.youtube) state.youtube.username = action.payload;
     }
   }
 });
 
-export const { youtubeConnected } = uploadersSlice.actions;
+export const { youtubeConnected, youtubeUserFetched } = uploadersSlice.actions;
 
 export default uploadersSlice.reducer;

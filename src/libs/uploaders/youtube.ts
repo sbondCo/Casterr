@@ -4,12 +4,15 @@ import { type AddressInfo } from "net";
 import axios from "axios";
 import crypto from "crypto";
 import { store } from "@/app/store";
-import { youtubeConnected } from "./uploadersSlice";
+import { youtubeConnected, youtubeUserFetched } from "./uploadersSlice";
+import type { YouTubeUploader } from "./types";
 
 // Should be able to split most of this out to a helper method if we use oauth to connect to other services too.
 
 const OAUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
-const OAUTH_SCOPE = "https://www.googleapis.com/auth/youtube.upload";
+// youtube.upload for uploading
+// youtube.readonly for getting the channel name, so we can display which account is connected
+const OAUTH_SCOPE = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly";
 const OAUTH_CLIENT_ID = "";
 const OAUTH_CLIENT_SECRET = "";
 
@@ -39,7 +42,21 @@ export default async function connect() {
             const aRes = await axios.post("https://oauth2.googleapis.com/token", params);
             console.log(aRes);
             if (aRes?.data) {
-              store.dispatch(youtubeConnected(aRes.data));
+              const aResData = aRes.data as YouTubeUploader;
+              store.dispatch(youtubeConnected(aResData));
+              // get username
+              const uRes = await axios.get("https://youtube.googleapis.com/youtube/v3/channels", {
+                params: {
+                  part: "snippet",
+                  fields: "items(snippet.title)",
+                  mine: true
+                },
+                headers: {
+                  Authorization: `Bearer ${aResData.access_token}`
+                }
+              });
+              store.dispatch(youtubeUserFetched(uRes.data?.items[0]?.snippet?.title));
+              console.log(uRes);
             } else {
               console.error("No data returned in exchange request for auth token!");
             }
