@@ -30,8 +30,17 @@ export default function VideosGridItem({ video }: { video: Video }) {
         </div>
       )}
 
-      <div className="group-hover:opacity-100 opacity-0 absolute top-2/4 left-2/4 drop-shadow transition-opacity">
-        <Icon i="edit" />
+      <div className="flex flex-row gap-3 hover:gap-2 hover:bg-quaternary-100/90 p-2 rounded-xl group-hover:opacity-100 opacity-0 absolute top-2/4 left-2/4 translate-x-[-50%] translate-y-[-50%] drop-shadow transition-all">
+        <Icon i="edit" wh={32} className="hover:bg-tertiary-100 p-1 rounded" />
+        <Icon
+          i="upload"
+          wh={32}
+          className="hover:bg-tertiary-100 p-1 rounded"
+          onClick={(e) => {
+            e.preventDefault();
+            logger.info("VideosGridItem", "Upload button clicked on thumb");
+          }}
+        />
       </div>
 
       <p className="absolute right-3 top-2 italic font-bold [text_shadow:_1px_1px_black]">{fps} FPS</p>
