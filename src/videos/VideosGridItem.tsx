@@ -2,6 +2,7 @@ import Icon from "@/common/Icon";
 import { toReadableFileSize, toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import PathHelper from "@/libs/helpers/pathHelper";
 import { logger } from "@/libs/logger";
+import { upload } from "@/libs/uploaders/youtube";
 import { useEffect, useState } from "react";
 import type { Video } from "./types";
 
@@ -39,6 +40,9 @@ export default function VideosGridItem({ video }: { video: Video }) {
           onClick={(e) => {
             e.preventDefault();
             logger.info("VideosGridItem", "Upload button clicked on thumb");
+            upload(video).catch((err) => {
+              logger.error("VideosGridItem", "Uploading video failed:", err);
+            });
           }}
         />
       </div>

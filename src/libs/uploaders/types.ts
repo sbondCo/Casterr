@@ -4,9 +4,8 @@ export interface Uploaders {
 
 export interface YouTubeUploader {
   access_token: string;
-  expires_in: string;
+  expires: number;
   refresh_token: string;
   scope: string;
-  token_type: string;
   username?: string;
 }
