@@ -8,7 +8,9 @@ import Notifications from "../helpers/notifications";
 import { logger } from "../logger";
 import fs from "fs";
 import http from "http";
+import https from "https";
 import type { Video } from "@/videos/types";
+import PathHelper from "../helpers/pathHelper";
 
 // Should be able to split most of this out to a helper method if we use oauth to connect to other services too.
 
@@ -27,12 +29,9 @@ export default async function connect() {
   const server = http.createServer(async (req, res) => {
     if (req.method === "GET") {
       if (req.url && req.headers && req.headers.host) {
-        console.log("serv");
-        console.log(req.url);
-        console.log("redirect_uri:", `http://${req.headers.host}`);
+        logger.log("CONNECT-YT", "redirect_uri:", `http://${req.headers.host}`);
         const url = new URL(req.url, `http://${req.headers.host}`);
         const params = url.searchParams;
-        console.log(params.get("code"), params.get("scope"));
         const authCode = params.get("code");
         if (authCode) {
           try {
@@ -44,7 +43,6 @@ export default async function connect() {
             params.append("grant_type", "authorization_code");
             params.append("redirect_uri", `http://${req.headers.host}`);
             const aRes = await axios.post("https://oauth2.googleapis.com/token", params);
-            console.log(aRes);
             if (aRes?.data) {
               const aResData = aRes.data;
               store.dispatch(
@@ -67,13 +65,12 @@ export default async function connect() {
                 }
               });
               store.dispatch(youtubeUserFetched(uRes.data?.items[0]?.snippet?.title));
-              console.log(uRes);
             } else {
-              console.error("No data returned in exchange request for auth token!");
+              logger.error("CONNECT-YT", "No data returned in exchange request for auth token!");
             }
             Notifications.rmPopup(popupId);
           } catch (err) {
-            console.error("Failed to exchange auth code for token:", err);
+            logger.error("CONNECT-YT", "Failed to exchange auth code for token:", err);
           }
         }
         res.writeHead(200, { "Content-Type": "text/html" });
@@ -106,8 +103,8 @@ export default async function connect() {
 
   // Pretty sure .address() will always be of type AddressInfo in our use case
   const redirectUri = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-  console.log(`Auth listener server started on: ${redirectUri}`);
-  console.log(`Redirecting user to Google auth..`);
+  logger.log("CONNECT-YT", `Auth listener server started on: ${redirectUri}`);
+  logger.log("CONNECT-YT", `Redirecting user to Google auth..`);
 
   await shell.openExternal(
     encodeURI(
@@ -133,30 +130,69 @@ export async function disconnect() {
 export async function upload(video: Video) {
   const token = await getAccessToken();
   if (token) {
+    const popupId = "YOUTUBE-UPLOAD";
+
+    Notifications.popup({ id: popupId, title: "Initializing Upload", loader: true }).catch((err) => {
+      logger.error(`POPUP ${popupId}`, err);
+    });
+
     const performUpload = (location: string) => {
-      axios
-        .put(
-          location,
-          // fs.createReadStream(video.videoPath),
-          fs.readFileSync(video.videoPath),
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "video/*",
-              "Content-Length": video.fileSize
-            }
+      // axios didnt work with read stream dont know why but not spending another 72.53 years on it
+      const req = https.request(
+        location,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "video/*",
+            "Content-Length": video.fileSize
           }
-        )
-        .catch((err) => {
-          console.error("YouTube upload request failed:", err);
+        },
+        (res) => {
+          if (res.statusCode === 200) {
+            let data = "";
+            res.setEncoding("utf8");
+            res.on("data", (chunk: string) => {
+              data += chunk;
+            });
+            res.on("end", () => {
+              logger.log("CONNECT-YT", JSON.parse(data));
+            });
+          }
+        }
+      );
+
+      req.on("error", (e) => {
+        logger.error("CONNECT-YT", `problem with upload request: ${e.message}`);
+      });
+
+      // Write data to request body
+      const rs = fs.createReadStream(video.videoPath);
+      let bytesRead = 0;
+      rs.pipe(req);
+      rs.on("data", (data) => {
+        bytesRead += data.length;
+        Notifications.popup({
+          id: popupId,
+          title: "Uploading Video",
+          loader: false,
+          percentage: video.fileSize ? Number(((100.0 * bytesRead) / video.fileSize).toFixed(0)) : undefined
+        }).catch((err) => {
+          logger.error(`POPUP ${popupId}`, err);
         });
+      });
+      rs.on("end", () => {
+        logger.info("CONNECT-YT", "ending request.. file reading done");
+        req.end();
+        Notifications.rmPopup(popupId);
+      });
     };
 
     const resumableUriReq = await axios
       .post(
         "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
         {
-          snippet: { title: "I came from Casterr", description: "i am a description... i think??" },
+          snippet: { title: PathHelper.fileNameNoExt(video.videoPath), description: "" },
           status: { privacyStatus: "private" }
         },
         {
@@ -169,18 +205,16 @@ export async function upload(video: Video) {
         }
       )
       .catch((err) => {
-        console.error("YouTube resumable upload request failed:", err);
+        logger.error("CONNECT-YT", "YouTube resumable upload request failed:", err);
       });
-    console.log(resumableUriReq);
     if (resumableUriReq?.headers) {
       const location = resumableUriReq.headers.location;
       if (location) {
-        console.log("LOCATION", location);
         performUpload(location);
       }
     }
   } else {
-    console.error("No token");
+    logger.error("CONNECT-YT", "No token");
   }
 }
 
