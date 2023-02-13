@@ -3,7 +3,7 @@ import { type AddressInfo } from "net";
 import axios from "axios";
 import crypto from "crypto";
 import { store } from "@/app/store";
-import { youtubeConnected, youtubeDisconnected, youtubeUserFetched } from "./uploadersSlice";
+import { youtubeConnected, youtubeDisconnected, youtubeTokenRefreshed, youtubeUserFetched } from "./uploadersSlice";
 import Notifications from "../helpers/notifications";
 import { logger } from "../logger";
 import fs from "fs";
@@ -234,10 +234,9 @@ async function getAccessToken(): Promise<string | undefined> {
       if (refreshRes?.data) {
         const newToken = refreshRes.data;
         store.dispatch(
-          youtubeConnected({
+          youtubeTokenRefreshed({
             access_token: newToken.access_token,
             expires: Date.now() + newToken.expires_in * 1000,
-            refresh_token: newToken.refresh_token,
             scope: newToken.scope
           })
         );

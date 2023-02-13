@@ -9,3 +9,5 @@ export interface YouTubeUploader {
   scope: string;
   username?: string;
 }
+
+export type YoutubeUploaderRefresh = Pick<YouTubeUploader, "access_token" | "expires" | "scope">;
