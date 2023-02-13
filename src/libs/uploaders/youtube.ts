@@ -29,7 +29,7 @@ export default async function connect() {
   const server = http.createServer(async (req, res) => {
     if (req.method === "GET") {
       if (req.url && req.headers && req.headers.host) {
-        logger.log("CONNECT-YT", "redirect_uri:", `http://${req.headers.host}`);
+        logger.info("CONNECT-YT", "redirect_uri:", `http://${req.headers.host}`);
         const url = new URL(req.url, `http://${req.headers.host}`);
         const params = url.searchParams;
         const authCode = params.get("code");
@@ -103,8 +103,8 @@ export default async function connect() {
 
   // Pretty sure .address() will always be of type AddressInfo in our use case
   const redirectUri = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-  logger.log("CONNECT-YT", `Auth listener server started on: ${redirectUri}`);
-  logger.log("CONNECT-YT", `Redirecting user to Google auth..`);
+  logger.info("CONNECT-YT", `Auth listener server started on: ${redirectUri}`);
+  logger.info("CONNECT-YT", `Redirecting user to Google auth..`);
 
   await shell.openExternal(
     encodeURI(
@@ -156,7 +156,7 @@ export async function upload(video: Video) {
               data += chunk;
             });
             res.on("end", () => {
-              logger.log("CONNECT-YT", JSON.parse(data));
+              logger.info("CONNECT-YT", JSON.parse(data));
             });
           }
         }
