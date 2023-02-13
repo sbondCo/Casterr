@@ -128,10 +128,9 @@ export async function disconnect() {
 }
 
 export async function upload(video: Video) {
+  const popupId = "YOUTUBE-UPLOAD";
   const token = await getAccessToken();
   if (token) {
-    const popupId = "YOUTUBE-UPLOAD";
-
     Notifications.popup({ id: popupId, title: "Initializing Upload", loader: true }).catch((err) => {
       logger.error(`POPUP ${popupId}`, err);
     });
@@ -164,6 +163,13 @@ export async function upload(video: Video) {
 
       req.on("error", (e) => {
         logger.error("CONNECT-YT", `problem with upload request: ${e.message}`);
+        Notifications.popup({
+          id: popupId,
+          title: "Failed To Upload Video",
+          showCancel: true
+        }).catch((err) => {
+          logger.error(`POPUP ${popupId}`, err);
+        });
       });
 
       // Write data to request body
@@ -206,6 +212,13 @@ export async function upload(video: Video) {
       )
       .catch((err) => {
         logger.error("CONNECT-YT", "YouTube resumable upload request failed:", err);
+        Notifications.popup({
+          id: popupId,
+          title: "Failed To Initialize Upload",
+          showCancel: true
+        }).catch((err) => {
+          logger.error(`POPUP ${popupId}`, err);
+        });
       });
     if (resumableUriReq?.headers) {
       const location = resumableUriReq.headers.location;
@@ -215,6 +228,13 @@ export async function upload(video: Video) {
     }
   } else {
     logger.error("CONNECT-YT", "No token");
+    Notifications.popup({
+      id: popupId,
+      title: "YouTube Token Not Found. Try Reconnecting.",
+      showCancel: true
+    }).catch((err) => {
+      logger.error(`POPUP ${popupId}`, err);
+    });
   }
 }
 
