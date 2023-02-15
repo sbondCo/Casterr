@@ -11,6 +11,7 @@ import http from "http";
 import https from "https";
 import type { Video } from "@/videos/types";
 import PathHelper from "../helpers/pathHelper";
+import { OAUTH_RETURN_HTML } from "./common";
 
 // Should be able to split most of this out to a helper method if we use oauth to connect to other services too.
 
@@ -74,7 +75,7 @@ export default async function connect() {
           }
         }
         res.writeHead(200, { "Content-Type": "text/html" });
-        res.end("<h1>You can close this tab now.</h1>");
+        res.end(OAUTH_RETURN_HTML);
         server.close();
       } else {
         res.writeHead(400, { "Content-Type": "text/plain" });
@@ -93,7 +94,6 @@ export default async function connect() {
     .then(async (popup) => {
       if (popup.action === "cancel") {
         logger.error("CONNECT-YT", "Cancelled by user, closing server.");
-        Notifications.rmPopup(popupId);
         server.close();
       }
     })
