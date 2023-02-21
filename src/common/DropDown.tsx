@@ -10,7 +10,7 @@ interface DropDownProps {
 export interface DropDownItem {
   /**
    * The dropdown component won't use this data
-   * it is only returned back when the item is clicked.
+   * it is only used when returned back.
    */
   id: any;
 

@@ -13,6 +13,7 @@ import {
   setFormat,
   setFps,
   setMonitorToRecord,
+  setRecordThePast,
   setResolution,
   setSeperateAudioTracks,
   setThumbSaveFolder,
@@ -31,6 +32,20 @@ export default function Recording() {
   const videoDevices = ["Default"];
   const monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
   const resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
+  const recordThePastItems: DropDownItem[] = [
+    { id: 0, name: "Disabled" },
+    { id: 30, name: "30 secs" },
+    { id: 60, name: "1 min" },
+    { id: 120, name: "2 mins" },
+    { id: 180, name: "3 mins" },
+    { id: 300, name: "5 mins" },
+    { id: 480, name: "8 mins" },
+    { id: 600, name: "10 mins" },
+    { id: 900, name: "15 mins" },
+    { id: 1200, name: "20 mins" },
+    { id: 1800, name: "30 mins" }
+  ];
+  const recordThePastActiveItem = recordThePastItems.find((v) => v.id === state.recordThePast);
 
   useEffect(() => {
     DeviceManager.getDevices()
@@ -89,6 +104,14 @@ export default function Recording() {
           activeItem={state.format}
           items={APP_SETTINGS.supportedRecordingFormats}
           onChange={(s) => dispatch(setFormat(s as string))}
+        />
+      </NamedContainer>
+
+      <NamedContainer title="Record The Past">
+        <DropDown
+          activeItem={recordThePastActiveItem ?? recordThePastItems[0]}
+          items={recordThePastItems}
+          onChange={(s) => dispatch(setRecordThePast((s as DropDownItem).id))}
         />
       </NamedContainer>
 

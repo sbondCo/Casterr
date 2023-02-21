@@ -52,6 +52,13 @@ export interface RecordingSettings {
    * different audio tracks.
    */
   seperateAudioTracks: boolean;
+
+  /**
+   * If we should record the past or not.
+   * In seconds of how long we should allow recording of the past.
+   * 0 = disabled.
+   */
+  recordThePast: number;
 }
 
 export interface KeyBindingSettings {
