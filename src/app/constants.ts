@@ -39,6 +39,7 @@ export const DEFAULT_SETTINGS = {
     recordThePast: 0
   },
   key: {
-    startStopRecording: "F9"
+    startStopRecording: "F9",
+    recordThePast: "F10"
   }
 } as Settings;

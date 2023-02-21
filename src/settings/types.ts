@@ -63,6 +63,7 @@ export interface RecordingSettings {
 
 export interface KeyBindingSettings {
   startStopRecording: string;
+  recordThePast: string;
 }
 
 export interface MonitorToRecord {

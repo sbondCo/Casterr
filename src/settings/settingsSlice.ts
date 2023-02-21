@@ -79,6 +79,9 @@ const settingsSlice = createSlice({
     //
     setStartStopRecording(state, action: PayloadAction<string>) {
       state.key.startStopRecording = action.payload;
+    },
+    setRecordThePastKeyBind(state, action: PayloadAction<string>) {
+      state.key.recordThePast = action.payload;
     }
   }
 });
@@ -104,7 +107,8 @@ export const {
   setSeperateAudioTracks,
   setRecordThePast,
 
-  setStartStopRecording
+  setStartStopRecording,
+  setRecordThePastKeyBind
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
