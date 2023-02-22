@@ -8,7 +8,7 @@ import { equalsAnyOf, toReadableDateTime } from "../helpers/extensions/string";
 import { toHexTwosComplement } from "../helpers/extensions/number";
 
 export interface Arguments {
-  args: string;
+  args: string[];
   videoPath: string;
 }
 
@@ -25,13 +25,19 @@ export default class ArgumentBuilder {
    */
   public static async createArgs(): Promise<Arguments> {
     // Build and return args differently depending on OS
+    let args;
     if (process.platform === "win32") {
-      return await ArgumentBuilder.buildWindowsArgs();
+      args = await ArgumentBuilder.buildWindowsArgs();
     } else if (process.platform === "linux") {
-      return await ArgumentBuilder.buildLinuxArgs();
+      args = await ArgumentBuilder.buildLinuxArgs();
+    } else {
+      throw new Error("Could not build args for current system. It isn't supported.");
     }
 
-    throw new Error("Could not build args for current system. It isn't supported.");
+    return {
+      args: args.args,
+      videoPath: args.videoPath
+    };
   }
 
   /**
@@ -65,7 +71,7 @@ export default class ArgumentBuilder {
     args.push(`"${videoOutputPath}"`);
 
     return {
-      args: args.join(" ").toString(),
+      args,
       videoPath: videoOutputPath
     };
   }
@@ -120,7 +126,7 @@ export default class ArgumentBuilder {
     args.push(`"${videoOutputPath}"`);
 
     return {
-      args: args.join(" ").toString(),
+      args,
       videoPath: videoOutputPath
     };
   }
@@ -243,7 +249,7 @@ export default class ArgumentBuilder {
     return `${toReadableDateTime(this.rs.videoSaveName)}.${this.rs.format}`;
   }
 
-  private static async videoOutputPath(): Promise<string> {
+  public static async videoOutputPath(): Promise<string> {
     return path.join(await PathHelper.ensureExists(this.rs.videoSaveFolder, true), this.videoOutputName);
   }
 }

@@ -33,7 +33,7 @@ export default class Recorder {
       logger.info("Recorder", "Recorder.Start Args:", this.args);
 
       // Start the recording
-      await this.ffmpeg.run(this.args.args, "onOpen");
+      await this.ffmpeg.run(this.args.args.join(" "), "onOpen");
 
       Notifications.desktop("Started Recording", "play").catch((e) =>
         logger.error("Recorder", "Failed to show started recording desktop notification", e)
