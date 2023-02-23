@@ -19,8 +19,8 @@ const OAUTH_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
 // youtube.upload for uploading
 // youtube.readonly for getting the channel name, so we can display which account is connected
 const OAUTH_SCOPE = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly";
-const OAUTH_CLIENT_ID = "";
-const OAUTH_CLIENT_SECRET = "";
+const OAUTH_CLIENT_ID = "288071942568-msuhjt27pm7hiq408ig1ipr9hdrr8g0o.apps.googleusercontent.com";
+const OAUTH_CLIENT_SECRET = "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";
 
 export default async function connect() {
   const popupId = "CONNECTYOUTUBE";
