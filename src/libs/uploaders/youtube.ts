@@ -117,7 +117,7 @@ export async function disconnect() {
   const ytState = store.getState().uploaders.youtube;
   if (ytState) {
     if (ytState.access_token) {
-      axios.post(`https://oauth2.googleapis.com/revoke?token=${ytState.access_token}`).catch((err) => {
+      axios.post(`https://oauth2.googleapis.com/revoke?token=${ytState.access_token as string}`).catch((err) => {
         logger.error("CONNECT-YT", "Failed to revoke youtube access token.", err);
       });
     }
@@ -155,7 +155,28 @@ export async function upload(video: Video) {
               data += chunk;
             });
             res.on("end", () => {
-              logger.info("CONNECT-YT", JSON.parse(data));
+              try {
+                const json = JSON.parse(data);
+                logger.info("CONNECT-YT", json);
+                if (json) {
+                  Notifications.popup({
+                    id: popupId,
+                    title: "Upload Complete",
+                    loader: false,
+                    message: json.id
+                      ? `https://youtu.be/${json.id as string}`
+                      : "Couldn't get link to video, check your channel.",
+                    showCancel: true
+                  }).catch((err) => {
+                    logger.error(`POPUP ${popupId}`, err);
+                  });
+                } else {
+                  Notifications.rmPopup(popupId);
+                }
+              } catch (err) {
+                logger.error("CONNECT-YT", "Showing end of request popup failed. Deleting popup.");
+                Notifications.rmPopup(popupId);
+              }
             });
           }
         }
@@ -190,7 +211,6 @@ export async function upload(video: Video) {
       rs.on("end", () => {
         logger.info("CONNECT-YT", "ending request.. file reading done");
         req.end();
-        Notifications.rmPopup(popupId);
       });
     };
 

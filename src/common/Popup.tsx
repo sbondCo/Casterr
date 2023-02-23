@@ -7,7 +7,7 @@ import Progress from "./Progress";
 import TickBox from "./TickBox";
 
 export default function Popup(props: PopupOptions) {
-  const { title, percentage, loader, showCancel = false, buttons, tickBoxes } = props;
+  const { title, percentage, loader, showCancel = false, buttons, tickBoxes, message } = props;
 
   const [tbc, setTbc] = useState<string[]>(
     tickBoxes
@@ -41,8 +41,9 @@ export default function Popup(props: PopupOptions) {
           }}
         />
       )}
-      <span className="p-1.5 text-xl font-bold capitalize">{title}</span>
+      <span className="p-1 text-xl font-bold capitalize">{title}</span>
 
+      {message && <span>{message}</span>}
       {loader && <Loader />}
       {percentage && <Progress p={percentage} />}
 

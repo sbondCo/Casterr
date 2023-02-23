@@ -17,6 +17,11 @@ export interface PopupOptions {
   title: string;
 
   /**
+   * Message shown in popup.
+   */
+  message?: string;
+
+  /**
    * If should show a percentage bar.
    */
   percentage?: number;
