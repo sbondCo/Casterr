@@ -3,11 +3,13 @@ import { toReadableFileSize, toReadableTimeFromSeconds } from "@/libs/helpers/ex
 import PathHelper from "@/libs/helpers/pathHelper";
 import { logger } from "@/libs/logger";
 import { upload } from "@/libs/uploaders/youtube";
+import { shell } from "electron";
+import path from "path";
 import { useEffect, useState } from "react";
 import type { Video } from "./types";
 
 export default function VideosGridItem({ video }: { video: Video }) {
-  const { name, duration, fileSize, fps, thumbPath } = video;
+  const { name, duration, fileSize, fps, thumbPath, videoPath } = video;
   const [img, setImg] = useState<string>();
 
   useEffect(() => {
@@ -33,6 +35,17 @@ export default function VideosGridItem({ video }: { video: Video }) {
 
       <div className="flex flex-row gap-3 hover:gap-2 hover:bg-quaternary-100/90 p-2 rounded-xl group-hover:opacity-100 opacity-0 absolute top-2/4 left-2/4 translate-x-[-50%] translate-y-[-50%] drop-shadow transition-all">
         <Icon i="edit" wh={32} className="hover:bg-tertiary-100 p-1 rounded" />
+        <Icon
+          i="folder"
+          wh={32}
+          className="hover:bg-tertiary-100 p-1 rounded"
+          onClick={(e) => {
+            e.preventDefault();
+            shell.openPath(path.dirname(videoPath)).catch((err) => {
+              logger.error("Failed to reveal file in explorer", err);
+            });
+          }}
+        />
         <Icon
           i="upload"
           wh={32}
