@@ -130,131 +130,133 @@ export async function disconnect() {
 export async function upload(video: Video) {
   const popupId = "YOUTUBE-UPLOAD";
   const token = await getAccessToken();
-  if (token) {
-    Notifications.popup({ id: popupId, title: "Initializing Upload", loader: true }).catch((err) => {
-      logger.error(`POPUP ${popupId}`, err);
-    });
-
-    const performUpload = (location: string) => {
-      // axios didnt work with read stream dont know why but not spending another 72.53 years on it
-      const req = https.request(
-        location,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "video/*",
-            "Content-Length": video.fileSize
-          }
-        },
-        (res) => {
-          if (res.statusCode === 200) {
-            let data = "";
-            res.setEncoding("utf8");
-            res.on("data", (chunk: string) => {
-              data += chunk;
-            });
-            res.on("end", () => {
-              try {
-                const json = JSON.parse(data);
-                logger.info("CONNECT-YT", json);
-                if (json) {
-                  Notifications.popup({
-                    id: popupId,
-                    title: "Upload Complete",
-                    loader: false,
-                    message: json.id
-                      ? `https://youtu.be/${json.id as string}`
-                      : "Couldn't get link to video, check your channel.",
-                    showCancel: true
-                  }).catch((err) => {
-                    logger.error(`POPUP ${popupId}`, err);
-                  });
-                } else {
-                  Notifications.rmPopup(popupId);
-                }
-              } catch (err) {
-                logger.error("CONNECT-YT", "Showing end of request popup failed. Deleting popup.");
-                Notifications.rmPopup(popupId);
-              }
-            });
-          }
-        }
-      );
-
-      req.on("error", (e) => {
-        logger.error("CONNECT-YT", `problem with upload request: ${e.message}`);
-        Notifications.popup({
-          id: popupId,
-          title: "Failed To Upload Video",
-          showCancel: true
-        }).catch((err) => {
-          logger.error(`POPUP ${popupId}`, err);
-        });
-      });
-
-      // Write data to request body
-      const rs = fs.createReadStream(video.videoPath);
-      let bytesRead = 0;
-      rs.pipe(req);
-      rs.on("data", (data) => {
-        bytesRead += data.length;
-        Notifications.popup({
-          id: popupId,
-          title: "Uploading Video",
-          loader: false,
-          percentage: video.fileSize ? Number(((100.0 * bytesRead) / video.fileSize).toFixed(0)) : undefined
-        }).catch((err) => {
-          logger.error(`POPUP ${popupId}`, err);
-        });
-      });
-      rs.on("end", () => {
-        logger.info("CONNECT-YT", "ending request.. file reading done");
-        req.end();
-      });
-    };
-
-    const resumableUriReq = await axios
-      .post(
-        "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
-        {
-          snippet: { title: PathHelper.fileNameNoExt(video.videoPath), description: "" },
-          status: { privacyStatus: "private" }
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Upload-Content-Length": video.fileSize,
-            "X-Upload-Content-Type": "video/*"
-          }
-        }
-      )
-      .catch((err) => {
-        logger.error("CONNECT-YT", "YouTube resumable upload request failed:", err);
-        Notifications.popup({
-          id: popupId,
-          title: "Failed To Initialize Upload",
-          showCancel: true
-        }).catch((err) => {
-          logger.error(`POPUP ${popupId}`, err);
-        });
-      });
-    if (resumableUriReq?.headers) {
-      const location = resumableUriReq.headers.location;
-      if (location) {
-        performUpload(location);
-      }
-    }
-  } else {
+  if (!token) {
     logger.error("CONNECT-YT", "No token");
     Notifications.popup({
       id: popupId,
-      title: "YouTube Token Not Found. Try Reconnecting.",
+      title: "YouTube Token Not Found",
+      message: "Your YouTube token was not found, try connecting/reconnecting in connection settings.",
       showCancel: true
     }).catch((err) => {
       logger.error(`POPUP ${popupId}`, err);
     });
+    return;
+  }
+
+  Notifications.popup({ id: popupId, title: "Initializing Upload", loader: true }).catch((err) => {
+    logger.error(`POPUP ${popupId}`, err);
+  });
+
+  const performUpload = (location: string) => {
+    // axios didnt work with read stream dont know why but not spending another 72.53 years on it
+    const req = https.request(
+      location,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "video/*",
+          "Content-Length": video.fileSize
+        }
+      },
+      (res) => {
+        if (res.statusCode === 200) {
+          let data = "";
+          res.setEncoding("utf8");
+          res.on("data", (chunk: string) => {
+            data += chunk;
+          });
+          res.on("end", () => {
+            try {
+              const json = JSON.parse(data);
+              logger.info("CONNECT-YT", json);
+              if (json) {
+                Notifications.popup({
+                  id: popupId,
+                  title: "Upload Complete",
+                  loader: false,
+                  message: json.id
+                    ? `https://youtu.be/${json.id as string}`
+                    : "Couldn't get link to video, check your channel.",
+                  showCancel: true
+                }).catch((err) => {
+                  logger.error(`POPUP ${popupId}`, err);
+                });
+              } else {
+                Notifications.rmPopup(popupId);
+              }
+            } catch (err) {
+              logger.error("CONNECT-YT", "Showing end of request popup failed. Deleting popup.");
+              Notifications.rmPopup(popupId);
+            }
+          });
+        }
+      }
+    );
+
+    req.on("error", (e) => {
+      logger.error("CONNECT-YT", `problem with upload request: ${e.message}`);
+      Notifications.popup({
+        id: popupId,
+        title: "Failed To Upload Video",
+        showCancel: true
+      }).catch((err) => {
+        logger.error(`POPUP ${popupId}`, err);
+      });
+    });
+
+    // Write data to request body
+    const rs = fs.createReadStream(video.videoPath);
+    let bytesRead = 0;
+    rs.pipe(req);
+    rs.on("data", (data) => {
+      bytesRead += data.length;
+      Notifications.popup({
+        id: popupId,
+        title: "Uploading Video",
+        loader: false,
+        percentage: video.fileSize ? Number(((100.0 * bytesRead) / video.fileSize).toFixed(0)) : undefined
+      }).catch((err) => {
+        logger.error(`POPUP ${popupId}`, err);
+      });
+    });
+    rs.on("end", () => {
+      logger.info("CONNECT-YT", "ending request.. file reading done");
+      req.end();
+    });
+  };
+
+  const resumableUriReq = await axios
+    .post(
+      "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+      {
+        snippet: { title: PathHelper.fileNameNoExt(video.videoPath), description: "" },
+        status: { privacyStatus: "private" }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json; charset=UTF-8",
+          "X-Upload-Content-Length": video.fileSize,
+          "X-Upload-Content-Type": "video/*"
+        }
+      }
+    )
+    .catch((err) => {
+      logger.error("CONNECT-YT", "YouTube resumable upload request failed:", err);
+      Notifications.popup({
+        id: popupId,
+        title: "Failed To Initialize Upload",
+        showCancel: true
+      }).catch((err) => {
+        logger.error(`POPUP ${popupId}`, err);
+      });
+    });
+  if (resumableUriReq?.headers) {
+    const location = resumableUriReq.headers.location;
+    if (location) {
+      performUpload(location);
+    }
   }
 }
 
