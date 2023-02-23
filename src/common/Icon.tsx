@@ -9,7 +9,7 @@ interface IconProps {
   direction?: IconDirection;
 
   className?: string;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler;
 }
 
 export type Icons =
@@ -31,7 +31,12 @@ export type Icons =
   | "time"
   | "edit"
   | "search"
-  | "pin";
+  | "pin"
+  | "info"
+  | "wifi"
+  | "globe"
+  | "youtube"
+  | "folder";
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
@@ -85,9 +90,12 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
       };
     case "upload":
       return {
-        viewBox: "0 0 16 18",
+        viewBox: "0 0 512 512",
         el: (
-          <path fillRule="evenodd" clipRule="evenodd" fill="currentcolor" d="M0 2V0H16V2H0ZM7 8H4L8 4L12 8H9V18H7V8Z" />
+          <path
+            fill="currentColor"
+            d="M473.66 210c-14-10.38-31.2-18-49.36-22.11a16.11 16.11 0 01-12.19-12.22c-7.8-34.75-24.59-64.55-49.27-87.13C334.15 62.25 296.21 47.79 256 47.79c-35.35 0-68 11.08-94.37 32.05a150.07 150.07 0 00-42.06 53 16 16 0 01-11.31 8.87c-26.75 5.4-50.9 16.87-69.34 33.12C13.46 197.33 0 227.24 0 261.39c0 34.52 14.49 66 40.79 88.76 25.12 21.69 58.94 33.64 95.21 33.64h104V230.42l-36.69 36.69a16 16 0 01-23.16-.56c-5.8-6.37-5.24-16.3.85-22.39l63.69-63.68a16 16 0 0122.62 0L331 244.14c6.28 6.29 6.64 16.6.39 22.91a16 16 0 01-22.68.06L272 230.42v153.37h124c31.34 0 59.91-8.8 80.45-24.77 23.26-18.1 35.55-44 35.55-74.83 0-29.94-13.26-55.61-38.34-74.19zM240 448.21a16 16 0 1032 0v-64.42h-32z"
+          />
         )
       };
     case "volumeMute":
@@ -248,14 +256,16 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
       return {
         viewBox: "0 0 512 512",
         el: (
-          <path
-            fill="currentcolor"
-            d="M496.063 62.299l-46.396-46.4c-21.2-21.199-55.69-21.198-76.888
-            0l-18.16 18.161 123.284 123.294 18.16-18.161c21.248-21.249
-            21.251-55.643 0-76.894zM22.012 376.747L.251 494.268a15.002
-            15.002 0 0017.48 17.482l117.512-21.763-113.231-113.24zM333.407
-            55.274L38.198 350.506l123.284 123.293 295.209-295.231z"
-          ></path>
+          <g>
+            <path
+              fill="currentcolor"
+              d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"
+            />
+            <path
+              fill="currentcolor"
+              d="M386.34 193.66L264.45 315.79A41.08 41.08 0 01247.58 326l-25.9 8.67a35.92 35.92 0 01-44.33-44.33l8.67-25.9a41.08 41.08 0 0110.19-16.87l122.13-121.91a8 8 0 00-5.65-13.66H104a56 56 0 00-56 56v240a56 56 0 0056 56h240a56 56 0 0056-56V199.31a8 8 0 00-13.66-5.65z"
+            />
+          </g>
         )
       };
     case "search":
@@ -301,6 +311,102 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
               d="M272 164a9 9 0 00-9-9h-14a9 9 0 00-9 9v293.56a32.09 32.09 0 002.49 12.38l10.07 24a3.92 3.92 0 006.88 0l10.07-24a32.09 32.09 0 002.49-12.38z"
             />
           </g>
+        )
+      };
+    case "info":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="40"
+              d="M196 220h64v172"
+            />
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              strokeWidth="40"
+              d="M187 396h138"
+            />
+            <path fill="currentColor" d="M256 160a32 32 0 1132-32 32 32 0 01-32 32z" />
+          </g>
+        )
+      };
+    case "wifi":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M332.41 310.59a115 115 0 00-152.8 0M393.46 249.54a201.26 201.26 0 00-274.92 0M447.72 182.11a288 288 0 00-383.44 0"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path fill="currentColor" d="M256 416a32 32 0 1132-32 32 32 0 01-32 32z" />
+          </g>
+        )
+      };
+    case "globe":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M256 48C141.13 48 48 141.13 48 256s93.13 208 208 208 208-93.13 208-208S370.87 48 256 48z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              d="M256 48c-58.07 0-112.67 93.13-112.67 208S197.93 464 256 464s112.67-93.13 112.67-208S314.07 48 256 48z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              d="M117.33 117.33c38.24 27.15 86.38 43.34 138.67 43.34s100.43-16.19 138.67-43.34M394.67 394.67c-38.24-27.15-86.38-43.34-138.67-43.34s-100.43 16.19-138.67 43.34"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="32" d="M256 48v416M464 256H48" />
+          </g>
+        )
+      };
+    case "youtube":
+      return {
+        viewBox: "0 0 443 443",
+        el: (
+          <g>
+            <path fill="#fff" d="M177.582 133.776l.049 175.613 129.993-87.97-130.042-87.643z" />
+            <path
+              fill="red"
+              d="M440.093 128.738c0-38.935-28.639-70.257-64.027-70.257-47.933-2.241-96.818-3.106-146.776-3.106h-15.574c-49.837 0-98.809.865-146.742 3.115-35.302 0-63.94 31.494-63.94 70.43C.87 159.714-.047 190.516.005 221.318c-.086 30.803.894 61.634 2.942 92.494 0 38.935 28.639 70.516 63.94 70.516 50.356 2.337 102.01 3.375 154.529 3.288 52.606.173 104.115-.923 154.529-3.288 35.388 0 64.027-31.581 64.027-70.516 2.076-30.889 3.028-61.691 2.941-92.58a1257.74 1257.74 0 0 0-2.82-92.494zh0zm-260.986 177.46V136.179l125.457 84.966-125.457 85.053z"
+            />
+          </g>
+        )
+      };
+    case "folder":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <path
+            fill="currentColor"
+            d="M408 96H252.11a23.89 23.89 0 01-13.31-4L211 73.41A55.77 55.77 0 00179.89 64H104a56.06 56.06 0 00-56 56v24h416c0-30.88-25.12-48-56-48zM423.75 448H88.25a56 56 0 01-55.93-55.15L16.18 228.11v-.28A48 48 0 0164 176h384.1a48 48 0 0147.8 51.83v.28l-16.22 164.74A56 56 0 01423.75 448zm56.15-221.45z"
+          />
         )
       };
     default:

@@ -11,7 +11,7 @@ export default class PathHelper {
    * Paths are hardcoded, only supported files that are listed here will work.
    * @param name Name of file with extension
    */
-  public static async getFile(name: "settings" | "recordings" | "clips") {
+  public static async getFile(name: "settings" | "recordings" | "clips" | "uploaders") {
     let path: string[];
 
     switch (name) {
@@ -23,6 +23,9 @@ export default class PathHelper {
         break;
       case "clips":
         path = ["Clips.json"];
+        break;
+      case "uploaders":
+        path = ["uploaders.json"];
         break;
     }
 

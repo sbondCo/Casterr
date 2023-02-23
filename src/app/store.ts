@@ -10,6 +10,7 @@ import RecordingsManager from "@/libs/recorder/recordingsManager";
 import File from "@/libs/helpers/file";
 import type { Video } from "@/videos/types";
 import { logger } from "@/libs/logger";
+import uploadersSlice from "@/libs/uploaders/uploadersSlice";
 
 const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyAction) => {
   try {
@@ -18,7 +19,7 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
     // Call the next dispatch method in the middleware chain.
     const returnValue = next(action);
 
-    if (action.type.includes("settings/")) {
+    if (action.type.startsWith("settings/")) {
       // Remove app settings - we don't want them in the settings.json file.
       const settingsState: any = {};
       Object.assign(settingsState, store.getState().settings);
@@ -28,9 +29,15 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       fs.writeFile(settingsFile, JSON.stringify(settingsState, null, 2)).catch((e) => {
         throw new Error(`Error writing updated settings to ${settingsFile}:`, e);
       });
-    }
+    } else if (action.type.startsWith("uploaders/")) {
+      const state: any = {};
+      Object.assign(state, store.getState().uploaders);
 
-    if (action.type.includes("videos/")) {
+      const file = await PathHelper.getFile("uploaders");
+      fs.writeFile(file, JSON.stringify(state, null, 2)).catch((e) => {
+        throw new Error(`Error writing updated connections to ${file}:`, e);
+      });
+    } else if (action.type.startsWith("videos/")) {
       // HACK sorta.. might need to change how this works if there is
       // ever an action that doesn't have isClip accessible like this
       const isClip = action.payload.isClip;
@@ -72,12 +79,14 @@ const rehydrated = async () => {
     // Create reh var and clone default values into it.
     const reh = {
       settings: { ...DEFAULT_SETTINGS },
+      uploaders: {},
       videos: {
         recordings: [] as Video[],
         clips: [] as Video[]
       }
     };
 
+    // Settings
     try {
       const stgsFile = await PathHelper.getFile("settings");
       const r = await fs.readFile(stgsFile, "utf-8");
@@ -89,6 +98,18 @@ const rehydrated = async () => {
       }
     } catch (err) {
       logger.error("rehydrate", "Couldn't restore settings:", err);
+    }
+
+    // Uploaders
+    try {
+      const file = await PathHelper.getFile("uploaders");
+      const r = await fs.readFile(file, "utf-8");
+      if (r) {
+        const rjson = JSON.parse(r);
+        reh.uploaders = rjson;
+      }
+    } catch (err) {
+      logger.error("rehydrate", "Couldn't restore uploaders:", err);
     }
 
     const readVideoFile = async (clips: boolean): Promise<Video[]> => {
@@ -115,6 +136,7 @@ const rehydrated = async () => {
 
     console.groupCollapsed("Restored State");
     logger.info("rehydrate", "Settings", reh.settings);
+    logger.info("rehydrate", "Uploaders"); // Don't want peoples access tokens logged
     logger.info("rehydrate", "Recordings", reh.videos.recordings);
     logger.info("rehydrate", "Clips", reh.videos.clips);
     console.groupEnd();
@@ -130,7 +152,8 @@ export const store = configureStore({
     app: appSlice,
     videos: videosSlice,
     settings: settingsSlice,
-    recorder: recorderSlice
+    recorder: recorderSlice,
+    uploaders: uploadersSlice
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saver),
   preloadedState: await rehydrated()

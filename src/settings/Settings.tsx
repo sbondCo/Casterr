@@ -5,15 +5,17 @@ import General from "./pages/General";
 import KeyBindings from "./keybind/KeyBindings";
 import Recording from "./pages/Recording";
 import About from "./pages/About";
+import Connections from "./connections/Connections";
 
 export default function Settings() {
   return (
     <PageLayout>
       <SubNav>
-        <SubNavItem text="General" />
-        <SubNavItem text="Recording" />
-        <SubNavItem text="Key Bindings" />
-        <SubNavItem text="About" />
+        <SubNavItem icon="globe" text="General" />
+        <SubNavItem icon="clips" text="Recording" />
+        <SubNavItem icon="pin" text="Key Bindings" />
+        <SubNavItem icon="wifi" text="Connections" />
+        <SubNavItem icon="info" text="About" />
       </SubNav>
 
       <Routes>
@@ -22,6 +24,7 @@ export default function Settings() {
         <Route path="general" element={<General />} />
         <Route path="recording" element={<Recording />} />
         <Route path="keybindings" element={<KeyBindings />} />
+        <Route path="connections" element={<Connections />} />
         <Route path="about" element={<About />} />
       </Routes>
     </PageLayout>

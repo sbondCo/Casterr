@@ -17,6 +17,11 @@ export interface PopupOptions {
   title: string;
 
   /**
+   * Message shown in popup.
+   */
+  message?: string;
+
+  /**
    * If should show a percentage bar.
    */
   percentage?: number;
@@ -31,6 +36,13 @@ export interface PopupOptions {
    * Method will resolve with an `action` of "cancel".
    */
   showCancel?: boolean;
+
+  /**
+   * If should close the popup automatically
+   * if any button is clicked.
+   * By default acts as true.
+   */
+  closeOnBtnClick?: boolean;
 
   /**
    * String array of button names.
@@ -68,6 +80,7 @@ export default class Notifications {
       const listnr = ((ev: CustomEvent) => {
         document.removeEventListener(`${opts.id}-el-clicked`, listnr);
         resolve({ action: ev.detail.elClicked, tickBoxesChecked: ev.detail.tickBoxesChecked });
+        if (opts.closeOnBtnClick === undefined || opts.closeOnBtnClick) Notifications.rmPopup(opts.id);
       }) as EventListener;
 
       document.addEventListener(`${opts.id}-el-clicked`, listnr);
