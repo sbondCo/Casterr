@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import commonjsExternals from "vite-plugin-commonjs-externals";
-import { builtinModules } from 'module';
+import { builtinModules } from "module";
 
 const commonjsPackages = [
   // Electron
@@ -14,7 +14,7 @@ const commonjsPackages = [
   ...builtinModules,
   // Custom
   "winston",
-  "winston-daily-rotate-file",
+  "winston-daily-rotate-file"
 ];
 
 // https://vitejs.dev/config/

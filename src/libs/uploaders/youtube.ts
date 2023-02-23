@@ -117,7 +117,7 @@ export async function disconnect() {
   const ytState = store.getState().uploaders.youtube;
   if (ytState) {
     if (ytState.access_token) {
-      axios.post(`https://oauth2.googleapis.com/revoke?token=${ytState.access_token as string}`).catch((err) => {
+      axios.post(`https://oauth2.googleapis.com/revoke?token=${ytState.access_token}`).catch((err) => {
         logger.error("CONNECT-YT", "Failed to revoke youtube access token.", err);
       });
     }
