@@ -8,7 +8,7 @@ import Paths from "./helpers/paths";
  * `Message` will be used as AREA of code (eg Recorder is an area).
  */
 
-const formatMap = (v: any) => {
+export const formatMap = (v: any) => {
   if (v instanceof Error) {
     if (v.stack) return v.stack;
     else return v;

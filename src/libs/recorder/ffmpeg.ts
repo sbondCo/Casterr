@@ -5,8 +5,9 @@ import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
 import PathHelper from "../helpers/pathHelper";
 import Paths from "../helpers/paths";
-import { createLogger, format, type Logger } from "winston";
+import { createLogger, format, transports, type Logger } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
+import { formatMap } from "../logger";
 
 export default class FFmpeg {
   /**
@@ -38,6 +39,17 @@ export default class FFmpeg {
   constructor(private readonly which: "ffmpeg" | "ffprobe" = "ffmpeg") {
     this.logger = createLogger({
       transports: [
+        new transports.Console({
+          level: "debug",
+          format: format.combine(
+            format.printf((info) => {
+              const { level, message, ...meta } = info;
+              // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              return `${message.toLocaleUpperCase()} ${meta[Symbol.for("splat")].map(formatMap).join(" ")}`;
+            })
+          )
+        }),
         new DailyRotateFile({
           format: format.printf((info) => {
             const { message, ...meta } = info;
