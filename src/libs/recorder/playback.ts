@@ -9,6 +9,7 @@ import FFmpeg from "./ffmpeg";
 import ArgumentBuilder, { type Arguments } from "./argumentBuilder";
 import { logger } from "../logger";
 import { ipcRenderer } from "electron";
+import RecordingsManager from "./recordingsManager";
 
 ipcRenderer.on("recordThePast-pressed", async () => {
   logger.info("KEYBIND", "Record The Past keybind pressed.. saving.");
@@ -27,17 +28,23 @@ export default class PlaybackRecorder {
    * Start recording to the temporary file.
    */
   public static async start() {
-    // Create args
-    this.args = await ArgumentBuilder.createArgs();
-    this.args.args.pop();
-    this.args.args.push(
-      "-f segment -segment_time 10 -segment_format mp4 -segment_list /tmp/catfile.ffcat -segment_wrap 2 -reset_timestamps 1 /tmp/casterr-segment%d.mp4"
-    );
-    // this.args.args.push(this.playbackFile);
-    logger.info("PlaybackRecorder", "Start Args:", this.args.args.join(" "));
+    const rs = store.getState().settings.recording;
+    if (rs.recordThePast) {
+      // Create args
+      this.args = await ArgumentBuilder.createArgs();
+      this.args.args.pop();
+      this.args.args.push(
+        `-f segment -segment_time ${
+          rs.recordThePast + 10 // Add 10 seconds. Avoid ffmpeg segment having less than needed.
+        } -segment_format mp4 -segment_list /tmp/catfile.ffcat -segment_wrap 2 -reset_timestamps 1 /tmp/casterr-segment%d.mp4`
+      );
+      logger.info("PlaybackRecorder", "Start Args:", this.args.args.join(" "));
 
-    // Start the recording
-    await this.ffmpeg.run(this.args.args.join(" "), "onOpen");
+      // Start the recording
+      await this.ffmpeg.run(this.args.args.join(" "), "onOpen");
+    } else {
+      logger.info("PlaybackRecorder", "Not starting.. recordThePast setting is not enabled");
+    }
   }
 
   /**
@@ -58,9 +65,13 @@ export default class PlaybackRecorder {
       const ffmpeg = new FFmpeg();
       await ffmpeg.run("-y -i /tmp/catfile.ffcat -map 0 -c copy /tmp/combined.mp4", "onExit");
       const vOut = await ArgumentBuilder.videoOutputPath();
-      await ffmpeg.run(`-y -sseof -${rs.recordThePast} -i /tmp/combined.mp4 ${vOut}`, "onExit");
+      logger.info("PlaybackRecorder", `Outputting past recording of ${rs.recordThePast}s to ${vOut}`);
+      await ffmpeg.run(`-y -sseof -${rs.recordThePast} -i /tmp/combined.mp4 "${vOut}"`, "onExit");
+      // RecordingsManager.add(vOut).catch((e) => {
+      //   logger.error("PlaybackRecorder", "Failed to add recorded video to file via RecordingsManager!", e);
+      // });
     } else {
-      logger.log("PlaybackRecorder", "Not saving.. recordThePast setting is not enabled");
+      logger.info("PlaybackRecorder", "Not saving.. recordThePast setting is not enabled");
     }
   }
 }
