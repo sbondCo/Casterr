@@ -31,7 +31,9 @@ export type Icons =
   | "time"
   | "edit"
   | "search"
-  | "pin";
+  | "pin"
+  | "info"
+  | "error";
 
 export type IconDirection = "up" | "down" | "left" | "right";
 
@@ -300,6 +302,62 @@ function getIcon(name: Icons): { viewBox: string; el: JSX.Element } {
               fill="currentColor"
               d="M272 164a9 9 0 00-9-9h-14a9 9 0 00-9 9v293.56a32.09 32.09 0 002.49 12.38l10.07 24a3.92 3.92 0 006.88 0l10.07-24a32.09 32.09 0 002.49-12.38z"
             />
+          </g>
+        )
+      };
+    case "info":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+              d="M220 220h32v116"
+            />
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+              d="M208 340h88"
+            />
+            <path fill="currentColor" d="M248 130a26 26 0 1026 26 26 26 0 00-26-26z" />
+          </g>
+        )
+      };
+    case "error":
+      return {
+        viewBox: "0 0 512 512",
+        el: (
+          <g>
+            <path
+              d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z"
+              fill="none"
+              stroke="currentColor"
+              strokeMiterlimit="10"
+              strokeWidth="32"
+            />
+            <path
+              d="M250.26 166.05L256 288l5.73-121.95a5.74 5.74 0 00-5.79-6h0a5.74 5.74 0 00-5.68 6z"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="32"
+            />
+            <path d="M256 367.91a20 20 0 1120-20 20 20 0 01-20 20z" />
           </g>
         )
       };

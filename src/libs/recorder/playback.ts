@@ -20,25 +20,31 @@ ipcRenderer.on("recordThePast-pressed", async () => {
 
 export default class PlaybackRecorder {
   private static args: Arguments;
+  private static format: string;
+  private static isRecording: boolean = false;
   private static readonly ffmpeg = new FFmpeg();
-  private static readonly playbackFile = path.join(
-    os.tmpdir(),
-    `casterr-playback.${store.getState().settings.recording.format}`
-  );
 
   /**
    * Start recording to the temporary file.
    */
   public static async start() {
+    if (this.isRecording) {
+      logger.info("PlaybackRecorder", "Already recording.. ignoring request to start again.");
+      return;
+    }
     const rs = store.getState().settings.recording;
     if (rs.recordThePast) {
+      this.isRecording = true;
+      this.format = rs.format;
       // Create args
       this.args = await ArgumentBuilder.createArgs();
       this.args.args.pop();
       this.args.args.push(
         `-f segment -segment_time ${
           rs.recordThePast + 10 // Add 10 seconds. Avoid ffmpeg segment having less than needed.
-        } -segment_format mp4 -segment_list /tmp/catfile.ffcat -segment_wrap 2 -reset_timestamps 1 /tmp/casterr-segment%d.mp4`
+        } -segment_format ${
+          this.format
+        } -segment_list /tmp/catfile.ffcat -segment_wrap 2 -reset_timestamps 1 /tmp/casterr-segment%d.${this.format}`
       );
       logger.info("PlaybackRecorder", "Start Args:", this.args.args.join(" "));
 
@@ -46,6 +52,9 @@ export default class PlaybackRecorder {
       await this.ffmpeg.run(this.args.args.join(" "), "onOpen");
     } else {
       logger.info("PlaybackRecorder", "Not starting.. recordThePast setting is not enabled");
+      Notifications.desktop("Past Recording is disabled!", "info").catch((err) => {
+        logger.error("PlaybackRecorder", "Failed to display start disabled notif:", err);
+      });
     }
   }
 
@@ -54,12 +63,17 @@ export default class PlaybackRecorder {
    */
   public static async stop() {
     try {
-      return await Promise.all([
+      if (!this.isRecording) {
+        logger.info("PlaybackRecorder", "Not recording.. ignoring request to stop again.");
+        return;
+      }
+      await Promise.all([
         this.ffmpeg.kill(),
         PathHelper.removeFile("/tmp/catfile.ffcat"),
-        PathHelper.removeFile("/tmp/casterr-segment0.mp4"),
-        PathHelper.removeFile("/tmp/casterr-segment1.mp4")
+        PathHelper.removeFile(`/tmp/casterr-segment0.${this.format}`),
+        PathHelper.removeFile(`/tmp/casterr-segment1.${this.format}`)
       ]);
+      this.isRecording = false;
     } catch (err) {
       logger.error("PlaybackRecorder", "Failed to kill ffmpeg instance", err);
     }
@@ -79,25 +93,28 @@ export default class PlaybackRecorder {
       try {
         await this.ffmpeg.kill();
         const ffmpeg = new FFmpeg();
-        await ffmpeg.run("-y -i /tmp/catfile.ffcat -map 0 -c copy /tmp/combined.mp4", "onExit");
+        await ffmpeg.run(`-y -i /tmp/catfile.ffcat -map 0 -c copy /tmp/combined.${this.format}`, "onExit");
         const vOut = await ArgumentBuilder.videoOutputPath();
         logger.info("PlaybackRecorder", `Outputting past recording of max ${rs.recordThePast}s to ${vOut}`);
-        await ffmpeg.run(`-y -sseof -${rs.recordThePast} -i /tmp/combined.mp4 "${vOut}"`, "onExit");
+        await ffmpeg.run(`-y -sseof -${rs.recordThePast} -i /tmp/combined.${this.format} "${vOut}"`, "onExit");
         PlaybackRecorder.start().catch((e) => {
           logger.error("PlaybackRecorder", "Failed to restart the PlaybackRecorder!", e);
         });
         RecordingsManager.add(vOut).catch((e) => {
           logger.error("PlaybackRecorder", "Failed to add recorded video to file via RecordingsManager!", e);
         });
-        PathHelper.removeFile("/tmp/combined.mp4").catch((e) => {
+        PathHelper.removeFile(`/tmp/combined.${this.format}`).catch((e) => {
           logger.error("PlaybackRecorder", "Failed to remove temp combined video file:", e);
         });
       } catch (err) {
         logger.error("PlaybackRecorder", "Errored whilst saving past recording:", err);
+        Notifications.desktop("Failed to save!", "error").catch((err) => {
+          logger.error("PlaybackRecorder", "Failed to display save err notif:", err);
+        });
       }
     } else {
       logger.info("PlaybackRecorder", "Not saving.. recordThePast setting is not enabled");
-      Notifications.desktop("Recording The Past is disabled!").catch((err) => {
+      Notifications.desktop("Past Recording is disabled!", "info").catch((err) => {
         logger.error("PlaybackRecorder", "Failed to display disabled notif:", err);
       });
     }
