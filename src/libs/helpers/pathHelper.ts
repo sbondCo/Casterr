@@ -147,8 +147,8 @@ export default class PathHelper {
    * @param path Path to file that should be deleted.
    */
   public static async removeFile(path: string) {
-    await fs.unlink(path).catch((e) => {
-      throw Error("Unable to remove file:", e);
+    await fs.unlink(path).catch((err) => {
+      if (err.code !== "ENOENT") throw Error(err);
     });
   }
 

@@ -1,5 +1,6 @@
 import { popupCreated, popupRemoved } from "@/app/appSlice";
 import { store } from "@/app/store";
+import { Icons } from "@/common/Icon";
 import { ipcRenderer } from "electron";
 
 export interface PopupOptions {
@@ -88,7 +89,7 @@ export default class Notifications {
    * @param icon Icon to display alongside text on notification.
    * @param duration How long the notification should stay open before closing.
    */
-  public static async desktop(desc: string, icon?: string, duration: number = 4000) {
+  public static async desktop(desc: string, icon?: Icons, duration: number = 4000) {
     // Create new window for notification
     ipcRenderer.send("create-desktop-notification", { desc, icon, duration });
   }
