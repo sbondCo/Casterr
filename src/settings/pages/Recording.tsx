@@ -4,8 +4,11 @@ import DropDown, { type DropDownItem } from "@/common/DropDown";
 import ListBox, { type ListBoxItem } from "@/common/ListBox";
 import TextBox from "@/common/TextBox";
 import TickBox from "@/common/TickBox";
+import Notifications from "@/libs/helpers/notifications";
 import { logger } from "@/libs/logger";
 import DeviceManager from "@/libs/recorder/deviceManager";
+import PlaybackRecorder from "@/libs/recorder/playback";
+import { AnyAction } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import NamedContainer from "../../common/NamedContainer";
@@ -25,7 +28,19 @@ import {
 
 export default function Recording() {
   const state = useSelector((store: RootState) => store.settings.recording);
-  const dispatch = useDispatch();
+  const _dispatch = useDispatch();
+  const dispatch = (d: AnyAction, restartPlayback = true) => {
+    // Wrapper for dispatch hook so we know when a recording setting is changed.
+    _dispatch(d);
+    if (restartPlayback) {
+      PlaybackRecorder.restart().catch((err) => {
+        logger.error("Recording", "Failed to restart PlaybackRecorder after changing settings:", err);
+        Notifications.desktop("PastRecorder Didn't Restart", "error").catch((err) =>
+          logger.error("Recording", "Restarting playback fail notif failed:", err)
+        );
+      });
+    }
+  };
 
   const [audioDevicesToRecord, setAudioDevicesToRecord] = useState<ListBoxItem[]>();
 
@@ -68,7 +83,9 @@ export default function Recording() {
         <DropDown
           activeItem={state.videoDevice}
           items={videoDevices}
-          onChange={(s) => dispatch(setVideoDevice(s as string))}
+          onChange={(s) => {
+            dispatch(setVideoDevice(s as string));
+          }}
         />
       </NamedContainer>
 
@@ -76,7 +93,9 @@ export default function Recording() {
         <DropDown
           activeItem={state.monitorToRecord}
           items={monitors}
-          onChange={(s) => dispatch(setMonitorToRecord(s as DropDownItem))}
+          onChange={(s) => {
+            dispatch(setMonitorToRecord(s as DropDownItem));
+          }}
         />
       </NamedContainer>
 
@@ -95,7 +114,9 @@ export default function Recording() {
         <DropDown
           activeItem={state.resolution}
           items={resolutions}
-          onChange={(s) => dispatch(setResolution(s as string))}
+          onChange={(s) => {
+            dispatch(setResolution(s as string));
+          }}
         />
       </NamedContainer>
 
@@ -103,7 +124,9 @@ export default function Recording() {
         <DropDown
           activeItem={state.format}
           items={APP_SETTINGS.supportedRecordingFormats}
-          onChange={(s) => dispatch(setFormat(s as string))}
+          onChange={(s) => {
+            dispatch(setFormat(s as string));
+          }}
         />
       </NamedContainer>
 
@@ -111,12 +134,29 @@ export default function Recording() {
         <DropDown
           activeItem={recordThePastActiveItem ?? recordThePastItems[0]}
           items={recordThePastItems}
-          onChange={(s) => dispatch(setRecordThePast((s as DropDownItem).id))}
+          onChange={(s) => {
+            const id = (s as DropDownItem).id;
+            const stillEnabled = id !== 0;
+            dispatch(setRecordThePast(id), stillEnabled);
+            if (!stillEnabled) {
+              PlaybackRecorder.stop().catch((err) => {
+                logger.error("Recording", "Failed to restart PlaybackRecorder after changing settings:", err);
+                Notifications.desktop("PastRecorder Didn't Stop", "error").catch((err) =>
+                  logger.error("Recording", "Stopping playback fail notif failed:", err)
+                );
+              });
+            }
+          }}
         />
       </NamedContainer>
 
       <NamedContainer title="Separate Audio Tracks" row>
-        <TickBox ticked={state.seperateAudioTracks} onChange={(t) => dispatch(setSeperateAudioTracks(t))} />
+        <TickBox
+          ticked={state.seperateAudioTracks}
+          onChange={(t) => {
+            dispatch(setSeperateAudioTracks(t));
+          }}
+        />
       </NamedContainer>
 
       <NamedContainer title="Audio Devices To Record">
@@ -136,7 +176,9 @@ export default function Recording() {
           value={state.thumbSaveFolder}
           placeholder={DEFAULT_SETTINGS.recording.thumbSaveFolder}
           folderSelect
-          onChange={(s) => dispatch(setThumbSaveFolder(s))}
+          onChange={(s) => {
+            dispatch(setThumbSaveFolder(s), false);
+          }}
         />
       </NamedContainer>
 
@@ -145,7 +187,9 @@ export default function Recording() {
           value={state.videoSaveFolder}
           placeholder={DEFAULT_SETTINGS.recording.videoSaveFolder}
           folderSelect
-          onChange={(s) => dispatch(setVideoSaveFolder(s))}
+          onChange={(s) => {
+            dispatch(setVideoSaveFolder(s), false);
+          }}
         />
       </NamedContainer>
 
@@ -153,7 +197,9 @@ export default function Recording() {
         <TextBox
           value={state.videoSaveName}
           placeholder={DEFAULT_SETTINGS.recording.videoSaveName}
-          onChange={(s) => dispatch(setVideoSaveName(s))}
+          onChange={(s) => {
+            dispatch(setVideoSaveName(s), false);
+          }}
         />
       </NamedContainer>
     </>

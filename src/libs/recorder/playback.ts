@@ -1,7 +1,3 @@
-/**
- * Past recording functionality.
- */
-
 import path from "path";
 import os from "os";
 import { store } from "@/app/store";
