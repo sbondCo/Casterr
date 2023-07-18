@@ -107,9 +107,19 @@ export default class PlaybackRecorder {
         await ffmpeg.run(`-y -sseof -${rs.recordThePast} -i ${this.combinedPath()} "${vOut}"`, "onExit"); // Get $recordThePast seconds from combined video
         PlaybackRecorder.start().catch((e) => {
           logger.error("PlaybackRecorder", "Failed to restart the PlaybackRecorder!", e);
+          Notifications.desktop("Failed to Restart Past Recorder!", "error").catch((err) => {
+            logger.error("PlaybackRecorder", "Failed to display restart past recorder err notif:", err);
+          });
         });
         RecordingsManager.add(vOut).catch((e) => {
           logger.error("PlaybackRecorder", "Failed to add recorded video to file via RecordingsManager!", e);
+          Notifications.desktop("Failed To Move Past Recording!", "error").catch((err) => {
+            logger.error("PlaybackRecorder", "Failed to display failed to move notif:", err);
+          });
+        }).then(() => {
+          Notifications.desktop("Saved Past Recording!", "play").catch((err) => {
+            logger.error("PlaybackRecorder", "Failed to display save notif:", err);
+          });
         });
         PathHelper.removeFile(this.combinedPath()).catch((e) => {
           logger.error("PlaybackRecorder", "Failed to remove temp combined video file:", e);
