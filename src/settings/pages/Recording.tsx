@@ -130,7 +130,7 @@ export default function Recording() {
         />
       </NamedContainer>
 
-      <NamedContainer title="Record The Past">
+      <NamedContainer title="Record The Past (Experimental)">
         <DropDown
           activeItem={recordThePastActiveItem ?? recordThePastItems[0]}
           items={recordThePastItems}

@@ -98,6 +98,9 @@ export default class PlaybackRecorder {
     }
     const rs = store.getState().settings.recording;
     if (rs.recordThePast) {
+      Notifications.desktop("Processing Past Recording!", "info").catch((err) => {
+        logger.error("PlaybackRecorder", "Failed to display processing past rec notif:", err);
+      });
       try {
         await this.stop(false);
         const ffmpeg = new FFmpeg();
