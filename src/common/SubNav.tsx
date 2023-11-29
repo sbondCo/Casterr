@@ -32,7 +32,7 @@ export function SubNavItem({ icon, text }: SubNavItemProps) {
     const elIcon = document.querySelector<HTMLElement>(".navlink.active .navlink-icon");
     const elText = document.querySelector<HTMLElement>(".navlink.active .navlink-text");
     if (el && elIcon && elText) {
-      el.classList.add(...inactiveLinkClass);
+      el.classList.add(...inactiveLinkClass, "!w-[50px]");
       elText.classList.add(...inactiveTextClass, "!w-0");
       elIcon.classList.remove("!mr-2");
     }
@@ -44,7 +44,7 @@ export function SubNavItem({ icon, text }: SubNavItemProps) {
     const elIcon = document.querySelector<HTMLElement>(".navlink.active .navlink-icon");
     const elText = document.querySelector<HTMLElement>(".navlink.active .navlink-text");
     if (el && elIcon && elText) {
-      el.classList.remove(...inactiveLinkClass);
+      el.classList.remove(...inactiveLinkClass, "!w-[50px]");
       elText.classList.remove(...inactiveTextClass, "!w-0");
       elIcon.classList.add("!mr-2");
     }

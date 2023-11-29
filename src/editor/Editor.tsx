@@ -64,7 +64,7 @@ export default function VideoEditor() {
   } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, genState.videoEditorVolume);
 
   return (
-    <div className="flex h-[calc(100vh_-_77px)] flex-col gap-1.5 my-1.5 h-full">
+    <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-77px)]">
       <div className="flex gap-1.5 mx-1.5">
         <Tooltip text="Back To Videos">
           <Button
