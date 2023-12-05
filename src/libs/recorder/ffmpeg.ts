@@ -51,8 +51,8 @@ export default class FFmpeg {
             // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             return `${message} ${meta[Symbol.for("splat")]
-              .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
-              .join(" ")}`;
+              ?.map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
+              ?.join(" ")}`;
           }),
           filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),
           datePattern: "YYYY-MM-DD-HH",
@@ -79,7 +79,6 @@ export default class FFmpeg {
   ) {
     // Get FFmpeg path
     const ffPath = await this.getPath();
-    return;
     this.logger.info("FF Process starting:", ffPath);
 
     return await new Promise((resolve, reject) => {
@@ -169,7 +168,6 @@ export default class FFmpeg {
       }
     };
     try {
-      this.logger.info("getFFMPEG2");
       const versions = await fsp.readFile(versionsPath);
       this.logger.info("Current versions", String(versions));
       const v = JSON.parse(String(versions));
