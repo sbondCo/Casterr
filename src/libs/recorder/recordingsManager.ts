@@ -169,8 +169,12 @@ export default class RecordingsManager {
       {
         // After creating final clip...
         onExitCallback: async () => {
-          // Remove temp dir and files inside it
-          await PathHelper.removeDir(tmpOutFolder);
+          try {
+            // Remove temp dir and files inside it
+            await PathHelper.removeDir(tmpOutFolder);
+          } catch (err) {
+            logger.error("RecordingsManager", "Failed to remove tmp clip dir!", err);
+          }
           Notifications.rmPopup(popupName);
 
           // Add clip to clips file

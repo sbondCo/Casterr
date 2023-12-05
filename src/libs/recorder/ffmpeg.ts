@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import fsp from "fs/promises";
 import childProcess from "child_process";
 import Downloader from "./../helpers/downloader";
 import Notifications from "./../helpers/notifications";
@@ -7,6 +8,12 @@ import PathHelper from "../helpers/pathHelper";
 import Paths from "../helpers/paths";
 import { createLogger, format, type Logger } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
+import axios from "axios";
+
+// Control the target version of ffmpeg.
+// When we want to update ffmpeg version, new casterr release
+// will increment this and make user download.
+const targetFFVersion = "2";
 
 export default class FFmpeg {
   /**
@@ -44,8 +51,8 @@ export default class FFmpeg {
             // @ts-expect-error Keeps saying cant use type 'symbol' as an index type.. not sure why
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             return `${message} ${meta[Symbol.for("splat")]
-              .map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
-              .join(" ")}`;
+              ?.map((v: any) => (typeof v === "object" ? JSON.stringify(v, undefined, 2) : v))
+              ?.join(" ")}`;
           }),
           filename: path.join(Paths.logsPath, "ff", `${which}-%DATE%.log`),
           datePattern: "YYYY-MM-DD-HH",
@@ -145,25 +152,46 @@ export default class FFmpeg {
     const downloader = new Downloader();
     const ffmpegPath = path.join(installDir, FFmpeg.ffmpegExeName);
     const ffprobePath = path.join(installDir, FFmpeg.ffprobeExeName);
+    const versionsPath = path.join(installDir, ".version");
+
+    this.logger.debug("getFFMPEG", ffmpegPath, ffprobePath);
+    // Do this only once
+    // Check if we are on targetFFVersion, if not, check latest release to see if we can upgrade.
+    const rmff = async () => {
+      try {
+        this.logger.info("ff being removed.. new version will be downloaded");
+        await PathHelper.removeFile(ffmpegPath);
+        await PathHelper.removeFile(ffprobePath);
+        this.logger.info("ff successfully removed");
+      } catch (err) {
+        this.logger.error("failed to remove ff!", err);
+      }
+    };
+    try {
+      const versions = await fsp.readFile(versionsPath);
+      this.logger.info("Current versions", String(versions));
+      const v = JSON.parse(String(versions));
+      if (v.ffmpeg !== targetFFVersion) {
+        await rmff();
+      }
+    } catch (err: any) {
+      if (err.code === "ENOENT") {
+        this.logger.info("no versions file, continuing to remove ff");
+        await rmff();
+      } else {
+        this.logger.error("Failed to version check ffmpeg", err);
+      }
+    }
 
     // If ffmpeg or ffprobe does not exist, go download it
     if (!fs.existsSync(ffmpegPath) || !fs.existsSync(ffprobePath)) {
       const popupId = "ffmpegDownloadProgress";
       const downloadTo = ffmpegPath + ".zip";
-      let dlURL: string;
-
-      // Set downloadURL depending on users platform
-      if (process.platform === "win32") {
-        dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421932";
-      } else if (process.platform === "linux") {
-        dlURL = "https://api.github.com/repos/sbondCo/Casterr-Resources/releases/assets/34421938";
-      } else {
-        throw new Error("Unsupported platform");
-      }
+      const dlURL = await this.getResourceDownloadURL("ffmpeg", targetFFVersion);
 
       // Download zip
       downloader.accept = "application/octet-stream";
-      await downloader.get(dlURL, downloadTo, (progress) => {
+      await downloader.get(dlURL.url, downloadTo, (progress) => {
         // Keep updating popup with new progress %
         Notifications.popup({ id: popupId, title: "Fetching Recording Utilities", percentage: progress }).catch((e) => {
           this.logger.error(`Failed to update ${popupId} popup with progress.`, e);
@@ -177,6 +205,8 @@ export default class FFmpeg {
 
       // Extract zip
       await PathHelper.extract(downloadTo, installDir, [FFmpeg.ffmpegExeName, FFmpeg.ffprobeExeName]);
+
+      await fsp.writeFile(versionsPath, JSON.stringify(dlURL.body));
 
       // Delete popup
       Notifications.rmPopup(popupId);
@@ -199,6 +229,8 @@ export default class FFmpeg {
 
   /**
    * Make sure screen-capture-recorder and virtual-audio-capturer are installed.
+   * https://github.com/rdp/screen-capture-recorder-to-video-windows-free
+   * redist: https://github.com/rdp/screen-capture-recorder-to-video-windows-free/tree/master/vendor
    */
   private async getSCR(installDir: string) {
     const dlls = ["screen-capture-recorder-x64.dll", "virtual-audio-capturer-x64.dll"];
@@ -246,5 +278,31 @@ export default class FFmpeg {
     });
 
     Notifications.rmPopup(popupId);
+  }
+
+  /**
+   * Get resouce download url from latest github release if matching wanted version.
+   * @param re Resource type.
+   * @param v Version wanted.
+   * @returns download url.
+   */
+  private async getResourceDownloadURL(
+    re: "ffmpeg" | "screen-capture-utils",
+    v: string
+  ): Promise<{ url: string; body: object }> {
+    const r = await axios.get("https://api.github.com/repos/sbondCo/Casterr-Resources/releases/latest");
+    if (r.status !== 200) {
+      throw new Error("request failed");
+    }
+    const releaseBody = JSON.parse(r.data.body);
+    if (releaseBody[re] !== v) {
+      throw new Error("latest release is not of version wanted");
+    }
+    const assetName = `${re === "ffmpeg" ? `ffmpeg-${process.platform === "win32" ? "windows" : "linux"}` : re}.zip`;
+    const asset = r.data.assets?.find((a: any) => a?.name === assetName);
+    if (!asset?.url) {
+      throw new Error("failed to find related asset with name:" + assetName);
+    }
+    return { url: asset.url as string, body: releaseBody };
   }
 }
