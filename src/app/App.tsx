@@ -12,20 +12,22 @@ export default function App() {
   const Editor = React.lazy(async () => await import("@/editor"));
   const Settings = React.lazy(async () => await import("@/settings"));
   const DesktopNotification = React.lazy(async () => await import("@/common/DesktopNotification"));
+  const RegionSelect = React.lazy(async () => await import("@/common/RegionSelect"));
 
   // Can't use react-router hooks here, fallingback on using window.location
   const path = window.location.hash;
   const isDNotifRoute = path.includes("/dnotif");
+  const isRegionSelectRoute = path.includes("/region_select");
 
   return (
     <div
       className={`App bg-primary-100 text-white-100 min-h-screen max-h-screen overflow-hidden ${
         isDNotifRoute ? "rounded-xl" : ""
-      }`}
+      } ${isRegionSelectRoute ? "bg-transparent" : ""}`}
     >
       <Provider store={store}>
         <Router>
-          {!isDNotifRoute && (
+          {!isDNotifRoute && !isRegionSelectRoute && (
             <>
               <Init />
               <Dragger />
@@ -41,6 +43,7 @@ export default function App() {
               <Route path="/editor" element={<Editor />} />
               <Route path="/settings/*" element={<Settings />} />
               <Route path="/dnotif/:icon/:desc" element={<DesktopNotification />} />
+              <Route path="/region_select" element={<RegionSelect />} />
             </Routes>
           </Suspense>
         </Router>

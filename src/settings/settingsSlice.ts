@@ -76,6 +76,9 @@ const settingsSlice = createSlice({
     //
     setStartStopRecording(state, action: PayloadAction<string>) {
       state.key.startStopRecording = action.payload;
+    },
+    setStartStopRecordingRegion(state, action: PayloadAction<string>) {
+      state.key.startStopRecordingRegion = action.payload;
     }
   }
 });
@@ -100,7 +103,8 @@ export const {
   toggleAudioDeviceToRecord,
   setSeperateAudioTracks,
 
-  setStartStopRecording
+  setStartStopRecording,
+  setStartStopRecordingRegion
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

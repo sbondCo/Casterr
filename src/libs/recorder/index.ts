@@ -11,6 +11,11 @@ ipcRenderer.on("startStopRecording-pressed", async () => {
   await Recorder.auto();
 });
 
+ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
+  await ipcRenderer.invoke("select-region-win");
+  // await Recorder.auto();
+});
+
 export default class Recorder {
   private static readonly ffmpeg = new FFmpeg();
   private static args: Arguments;

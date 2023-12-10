@@ -132,6 +132,47 @@ function registerChannels(win: BrowserWindow) {
     }, args.duration);
   });
 
+  ipcMain.handle("select-region-win", async () => {
+    console.log("select-region-win running");
+    // TODO probably need to spawn a window on each screen..
+    const screenWithCursor = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+    const regionWin = new BrowserWindow({
+      parent: win,
+      width: screenWithCursor.bounds.width - 500,
+      height: screenWithCursor.bounds.height,
+      x: screenWithCursor.bounds.x,
+      y: screenWithCursor.bounds.y,
+      frame: false,
+      skipTaskbar: true,
+      alwaysOnTop: true,
+      resizable: false,
+      hasShadow: false,
+      transparent: true,
+      movable: false,
+      focusable: true,
+      show: false,
+      webPreferences: {
+        nodeIntegration: true,
+        nodeIntegrationInWorker: false,
+        nodeIntegrationInSubFrames: false,
+        contextIsolation: false
+      }
+    });
+
+    // Show window when ready to show
+    regionWin.once("ready-to-show", () => {
+      regionWin.show();
+    });
+
+    if (isDev && process.env.SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      await regionWin.loadURL(`${process.env.SERVER_URL}/index.html#/region_select`);
+    } else {
+      // Load the index.html when not in development
+      await regionWin.loadURL(`file://${path.join(__dirname, `../../dist/vi/index.html`)}#/region_select`);
+    }
+  });
+
   /**
    * Show open dialog with args passed through.
    */
