@@ -12,7 +12,8 @@ ipcRenderer.on("startStopRecording-pressed", async () => {
 });
 
 ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
-  await ipcRenderer.invoke("select-region-win");
+  const b = await ipcRenderer.invoke("select-region-win");
+  logger.info("Recorder", "Region selected", b);
   // await Recorder.auto();
 });
 

@@ -171,6 +171,17 @@ function registerChannels(win: BrowserWindow) {
       // Load the index.html when not in development
       await regionWin.loadURL(`file://${path.join(__dirname, `../../dist/vi/index.html`)}#/region_select`);
     }
+
+    return await new Promise((resolve, reject) => {
+      regionWin.once("closed", () => {
+        reject(new Error("window closed before capturing a region"));
+      });
+
+      ipcMain.once("region-selected", (_, bounds) => {
+        regionWin?.close();
+        resolve(bounds);
+      });
+    });
   });
 
   /**

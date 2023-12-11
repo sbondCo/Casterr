@@ -1,3 +1,4 @@
+import { ipcRenderer } from "electron";
 import { useEffect, useRef } from "react";
 
 export default function RegionSelect() {
@@ -56,6 +57,8 @@ export default function RegionSelect() {
   function stopDraw(ev: MouseEvent) {
     console.log("stopDraw");
     isDrawing = false;
+    const br = regionDiv.getBoundingClientRect();
+    ipcRenderer.send("region-selected", { x: br.x, y: br.y, width: br.width, height: br.height });
   }
 
   return <div ref={dRef} className="h-screen w-screen bg-[#3b3b3b34]"></div>;
