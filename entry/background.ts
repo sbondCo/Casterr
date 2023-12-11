@@ -138,7 +138,7 @@ function registerChannels(win: BrowserWindow) {
     const screenWithCursor = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
     const regionWin = new BrowserWindow({
       parent: win,
-      width: screenWithCursor.bounds.width - 500,
+      width: screenWithCursor.bounds.width,
       height: screenWithCursor.bounds.height,
       x: screenWithCursor.bounds.x,
       y: screenWithCursor.bounds.y,
