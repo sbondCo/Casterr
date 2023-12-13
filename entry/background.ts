@@ -178,14 +178,22 @@ function registerChannels(win: BrowserWindow) {
       });
 
       ipcMain.once("region-select-cancelled", (_, reason: string, err?: Error) => {
-        regionWin?.close();
-        console.error("region-select-cancelled err:", err);
-        reject(new Error(reason));
+        try {
+          regionWin?.close();
+          console.error("region-select-cancelled err:", err);
+          reject(new Error(reason));
+        } catch (err) {
+          console.error("region-select-cancelled listener failed", err);
+        }
       });
 
       ipcMain.once("region-selected", (_, bounds) => {
-        regionWin?.close();
-        resolve(bounds);
+        try {
+          regionWin?.close();
+          resolve(bounds);
+        } catch (err) {
+          console.error("region-selected listener failed", err);
+        }
       });
     });
   });
