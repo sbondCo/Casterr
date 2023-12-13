@@ -7,6 +7,8 @@ import type { RecordingSettings } from "@/settings/types";
 import { equalsAnyOf, toReadableDateTime } from "../helpers/extensions/string";
 import { toHexTwosComplement } from "../helpers/extensions/number";
 
+export type CustomRegion = { x: number; y: number; height: number; width: number } | undefined;
+
 export interface Arguments {
   args: string;
   videoPath: string;
@@ -19,16 +21,18 @@ export default class ArgumentBuilder {
     return store.getState().settings.recording;
   }
 
+  constructor(private readonly customRegion: CustomRegion) {}
+
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
-  public static async createArgs(): Promise<Arguments> {
+  public async createArgs(): Promise<Arguments> {
     // Build and return args differently depending on OS
     if (process.platform === "win32") {
-      return await ArgumentBuilder.buildWindowsArgs();
+      return await this.buildWindowsArgs();
     } else if (process.platform === "linux") {
-      return await ArgumentBuilder.buildLinuxArgs();
+      return await this.buildLinuxArgs();
     }
 
     throw new Error("Could not build args for current system. It isn't supported.");
@@ -37,31 +41,31 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Linux.
    */
-  private static async buildLinuxArgs() {
+  private async buildLinuxArgs() {
     const args = new Array<string>();
 
     // Audio devices
-    this.rs.audioDevicesToRecord.forEach((ad) => {
+    ArgumentBuilder.rs.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f pulse -i ${ad}`);
     });
 
     // Recording FPS
-    args.push(`-framerate ${this.fps}`);
+    args.push(`-framerate ${ArgumentBuilder.fps}`);
 
     // Recording resolution
     args.push(`-video_size ${await this.resolution()}`);
 
     // FFmpeg video device
-    args.push(`-f ${this.ffmpegDevice}`);
+    args.push(`-f ${ArgumentBuilder.ffmpegDevice}`);
 
     // Recording region
     args.push(`-i ${await this.recordingRegion()}`);
 
     // Audio maps
-    args.push(`${this.audioMaps}`);
+    args.push(`${ArgumentBuilder.audioMaps}`);
 
     // Video output path
-    const videoOutputPath = await this.videoOutputPath();
+    const videoOutputPath = await ArgumentBuilder.videoOutputPath();
     args.push(`"${videoOutputPath}"`);
 
     return {
@@ -73,31 +77,35 @@ export default class ArgumentBuilder {
   /**
    * Builds FFmpeg arguments for Windows.
    */
-  private static async buildWindowsArgs() {
+  private async buildWindowsArgs() {
     const args = new Array<string>();
 
     // Audio devices
-    this.rs.audioDevicesToRecord.forEach((ad) => {
+    ArgumentBuilder.rs.audioDevicesToRecord.forEach((ad) => {
       args.push(`-f dshow -i audio="${ad}"`);
     });
 
     // FFmpeg video device
-    args.push(`-f ${this.ffmpegDevice}`);
+    args.push(`-f ${ArgumentBuilder.ffmpegDevice}`);
 
     // Video device
     if (
-      equalsAnyOf(this.rs.videoDevice.toLowerCase(), ["default", "desktop screen", DeviceManager.winDesktopVideoDevice])
+      equalsAnyOf(ArgumentBuilder.rs.videoDevice.toLowerCase(), [
+        "default",
+        "desktop screen",
+        DeviceManager.winDesktopVideoDevice
+      ])
     ) {
       args.push(`-i video=${DeviceManager.winDesktopVideoDevice}`);
     } else {
-      args.push(`-i video=${this.rs.videoDevice}`);
+      args.push(`-i video=${ArgumentBuilder.rs.videoDevice}`);
     }
 
     // Audio maps
-    args.push(`${this.audioMaps}`);
+    args.push(`${ArgumentBuilder.audioMaps}`);
 
     // Recording FPS
-    args.push(`-framerate ${this.fps}`);
+    args.push(`-framerate ${ArgumentBuilder.fps}`);
 
     // Recording resolution
     await this.resolution();
@@ -106,17 +114,17 @@ export default class ArgumentBuilder {
     await this.recordingRegion();
 
     // Zero Latency
-    if (this.rs.zeroLatency) {
+    if (ArgumentBuilder.rs.zeroLatency) {
       args.push("-tune zerolatency");
     }
 
     // Ultra Fast
-    if (this.rs.ultraFast) {
+    if (ArgumentBuilder.rs.ultraFast) {
       args.push("-preset ultrafast");
     }
 
     // Video output path
-    const videoOutputPath = await this.videoOutputPath();
+    const videoOutputPath = await ArgumentBuilder.videoOutputPath();
     args.push(`"${videoOutputPath}"`);
 
     return {
@@ -135,45 +143,50 @@ export default class ArgumentBuilder {
     }
   }
 
-  private static async resolution(): Promise<string> {
+  private async resolution(): Promise<string> {
     // Initialise res and set 1920x1080 as default
     const res = {
       width: 1920,
       height: 1080
     };
 
-    switch (this.rs.resolution) {
-      case "In-Game":
-        throw new Error("In-Game directive not currently supported.");
-      case "2160p":
-        res.width = 3840;
-        res.height = 2160;
-        break;
-      case "1440p":
-        res.width = 2560;
-        res.height = 1440;
-        break;
-      case "1080p":
-        res.width = 1920;
-        res.height = 1080;
-        break;
-      case "720p":
-        res.width = 1280;
-        res.height = 720;
-        break;
-      case "480p":
-        res.width = 640;
-        res.height = 480;
-        break;
-      case "360p":
-        res.width = 480;
-        res.height = 360;
-        break;
+    if (this.customRegion) {
+      res.width = this.customRegion.width;
+      res.height = this.customRegion.height;
+    } else {
+      switch (ArgumentBuilder.rs.resolution) {
+        case "In-Game":
+          throw new Error("In-Game directive not currently supported.");
+        case "2160p":
+          res.width = 3840;
+          res.height = 2160;
+          break;
+        case "1440p":
+          res.width = 2560;
+          res.height = 1440;
+          break;
+        case "1080p":
+          res.width = 1920;
+          res.height = 1080;
+          break;
+        case "720p":
+          res.width = 1280;
+          res.height = 720;
+          break;
+        case "480p":
+          res.width = 640;
+          res.height = 480;
+          break;
+        case "360p":
+          res.width = 480;
+          res.height = 360;
+          break;
+      }
     }
 
     if (process.platform === "win32") {
-      await this.scrRegistry.add("capture_width", res.width, "REG_DWORD");
-      await this.scrRegistry.add("capture_height", res.height, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("capture_width", res.width, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("capture_height", res.height, "REG_DWORD");
     }
 
     return `${res.width}x${res.height}`;
@@ -185,26 +198,35 @@ export default class ArgumentBuilder {
     else throw new Error("No video device to fetch for unsupported platform.");
   }
 
-  private static async recordingRegion(): Promise<string> {
-    let monitor;
-    const monitorToRecord = this.rs.monitorToRecord.id.toLowerCase();
+  private async recordingRegion(): Promise<string> {
+    let bounds;
 
-    // Get monitor
-    if (monitorToRecord === "primary") {
-      monitor = await DeviceManager.getPrimaryMonitor();
+    if (this.customRegion) {
+      bounds = this.customRegion;
     } else {
-      monitor = await DeviceManager.findMonitor(monitorToRecord);
+      const monitorToRecord = ArgumentBuilder.rs.monitorToRecord.id.toLowerCase();
+
+      // Get monitor
+      if (monitorToRecord === "primary") {
+        bounds = (await DeviceManager.getPrimaryMonitor()).bounds;
+      } else {
+        bounds = (await DeviceManager.findMonitor(monitorToRecord)).bounds;
+      }
+    }
+
+    if (!bounds) {
+      throw new Error("Failed to get recording region bounds");
     }
 
     // Return different format depending on OS
     if (process.platform === "win32") {
-      await this.scrRegistry.add("start_x", `0x${toHexTwosComplement(monitor.bounds.x)}`, "REG_DWORD");
-      await this.scrRegistry.add("start_y", `0x${toHexTwosComplement(monitor.bounds.y)}`, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("start_x", `0x${toHexTwosComplement(bounds.x)}`, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("start_y", `0x${toHexTwosComplement(bounds.y)}`, "REG_DWORD");
 
       // Return offsets as string anyway
-      return `-offset_x ${monitor.bounds.x} -offset_y ${monitor.bounds.y}`;
+      return `-offset_x ${bounds.x} -offset_y ${bounds.y}`;
     } else if (process.platform === "linux") {
-      return `:0.0+${monitor.bounds.x},${monitor.bounds.y}`;
+      return `:0.0+${bounds.x},${bounds.y}`;
     } else {
       throw new Error("Can't get recording region for unsupported platform.");
     }
