@@ -13,11 +13,13 @@ export default function RegionSelect() {
       dRef.current.addEventListener("mousedown", startDraw);
       dRef.current.addEventListener("mousemove", doDraw);
       dRef.current.addEventListener("mouseup", stopDraw);
+      window.addEventListener("keyup", keyUp);
 
       return () => {
         dRef.current?.removeEventListener("mousedown", startDraw);
         dRef.current?.removeEventListener("mousemove", doDraw);
         dRef.current?.removeEventListener("mouseup", stopDraw);
+        window?.removeEventListener("keyup", keyUp);
       };
     }
   }, []);
@@ -59,6 +61,12 @@ export default function RegionSelect() {
     isDrawing = false;
     const br = regionDiv.getBoundingClientRect();
     ipcRenderer.send("region-selected", { x: br.x, y: br.y, width: br.width, height: br.height });
+  }
+
+  function keyUp(ev: KeyboardEvent) {
+    if (ev.key?.toLowerCase() === "escape") {
+      ipcRenderer.send("region-select-cancelled");
+    }
   }
 
   return <div ref={dRef} className="h-screen w-screen bg-[#3b3b3b34]"></div>;
