@@ -177,9 +177,10 @@ function registerChannels(win: BrowserWindow) {
         reject(new Error("window closed before capturing a region"));
       });
 
-      ipcMain.once("region-select-cancelled", () => {
+      ipcMain.once("region-select-cancelled", (_, reason: string, err?: Error) => {
         regionWin?.close();
-        reject(new Error("selection cancelled"));
+        console.error("region-select-cancelled err:", err);
+        reject(new Error(reason));
       });
 
       ipcMain.once("region-selected", (_, bounds) => {
