@@ -7,6 +7,7 @@ export default function RegionSelect() {
   let startY: number;
   let isDrawing = false;
   let regionDiv: HTMLDivElement;
+  let regionDimensionsSpan: HTMLSpanElement;
 
   useEffect(() => {
     if (dRef?.current) {
@@ -27,14 +28,23 @@ export default function RegionSelect() {
   function startDraw(ev: MouseEvent) {
     try {
       console.log("startDraw");
+      startX = ev.clientX;
+      startY = ev.clientY;
       regionDiv = document.createElement("div");
       regionDiv.style.backgroundColor = "transparent";
       regionDiv.style.border = "2px dashed white";
-      startX = ev.clientX;
-      startY = ev.clientY;
       regionDiv.style.left = `${ev.clientX}px`;
       regionDiv.style.top = `${ev.clientY}px`;
       regionDiv.style.position = `fixed`;
+      regionDimensionsSpan = document.createElement("span");
+      regionDimensionsSpan.style.width = "100%";
+      regionDimensionsSpan.style.height = "100%";
+      regionDimensionsSpan.style.justifyContent = "center";
+      regionDimensionsSpan.style.alignItems = "center";
+      regionDimensionsSpan.style.userSelect = "none";
+      regionDimensionsSpan.style.filter = "drop-shadow(0px 0px 4px black)";
+      regionDimensionsSpan.style.whiteSpace = "nowrap";
+      regionDiv.insertAdjacentElement("beforeend", regionDimensionsSpan);
       dRef?.current?.insertAdjacentElement("beforeend", regionDiv);
       isDrawing = true;
     } catch (err) {
@@ -46,17 +56,28 @@ export default function RegionSelect() {
     try {
       if (isDrawing && regionDiv) {
         console.log("doDraw", ev.clientX, ev.offsetX);
+        let newW;
+        let newH;
         if (ev.clientX < startX) {
           regionDiv.style.left = `${ev.clientX}px`;
-          regionDiv.style.width = `${Math.abs(ev.clientX - startX)}px`;
+          newW = Math.abs(ev.clientX - startX);
         } else {
-          regionDiv.style.width = `${ev.clientX - startX}px`;
+          newW = ev.clientX - startX;
         }
         if (ev.clientY < startY) {
           regionDiv.style.top = `${ev.clientY}px`;
-          regionDiv.style.height = `${Math.abs(ev.clientY - startY)}px`;
+          newH = Math.abs(ev.clientY - startY);
         } else {
-          regionDiv.style.height = `${ev.clientY - startY}px`;
+          newH = ev.clientY - startY;
+        }
+        regionDiv.style.width = `${newW}px`;
+        regionDiv.style.height = `${newH}px`;
+        // Show dimensions and hide/show
+        regionDimensionsSpan.innerText = `${regionDiv.style.width} x ${regionDiv.style.height}`;
+        if (newW < 120 || newH < 30) {
+          regionDimensionsSpan.style.display = "none";
+        } else {
+          regionDimensionsSpan.style.display = "flex";
         }
       }
     } catch (err) {
