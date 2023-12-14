@@ -27,6 +27,7 @@ export default function RegionSelect() {
 
   function startDraw(ev: MouseEvent) {
     try {
+      if (regionDiv) return;
       console.log("startDraw");
       startX = ev.clientX;
       startY = ev.clientY;
