@@ -38,6 +38,7 @@ export const DEFAULT_SETTINGS = {
     seperateAudioTracks: false
   },
   key: {
-    startStopRecording: "F9"
+    startStopRecording: "F9",
+    startStopRecordingRegion: "F10"
   }
 } as Settings;

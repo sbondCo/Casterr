@@ -1,5 +1,5 @@
 import FFmpeg from "./ffmpeg";
-import ArgumentBuilder, { type Arguments } from "./argumentBuilder";
+import ArgumentBuilder, { type CustomRegion, type Arguments } from "./argumentBuilder";
 import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
@@ -8,7 +8,13 @@ import { ipcRenderer } from "electron";
 import { logger } from "../logger";
 
 ipcRenderer.on("startStopRecording-pressed", async () => {
-  await Recorder.auto();
+  await Recorder.auto(undefined);
+});
+
+ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
+  const b = await ipcRenderer.invoke("select-region-win");
+  logger.info("Recorder", "Region selected", b);
+  await Recorder.auto(b);
 });
 
 export default class Recorder {
@@ -18,7 +24,7 @@ export default class Recorder {
   /**
    * Start recording.
    */
-  public static async start() {
+  public static async start(customRegion: CustomRegion) {
     try {
       // If already recording, return before doing anything
       if (store.getState().recorder.isRecording) {
@@ -29,7 +35,8 @@ export default class Recorder {
       store.dispatch(isRecording(true));
 
       // Create args from user's settings
-      this.args = await ArgumentBuilder.createArgs();
+      const ab = new ArgumentBuilder(customRegion);
+      this.args = await ab.createArgs();
       logger.info("Recorder", "Recorder.Start Args:", this.args);
 
       // Start the recording
@@ -81,9 +88,9 @@ export default class Recorder {
    * Automatically decide whether to start or stop
    * recording depending on if currently recording or not.
    */
-  public static async auto() {
+  public static async auto(customRegion: CustomRegion) {
     if (!store.getState().recorder.isRecording) {
-      await this.start();
+      await this.start(customRegion);
     } else {
       await this.stop();
     }
