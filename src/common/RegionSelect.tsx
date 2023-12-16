@@ -7,6 +7,7 @@ export default function RegionSelect() {
   let startY: number;
   let isDrawing = false;
   let regionDiv: HTMLDivElement;
+  let regionDimensionsDiv: HTMLSpanElement;
   let regionDimensionsSpan: HTMLSpanElement;
 
   useEffect(() => {
@@ -37,15 +38,20 @@ export default function RegionSelect() {
       regionDiv.style.left = `${ev.clientX}px`;
       regionDiv.style.top = `${ev.clientY}px`;
       regionDiv.style.position = `fixed`;
+      regionDimensionsDiv = document.createElement("div");
+      regionDimensionsDiv.style.width = "100%";
+      regionDimensionsDiv.style.height = "100%";
+      regionDimensionsDiv.style.justifyContent = "center";
+      regionDimensionsDiv.style.alignItems = "center";
+      regionDimensionsDiv.style.userSelect = "none";
       regionDimensionsSpan = document.createElement("span");
-      regionDimensionsSpan.style.width = "100%";
-      regionDimensionsSpan.style.height = "100%";
-      regionDimensionsSpan.style.justifyContent = "center";
-      regionDimensionsSpan.style.alignItems = "center";
-      regionDimensionsSpan.style.userSelect = "none";
-      regionDimensionsSpan.style.filter = "drop-shadow(0px 0px 4px black)";
-      regionDimensionsSpan.style.whiteSpace = "nowrap";
-      regionDiv.insertAdjacentElement("beforeend", regionDimensionsSpan);
+      regionDimensionsSpan.style.color = "black";
+      regionDimensionsSpan.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+      regionDimensionsSpan.style.borderRadius = "8px";
+      regionDimensionsSpan.style.padding = "10px";
+      regionDimensionsDiv.style.whiteSpace = "nowrap";
+      regionDimensionsDiv.insertAdjacentElement("beforeend", regionDimensionsSpan);
+      regionDiv.insertAdjacentElement("beforeend", regionDimensionsDiv);
       dRef?.current?.insertAdjacentElement("beforeend", regionDiv);
       isDrawing = true;
     } catch (err) {
@@ -76,9 +82,9 @@ export default function RegionSelect() {
         // Show dimensions and hide/show
         regionDimensionsSpan.innerText = `${regionDiv.style.width} x ${regionDiv.style.height}`;
         if (newW < 120 || newH < 30) {
-          regionDimensionsSpan.style.display = "none";
+          regionDimensionsDiv.style.display = "none";
         } else {
-          regionDimensionsSpan.style.display = "flex";
+          regionDimensionsDiv.style.display = "flex";
         }
       }
     } catch (err) {
