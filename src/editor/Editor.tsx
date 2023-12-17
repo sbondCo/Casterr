@@ -11,7 +11,7 @@ import "./editor.scss";
 import type { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useDispatch, useSelector } from "react-redux";
-import { videoRenamed } from "@/videos/videosSlice";
+import { videoBookmarkAdded, videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { type RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
@@ -38,6 +38,10 @@ export default function VideoEditor() {
       .catch((e) => logger.error("Editor", "Unable to verify video files existence.", e));
   }, [video.videoPath]);
 
+  const onBookmarkAdded = (bookmark: number) => {
+    dispatch(videoBookmarkAdded({ videoPath: video.videoPath, isClip: video.isClip, bookmark }));
+  };
+
   const playerRef = useRef<HTMLVideoElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -63,7 +67,16 @@ export default function VideoEditor() {
     lockOnScrubber,
     setLockOnScrubber,
     addBookmark
-  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, bookmarksBarRef, genState.videoEditorVolume);
+  } = useEditor(
+    playerRef,
+    timelineRef,
+    progressBarRef,
+    clipsBarRef,
+    bookmarksBarRef,
+    genState.videoEditorVolume,
+    onBookmarkAdded,
+    video.bookmarks
+  );
 
   return (
     <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-77px)]">

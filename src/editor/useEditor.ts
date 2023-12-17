@@ -12,7 +12,9 @@ export default function useEditor(
   progressBarRef: React.RefObject<HTMLDivElement>,
   clipsBarRef: React.RefObject<HTMLDivElement>,
   bookmarksBarRef: React.RefObject<HTMLDivElement>,
-  initialVolume: number
+  initialVolume: number,
+  onBookmarkAdded: (b: number) => void,
+  initialBookmarks: number[] | undefined
 ) {
   const [playBtnIcon, setPlayBtnIcon] = useState<"play" | "pause">("play");
   const [volume, setVolume] = useState<number>(0.8);
@@ -148,6 +150,10 @@ export default function useEditor(
       progressBar.addEventListener("dblclick", () => {
         addClip();
       });
+    }
+
+    if (initialBookmarks && initialBookmarks.length > 0 && !bookmarksBar.classList.contains("noUi-target")) {
+      createBookmarksBar(initialBookmarks);
     }
   };
 
@@ -566,6 +572,7 @@ export default function useEditor(
     if (bookmarksBar.noUiSlider) bookmarksBar.noUiSlider.destroy();
 
     if (starts.length > 0) {
+      starts.sort((a, b) => a - b);
       noUiSlider.create(bookmarksBar, {
         start: starts,
         behaviour: "snap",
@@ -590,8 +597,8 @@ export default function useEditor(
       }
     }
     starts.push(currentProgress);
-    starts.sort((a, b) => a - b);
     createBookmarksBar(starts);
+    onBookmarkAdded(currentProgress);
   };
 
   const toggleShowTimeAsElapsed = () => {
