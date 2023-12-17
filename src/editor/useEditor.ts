@@ -156,6 +156,11 @@ export default function useEditor(
     if (initialBookmarks && initialBookmarks.length > 0 && !bookmarksBar.classList.contains("noUi-target")) {
       createBookmarksBar(initialBookmarks);
     }
+
+    // When a bookmark is right clicked, remove.
+    // Pointer events are disabled everywhere except handles.
+    bookmarksBar.removeEventListener("mouseup", bookmarksBarMouseUp);
+    bookmarksBar.addEventListener("mouseup", bookmarksBarMouseUp);
   };
 
   /**
@@ -586,9 +591,6 @@ export default function useEditor(
       });
       // Disable dragging bookmarks
       bookmarksBar.noUiSlider!.disable();
-      // When a bookmark is right clicked, remove
-      bookmarksBar.removeEventListener("mouseup", bookmarksBarMouseUp);
-      bookmarksBar.addEventListener("mouseup", bookmarksBarMouseUp);
     }
   };
 
