@@ -574,6 +574,7 @@ export default function useEditor(
 
     if (starts.length > 0) {
       starts.sort((a, b) => a - b);
+      console.log("createBookmarksBar:", starts);
       noUiSlider.create(bookmarksBar, {
         start: starts,
         behaviour: "snap",
@@ -593,7 +594,7 @@ export default function useEditor(
 
   const bookmarksBarMouseUp = (ev: MouseEvent) => {
     if (ev.button === 2) {
-      console.log("clickckckckckc", ev);
+      console.log("bookmarksBarMouseUp", ev);
       const handle = ev.composedPath()[1] as HTMLDivElement;
       if (handle) {
         const handleN = handle.getAttribute("data-handle");
@@ -616,6 +617,10 @@ export default function useEditor(
       } else {
         starts = [Number(s)];
       }
+    }
+    if (starts.includes(currentProgress)) {
+      console.log("addBookmark: bookmark already exists at time:", currentProgress);
+      return;
     }
     starts.push(currentProgress);
     createBookmarksBar(starts);
