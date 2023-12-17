@@ -11,7 +11,7 @@ import "./editor.scss";
 import type { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useDispatch, useSelector } from "react-redux";
-import { videoBookmarkAdded, videoRenamed } from "@/videos/videosSlice";
+import { videoBookmarkAdded, videoBookmarkRemoved, videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { type RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
@@ -40,6 +40,10 @@ export default function VideoEditor() {
 
   const onBookmarkAdded = (bookmark: number) => {
     dispatch(videoBookmarkAdded({ videoPath: video.videoPath, isClip: video.isClip, bookmark }));
+  };
+
+  const onBookmarkRemoved = (bookmark: number) => {
+    dispatch(videoBookmarkRemoved({ videoPath: video.videoPath, isClip: video.isClip, bookmark }));
   };
 
   const playerRef = useRef<HTMLVideoElement>(null);
@@ -75,6 +79,7 @@ export default function VideoEditor() {
     bookmarksBarRef,
     genState.videoEditorVolume,
     onBookmarkAdded,
+    onBookmarkRemoved,
     video.bookmarks
   );
 

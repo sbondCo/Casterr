@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { VideosState, Video } from "./types";
+import { removeFirst } from "@/libs/helpers/extensions/array";
 
 const videosSlice = createSlice({
   name: "videos",
@@ -59,7 +60,7 @@ const videosSlice = createSlice({
       const updt = (v: Video) => {
         if (v.videoPath === action.payload.videoPath) {
           if (v.bookmarks) {
-            v.bookmarks.filter((b) => b !== action.payload.bookmark);
+            v.bookmarks = removeFirst(v.bookmarks, action.payload.bookmark);
           }
         }
         return v;

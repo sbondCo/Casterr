@@ -14,6 +14,7 @@ export default function useEditor(
   bookmarksBarRef: React.RefObject<HTMLDivElement>,
   initialVolume: number,
   onBookmarkAdded: (b: number) => void,
+  onBookmarkRemoved: (b: number) => void,
   initialBookmarks: number[] | undefined
 ) {
   const [playBtnIcon, setPlayBtnIcon] = useState<"play" | "pause">("play");
@@ -582,6 +583,26 @@ export default function useEditor(
           max: player.duration
         }
       });
+      // Disable dragging bookmarks
+      bookmarksBar.noUiSlider!.disable();
+      // When a bookmark is right clicked, remove
+      bookmarksBar.removeEventListener("mouseup", bookmarksBarMouseUp);
+      bookmarksBar.addEventListener("mouseup", bookmarksBarMouseUp);
+    }
+  };
+
+  const bookmarksBarMouseUp = (ev: MouseEvent) => {
+    if (ev.button === 2) {
+      console.log("clickckckckckc", ev);
+      const handle = ev.composedPath()[1] as HTMLDivElement;
+      if (handle) {
+        const handleN = handle.getAttribute("data-handle");
+        if (!handleN) {
+          console.error("failed to find data-handle attribute", handleN);
+          return;
+        }
+        removeBookmark(Number(handleN));
+      }
     }
   };
 
@@ -599,6 +620,29 @@ export default function useEditor(
     starts.push(currentProgress);
     createBookmarksBar(starts);
     onBookmarkAdded(currentProgress);
+  };
+
+  const removeBookmark = (handleToRemove: number) => {
+    if (!bookmarksBar.noUiSlider) {
+      console.error("removeBookmark: nouislider not found on bookmarks bar");
+      return;
+    }
+    let bookmarkToRemoveTime: number;
+    const s = bookmarksBar.noUiSlider.get();
+    let starts = new Array<number>();
+    console.log("removeBookmark: starts:", s);
+    // If array, remove the one handle,
+    // if not, must only have one handle left, so we can pass the empty starts array.
+    if (typeof s === "object") {
+      starts = (s as string[]).map(Number);
+      bookmarkToRemoveTime = starts[handleToRemove];
+      starts = removeFirst(starts, bookmarkToRemoveTime);
+    } else {
+      bookmarkToRemoveTime = Number(s);
+    }
+    console.log("removeBookmark: bookmark time:", bookmarkToRemoveTime);
+    createBookmarksBar(starts);
+    onBookmarkRemoved(bookmarkToRemoveTime);
   };
 
   const toggleShowTimeAsElapsed = () => {

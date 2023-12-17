@@ -161,9 +161,10 @@
     .noUi-handle {
       height: 40px;
       border: 0;
-      pointer-events: none;
       width: 2px;
       background-color: orange;
+      pointer-events: all;
+      cursor: default;
 
       &::before {
         content: "";
@@ -178,6 +179,14 @@
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         border-bottom: 5px solid transparent;
+      }
+
+      &:hover {
+        background-color: #c10000;
+
+        &::before {
+          border-top-color: #c10000;
+        }
       }
     }
   }
