@@ -42,6 +42,7 @@ export default function VideoEditor() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const clipsBarRef = useRef<HTMLDivElement>(null);
+  const bookmarksBarRef = useRef<HTMLDivElement>(null);
   const {
     clipsBar,
     playPause,
@@ -60,8 +61,9 @@ export default function VideoEditor() {
     isPlayingClips,
     adjustZoom,
     lockOnScrubber,
-    setLockOnScrubber
-  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, genState.videoEditorVolume);
+    setLockOnScrubber,
+    addBookmark
+  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, bookmarksBarRef, genState.videoEditorVolume);
 
   return (
     <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-77px)]">
@@ -135,6 +137,7 @@ export default function VideoEditor() {
       <div ref={timelineRef} className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
         <div ref={clipsBarRef} id="clipsBar" className="clipsBar"></div>
+        <div ref={bookmarksBarRef} id="bookmarksBar" className="bookmarksBar"></div>
       </div>
 
       <div className="flex gap-1.5 mx-1.5">
@@ -180,6 +183,14 @@ export default function VideoEditor() {
             icon="min2"
             onClick={() => {
               adjustZoom(false);
+            }}
+          />
+        </Tooltip>
+        <Tooltip text="Bookmark (B)">
+          <Button
+            icon="bookmark"
+            onClick={() => {
+              addBookmark();
             }}
           />
         </Tooltip>

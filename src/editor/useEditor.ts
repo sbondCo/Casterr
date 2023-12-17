@@ -11,6 +11,7 @@ export default function useEditor(
   timelineRef: React.RefObject<HTMLDivElement>,
   progressBarRef: React.RefObject<HTMLDivElement>,
   clipsBarRef: React.RefObject<HTMLDivElement>,
+  bookmarksBarRef: React.RefObject<HTMLDivElement>,
   initialVolume: number
 ) {
   const [playBtnIcon, setPlayBtnIcon] = useState<"play" | "pause">("play");
@@ -30,12 +31,14 @@ export default function useEditor(
   let timeline = timelineRef.current!;
   let progressBar = progressBarRef.current! as target;
   let clipsBar = clipsBarRef.current! as target;
+  let bookmarksBar = bookmarksBarRef.current! as target;
 
   useEffect(() => {
     player = playerRef.current!;
     timeline = timelineRef.current!;
     progressBar = progressBarRef.current!;
     clipsBar = clipsBarRef.current!;
+    bookmarksBar = bookmarksBarRef.current!;
 
     if (player && progressBar) {
       player.addEventListener("loadedmetadata", videoLoaded);
@@ -242,6 +245,11 @@ export default function useEditor(
 
         case "KeyZ": {
           adjustZoom(true);
+          break;
+        }
+
+        case "KeyB": {
+          addBookmark();
           break;
         }
       }
@@ -554,6 +562,38 @@ export default function useEditor(
     };
   };
 
+  const createBookmarksBar = (starts: number[]) => {
+    if (bookmarksBar.noUiSlider) bookmarksBar.noUiSlider.destroy();
+
+    if (starts.length > 0) {
+      noUiSlider.create(bookmarksBar, {
+        start: starts,
+        behaviour: "snap",
+        animate: false,
+        range: {
+          min: 0,
+          max: player.duration
+        }
+      });
+    }
+  };
+
+  const addBookmark = () => {
+    const currentProgress = Number(progressBar.noUiSlider!.get());
+    let starts = new Array<number>();
+    if (bookmarksBar.noUiSlider) {
+      const s = bookmarksBar.noUiSlider.get();
+      if (typeof s === "object") {
+        starts = (s as string[]).map(Number);
+      } else {
+        starts = [Number(s)];
+      }
+    }
+    starts.push(currentProgress);
+    starts.sort((a, b) => a - b);
+    createBookmarksBar(starts);
+  };
+
   const toggleShowTimeAsElapsed = () => {
     setShowTimeAsElapsed(!showTimeAsElapsed);
   };
@@ -655,6 +695,7 @@ export default function useEditor(
       // Adjust width of bars
       progressBar.style.width = `${newZoom}%`;
       clipsBar.style.width = `${newZoom}%`;
+      bookmarksBar.style.width = `${newZoom}%`;
 
       // Add/remove `zoomed` class on progressBar
       if (newZoom > min) {
@@ -683,6 +724,7 @@ export default function useEditor(
     isPlayingClips,
     adjustZoom,
     lockOnScrubber,
-    setLockOnScrubber
+    setLockOnScrubber,
+    addBookmark
   };
 }
