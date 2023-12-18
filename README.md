@@ -6,17 +6,25 @@
   
   <br />
   <br />
+
+  <a href="https://casterr.sbond.co">
+    <img src="https://img.shields.io/website?label=WEBSITE&style=for-the-badge&url=https%3A%2F%2Fcasterr.sbond.co" />
+  </a>
+
+  <a href="https://github.com/sbondCo/Casterr/issues">
+    <img src="https://img.shields.io/github/issues-raw/sbondCo/Casterr?label=ISSUES&style=for-the-badge" />
+  </a>
   
   <a href="https://www.codefactor.io/repository/github/sbondco/casterr">
-    <img src="https://www.codefactor.io/repository/github/sbondco/casterr/badge" alt="CodeFactor" />
+    <img src="https://www.codefactor.io/repository/github/sbondco/casterr/badge?style=for-the-badge" alt="CodeFactor" />
   </a>
   
   <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/CasterrTV/Casterr.svg" alt="License" />
+    <img src="https://img.shields.io/github/license/CasterrTV/Casterr.svg?style=for-the-badge" alt="License" />
   </a>
   
   <a>
-    <img src="https://img.shields.io/github/repo-size/CasterrTV/Casterr.svg" alt="Code Size" />
+    <img src="https://img.shields.io/github/repo-size/sbondCo/Casterr.svg?style=for-the-badge" alt="Code Size" />
   </a>
 </p>
 
