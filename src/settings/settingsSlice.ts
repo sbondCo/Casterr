@@ -70,6 +70,9 @@ const settingsSlice = createSlice({
     setSeperateAudioTracks(state, action: PayloadAction<boolean>) {
       state.recording.seperateAudioTracks = action.payload;
     },
+    setHardwareEncoding(state, action: PayloadAction<boolean>) {
+      state.recording.hardwareEncoding = action.payload;
+    },
 
     //
     // Key Binding Settings
@@ -105,6 +108,7 @@ export const {
   setUltraFast,
   toggleAudioDeviceToRecord,
   setSeperateAudioTracks,
+  setHardwareEncoding,
 
   setStartStopRecording,
   setStartStopRecordingRegion,

@@ -12,6 +12,7 @@ import NamedContainer from "../../common/NamedContainer";
 import {
   setFormat,
   setFps,
+  setHardwareEncoding,
   setMonitorToRecord,
   setResolution,
   setSeperateAudioTracks,
@@ -90,6 +91,10 @@ export default function Recording() {
           items={APP_SETTINGS.supportedRecordingFormats}
           onChange={(s) => dispatch(setFormat(s as string))}
         />
+      </NamedContainer>
+
+      <NamedContainer title="Hardware Encoding" row>
+        <TickBox ticked={state.hardwareEncoding} onChange={(t) => dispatch(setHardwareEncoding(t))} />
       </NamedContainer>
 
       <NamedContainer title="Separate Audio Tracks" row>
