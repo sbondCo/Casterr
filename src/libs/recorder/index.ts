@@ -3,7 +3,7 @@ import ArgumentBuilder, { type CustomRegion, type Arguments } from "./argumentBu
 import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
-import { isRecording } from "./recorderSlice";
+import { addBookmarkToRecording, isRecording } from "./recorderSlice";
 import { ipcRenderer } from "electron";
 import { logger } from "../logger";
 
@@ -15,6 +15,14 @@ ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
   const b = await ipcRenderer.invoke("select-region-win");
   logger.info("Recorder", "Region selected", b);
   await Recorder.auto(b);
+});
+
+ipcRenderer.on("addBookmark-pressed", async () => {
+  if (!store.getState().recorder.isRecording) {
+    console.log("can't add bookmark when not recording");
+    return;
+  }
+  store.dispatch(addBookmarkToRecording());
 });
 
 export default class Recorder {

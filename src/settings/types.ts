@@ -57,6 +57,7 @@ export interface RecordingSettings {
 export interface KeyBindingSettings {
   startStopRecording: string;
   startStopRecordingRegion: string;
+  addBookmark: string;
 }
 
 export interface MonitorToRecord {

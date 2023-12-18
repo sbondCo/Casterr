@@ -79,6 +79,9 @@ const settingsSlice = createSlice({
     },
     setStartStopRecordingRegion(state, action: PayloadAction<string>) {
       state.key.startStopRecordingRegion = action.payload;
+    },
+    setAddBookmark(state, action: PayloadAction<string>) {
+      state.key.addBookmark = action.payload;
     }
   }
 });
@@ -104,7 +107,8 @@ export const {
   setSeperateAudioTracks,
 
   setStartStopRecording,
-  setStartStopRecordingRegion
+  setStartStopRecordingRegion,
+  setAddBookmark
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

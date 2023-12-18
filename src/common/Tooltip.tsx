@@ -20,6 +20,7 @@ export default function Tooltip(props: TooltipProps) {
       tooltipRef.current.style.top = `${er.top - er.height - gap}px`;
       tooltipRef.current.style.left = `${toInWindowBounds(er.left, "x", tooltipRef.current, childRef.current)}px`;
       tooltipRef.current.style.opacity = "1";
+      tooltipRef.current.style.pointerEvents = "unset";
     }
   };
 
@@ -27,6 +28,7 @@ export default function Tooltip(props: TooltipProps) {
     if (childRef.current && tooltipRef.current) {
       tooltipRef.current.style.transform = "scale(0.85)";
       tooltipRef.current.style.opacity = "0";
+      tooltipRef.current.style.pointerEvents = "none";
     }
   };
 

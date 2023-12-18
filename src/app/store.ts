@@ -43,19 +43,16 @@ const saver = (store: any) => (next: Dispatch<AnyAction>) => async (action: AnyA
       const isClip = action.payload.isClip;
       logger.info("saver", "Video state changed, writing changes to file. isClip:", isClip);
       if (isClip === true || isClip === false) {
+        const f = await PathHelper.getFile(isClip ? "clips" : "recordings");
         if (action.type.includes("videos/videoAdded")) {
           // Actions where should append to file instead of replace all
-          await fs.appendFile(
-            await PathHelper.getFile(isClip ? "clips" : "recordings"),
-            RecordingsManager.toWritingReady(action.payload, true)
-          );
+          await fs.appendFile(f, RecordingsManager.toWritingReady(action.payload, true));
         } else {
           const vidState = store.getState().videos;
+          const tow = RecordingsManager.toWritingReady(isClip ? vidState.clips : vidState.recordings, false);
           // Default to replace file for all other actions
-          await fs.writeFile(
-            await PathHelper.getFile(isClip ? "clips" : "recordings"),
-            RecordingsManager.toWritingReady(isClip ? vidState.clips : vidState.recordings, false)
-          );
+          console.log("saving videos", f, tow);
+          await fs.writeFile(f, tow);
         }
       } else {
         logger.error(

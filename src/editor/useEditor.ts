@@ -11,7 +11,11 @@ export default function useEditor(
   timelineRef: React.RefObject<HTMLDivElement>,
   progressBarRef: React.RefObject<HTMLDivElement>,
   clipsBarRef: React.RefObject<HTMLDivElement>,
-  initialVolume: number
+  bookmarksBarRef: React.RefObject<HTMLDivElement>,
+  initialVolume: number,
+  onBookmarkAdded: (b: number) => void,
+  onBookmarkRemoved: (b: number) => void,
+  initialBookmarks: number[] | undefined
 ) {
   const [playBtnIcon, setPlayBtnIcon] = useState<"play" | "pause">("play");
   const [volume, setVolume] = useState<number>(0.8);
@@ -30,12 +34,14 @@ export default function useEditor(
   let timeline = timelineRef.current!;
   let progressBar = progressBarRef.current! as target;
   let clipsBar = clipsBarRef.current! as target;
+  let bookmarksBar = bookmarksBarRef.current! as target;
 
   useEffect(() => {
     player = playerRef.current!;
     timeline = timelineRef.current!;
     progressBar = progressBarRef.current!;
     clipsBar = clipsBarRef.current!;
+    bookmarksBar = bookmarksBarRef.current!;
 
     if (player && progressBar) {
       player.addEventListener("loadedmetadata", videoLoaded);
@@ -146,6 +152,15 @@ export default function useEditor(
         addClip();
       });
     }
+
+    if (initialBookmarks && initialBookmarks.length > 0 && !bookmarksBar.classList.contains("noUi-target")) {
+      createBookmarksBar(initialBookmarks);
+    }
+
+    // When a bookmark is right clicked, remove.
+    // Pointer events are disabled everywhere except handles.
+    bookmarksBar.removeEventListener("mouseup", bookmarksBarMouseUp);
+    bookmarksBar.addEventListener("mouseup", bookmarksBarMouseUp);
   };
 
   /**
@@ -242,6 +257,11 @@ export default function useEditor(
 
         case "KeyZ": {
           adjustZoom(true);
+          break;
+        }
+
+        case "KeyB": {
+          addBookmark();
           break;
         }
       }
@@ -554,6 +574,84 @@ export default function useEditor(
     };
   };
 
+  const createBookmarksBar = (starts: number[]) => {
+    if (bookmarksBar.noUiSlider) bookmarksBar.noUiSlider.destroy();
+
+    if (starts.length > 0) {
+      starts.sort((a, b) => a - b);
+      console.log("createBookmarksBar:", starts);
+      noUiSlider.create(bookmarksBar, {
+        start: starts,
+        behaviour: "snap",
+        animate: false,
+        range: {
+          min: 0,
+          max: player.duration
+        }
+      });
+      // Disable dragging bookmarks
+      bookmarksBar.noUiSlider!.disable();
+    }
+  };
+
+  const bookmarksBarMouseUp = (ev: MouseEvent) => {
+    if (ev.button === 2) {
+      console.log("bookmarksBarMouseUp", ev);
+      const handle = ev.composedPath()[1] as HTMLDivElement;
+      if (handle) {
+        const handleN = handle.getAttribute("data-handle");
+        if (!handleN) {
+          console.error("failed to find data-handle attribute", handleN);
+          return;
+        }
+        removeBookmark(Number(handleN));
+      }
+    }
+  };
+
+  const addBookmark = () => {
+    const currentProgress = Number(progressBar.noUiSlider!.get());
+    let starts = new Array<number>();
+    if (bookmarksBar.noUiSlider) {
+      const s = bookmarksBar.noUiSlider.get();
+      if (typeof s === "object") {
+        starts = (s as string[]).map(Number);
+      } else {
+        starts = [Number(s)];
+      }
+    }
+    if (starts.includes(currentProgress)) {
+      console.log("addBookmark: bookmark already exists at time:", currentProgress);
+      return;
+    }
+    starts.push(currentProgress);
+    createBookmarksBar(starts);
+    onBookmarkAdded(currentProgress);
+  };
+
+  const removeBookmark = (handleToRemove: number) => {
+    if (!bookmarksBar.noUiSlider) {
+      console.error("removeBookmark: nouislider not found on bookmarks bar");
+      return;
+    }
+    let bookmarkToRemoveTime: number;
+    const s = bookmarksBar.noUiSlider.get();
+    let starts = new Array<number>();
+    console.log("removeBookmark: starts:", s);
+    // If array, remove the one handle,
+    // if not, must only have one handle left, so we can pass the empty starts array.
+    if (typeof s === "object") {
+      starts = (s as string[]).map(Number);
+      bookmarkToRemoveTime = starts[handleToRemove];
+      starts = removeFirst(starts, bookmarkToRemoveTime);
+    } else {
+      bookmarkToRemoveTime = Number(s);
+    }
+    console.log("removeBookmark: bookmark time:", bookmarkToRemoveTime);
+    createBookmarksBar(starts);
+    onBookmarkRemoved(bookmarkToRemoveTime);
+  };
+
   const toggleShowTimeAsElapsed = () => {
     setShowTimeAsElapsed(!showTimeAsElapsed);
   };
@@ -655,6 +753,7 @@ export default function useEditor(
       // Adjust width of bars
       progressBar.style.width = `${newZoom}%`;
       clipsBar.style.width = `${newZoom}%`;
+      bookmarksBar.style.width = `${newZoom}%`;
 
       // Add/remove `zoomed` class on progressBar
       if (newZoom > min) {
@@ -683,6 +782,7 @@ export default function useEditor(
     isPlayingClips,
     adjustZoom,
     lockOnScrubber,
-    setLockOnScrubber
+    setLockOnScrubber,
+    addBookmark
   };
 }

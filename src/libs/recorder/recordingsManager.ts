@@ -28,6 +28,7 @@ export default class RecordingsManager {
     recording.fileSize = fs.statSync(videoPath).size;
     recording.time = Date.now();
     recording.isClip = isClip;
+    recording.bookmarks = store.getState().recorder?.bookmarks;
 
     // Get video info from ffprobe
     ffprobe

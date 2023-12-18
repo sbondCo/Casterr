@@ -11,7 +11,7 @@ import "./editor.scss";
 import type { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useDispatch, useSelector } from "react-redux";
-import { videoRenamed } from "@/videos/videosSlice";
+import { videoBookmarkAdded, videoBookmarkRemoved, videoRenamed } from "@/videos/videosSlice";
 import Notifications from "@/libs/helpers/notifications";
 import { type RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
@@ -38,10 +38,19 @@ export default function VideoEditor() {
       .catch((e) => logger.error("Editor", "Unable to verify video files existence.", e));
   }, [video.videoPath]);
 
+  const onBookmarkAdded = (bookmark: number) => {
+    dispatch(videoBookmarkAdded({ videoPath: video.videoPath, isClip: video.isClip, bookmark }));
+  };
+
+  const onBookmarkRemoved = (bookmark: number) => {
+    dispatch(videoBookmarkRemoved({ videoPath: video.videoPath, isClip: video.isClip, bookmark }));
+  };
+
   const playerRef = useRef<HTMLVideoElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const clipsBarRef = useRef<HTMLDivElement>(null);
+  const bookmarksBarRef = useRef<HTMLDivElement>(null);
   const {
     clipsBar,
     playPause,
@@ -60,8 +69,19 @@ export default function VideoEditor() {
     isPlayingClips,
     adjustZoom,
     lockOnScrubber,
-    setLockOnScrubber
-  } = useEditor(playerRef, timelineRef, progressBarRef, clipsBarRef, genState.videoEditorVolume);
+    setLockOnScrubber,
+    addBookmark
+  } = useEditor(
+    playerRef,
+    timelineRef,
+    progressBarRef,
+    clipsBarRef,
+    bookmarksBarRef,
+    genState.videoEditorVolume,
+    onBookmarkAdded,
+    onBookmarkRemoved,
+    video.bookmarks
+  );
 
   return (
     <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-77px)]">
@@ -135,6 +155,7 @@ export default function VideoEditor() {
       <div ref={timelineRef} className="timeline">
         <div ref={progressBarRef} id="progressBar" className="progressBar"></div>
         <div ref={clipsBarRef} id="clipsBar" className="clipsBar"></div>
+        <div ref={bookmarksBarRef} id="bookmarksBar" className="bookmarksBar"></div>
       </div>
 
       <div className="flex gap-1.5 mx-1.5">
@@ -180,6 +201,14 @@ export default function VideoEditor() {
             icon="min2"
             onClick={() => {
               adjustZoom(false);
+            }}
+          />
+        </Tooltip>
+        <Tooltip text="Bookmark (B)">
+          <Button
+            icon="bookmark"
+            onClick={() => {
+              addBookmark();
             }}
           />
         </Tooltip>
