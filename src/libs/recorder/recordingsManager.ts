@@ -19,6 +19,8 @@ export default class RecordingsManager {
     // Throw exception if video from videoPath does not exist
     if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
 
+    console.log("adding video", videoPath);
+
     const ffprobe = new FFmpeg("ffprobe");
     const recording = {} as Video;
 
@@ -98,7 +100,7 @@ export default class RecordingsManager {
       path.basename(videoPath) + ".png"
     );
 
-    await ffmpeg.run(`-i "${videoPath}" -frames:v 1 "${thumbPath}"`);
+    await ffmpeg.run(`-n -i "${videoPath}" -frames:v 1 "${thumbPath}"`);
 
     return thumbPath;
   }

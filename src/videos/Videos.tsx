@@ -15,6 +15,7 @@ import VideosGrid from "./VideosGrid";
 export default function Videos() {
   const pageRef = useRef<HTMLDivElement>(null);
   const { dropZoneShown, dropZoneFLen } = useDragAndDrop(pageRef, (f: File) => {
+    console.log(f, f.type.includes("video"));
     if (f.type.includes("video")) {
       // TODO when on `clips` sub page, add dropped videos as clips
       RecordingsManager.add(f.path).catch((e) => {
