@@ -35,7 +35,8 @@ export const DEFAULT_SETTINGS = {
     zeroLatency: true,
     ultraFast: true,
     audioDevicesToRecord: [] as string[],
-    seperateAudioTracks: false
+    seperateAudioTracks: false,
+    hardwareEncoding: false
   },
   key: {
     startStopRecording: "F9",

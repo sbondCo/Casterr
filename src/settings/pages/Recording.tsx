@@ -12,6 +12,7 @@ import NamedContainer from "../../common/NamedContainer";
 import {
   setFormat,
   setFps,
+  setHardwareEncoding,
   setMonitorToRecord,
   setResolution,
   setSeperateAudioTracks,
@@ -91,6 +92,16 @@ export default function Recording() {
           onChange={(s) => dispatch(setFormat(s as string))}
         />
       </NamedContainer>
+
+      {process.platform === "linux" && (
+        <NamedContainer
+          title="Hardware Encoding"
+          desc="Experimental NVENC Support. Offloads Video Encoding to NVIDIA GPU."
+          row
+        >
+          <TickBox ticked={state.hardwareEncoding} onChange={(t) => dispatch(setHardwareEncoding(t))} />
+        </NamedContainer>
+      )}
 
       <NamedContainer title="Separate Audio Tracks" row>
         <TickBox ticked={state.seperateAudioTracks} onChange={(t) => dispatch(setSeperateAudioTracks(t))} />

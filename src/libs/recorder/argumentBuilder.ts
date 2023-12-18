@@ -64,6 +64,10 @@ export default class ArgumentBuilder {
     // Audio maps
     args.push(`${ArgumentBuilder.audioMaps}`);
 
+    if (ArgumentBuilder.rs.hardwareEncoding) {
+      args.push(`-c:v h264_nvenc -profile high444p -pixel_format yuv444p -preset lossless`);
+    }
+
     // Video output path
     const videoOutputPath = await ArgumentBuilder.videoOutputPath();
     args.push(`"${videoOutputPath}"`);

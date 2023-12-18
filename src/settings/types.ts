@@ -52,6 +52,11 @@ export interface RecordingSettings {
    * different audio tracks.
    */
   seperateAudioTracks: boolean;
+
+  /**
+   * If we should offload encoding to GPU.
+   */
+  hardwareEncoding: boolean;
 }
 
 export interface KeyBindingSettings {
