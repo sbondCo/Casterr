@@ -93,9 +93,15 @@ export default function Recording() {
         />
       </NamedContainer>
 
-      <NamedContainer title="Hardware Encoding" row>
-        <TickBox ticked={state.hardwareEncoding} onChange={(t) => dispatch(setHardwareEncoding(t))} />
-      </NamedContainer>
+      {process.platform === "linux" && (
+        <NamedContainer
+          title="Hardware Encoding"
+          desc="Experimental NVENC Support. Offloads Video Encoding to NVIDIA GPU."
+          row
+        >
+          <TickBox ticked={state.hardwareEncoding} onChange={(t) => dispatch(setHardwareEncoding(t))} />
+        </NamedContainer>
+      )}
 
       <NamedContainer title="Separate Audio Tracks" row>
         <TickBox ticked={state.seperateAudioTracks} onChange={(t) => dispatch(setSeperateAudioTracks(t))} />
