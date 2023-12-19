@@ -83,7 +83,7 @@ export default function VideoEditor() {
   );
 
   return (
-    <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-77px)]">
+    <div className="flex flex-col gap-1.5 my-1.5 h-[calc(100vh-61px)]">
       <div className="flex gap-1.5 mx-1.5">
         <Tooltip text="Back To Videos">
           <Button
