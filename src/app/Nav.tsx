@@ -6,6 +6,7 @@ import Recorder from "@/libs/recorder";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import { useEffect } from "react";
 import { incrementElapsed, resetElapsed } from "@/libs/recorder/recorderSlice";
+import { ipcRenderer } from "electron";
 
 export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
@@ -33,27 +34,42 @@ export default function Nav() {
   }, [state.isRecording]);
 
   return (
-    <nav className="relative flex items-center justify-center h-12 min-h-full bg-secondary-100">
-      <ul className="flex flex-row flex-nowrap">
-        <NavItem text="videos" icon="play" />
-        <NavItem text="settings" icon="settings" />
-      </ul>
-
+    <nav
+      className="relative flex items-center justify-center h-12 min-h-full bg-secondary-100"
+      style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+    >
       {/* Recording Status */}
-      <ul className="absolute right-5 flex flex-row flex-nowrap items-center gap-3">
-        {state.isRecording && <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>}
+      <ul
+        className="absolute left-5 flex flex-row flex-nowrap items-center gap-3"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+      >
         <div
           className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
           onClick={async () => {
             if (genSettingsState.rcStatusAlsoStopStart && !genSettingsState.rcStatusDblClkToRecord)
-              await Recorder.auto();
+              await Recorder.auto(undefined);
           }}
           onDoubleClick={async () => {
             if (genSettingsState.rcStatusAlsoStopStart && genSettingsState.rcStatusDblClkToRecord)
-              await Recorder.auto();
+              await Recorder.auto(undefined);
           }}
         ></div>
+        {state.isRecording && <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>}
+      </ul>
+
+      <ul className="flex flex-row flex-nowrap" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+        <NavItem text="videos" icon="play" />
+        <NavItem text="settings" icon="settings" />
+      </ul>
+
+      <ul
+        className="absolute right-3 flex flex-row-reverse gap-3"
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+      >
+        <WindowActionItem icon="close" />
+        <WindowActionItem icon="max" />
+        <WindowActionItem icon="min" />
       </ul>
     </nav>
   );
@@ -77,5 +93,24 @@ function NavItem(props: { text: string; icon: Icons }) {
         <span className="capitalize hidden sm:flex">{text}</span>
       </Link>
     </li>
+  );
+}
+
+function WindowActionItem(props: { icon: Icons }) {
+  const { icon } = props;
+
+  const manageWindow = () => {
+    ipcRenderer.send("manage-window", icon);
+  };
+
+  return (
+    <div
+      onClick={manageWindow}
+      className={`flex justify-center items-center h-full p-1 rounded text-white-100 cursor-pointer ${
+        icon === "close" ? "hover:bg-red-100" : "hover:bg-white-25"
+      }`}
+    >
+      <Icon i={icon} wh={14} />
+    </div>
   );
 }
