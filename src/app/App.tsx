@@ -1,4 +1,3 @@
-import Dragger from "@/app/Dragger";
 import Nav from "@/app/Nav";
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { store } from "@/app/store";
@@ -30,7 +29,6 @@ export default function App() {
           {!isDNotifRoute && !isRegionSelectRoute && (
             <>
               <Init />
-              <Dragger />
               <Nav />
               <UpdateBar />
             </>

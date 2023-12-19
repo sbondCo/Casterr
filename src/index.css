@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Disable ability to drag and select text, images, links, etc. It is buggy. */
+*, *::after, *::before {
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-app-region: no-drag;
+}
+
 /* Default Scrollbar Styling */
 
 /* Main Default */
