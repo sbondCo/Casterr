@@ -3,7 +3,7 @@ import ArgumentBuilder, { type CustomRegion, type Arguments } from "./argumentBu
 import RecordingsManager from "./recordingsManager";
 import Notifications from "./../helpers/notifications";
 import { store } from "@/app/store";
-import { addBookmarkToRecording, isRecording } from "./recorderSlice";
+import { addBookmarkToRecording, setRecordingStatus } from "./recorderSlice";
 import { ipcRenderer } from "electron";
 import { logger } from "../logger";
 
@@ -18,7 +18,7 @@ ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
 });
 
 ipcRenderer.on("addBookmark-pressed", async () => {
-  if (!store.getState().recorder.isRecording) {
+  if (store.getState().recorder.recordingStatus !== 1) {
     console.log("can't add bookmark when not recording");
     return;
   }
@@ -35,12 +35,12 @@ export default class Recorder {
   public static async start(customRegion: CustomRegion) {
     try {
       // If already recording, return before doing anything
-      if (store.getState().recorder.isRecording) {
+      if (store.getState().recorder.recordingStatus !== 0) {
         logger.info("Recorder", "Recorder.start called, but already recording. Ignoring..");
         return;
       }
 
-      store.dispatch(isRecording(true));
+      store.dispatch(setRecordingStatus(2));
 
       // Create args from user's settings
       const ab = new ArgumentBuilder(customRegion);
@@ -50,12 +50,14 @@ export default class Recorder {
       // Start the recording
       await this.ffmpeg.run(this.args.args, "onOpen");
 
+      store.dispatch(setRecordingStatus(1));
+
       Notifications.desktop("Started Recording", "play").catch((e) =>
         logger.error("Recorder", "Failed to show started recording desktop notification", e)
       );
     } catch (err) {
       logger.error("Recorder", "Couldn't start recording:", err);
-      store.dispatch(isRecording(false));
+      store.dispatch(setRecordingStatus(0));
     }
   }
 
@@ -64,12 +66,12 @@ export default class Recorder {
    */
   public static async stop() {
     // If not recording ignore
-    if (!store.getState().recorder.isRecording) {
+    if (store.getState().recorder.recordingStatus !== 1) {
       logger.info("Recorder", "Recorder.stop called, but not recording. Ignoring..");
       return;
     }
 
-    store.dispatch(isRecording(false));
+    store.dispatch(setRecordingStatus(0));
 
     // Wait for ffmpeg to exit
     await this.ffmpeg.kill();
@@ -97,7 +99,7 @@ export default class Recorder {
    * recording depending on if currently recording or not.
    */
   public static async auto(customRegion: CustomRegion) {
-    if (!store.getState().recorder.isRecording) {
+    if (store.getState().recorder.recordingStatus === 0) {
       await this.start(customRegion);
     } else {
       await this.stop();

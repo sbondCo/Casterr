@@ -12,14 +12,15 @@ export default function Nav() {
   const state = useSelector((store: RootState) => store.recorder);
   const genSettingsState = useSelector((store: RootState) => store.settings.general);
   const dispatch = useDispatch();
-  const statusColClasses = state.isRecording
-    ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
-    : "bg-white-100 shadow-[_0_0_8px_theme('colors.white.100')]";
+  const statusColClasses =
+    state.recordingStatus === 1
+      ? "bg-red-100 shadow-[_0_0_8px_theme('colors.red.100')]"
+      : "bg-white-100 shadow-[_0_0_8px_theme('colors.white.100')]";
 
   useEffect(() => {
     let timeElapsedSI: NodeJS.Timer | undefined;
 
-    if (state.isRecording) {
+    if (state.recordingStatus === 1) {
       timeElapsedSI = setInterval(() => {
         dispatch(incrementElapsed());
       }, 1000);
@@ -31,7 +32,7 @@ export default function Nav() {
     return () => {
       clearInterval(timeElapsedSI);
     };
-  }, [state.isRecording]);
+  }, [state.recordingStatus]);
 
   return (
     <nav
@@ -44,7 +45,9 @@ export default function Nav() {
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
       >
         <div
-          className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses}`}
+          className={`h-6 w-6 rounded-3xl cursor-pointer transition-shadow ${statusColClasses} ${
+            state.recordingStatus === 2 ? "animate-pulse" : ""
+          }`}
           title={`Start/Stop Recording\n\nWhite => Idle\nRed => Recording`}
           onClick={async () => {
             if (genSettingsState.rcStatusAlsoStopStart && !genSettingsState.rcStatusDblClkToRecord)
@@ -55,7 +58,9 @@ export default function Nav() {
               await Recorder.auto(undefined);
           }}
         ></div>
-        {state.isRecording && <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>}
+        {state.recordingStatus === 1 && (
+          <div title="Recording duration">{toReadableTimeFromSeconds(state.timeElapsed)}</div>
+        )}
       </ul>
 
       <ul className="flex flex-row flex-nowrap" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>

@@ -1,7 +1,14 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+/**
+ * 0: Not recording - idle
+ * 1: Recording
+ * 2: Loading/downloading tools
+ */
+type RecordingStatus = 0 | 1 | 2;
+
 interface RecordingState {
-  isRecording: boolean;
+  recordingStatus: RecordingStatus;
 
   /**
    * Recording time elapsed in seconds.
@@ -18,14 +25,14 @@ interface RecordingState {
 
 const recorderSlice = createSlice({
   name: "recorder",
-  initialState: { isRecording: false, timeElapsed: 0, bookmarks: [] } as RecordingState,
+  initialState: { recordingStatus: 0, timeElapsed: 0, bookmarks: [] } as RecordingState,
   reducers: {
-    isRecording(state, action: PayloadAction<boolean>) {
+    setRecordingStatus(state, action: PayloadAction<RecordingStatus>) {
       // Reset bookmarks when starting new recording.
-      if (action.payload) {
+      if (action.payload === 1) {
         state.bookmarks = [];
       }
-      state.isRecording = action.payload;
+      state.recordingStatus = action.payload;
     },
     /**
      * Increment recording timeElapsed by 1 second.
@@ -48,6 +55,6 @@ const recorderSlice = createSlice({
   }
 });
 
-export const { isRecording, incrementElapsed, resetElapsed, addBookmarkToRecording } = recorderSlice.actions;
+export const { setRecordingStatus, incrementElapsed, resetElapsed, addBookmarkToRecording } = recorderSlice.actions;
 
 export default recorderSlice.reducer;
