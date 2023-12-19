@@ -1,6 +1,6 @@
 import Icon, { type Icons } from "@/common/Icon";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { type RootState } from "./store";
 import Recorder from "@/libs/recorder";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
@@ -80,14 +80,18 @@ export default function Nav() {
  */
 function NavItem(props: { text: string; icon: Icons }) {
   const { text, icon } = props;
+  const to = `/${text}`;
+  const isActive = useLocation().pathname.startsWith(to);
 
   return (
     <li>
       <Link
-        to={`/${text}`}
-        className="flex flex-row items-center justify-center py-2 sm:py-0.5 px-4 mx-1.5
-          bg-primary-100 rounded text-white-100 fill-current hover:bg-tertiary-100
-          transition-colors ease-in-out duration-250 text-xl"
+        to={to}
+        className={`flex flex-row items-center justify-center py-2 sm:py-0.5 px-4 mx-1.5
+          bg-primary-100 rounded text-white-100 fill-current 
+          transition-colors ease-in-out duration-250 text-xl ${
+            isActive ? "bg-quaternary-100 pointer-events-none" : "hover:bg-tertiary-100"
+          }`}
       >
         <Icon i={icon} className="mr-0 sm:mr-1.5" wh={16} />
         <span className="capitalize hidden sm:flex">{text}</span>
