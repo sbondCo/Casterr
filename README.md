@@ -49,7 +49,7 @@ Search through your past videos and filter by Recordings or Clips. You can impor
 
 <img src="./screenshot/videos.png" alt="Viewing past recordings" />
 
-### **Video Editor**
+### Video Editor
 
 The editor allows you to playback your videos and clip them into highlights.
 
