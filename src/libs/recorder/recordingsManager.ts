@@ -89,6 +89,52 @@ export default class RecordingsManager {
   }
 
   /**
+   * Delete video from user action, shows confirmation popup
+   * if setting is set to do so.
+   * @param video Video to be deleted.
+   */
+  public static async deleteWithConfirmation(video: Video) {
+    try {
+      const genState = store.getState().settings.general;
+
+      const rm = async (rmFromDsk: boolean) => {
+        await RecordingsManager.delete(video, rmFromDsk);
+      };
+
+      if (genState.deleteVideoConfirmationDisabled) {
+        await rm(genState.deleteVideosFromDisk);
+        return true;
+      } else {
+        const popup = await Notifications.popup({
+          id: "DELETE-VIDEO",
+          title: "Delete Video",
+          showCancel: true,
+          tickBoxes: [{ name: "Also remove from disk", ticked: genState.deleteVideosFromDisk }],
+          buttons: ["cancel", "delete"]
+        });
+        if (popup.action === "delete") {
+          await rm(popup.tickBoxesChecked.includes("Also remove from disk"));
+          Notifications.rmPopup("DELETE-VIDEO");
+          return true;
+        }
+        Notifications.rmPopup("DELETE-VIDEO");
+        return false;
+      }
+    } catch (err: any) {
+      logger.error("Editor", "Failed to delete video from video editor!", err);
+      Notifications.popup({
+        id: "DELETE-VIDEO",
+        title: "Failed to delete",
+        message: "We were unable to delete this video. Please try again.",
+        showCancel: true
+      }).catch((err) => {
+        logger.error(`deleteWithConfirmation failed: popup failed`, err);
+      });
+      return false;
+    }
+  }
+
+  /**
    * Create thumbnail for video
    * @param videoPath Path to video to create thumbnail for
    */

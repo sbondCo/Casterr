@@ -12,7 +12,6 @@ import type { Video } from "@/videos/types";
 import RecordingsManager from "@/libs/recorder/recordingsManager";
 import { useDispatch, useSelector } from "react-redux";
 import { videoBookmarkAdded, videoBookmarkRemoved, videoRenamed } from "@/videos/videosSlice";
-import Notifications from "@/libs/helpers/notifications";
 import { type RootState } from "@/app/store";
 import { toReadableTimeFromSeconds } from "@/libs/helpers/extensions/number";
 import Tooltip from "@/common/Tooltip";
@@ -107,34 +106,13 @@ export default function VideoEditor() {
         <Button
           icon="close"
           onClick={() => {
-            const rm = (rmFromDsk: boolean) => {
-              RecordingsManager.delete(video, rmFromDsk).catch((e) =>
-                logger.error("Editor", "Failed to delete video from video editor!", e)
-              );
-              navigate(-1);
-            };
-
-            if (genState.deleteVideoConfirmationDisabled) {
-              rm(genState.deleteVideosFromDisk);
-            } else {
-              Notifications.popup({
-                id: "DELETE-VIDEO",
-                title: "Delete Video",
-                showCancel: true,
-                tickBoxes: [{ name: "Also remove from disk", ticked: genState.deleteVideosFromDisk }],
-                buttons: ["cancel", "delete"]
+            RecordingsManager.deleteWithConfirmation(video)
+              .then((deleted) => {
+                if (deleted) navigate(-1);
               })
-                .then((popup) => {
-                  if (popup.action === "delete") {
-                    rm(popup.tickBoxesChecked.includes("Also remove from disk"));
-                  }
-
-                  Notifications.rmPopup("DELETE-VIDEO");
-                })
-                .catch((e) => {
-                  logger.error("Editor", "Failed to show DELETE-VIDEO popup!", e);
-                });
-            }
+              .catch((err: any) => {
+                logger.error("Editor", "Failed to delete video with confirmation", err);
+              });
           }}
         />
       </div>
