@@ -104,7 +104,7 @@ export default function VideoEditor() {
           }}
         />
         <Button
-          icon="close"
+          icon="trash"
           onClick={() => {
             RecordingsManager.deleteWithConfirmation(video)
               .then((deleted) => {
