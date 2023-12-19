@@ -40,8 +40,6 @@ export default class Recorder {
         return;
       }
 
-      store.dispatch(isRecording(true));
-
       // Create args from user's settings
       const ab = new ArgumentBuilder(customRegion);
       this.args = await ab.createArgs();
@@ -49,6 +47,8 @@ export default class Recorder {
 
       // Start the recording
       await this.ffmpeg.run(this.args.args, "onOpen");
+
+      store.dispatch(isRecording(true));
 
       Notifications.desktop("Started Recording", "play").catch((e) =>
         logger.error("Recorder", "Failed to show started recording desktop notification", e)
