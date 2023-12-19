@@ -7,6 +7,7 @@ import { shell } from "electron";
 import path from "path";
 import { useEffect, useState } from "react";
 import type { Video } from "./types";
+import RecordingsManager from "@/libs/recorder/recordingsManager";
 
 export default function VideosGridItem({ video }: { video: Video }) {
   const { name, duration, fileSize, fps, thumbPath, videoPath, isClip } = video;
@@ -55,6 +56,18 @@ export default function VideosGridItem({ video }: { video: Video }) {
             logger.info("VideosGridItem", "Upload button clicked on thumb");
             upload(video).catch((err) => {
               logger.error("VideosGridItem", "Uploading video failed:", err);
+            });
+          }}
+        />
+        <Icon
+          i="trash"
+          wh={32}
+          className="hover:bg-tertiary-100 p-1 rounded"
+          onClick={(e) => {
+            e.preventDefault();
+            logger.info("VideosGridItem", "delete button clicked on thumb");
+            RecordingsManager.deleteWithConfirmation(video).catch((err: any) => {
+              logger.error("VideosGridItem", "failed to delete video with confirmation", err);
             });
           }}
         />
