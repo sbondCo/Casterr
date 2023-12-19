@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import type { Video } from "./types";
 
 export default function VideosGridItem({ video }: { video: Video }) {
-  const { name, duration, fileSize, fps, thumbPath, videoPath } = video;
+  const { name, duration, fileSize, fps, thumbPath, videoPath, isClip } = video;
   const [img, setImg] = useState<string>();
 
   useEffect(() => {
@@ -63,6 +63,9 @@ export default function VideosGridItem({ video }: { video: Video }) {
       <p className="absolute right-3 top-2 italic font-bold [text_shadow:_1px_1px_black]">{fps} FPS</p>
 
       <div className="flex gap-2 items-center absolute bottom-0 w-full px-3 py-2 bg-quaternary-100/60">
+        <span>
+          <Icon i={isClip ? "film" : "camera"} />
+        </span>
         <span className="font-bold flex-1 overflow-hidden whitespace-nowrap text-ellipsis" title={name}>
           {name}
         </span>
