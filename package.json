@@ -24,7 +24,7 @@
     "build": "npm run compile && electron-builder build --config builder.config.js"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
+    "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "electron-updater": "^6.1.7",
     "nouislider": "^15.7.1",
