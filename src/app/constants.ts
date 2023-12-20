@@ -9,7 +9,12 @@ import type { Settings } from "@/settings/types";
 
 // App settings, not user editable.
 export const APP_SETTINGS = {
-  supportedRecordingFormats: ["mp4", "mkv"]
+  supportedRecordingFormats: ["mp4", "mkv"],
+  /**
+   * Available resolution options (presets so users don't
+   * have to manually input common resolution width and heights).
+   */
+  prefilledResolutions: ["2160p", "1440p", "1080p", "720p", "480p", "360p"] as const
 };
 
 export const DEFAULT_SETTINGS = {
@@ -30,7 +35,9 @@ export const DEFAULT_SETTINGS = {
       name: "Primary Monitor"
     },
     fps: 60,
-    resolution: "1080p",
+    resolution: "disabled",
+    resolutionCustom: undefined,
+    resolutionKeepAspectRatio: true,
     format: "mp4",
     zeroLatency: true,
     ultraFast: true,

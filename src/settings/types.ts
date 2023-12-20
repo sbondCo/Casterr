@@ -1,3 +1,7 @@
+import type { APP_SETTINGS } from "@/app/constants";
+
+export type ResolutionScale = typeof APP_SETTINGS.prefilledResolutions[number] | "disabled" | "custom";
+
 export interface Settings {
   general: GeneralSettings;
   recording: RecordingSettings;
@@ -41,7 +45,15 @@ export interface RecordingSettings {
   videoDevice: string;
   monitorToRecord: MonitorToRecord;
   fps: number;
-  resolution: string;
+  /**
+   * When set, video output will be scaled to this resolution.
+   */
+  resolution: ResolutionScale;
+  resolutionCustom?: { width: number; height: number };
+  /**
+   * If a resolution is set to scale to, should we keep the aspect ratio of original video?
+   */
+  resolutionKeepAspectRatio: boolean;
   format: string;
   zeroLatency: boolean;
   ultraFast: boolean;
