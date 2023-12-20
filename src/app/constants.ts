@@ -35,7 +35,7 @@ export const DEFAULT_SETTINGS = {
       name: "Primary Monitor"
     },
     fps: 60,
-    resolution: "disabled",
+    resolutionScale: "disabled",
     resolutionCustom: { width: 1920, height: 1080 },
     resolutionKeepAspectRatio: true,
     format: "mp4",

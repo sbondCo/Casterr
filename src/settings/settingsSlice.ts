@@ -47,7 +47,7 @@ const settingsSlice = createSlice({
       state.recording.fps = action.payload;
     },
     setResolution(state, action: PayloadAction<ResolutionScale>) {
-      state.recording.resolution = action.payload;
+      state.recording.resolutionScale = action.payload;
     },
     setResolutionCustom(state, action: PayloadAction<{ width?: number; height?: number }>) {
       if (action.payload.width) state.recording.resolutionCustom.width = action.payload.width;

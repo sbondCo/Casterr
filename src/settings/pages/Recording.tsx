@@ -90,14 +90,14 @@ export default function Recording() {
 
       <NamedContainer title="Resolution Scale">
         <DropDown
-          activeItem={state.resolution}
+          activeItem={state.resolutionScale}
           items={resolutions}
           onChange={(s) => dispatch(setResolution(s as ResolutionScale))}
           className="capitalize"
         />
       </NamedContainer>
 
-      {state.resolution === "custom" && (
+      {state.resolutionScale === "custom" && (
         <NamedContainer title="Custom Resolution">
           <div className="flex row gap-3 items-center">
             <b>W</b>
@@ -122,7 +122,7 @@ export default function Recording() {
         </NamedContainer>
       )}
 
-      {state.resolution !== "disabled" && (
+      {state.resolutionScale !== "disabled" && (
         <NamedContainer
           title="Keep Aspect Ratio"
           desc="When using the resolution scaling option, you can decide if you want to keep the original aspect ratio or not."

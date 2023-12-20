@@ -75,7 +75,7 @@ export default class ArgumentBuilder {
     // Recording region
     args.push(`-i ${await this.recordingRegion()}`);
 
-    if (ArgumentBuilder.rs.resolution !== "disabled") {
+    if (ArgumentBuilder.rs.resolutionScale !== "disabled") {
       args.push(this.recordingScale());
     }
 
@@ -134,6 +134,10 @@ export default class ArgumentBuilder {
 
     // Recording region
     await this.recordingRegion();
+
+    if (ArgumentBuilder.rs.resolutionScale !== "disabled") {
+      args.push(this.recordingScale());
+    }
 
     // Zero Latency
     if (ArgumentBuilder.rs.zeroLatency) {
@@ -204,7 +208,7 @@ export default class ArgumentBuilder {
   }
 
   private recordingScale(): string {
-    const rscale = ArgumentBuilder.rs.resolution;
+    const rscale = ArgumentBuilder.rs.resolutionScale;
     if (rscale === "disabled") return "";
     const res = { width: 0, height: 0 };
     if (rscale === "custom") {

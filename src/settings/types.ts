@@ -48,7 +48,7 @@ export interface RecordingSettings {
   /**
    * When set, video output will be scaled to this resolution.
    */
-  resolution: ResolutionScale;
+  resolutionScale: ResolutionScale;
   resolutionCustom: { width: number; height: number };
   /**
    * If a resolution is set to scale to, should we keep the aspect ratio of original video?
