@@ -209,6 +209,7 @@ export default class ArgumentBuilder {
 
   private recordingScale(): string {
     const rscale = ArgumentBuilder.rs.resolutionScale;
+    console.debug("recordingScale running", rscale);
     if (rscale === "disabled") return "";
     const res = { width: 0, height: 0 };
     if (rscale === "custom") {
