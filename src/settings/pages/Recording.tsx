@@ -15,6 +15,7 @@ import {
   setHardwareEncoding,
   setMonitorToRecord,
   setResolution,
+  setResolutionCustom,
   setResolutionKeepAspectRatio,
   setSeperateAudioTracks,
   setThumbSaveFolder,
@@ -95,6 +96,31 @@ export default function Recording() {
           className="capitalize"
         />
       </NamedContainer>
+
+      {state.resolution === "custom" && (
+        <NamedContainer title="Custom Resolution">
+          <div className="flex row gap-3 items-center">
+            <b>W</b>
+            <TextBox
+              type="number"
+              value={state.resolutionCustom?.width ?? ""}
+              placeholder={1920}
+              onChange={(s) => {
+                dispatch(setResolutionCustom({ width: s }));
+              }}
+            />
+            <b>H</b>
+            <TextBox
+              type="number"
+              value={state.resolutionCustom?.height ?? ""}
+              placeholder={1080}
+              onChange={(s) => {
+                dispatch(setResolutionCustom({ height: s }));
+              }}
+            />
+          </div>
+        </NamedContainer>
+      )}
 
       {state.resolution !== "disabled" && (
         <NamedContainer

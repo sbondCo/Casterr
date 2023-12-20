@@ -36,7 +36,7 @@ export const DEFAULT_SETTINGS = {
     },
     fps: 60,
     resolution: "disabled",
-    resolutionCustom: undefined,
+    resolutionCustom: { width: 1920, height: 1080 },
     resolutionKeepAspectRatio: true,
     format: "mp4",
     zeroLatency: true,

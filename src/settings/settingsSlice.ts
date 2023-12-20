@@ -49,8 +49,9 @@ const settingsSlice = createSlice({
     setResolution(state, action: PayloadAction<ResolutionScale>) {
       state.recording.resolution = action.payload;
     },
-    setResolutionCustom(state, action: PayloadAction<{ width: number; height: number }>) {
-      state.recording.resolutionCustom = action.payload;
+    setResolutionCustom(state, action: PayloadAction<{ width?: number; height?: number }>) {
+      if (action.payload.width) state.recording.resolutionCustom.width = action.payload.width;
+      if (action.payload.height) state.recording.resolutionCustom.height = action.payload.height;
     },
     setResolutionKeepAspectRatio(state, action: PayloadAction<boolean>) {
       state.recording.resolutionKeepAspectRatio = action.payload;
