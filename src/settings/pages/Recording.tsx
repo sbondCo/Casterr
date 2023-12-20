@@ -15,6 +15,8 @@ import {
   setHardwareEncoding,
   setMonitorToRecord,
   setResolution,
+  setResolutionCustom,
+  setResolutionKeepAspectRatio,
   setSeperateAudioTracks,
   setThumbSaveFolder,
   setVideoDevice,
@@ -22,6 +24,7 @@ import {
   setVideoSaveName,
   toggleAudioDeviceToRecord
 } from "../settingsSlice";
+import type { ResolutionScale } from "../types";
 
 export default function Recording() {
   const state = useSelector((store: RootState) => store.settings.recording);
@@ -31,7 +34,7 @@ export default function Recording() {
 
   const videoDevices = ["Default"];
   const monitors = new Array<DropDownItem>({ id: "primary", name: "Primary Monitor" });
-  const resolutions = ["In-Game", "2160p", "1440p", "1080p", "720p", "480p", "360p"];
+  const resolutions: ResolutionScale[] = ["disabled", "2160p", "1440p", "1080p", "720p", "480p", "360p", "custom"];
 
   useEffect(() => {
     DeviceManager.getDevices()
@@ -66,6 +69,14 @@ export default function Recording() {
         />
       </NamedContainer>
 
+      <NamedContainer title="Format">
+        <DropDown
+          activeItem={state.format}
+          items={APP_SETTINGS.supportedRecordingFormats}
+          onChange={(s) => dispatch(setFormat(s as string))}
+        />
+      </NamedContainer>
+
       <NamedContainer title="FPS">
         <TextBox
           type="number"
@@ -77,21 +88,52 @@ export default function Recording() {
         />
       </NamedContainer>
 
-      <NamedContainer title="Resolution">
+      <NamedContainer title="Resolution Scale">
         <DropDown
-          activeItem={state.resolution}
+          activeItem={state.resolutionScale}
           items={resolutions}
-          onChange={(s) => dispatch(setResolution(s as string))}
+          onChange={(s) => dispatch(setResolution(s as ResolutionScale))}
+          className="capitalize"
         />
       </NamedContainer>
 
-      <NamedContainer title="Format">
-        <DropDown
-          activeItem={state.format}
-          items={APP_SETTINGS.supportedRecordingFormats}
-          onChange={(s) => dispatch(setFormat(s as string))}
-        />
-      </NamedContainer>
+      {state.resolutionScale === "custom" && (
+        <NamedContainer title="Custom Resolution">
+          <div className="flex row gap-3 items-center">
+            <b>W</b>
+            <TextBox
+              type="number"
+              value={state.resolutionCustom?.width ?? ""}
+              placeholder={1920}
+              onChange={(s) => {
+                dispatch(setResolutionCustom({ width: s }));
+              }}
+            />
+            <b>H</b>
+            <TextBox
+              type="number"
+              value={state.resolutionCustom?.height ?? ""}
+              placeholder={1080}
+              onChange={(s) => {
+                dispatch(setResolutionCustom({ height: s }));
+              }}
+            />
+          </div>
+        </NamedContainer>
+      )}
+
+      {state.resolutionScale !== "disabled" && (
+        <NamedContainer
+          title="Keep Aspect Ratio"
+          desc="When using the resolution scaling option, you can decide if you want to keep the original aspect ratio or not."
+          row
+        >
+          <TickBox
+            ticked={state.resolutionKeepAspectRatio}
+            onChange={(t) => dispatch(setResolutionKeepAspectRatio(t))}
+          />
+        </NamedContainer>
+      )}
 
       {process.platform === "linux" && (
         <NamedContainer

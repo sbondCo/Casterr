@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Icon from "./Icon";
+import type { CommonComponentProps } from "./types";
 
-interface DropDownProps {
+interface DropDownProps extends CommonComponentProps {
   activeItem: DropDownItem | string | number;
   items: DropDownItem[] | string[] | number[];
   onChange: (selected: DropDownItem | string | number) => void;
@@ -20,12 +21,12 @@ export interface DropDownItem {
   name: string;
 }
 
-export default function DropDown({ activeItem, items, onChange }: DropDownProps) {
+export default function DropDown({ activeItem, items, onChange, className }: DropDownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(activeItem);
 
   return (
-    <div className="flex flex-col bg-secondary-100 rounded">
+    <div className={`flex flex-col bg-secondary-100 rounded ${className ?? ""}`}>
       <label
         className={`${
           isOpen ? "rounded-t" : "rounded"

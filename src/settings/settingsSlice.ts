@@ -1,6 +1,6 @@
 import { DEFAULT_SETTINGS } from "@/app/constants";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { type MonitorToRecord } from "./types";
+import type { ResolutionScale, MonitorToRecord } from "./types";
 
 const settingsSlice = createSlice({
   name: "settings",
@@ -46,8 +46,15 @@ const settingsSlice = createSlice({
     setFps(state, action: PayloadAction<number>) {
       state.recording.fps = action.payload;
     },
-    setResolution(state, action: PayloadAction<string>) {
-      state.recording.resolution = action.payload;
+    setResolution(state, action: PayloadAction<ResolutionScale>) {
+      state.recording.resolutionScale = action.payload;
+    },
+    setResolutionCustom(state, action: PayloadAction<{ width?: number; height?: number }>) {
+      if (action.payload.width) state.recording.resolutionCustom.width = action.payload.width;
+      if (action.payload.height) state.recording.resolutionCustom.height = action.payload.height;
+    },
+    setResolutionKeepAspectRatio(state, action: PayloadAction<boolean>) {
+      state.recording.resolutionKeepAspectRatio = action.payload;
     },
     setFormat(state, action: PayloadAction<string>) {
       state.recording.format = action.payload;
@@ -103,6 +110,8 @@ export const {
   setMonitorToRecord,
   setFps,
   setResolution,
+  setResolutionCustom,
+  setResolutionKeepAspectRatio,
   setFormat,
   setZeroLatency,
   setUltraFast,

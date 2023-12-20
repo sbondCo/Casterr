@@ -23,11 +23,25 @@ export default class ArgumentBuilder {
 
   constructor(private readonly customRegion: CustomRegion) {}
 
+  private bounds: CustomRegion;
+
   /**
    * Create FFmpeg arguments.
    * Automatically builds the correct arguments depending on current OS.
    */
   public async createArgs(): Promise<Arguments> {
+    if (this.customRegion) {
+      this.bounds = this.customRegion;
+    } else {
+      const monitorToRecord = ArgumentBuilder.rs.monitorToRecord.id.toLowerCase();
+      // Get monitor
+      if (monitorToRecord === "primary") {
+        this.bounds = (await DeviceManager.getPrimaryMonitor()).bounds;
+      } else {
+        this.bounds = (await DeviceManager.findMonitor(monitorToRecord)).bounds;
+      }
+    }
+
     // Build and return args differently depending on OS
     if (process.platform === "win32") {
       return await this.buildWindowsArgs();
@@ -60,6 +74,10 @@ export default class ArgumentBuilder {
 
     // Recording region
     args.push(`-i ${await this.recordingRegion()}`);
+
+    if (ArgumentBuilder.rs.resolutionScale !== "disabled") {
+      args.push(this.recordingScale());
+    }
 
     // Audio maps
     args.push(`${ArgumentBuilder.audioMaps}`);
@@ -117,6 +135,10 @@ export default class ArgumentBuilder {
     // Recording region
     await this.recordingRegion();
 
+    if (ArgumentBuilder.rs.resolutionScale !== "disabled") {
+      args.push(this.recordingScale());
+    }
+
     // Zero Latency
     if (ArgumentBuilder.rs.zeroLatency) {
       args.push("-tune zerolatency");
@@ -148,19 +170,57 @@ export default class ArgumentBuilder {
   }
 
   private async resolution(): Promise<string> {
-    // Initialise res and set 1920x1080 as default
-    const res = {
-      width: 1920,
-      height: 1080
-    };
+    if (!this.bounds) {
+      throw new Error("Failed to get recording WxH bounds");
+    }
 
-    if (this.customRegion) {
-      res.width = this.customRegion.width;
-      res.height = this.customRegion.height;
+    if (process.platform === "win32") {
+      await ArgumentBuilder.scrRegistry.add("capture_width", this.bounds.width, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("capture_height", this.bounds.height, "REG_DWORD");
+    }
+
+    return `${this.bounds.width}x${this.bounds.height}`;
+  }
+
+  private static get ffmpegDevice(): string {
+    if (process.platform === "win32") return "dshow";
+    else if (process.platform === "linux") return "x11grab";
+    else throw new Error("No video device to fetch for unsupported platform.");
+  }
+
+  private async recordingRegion(): Promise<string> {
+    if (!this.bounds) {
+      throw new Error("Failed to get recording region bounds");
+    }
+
+    // Return different format depending on OS
+    if (process.platform === "win32") {
+      await ArgumentBuilder.scrRegistry.add("start_x", `0x${toHexTwosComplement(this.bounds.x)}`, "REG_DWORD");
+      await ArgumentBuilder.scrRegistry.add("start_y", `0x${toHexTwosComplement(this.bounds.y)}`, "REG_DWORD");
+
+      // Return offsets as string anyway
+      return `-offset_x ${this.bounds.x} -offset_y ${this.bounds.y}`;
+    } else if (process.platform === "linux") {
+      return `:0.0+${this.bounds.x},${this.bounds.y}`;
     } else {
-      switch (ArgumentBuilder.rs.resolution) {
-        case "In-Game":
-          throw new Error("In-Game directive not currently supported.");
+      throw new Error("Can't get recording region for unsupported platform.");
+    }
+  }
+
+  private recordingScale(): string {
+    const rscale = ArgumentBuilder.rs.resolutionScale;
+    console.debug("recordingScale running", rscale);
+    if (rscale === "disabled") return "";
+    const res = { width: 0, height: 0 };
+    if (rscale === "custom") {
+      const customScale = ArgumentBuilder.rs.resolutionCustom;
+      if (!customScale?.width || !customScale?.height) {
+        throw new Error("Resolution is set to 'custom', but custom resolution setting if not defined!");
+      }
+      res.width = customScale.width;
+      res.height = customScale.height;
+    } else {
+      switch (rscale) {
         case "2160p":
           res.width = 3840;
           res.height = 2160;
@@ -187,53 +247,7 @@ export default class ArgumentBuilder {
           break;
       }
     }
-
-    if (process.platform === "win32") {
-      await ArgumentBuilder.scrRegistry.add("capture_width", res.width, "REG_DWORD");
-      await ArgumentBuilder.scrRegistry.add("capture_height", res.height, "REG_DWORD");
-    }
-
-    return `${res.width}x${res.height}`;
-  }
-
-  private static get ffmpegDevice(): string {
-    if (process.platform === "win32") return "dshow";
-    else if (process.platform === "linux") return "x11grab";
-    else throw new Error("No video device to fetch for unsupported platform.");
-  }
-
-  private async recordingRegion(): Promise<string> {
-    let bounds;
-
-    if (this.customRegion) {
-      bounds = this.customRegion;
-    } else {
-      const monitorToRecord = ArgumentBuilder.rs.monitorToRecord.id.toLowerCase();
-
-      // Get monitor
-      if (monitorToRecord === "primary") {
-        bounds = (await DeviceManager.getPrimaryMonitor()).bounds;
-      } else {
-        bounds = (await DeviceManager.findMonitor(monitorToRecord)).bounds;
-      }
-    }
-
-    if (!bounds) {
-      throw new Error("Failed to get recording region bounds");
-    }
-
-    // Return different format depending on OS
-    if (process.platform === "win32") {
-      await ArgumentBuilder.scrRegistry.add("start_x", `0x${toHexTwosComplement(bounds.x)}`, "REG_DWORD");
-      await ArgumentBuilder.scrRegistry.add("start_y", `0x${toHexTwosComplement(bounds.y)}`, "REG_DWORD");
-
-      // Return offsets as string anyway
-      return `-offset_x ${bounds.x} -offset_y ${bounds.y}`;
-    } else if (process.platform === "linux") {
-      return `:0.0+${bounds.x},${bounds.y}`;
-    } else {
-      throw new Error("Can't get recording region for unsupported platform.");
-    }
+    return `-vf scale=${res.width}:${ArgumentBuilder.rs.resolutionKeepAspectRatio ? "-1" : res.height}`;
   }
 
   private static get audioMaps(): string {
