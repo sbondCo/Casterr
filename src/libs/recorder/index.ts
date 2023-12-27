@@ -17,6 +17,22 @@ ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
   await Recorder.auto(b);
 });
 
+ipcRenderer.on("startStopRecordingSavedRegion-pressed", async () => {
+  const r = store.getState().settings.recording.regionToRecord;
+  // A width and height at the very least is required.
+  if (!r.width || !r.height) {
+    logger.error("Recorder", "Cant record saved region", "a width and height must be set");
+    Notifications.popup({
+      id: "CANT-RECORD-SR",
+      title: "Can't Record Saved Region!",
+      message: "A width and or height has not been provided in settings!"
+    }).catch((err) => logger.error("Recorder", "Failed to show CANT-RECORD-SR popup", err));
+    return;
+  }
+  logger.info("Recorder", "Saved Region", r);
+  await Recorder.auto(r);
+});
+
 ipcRenderer.on("addBookmark-pressed", async () => {
   if (store.getState().recorder.recordingStatus !== 1) {
     console.log("can't add bookmark when not recording");

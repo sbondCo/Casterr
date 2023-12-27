@@ -101,6 +101,9 @@ const settingsSlice = createSlice({
     setStartStopRecordingRegion(state, action: PayloadAction<string>) {
       state.key.startStopRecordingRegion = action.payload;
     },
+    setStartStopRecordingSavedRegion(state, action: PayloadAction<string>) {
+      state.key.startStopRecordingSavedRegion = action.payload;
+    },
     setAddBookmark(state, action: PayloadAction<string>) {
       state.key.addBookmark = action.payload;
     }
@@ -134,6 +137,7 @@ export const {
 
   setStartStopRecording,
   setStartStopRecordingRegion,
+  setStartStopRecordingSavedRegion,
   setAddBookmark
 } = settingsSlice.actions;
 

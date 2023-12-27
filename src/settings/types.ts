@@ -81,6 +81,10 @@ export interface RecordingSettings {
 export interface KeyBindingSettings {
   startStopRecording: string;
   startStopRecordingRegion: string;
+  /**
+   * Start/stop recording the `regionToRecord` setting if set.
+   */
+  startStopRecordingSavedRegion: string;
   addBookmark: string;
 }
 

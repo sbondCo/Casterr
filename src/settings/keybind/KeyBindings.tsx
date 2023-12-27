@@ -1,7 +1,12 @@
 import { type RootState } from "@/app/store";
 import { useDispatch, useSelector } from "react-redux";
 import NamedContainer from "../../common/NamedContainer";
-import { setAddBookmark, setStartStopRecording, setStartStopRecordingRegion } from "../settingsSlice";
+import {
+  setAddBookmark,
+  setStartStopRecording,
+  setStartStopRecordingRegion,
+  setStartStopRecordingSavedRegion
+} from "../settingsSlice";
 import KeyBindButton from "./KeyBindButton";
 
 export default function KeyBindings() {
@@ -19,12 +24,21 @@ export default function KeyBindings() {
           }}
         />
       </NamedContainer>
-      <NamedContainer title="Start/Stop Recording A Region">
+      <NamedContainer title="Record A Region">
         <KeyBindButton
           name="startStopRecordingRegion"
           bind={state.startStopRecordingRegion}
           onUpdate={(newBind) => {
             dispatch(setStartStopRecordingRegion(newBind));
+          }}
+        />
+      </NamedContainer>
+      <NamedContainer title="Record Saved Region">
+        <KeyBindButton
+          name="startStopRecordingSavedRegion"
+          bind={state.startStopRecordingSavedRegion}
+          onUpdate={(newBind) => {
+            dispatch(setStartStopRecordingSavedRegion(newBind));
           }}
         />
       </NamedContainer>

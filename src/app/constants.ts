@@ -49,6 +49,7 @@ export const DEFAULT_SETTINGS = {
   key: {
     startStopRecording: "F9",
     startStopRecordingRegion: "F10",
+    startStopRecordingSavedRegion: "Shift+F10",
     addBookmark: "F2"
   }
 } as Settings;
