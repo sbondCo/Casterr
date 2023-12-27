@@ -2,7 +2,7 @@ import { store } from "@/app/store";
 import DeviceManager from "@/libs/recorder/deviceManager";
 import { logger } from "@/libs/logger";
 import Notifications from "@/libs/helpers/notifications";
-import { removeAudioDevicesToRecord, toggleAudioDeviceToRecord } from "./settingsSlice";
+import { removeAudioDevicesToRecord } from "./settingsSlice";
 
 /**
  * Check settings state to ensure they are correct.
