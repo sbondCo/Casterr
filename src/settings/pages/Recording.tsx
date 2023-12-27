@@ -14,6 +14,7 @@ import {
   setFps,
   setHardwareEncoding,
   setMonitorToRecord,
+  setRegionToRecord,
   setResolution,
   setResolutionCustom,
   setResolutionKeepAspectRatio,
@@ -25,6 +26,9 @@ import {
   toggleAudioDeviceToRecord
 } from "../settingsSlice";
 import type { ResolutionScale } from "../types";
+import Button from "@/common/Button";
+import Tooltip from "@/common/Tooltip";
+import { ipcRenderer } from "electron";
 
 export default function Recording() {
   const state = useSelector((store: RootState) => store.settings.recording);
@@ -51,6 +55,15 @@ export default function Recording() {
       .catch((err) => logger.error("Recording", "Failed to get audio devices!", err));
   }, []);
 
+  async function dragRegionToRecord() {
+    try {
+      const b = await ipcRenderer.invoke("select-region-win");
+      dispatch(setRegionToRecord({ x: b.x, y: b.y, width: b.width, height: b.height }));
+    } catch (err) {
+      logger.error("Settings/Recording", "Failed to drag new region", err);
+    }
+  }
+
   return (
     <>
       <NamedContainer title="Video Device">
@@ -67,6 +80,50 @@ export default function Recording() {
           items={monitors}
           onChange={(s) => dispatch(setMonitorToRecord(s as DropDownItem))}
         />
+      </NamedContainer>
+
+      <NamedContainer title="Region To Record" desc="Save a custom region so you don't always have to drag one.">
+        <div className="flex row gap-3 items-center">
+          <b>X</b>
+          <TextBox
+            type="number"
+            value={state.regionToRecord.x}
+            placeholder={0}
+            onChange={(s) => {
+              dispatch(setRegionToRecord({ x: s }));
+            }}
+          />
+          <b>Y</b>
+          <TextBox
+            type="number"
+            value={state.regionToRecord?.y ?? ""}
+            placeholder={0}
+            onChange={(s) => {
+              dispatch(setRegionToRecord({ y: s }));
+            }}
+          />
+          <b>W</b>
+          <TextBox
+            type="number"
+            value={state.regionToRecord?.width ?? ""}
+            placeholder={0}
+            onChange={(s) => {
+              dispatch(setRegionToRecord({ width: s }));
+            }}
+          />
+          <b>H</b>
+          <TextBox
+            type="number"
+            value={state.regionToRecord?.height ?? ""}
+            placeholder={0}
+            onChange={(s) => {
+              dispatch(setRegionToRecord({ height: s }));
+            }}
+          />
+          <Tooltip text="Drag Region">
+            <Button icon="move" onClick={dragRegionToRecord} />
+          </Tooltip>
+        </div>
       </NamedContainer>
 
       <NamedContainer title="Format">

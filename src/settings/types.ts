@@ -69,6 +69,13 @@ export interface RecordingSettings {
    * If we should offload encoding to GPU.
    */
   hardwareEncoding: boolean;
+
+  /**
+   * Saved custom region of screen to record.
+   * If a user only records a certain space of
+   * their screen always, this will help by saving that region.
+   */
+  regionToRecord: { x: number; y: number; width: number; height: number };
 }
 
 export interface KeyBindingSettings {

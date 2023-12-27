@@ -1,7 +1,7 @@
 import useDebouncer from "@/hooks/useDebouncer";
 import { logger } from "@/libs/logger";
 import { ipcRenderer } from "electron";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon, { type Icons } from "./Icon";
 import { type CommonComponentProps } from "./types";
 
@@ -40,6 +40,10 @@ export default function TextBox(props: TextBoxProps) {
 
   const { doDebounce } = useDebouncer(debounce);
   const [curVal, setCurVal] = useState(value);
+
+  useEffect(() => {
+    setCurVal(value);
+  }, [value]);
 
   // newVal param set as string becuase we get input value
   // from onBlur event (e.target.value), which returns as only string.
