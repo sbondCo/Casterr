@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import { useEffect, useRef } from "react";
+import { type CustomRegion } from "@/libs/recorder/argumentBuilder";
 
 export default function RegionSelect() {
   const dRef = useRef<HTMLDivElement>(null);
@@ -97,7 +98,7 @@ export default function RegionSelect() {
       console.log("stopDraw");
       isDrawing = false;
       const br = regionDiv.getBoundingClientRect();
-      ipcRenderer.send("region-selected", { x: br.x, y: br.y, width: br.width, height: br.height });
+      ipcRenderer.send("region-selected", { x: br.x, y: br.y, width: br.width, height: br.height } as CustomRegion);
     } catch (err) {
       ipcRenderer.send("region-select-cancelled", "stopDraw failed", err);
     }

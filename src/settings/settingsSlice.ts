@@ -85,6 +85,12 @@ const settingsSlice = createSlice({
     setHardwareEncoding(state, action: PayloadAction<boolean>) {
       state.recording.hardwareEncoding = action.payload;
     },
+    setRegionToRecord(state, action: PayloadAction<{ x?: number; y?: number; width?: number; height?: number }>) {
+      if (typeof action.payload.x === "number") state.recording.regionToRecord.x = action.payload.x;
+      if (typeof action.payload.y === "number") state.recording.regionToRecord.y = action.payload.y;
+      if (typeof action.payload.width === "number") state.recording.regionToRecord.width = action.payload.width;
+      if (typeof action.payload.height === "number") state.recording.regionToRecord.height = action.payload.height;
+    },
 
     //
     // Key Binding Settings
@@ -94,6 +100,9 @@ const settingsSlice = createSlice({
     },
     setStartStopRecordingRegion(state, action: PayloadAction<string>) {
       state.key.startStopRecordingRegion = action.payload;
+    },
+    setStartStopRecordingSavedRegion(state, action: PayloadAction<string>) {
+      state.key.startStopRecordingSavedRegion = action.payload;
     },
     setAddBookmark(state, action: PayloadAction<string>) {
       state.key.addBookmark = action.payload;
@@ -124,9 +133,11 @@ export const {
   removeAudioDevicesToRecord,
   setSeperateAudioTracks,
   setHardwareEncoding,
+  setRegionToRecord,
 
   setStartStopRecording,
   setStartStopRecordingRegion,
+  setStartStopRecordingSavedRegion,
   setAddBookmark
 } = settingsSlice.actions;
 

@@ -43,11 +43,13 @@ export const DEFAULT_SETTINGS = {
     ultraFast: true,
     audioDevicesToRecord: [] as string[],
     seperateAudioTracks: false,
-    hardwareEncoding: false
+    hardwareEncoding: false,
+    regionToRecord: { x: 0, y: 0, width: 0, height: 0 }
   },
   key: {
     startStopRecording: "F9",
     startStopRecordingRegion: "F10",
+    startStopRecordingSavedRegion: "Shift+F10",
     addBookmark: "F2"
   }
 } as Settings;
