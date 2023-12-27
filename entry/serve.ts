@@ -79,6 +79,7 @@ async function openElectron() {
         // If was able to get main.tsx, then vite has
         // launched the react app, so we can now open Electron
         if (resp.statusCode === 200) {
+          log(`Starting Casterr..`);
           resolve(exec(`${CROSSENV_PATH} NODE_ENV=dev SERVER_URL=${viteBase} ${ELECTRON_PATH} .`));
         } else {
           log(`Recieved HTTP code ${resp.statusCode ?? "UNDEFINED"} from vite!`);

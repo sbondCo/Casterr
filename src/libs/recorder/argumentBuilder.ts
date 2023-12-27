@@ -247,6 +247,7 @@ export default class ArgumentBuilder {
           break;
       }
     }
+    // https://trac.ffmpeg.org/wiki/Scaling
     return `-vf scale=${res.width}:${ArgumentBuilder.rs.resolutionKeepAspectRatio ? "-1" : res.height}`;
   }
 

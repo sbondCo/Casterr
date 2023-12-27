@@ -21,15 +21,13 @@ export interface Devices {
 export interface AudioDevice {
   /**
    * Source number
-   *  - On  **Linux** used to store source number of audio device and as key for ListBox
+   *  - On  **Linux** used to store name of audio device and as key for ListBox
    *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
    */
   id: number | string;
 
   /**
    * Name of device.
-   * Usually the same as ID, but in certain cases will
-   * contain a more reader friendly version of the devices name.
    */
   name: string;
 
@@ -67,7 +65,7 @@ export default class DeviceManager {
           stdoutCallback: (out: string) => {
             // If current device is an input device (eg. microphone)
             let isInputDevice = false;
-            let sourceNumber = 0;
+            let sourceName = "";
 
             // Find audioDevices and add them to audioDevices array
             out
@@ -76,9 +74,9 @@ export default class DeviceManager {
               .forEach((l: string) => {
                 const ll = l.toLowerCase();
 
-                // Get source number
-                if (ll.includes("source")) {
-                  sourceNumber = parseInt(ll.replace("source #", ""), 10);
+                // Hopefully this is unique. Looks like it is.
+                if (ll.includes("	name: ")) {
+                  sourceName = ll.replace("	name: ", "");
                 }
 
                 if (ll.includes("name: alsa_input")) isInputDevice = true;
@@ -87,7 +85,7 @@ export default class DeviceManager {
                 if (ll.includes("alsa.card_name")) {
                   // Add input devices to audioDevices array
                   audioDevices.push({
-                    id: sourceNumber,
+                    id: sourceName,
                     name: l.replace("alsa.card_name = ", "").replaceAll('"', "").replaceAll("\t", ""),
                     isInput: isInputDevice
                   });
