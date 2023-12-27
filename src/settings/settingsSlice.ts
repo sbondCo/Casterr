@@ -86,10 +86,10 @@ const settingsSlice = createSlice({
       state.recording.hardwareEncoding = action.payload;
     },
     setRegionToRecord(state, action: PayloadAction<{ x?: number; y?: number; width?: number; height?: number }>) {
-      if (action.payload.x) state.recording.regionToRecord.x = action.payload.x;
-      if (action.payload.y) state.recording.regionToRecord.y = action.payload.y;
-      if (action.payload.width) state.recording.regionToRecord.width = action.payload.width;
-      if (action.payload.height) state.recording.regionToRecord.height = action.payload.height;
+      if (typeof action.payload.x === "number") state.recording.regionToRecord.x = action.payload.x;
+      if (typeof action.payload.y === "number") state.recording.regionToRecord.y = action.payload.y;
+      if (typeof action.payload.width === "number") state.recording.regionToRecord.width = action.payload.width;
+      if (typeof action.payload.height === "number") state.recording.regionToRecord.height = action.payload.height;
     },
 
     //

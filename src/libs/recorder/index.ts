@@ -25,7 +25,8 @@ ipcRenderer.on("startStopRecordingSavedRegion-pressed", async () => {
     Notifications.popup({
       id: "CANT-RECORD-SR",
       title: "Can't Record Saved Region!",
-      message: "A width and or height has not been provided in settings!"
+      message: "A width and or height has not been provided in settings!",
+      showCancel: true
     }).catch((err) => logger.error("Recorder", "Failed to show CANT-RECORD-SR popup", err));
     return;
   }
