@@ -21,15 +21,13 @@ export interface Devices {
 export interface AudioDevice {
   /**
    * Source number
-   *  - On  **Linux** used to store source number of audio device and as key for ListBox
+   *  - On  **Linux** used to store name of audio device and as key for ListBox
    *  - On **Windows** used only as a key for ListBox (currently set as the name as device name)
    */
   id: number | string;
 
   /**
    * Name of device.
-   * Usually the same as ID, but in certain cases will
-   * contain a more reader friendly version of the devices name.
    */
   name: string;
 

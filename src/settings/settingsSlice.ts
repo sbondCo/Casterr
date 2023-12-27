@@ -74,6 +74,11 @@ const settingsSlice = createSlice({
         );
       }
     },
+    removeAudioDevicesToRecord(state, action: PayloadAction<string[]>) {
+      state.recording.audioDevicesToRecord = state.recording.audioDevicesToRecord.filter(
+        (id) => !action.payload.includes(id)
+      );
+    },
     setSeperateAudioTracks(state, action: PayloadAction<boolean>) {
       state.recording.seperateAudioTracks = action.payload;
     },
@@ -116,6 +121,7 @@ export const {
   setZeroLatency,
   setUltraFast,
   toggleAudioDeviceToRecord,
+  removeAudioDevicesToRecord,
   setSeperateAudioTracks,
   setHardwareEncoding,
 
