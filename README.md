@@ -20,11 +20,15 @@
   </a>
   
   <a href="LICENSE">
-    <img src="https://img.shields.io/github/license/CasterrTV/Casterr.svg?style=for-the-badge" alt="License" />
+    <img src="https://img.shields.io/github/license/sbondCo/Casterr.svg?style=for-the-badge" alt="License" />
   </a>
   
   <a>
     <img src="https://img.shields.io/github/repo-size/sbondCo/Casterr.svg?style=for-the-badge" alt="Code Size" />
+  </a>
+
+  <a>
+    <img src="https://img.shields.io/github/downloads/sbondCo/Casterr/total?style=for-the-badge" alt="Downloads" />
   </a>
 </p>
 
