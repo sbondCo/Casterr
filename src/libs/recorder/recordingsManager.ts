@@ -17,7 +17,7 @@ export default class RecordingsManager {
    */
   public static async add(videoPath: string, isClip: boolean = false): Promise<void> {
     // Throw exception if video from videoPath does not exist
-    if (!fs.existsSync(videoPath)) throw new Error("Can't add recording that doesn't exist!");
+    if (!fs.existsSync(videoPath)) throw new Error(`Can't add recording that doesn't exist! ${videoPath}`);
 
     console.log("adding video", videoPath);
 
@@ -166,10 +166,24 @@ export default class RecordingsManager {
     const ffmpeg = new FFmpeg();
     const clipOutName = `${PathHelper.fileNameNoExt(ArgumentBuilder.videoOutputName)}`;
     const clipOutExt = path.extname(videoPath); // Make clip ext same as videos
-    const clipOutPath = `${videoSaveFolder}/clips/${clipOutName}${clipOutExt}`;
-    const tmpOutFolder = await PathHelper.ensureExists(`${videoSaveFolder}/clips/.processing/${clipOutName}`, true);
-    const manifestStream = fs.createWriteStream(tmpOutFolder + "/manifest.txt", { flags: "a" });
+    const clipOutPath = path.join(videoSaveFolder, "clips", `${clipOutName}${clipOutExt}`);
+    const tmpOutFolder = await PathHelper.ensureExists(
+      path.join(videoSaveFolder, "clips", ".processing", clipOutName),
+      true
+    );
+    const manifestPath = path.join(tmpOutFolder, "manifest.txt");
+    const manifestStream = fs.createWriteStream(manifestPath, { flags: "a" });
     const popupName = "clipVideo";
+
+    logger.debug(
+      "RecordingsManager",
+      "videoPath:",
+      videoPath,
+      "clipOutPath:",
+      clipOutPath,
+      "tmpOutFolder",
+      tmpOutFolder
+    );
 
     Notifications.popup({ id: popupName, title: "Clipping Your Video", loader: true, showCancel: true })
       .then(async (popup) => {
@@ -198,12 +212,15 @@ export default class RecordingsManager {
     // Create clips from video.
     // Clips are stored in a temporary folder for now until they are merged into one video.
     for (let i = 0, ii = 0, n = timestamps.length; ii < n; ++i, ii += 2) {
-      const curFile = tmpOutFolder + `/${i}.mp4`;
+      const curFile = path.join(tmpOutFolder, `${i}.mp4`);
 
+      logger.debug("RecordingsManager", "curFile:", curFile, "timestamps", timestamps);
       manifestStream.write(`file '${curFile}'\n`);
 
+      // -vf/crop usage: https://stackoverflow.com/a/29582287, https://ffmpeg.org/ffmpeg-filters.html#crop
+      //    h and w must be divisible by 2 for libx264 to work (seems to only effect videos recorded with nvenc)
       await ffmpeg.run(
-        `-ss ${timestamps[ii]} -i "${videoPath}" -to ${
+        `-ss ${timestamps[ii]} -i "${videoPath}" -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -to ${
           timestamps[ii + 1] - timestamps[ii]
         } -map 0 -avoid_negative_ts 1 "${curFile}"`
       );
@@ -213,7 +230,7 @@ export default class RecordingsManager {
 
     // Concatenate all seperate clips into one video
     await ffmpeg.run(
-      `-f concat -safe 0 -i "${tmpOutFolder}/manifest.txt" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
+      `-f concat -safe 0 -i "${manifestPath}" -map 0 -avoid_negative_ts 1 -c copy "${clipOutPath}"`,
       "onExit",
       {
         // After creating final clip...
