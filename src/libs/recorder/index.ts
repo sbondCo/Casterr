@@ -12,9 +12,13 @@ ipcRenderer.on("startStopRecording-pressed", async () => {
 });
 
 ipcRenderer.on("startStopRecordingRegion-pressed", async () => {
-  const b = await ipcRenderer.invoke("select-region-win");
-  logger.info("Recorder", "Region selected", b);
-  await Recorder.auto(b);
+  if (store.getState().recorder.recordingStatus === 0) {
+    const b = await ipcRenderer.invoke("select-region-win");
+    logger.info("Recorder", "Region selected", b);
+    await Recorder.start(b);
+  } else {
+    await Recorder.stop();
+  }
 });
 
 ipcRenderer.on("startStopRecordingSavedRegion-pressed", async () => {
